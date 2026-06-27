@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Мониторинг радона 22-27 июня 2026 · VibeEngineering</title>
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(1200px 600px at 50% -10%,#1b2a4a 0%,#0b0f1a 60%) fixed;color:#e6ebf5;padding:44px 20px 80px}
+.wrap{max-width:960px;margin:0 auto}
+header{text-align:center;margin-bottom:36px}
+header h1{font-size:1.8rem;margin:0 0 8px}
+header p{color:#9fb0cc;margin:0;font-size:.97rem;line-height:1.5}
+.tag{display:inline-block;font-size:.72rem;color:#88e0c0;border:1px solid #2f6b56;border-radius:999px;padding:2px 10px;margin-bottom:12px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+@media(max-width:600px){.cards{grid-template-columns:repeat(2,1fr)}}
+.card{background:#131a2b;border:1px solid #243150;border-radius:12px;padding:14px 16px;text-align:center}
+.card .lbl{font-size:11px;color:#9fb0cc;margin-bottom:4px}
+.card .val{font-size:1.65rem;font-weight:500}
+.card .unit{font-size:10px;color:#6b7a96;margin-top:2px}
+.chart-box{background:#131a2b;border:1px solid #243150;border-radius:14px;padding:20px;margin-bottom:28px}
+.legend{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:10px;font-size:12px;color:#9fb0cc}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:20px;height:2px}
+.chart-wrap{position:relative;height:320px}
+.section{background:#131a2b;border:1px solid #243150;border-radius:14px;padding:20px 24px;margin-bottom:20px}
+.section h2{font-size:1rem;margin:0 0 14px;color:#cfe0ff}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{text-align:left;color:#9fb0cc;font-weight:500;padding:6px 10px 8px;border-bottom:1px solid #243150}
+td{padding:7px 10px;border-bottom:1px solid #1a243b}
+tr:last-child td{border-bottom:none}
+.note{color:#9fb0cc}
+.verdict{background:#0d1f3c;border:1px solid #2a4a80;border-radius:10px;padding:14px 18px;font-size:.9rem;line-height:1.6;color:#c8d8ef}
+.verdict b{color:#ffd166}
+footer{text-align:center;color:#6b7a96;font-size:.8rem;margin-top:40px}
+footer a{color:#6ea0ff;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="tag">RadonEye Plus2 &middot; AtomFast D11594</span>
+    <h1>Мониторинг радона — 22–27 июня 2026</h1>
+    <p>5 суток непрерывных измерений &nbsp;&middot;&nbsp; Скользящее среднее 12 точек (~90 мин) &nbsp;&middot;&nbsp; Корреляционный анализ</p>
+  </header>
+  <div class="cards">
+    <div class="card"><div class="lbl">Радон, среднее</div><div class="val" style="color:#1d9e75">345</div><div class="unit">Бк/м³</div></div>
+    <div class="card"><div class="lbl">Радон, максимум</div><div class="val" style="color:#1d9e75">466</div><div class="unit">Бк/м³</div></div>
+    <div class="card"><div class="lbl">МД, среднее</div><div class="val" style="color:#d85a30">6.4</div><div class="unit">мкР/ч</div></div>
+    <div class="card"><div class="lbl">МД, максимум</div><div class="val" style="color:#d85a30">6.7</div><div class="unit">мкР/ч</div></div>
+  </div>
+  <div class="chart-box">
+    <div class="legend">
+      <span><i style="background:#1d9e75"></i>Радон, скользящее среднее, Бк/м³</span>
+      <span><i style="background:#d85a30"></i>МД, скользящее среднее, мкР/ч</span>
+    </div>
+    <div class="chart-wrap"><canvas id="mc"></canvas></div>
+  </div>
+  <div class="section">
+    <h2>Результаты корреляционного анализа</h2>
+    <table>
+      <tr><th>Метод</th><th>Значение</th><th>Вывод</th></tr>
+      <tr><td>Pearson r</td><td>0.009</td><td class="note">Нет линейной корреляции</td></tr>
+      <tr><td>Spearman ρ</td><td>0.019</td><td class="note">Нет монотонной зависимости</td></tr>
+      <tr><td>p (N_eff=654)</td><td>0.83</td><td class="note">Не значимо при α=0.05</td></tr>
+      <tr><td>CCF пик</td><td>r=−0.068 при лаге −30 мин</td><td class="note">Ниже 95%-порога (±0.069)</td></tr>
+      <tr><td>Pre-whitened CCF</td><td>r=−0.071 при лаге −30 мин</td><td class="note">После ARIMA(2,0,1)</td></tr>
+      <tr><td>Тест Грейнджера</td><td>p &gt; 0.15 для лагов 10–60 мин</td><td class="note">ОА не предсказывает МД</td></tr>
+    </table>
+  </div>
+  <div class="section">
+    <h2>Интерпретация</h2>
+    <div class="verdict">
+      Корреляция между объёмной активностью радона (Бк/м³) и мощностью дозы (мкР/ч) <b>статистически не обнаружена</b>.<br><br>
+      Физическая причина: радон (Rn-222) — чистый альфа-излучатель. Альфа-частицы не проходят через корпус дозиметра,
+      а гамма-вклад дочерних нуклидов (Bi-214) при среднем ОА 345 Бк/м³ и коэффициенте равновесия F≈0.4
+      составляет ≈0.1 мкЗв/ч — в пределах шума фонового гамма-излучения здания.
+    </div>
+  </div>
+  <div class="section">
+    <h2>Методология</h2>
+    <table>
+      <tr><th>Параметр</th><th>Значение</th></tr>
+      <tr><td>Прибор радона</td><td>RadonEye Plus2 (D11492)</td></tr>
+      <tr><td>Прибор дозы</td><td>AtomFast D11594</td></tr>
+      <tr><td>Период</td><td>22–27 июня 2026, 136.5 ч</td></tr>
+      <tr><td>Ресэмплирование</td><td>Сетка 10 мин, линейная интерполяция</td></tr>
+      <tr><td>Скользящее среднее</td><td>Окно 12 точек ≈ 90 мин, центрированное</td></tr>
+      <tr><td>N_eff</td><td>654 из 819 (поправка на автокорреляцию)</td></tr>
+      <tr><td>CCF</td><td>±180 мин + pre-whitening ARIMA(2,0,1)</td></tr>
+    </table>
+  </div>
+  <footer><a href="https://vibeengineering-llc.github.io/demo-web-pages/">← Все демо-страницы</a> &nbsp;&middot;&nbsp; VibeEngineering LLC &nbsp;&middot;&nbsp; 2026</footer>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const rn=[{x:1782075960000,y:289},{x:1782082560000,y:312},{x:1782089220000,y:349},{x:1782095760000,y:357},{x:1782102240000,y:381},{x:1782108600000,y:389},{x:1782115260000,y:397},{x:1782121800000,y:366},{x:1782128400000,y:372},{x:1782135000000,y:324},{x:1782141660000,y:381},{x:1782148380000,y:370},{x:1782154980000,y:404},{x:1782161700000,y:419},{x:1782168420000,y:378},{x:1782175020000,y:350},{x:1782181740000,y:376},{x:1782188400000,y:335},{x:1782195120000,y:305},{x:1782201900000,y:285},{x:1782208380000,y:272},{x:1782215220000,y:259},{x:1782221880000,y:227},{x:1782228600000,y:188},{x:1782235140000,y:219},{x:1782241800000,y:217},{x:1782248340000,y:235},{x:1782254880000,y:283},{x:1782261600000,y:281},{x:1782275400000,y:273},{x:1782282060000,y:297},{x:1782288720000,y:302},{x:1782295200000,y:270},{x:1782301740000,y:298},{x:1782308340000,y:319},{x:1782314940000,y:350},{x:1782321660000,y:380},{x:1782328320000,y:372},{x:1782334800000,y:411},{x:1782341460000,y:450},{x:1782348120000,y:438},{x:1782354720000,y:449},{x:1782361380000,y:437},{x:1782368040000,y:456},{x:1782374700000,y:388},{x:1782381300000,y:400},{x:1782388020000,y:426},{x:1782394680000,y:412},{x:1782401280000,y:409},{x:1782407820000,y:420},{x:1782414540000,y:402},{x:1782421140000,y:410},{x:1782427560000,y:409},{x:1782434220000,y:401},{x:1782440820000,y:343},{x:1782447420000,y:353},{x:1782454020000,y:332},{x:1782460680000,y:304},{x:1782467340000,y:299},{x:1782473760000,y:277},{x:1782480420000,y:301},{x:1782487080000,y:313},{x:1782493560000,y:325},{x:1782500220000,y:314},{x:1782506880000,y:333},{x:1782513480000,y:356},{x:1782520080000,y:365},{x:1782526320000,y:347},{x:1782533040000,y:335},{x:1782539580000,y:337},{x:1782546300000,y:344},{x:1782552720000,y:319},{x:1782559320000,y:356},{x:1782565980000,y:353}];
+const af=[{x:1782075780000,y:6.465},{x:1782082380000,y:6.459},{x:1782089040000,y:6.330},{x:1782095580000,y:6.397},{x:1782102060000,y:6.456},{x:1782108420000,y:6.348},{x:1782115020000,y:6.383},{x:1782121620000,y:6.361},{x:1782128280000,y:6.319},{x:1782134880000,y:6.387},{x:1782141540000,y:6.446},{x:1782148200000,y:6.503},{x:1782154860000,y:6.436},{x:1782161460000,y:6.404},{x:1782168120000,y:6.414},{x:1782174780000,y:6.451},{x:1782181680000,y:6.383},{x:1782188400000,y:6.559},{x:1782195060000,y:6.422},{x:1782201660000,y:6.331},{x:1782208260000,y:6.515},{x:1782214980000,y:6.242},{x:1782221760000,y:6.531},{x:1782228420000,y:6.478},{x:1782235080000,y:6.368},{x:1782241680000,y:6.370},{x:1782248220000,y:6.376},{x:1782254820000,y:6.331},{x:1782261480000,y:6.508},{x:1782275940000,y:6.439},{x:1782282480000,y:6.313},{x:1782289140000,y:6.363},{x:1782295740000,y:6.473},{x:1782302220000,y:6.499},{x:1782308760000,y:6.318},{x:1782315420000,y:6.349},{x:1782322020000,y:6.662},{x:1782328620000,y:6.478},{x:1782335340000,y:6.424},{x:1782341880000,y:6.568},{x:1782348480000,y:6.548},{x:1782355140000,y:6.331},{x:1782361800000,y:6.384},{x:1782368460000,y:6.535},{x:1782375120000,y:6.438},{x:1782381720000,y:6.528},{x:1782388380000,y:6.413},{x:1782394920000,y:6.610},{x:1782401580000,y:6.607},{x:1782408180000,y:6.393},{x:1782414900000,y:6.434},{x:1782421440000,y:6.284},{x:1782428040000,y:6.431},{x:1782434640000,y:6.435},{x:1782441120000,y:6.633},{x:1782447780000,y:6.391},{x:1782454380000,y:6.539},{x:1782461040000,y:6.370},{x:1782467700000,y:6.413},{x:1782474120000,y:6.406},{x:1782480720000,y:6.486},{x:1782487380000,y:6.457},{x:1782493920000,y:6.288},{x:1782500520000,y:6.574},{x:1782507180000,y:6.410},{x:1782513840000,y:6.413},{x:1782520380000,y:6.292},{x:1782526800000,y:6.440},{x:1782533460000,y:6.386},{x:1782540000000,y:6.466},{x:1782546720000,y:6.533},{x:1782552720000,y:6.423},{x:1782559740000,y:6.355},{x:1782566400000,y:6.336}];
+const MIDS=[1782075600000,1782162000000,1782248400000,1782334800000,1782421200000,1782507600000];
+const DAYS=['22.06','23.06','24.06','25.06','26.06','27.06'];
+function fmt(ms){const d=new Date(ms);return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
+new Chart(document.getElementById('mc'),{
+  type:'line',
+  data:{datasets:[
+    {label:'Радон, Бк/м³',data:rn,borderColor:'#1d9e75',borderWidth:2,pointRadius:0,yAxisID:'y',tension:0,parsing:false},
+    {label:'МД, мкР/ч',data:af,borderColor:'#d85a30',borderWidth:2,pointRadius:0,yAxisID:'y1',tension:0,parsing:false}
+  ]},
+  options:{
+    responsive:true,maintainAspectRatio:false,animation:false,
+    interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false},tooltip:{
+      backgroundColor:'rgba(13,20,40,0.95)',titleColor:'#ccc',bodyColor:'#aaa',
+      borderColor:'rgba(255,255,255,0.1)',borderWidth:1,
+      callbacks:{title:i=>fmt(i[0].parsed.x),label:i=>i.datasetIndex===0?'Радон: '+Math.round(i.parsed.y)+' Бк/м³':'МД: '+i.parsed.y.toFixed(1)+' мкР/ч'}
+    }},
+    scales:{
+      x:{type:'linear',min:1782075600000,max:1782566400000,
+         ticks:{color:'#6b7a96',font:{size:11},maxRotation:0,callback:v=>{const i=MIDS.findIndex(m=>Math.abs(m-v)<43200000);return i>=0?DAYS[i]:null;}},
+         grid:{color:'rgba(255,255,255,0.05)'}},
+      y:{position:'left',min:130,title:{display:true,text:'Радон, Бк/м³',color:'#1d9e75',font:{size:10}},ticks:{color:'#1d9e75',font:{size:10}},grid:{color:'rgba(255,255,255,0.05)'}},
+      y1:{position:'right',min:5.9,max:7.1,title:{display:true,text:'МД, мкР/ч',color:'#d85a30',font:{size:10}},ticks:{color:'#d85a30',font:{size:10},callback:v=>v.toFixed(1)},grid:{display:false}}
+    }
+  }
+});
+</script>
+</body>
+</html>
