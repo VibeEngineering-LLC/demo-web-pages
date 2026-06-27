@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AtomFast retry_delay sweep — sanity 1400–1800 ms</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1419;
+    --panel: #151b23;
+    --border: #2a3340;
+    --text: #d4dbe2;
+    --muted: #8aa0b8;
+    --accent: #4ea8de;
+    --stable: #43c267;
+    --warn:   #e0b341;
+    --bad:    #e2624c;
+    --mono: 'Consolas', 'Cascadia Mono', 'SF Mono', monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 32px 24px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+  h1 { font-weight: 600; font-size: 24px; margin: 0 0 8px; color: #fff; }
+  h2 { font-weight: 600; font-size: 17px; margin: 32px 0 12px; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  h3 { font-weight: 600; font-size: 14px; margin: 16px 0 8px; color: var(--muted); }
+  .subtitle { color: var(--muted); margin: 0 0 16px; font-size: 13px; }
+  .toc { font-family: var(--mono); font-size: 12px; color: var(--muted); margin: 0 0 24px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 22px;
+    margin-bottom: 22px;
+  }
+  .meta-grid, .stat-grid {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 6px 18px;
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+  .meta-grid dt, .stat-grid dt { color: var(--muted); }
+  .meta-grid dd, .stat-grid dd { margin: 0; }
+  .stat-grid { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 13px;
+    margin-top: 4px;
+  }
+  th, td {
+    padding: 8px 10px;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+  }
+  th:first-child, td:first-child { text-align: left; }
+  th { color: var(--muted); font-weight: 600; background: #1a2230; }
+  tr:hover td { background: #1a232f; }
+  .excel-wrap { overflow-x: auto; }
+  table.excel th, table.excel td {
+    border: 1px solid var(--border);
+    text-align: center;
+    padding: 6px 8px;
+    font-size: 12.5px;
+  }
+  table.excel th:first-child, table.excel td:first-child { text-align: center; }
+  table.excel td.ts { font-size: 11.5px; text-align: left; white-space: nowrap; }
+  table.excel .th-sub th { color: var(--muted); font-weight: 400; font-size: 11px; background: #131922; }
+  .excel-label { font-family: var(--mono); font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  .verdict-stable { color: var(--stable); font-weight: 600; }
+  .verdict-warn   { color: var(--warn);   font-weight: 600; }
+  .verdict-bad    { color: var(--bad);    font-weight: 600; }
+  .note { color: var(--muted); font-size: 12px; margin-top: 12px; font-style: italic; }
+  code { font-family: var(--mono); background: #1a2230; padding: 1px 5px; border-radius: 3px; font-size: 0.92em; }
+  .chart-wrap { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 20px; margin-bottom: 22px; height: 380px; }
+  .rssi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px 28px; margin-bottom: 8px; }
+  .rssi-grid > div { background: #131922; border: 1px solid var(--border); border-radius: 4px; padding: 14px 18px; }
+  .footer { color: var(--muted); font-size: 12px; margin-top: 40px; text-align: center; border-top: 1px solid var(--border); padding-top: 18px; }
+  ul.compact { margin: 6px 0 0 0; padding-left: 20px; }
+  ul.compact li { margin-bottom: 4px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 600; font-family: var(--mono); margin-left: 8px; vertical-align: middle; }
+  .badge-stable { background: rgba(67, 194, 103, 0.15); color: var(--stable); }
+  .badge-warn   { background: rgba(224, 179, 65, 0.15); color: var(--warn); }
+  .badge-bad    { background: rgba(226, 98, 76, 0.15); color: var(--bad); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>AtomFast — retry_delay sweep (sanity)</h1>
+  <p class="subtitle">
+    Тестовая серия 1400–1800 мс × 4 итерации × 30 с мониторинга. Цель — валидация инфраструктуры
+    адаптивного sweep'а перед production-прогоном.
+  </p>
+  <p class="toc">retry_delay: <a href="#rd-1400">1400</a> &nbsp;·&nbsp; <a href="#rd-1500">1500</a> &nbsp;·&nbsp; <a href="#rd-1600">1600</a> &nbsp;·&nbsp; <a href="#rd-1700">1700</a> &nbsp;·&nbsp; <a href="#rd-1800">1800</a> &nbsp;·&nbsp; <a href="#rssi">сигнал</a> &nbsp;·&nbsp; <a href="#analysis">→ анализ</a></p>
+
+  <div class="panel">
+    <h3 style="margin-top: 0;">Параметры серии</h3>
+    <dl class="meta-grid">
+      <dt>retry_delay диапазон</dt><dd>1400, 1500, 1600, 1700, 1800 мс (шаг 100)</dd>
+      <dt>итераций на точку</dt><dd>4</dd>
+      <dt>окно мониторинга</dt><dd>30 секунд / итерация (sanity; для prod — случайно 10–20 мин)</dd>
+      <dt>BLE-пакет дозиметра</dt><dd>28 байт каждые ~2.4 с (≈25 rec/min номинал)</dd>
+      <dt>дозиметр</dt><dd>AtomFast</dd>
+      <dt>app-сборка</dt><dd>com.youratom.scid.atftest (test-flavor с broadcast SET_RETRY_DELAY)</dd>
+      <dt>метод измерения</dt><dd>PC-side adb-наблюдение роста arch_* файлов в /data/data/&lt;app&gt;/files</dd>
+      <dt>дата прогона</dt><dd>2026-06-07 (UTC)</dd>
+    </dl>
+  </div>
+
+  <h2>Stability rule</h2>
+  <div class="panel">
+    <p style="margin-top:0;">Точка retry_delay помечается <span class="badge badge-warn">UNSTABLE</span> если выполняется хотя бы одно из условий:</p>
+    <ul class="compact">
+      <li><b>(a)</b> в ≥ 2 итерациях зафиксирован <code>sudden_disconnect_count ≥ 1</code></li>
+      <li><b>(b)</b> <code>median(records_per_minute) &lt; 17.0</code> по всем итерациям точки</li>
+    </ul>
+    <p class="note">
+      Порог 17 rec/min ≈ 70 % номинала (25 rec/min). Срабатывает на систематически плохой канал,
+      а не на разовый затяжной коннект. Бейдж «STABLE *» — точка прошла правило, но имеет
+      отдельную шумную итерацию (одна с rec/min &lt; 17, ИЛИ одна с sudden_disconnect, ИЛИ одна dirty-stop).
+    </p>
+  </div>
+
+  
+  <h2 id="rssi">Сигнал BLE-канала (RSSI) — отдельный baseline</h2>
+  <div class="panel">
+    <div class="rssi-grid">
+      <div>
+        <h3 style="margin-top:0;">probe pre (60 c)</h3>
+        <dl class="stat-grid" style="border-top:none;padding-top:0;margin-top:0;">
+          <dt>n samples (steady)</dt><dd>31</dd>
+          <dt>avg, дБм</dt><dd><b>-84.13</b></dd>
+          <dt>min, дБм</dt><dd>-87</dd>
+          <dt>max, дБм</dt><dd>-82</dd>
+        </dl>
+      </div>
+      <div>
+        <h3 style="margin-top:0;">probe post (60 c)</h3>
+        <dl class="stat-grid" style="border-top:none;padding-top:0;margin-top:0;">
+          <dt>n samples (steady)</dt><dd>31</dd>
+          <dt>avg, дБм</dt><dd><b>-84.68</b></dd>
+          <dt>min, дБм</dt><dd>-87</dd>
+          <dt>max, дБм</dt><dd>-83</dd>
+        </dl>
+      </div>
+      <div>
+        <h3 style="margin-top:0;">Δ pre → post</h3>
+        <dl class="stat-grid" style="border-top:none;padding-top:0;margin-top:0;">
+          <dt>средний сдвиг</dt><dd><b>−0.55 дБ</b></dd>
+          <dt>пауза между окнами</dt><dd>30 с</dd>
+          <dt>retry_delay в probe</dt><dd>1700 мс</dd>
+          <dt>интерпретация</dt><dd>в пределах шума (&lt; 1 дБ)</dd>
+        </dl>
+      </div>
+    </div>
+    <p class="note">
+      <b>Метод</b>: app пропатчен — каждое получение BLE-пакета пишет <code>rssi=&lt;int&gt;</code> в logcat
+      (тег <code>AtomRssi</code>). PC-side <code>adb logcat -s AtomRssi:I</code> ловит окно 60 с во время
+      обычного подключения. Сэмпл <code>−120 дБм</code> в начале каждого окна — sentinel Nordic-BLE-библиотеки
+      до первого реального чтения <code>readRemoteRssi()</code>, отброшен из steady-state статистики
+      (raw n = 32, steady n = 31).
+    </p>
+    <p class="note">
+      <b>Дисклеймер</b>: замер выполнен <b>отдельно</b> от sanity-серии (на момент серии RSSI-логирование
+      ещё не было добавлено). Это baseline уровня сигнала на текущей геометрии «телефон ↔ дозиметр».
+      Для production-прогона pre/post RSSI-probe станет частью <code>run_sweep_adaptive.sh</code> —
+      окружит серию двумя окнами и зафиксирует drift сигнала, если он есть.
+    </p>
+    <p class="note">
+      Уровень <b>~−84 дБм</b> = средне-слабый стабильный канал. Рабочий диапазон BLE: −50 («вплотную») .. −90 («граница потерь»).
+      Drift −0.55 дБ за 90 с (60 с + 30 с пауза + 60 с) = канал не деградирует на короткой шкале.
+    </p>
+  </div>
+
+
+  
+    <h2 id="rd-1400">retry_delay = 1400 ms
+      <span class="badge badge-stable">STABLE</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 1400</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">timestamp начала</th>
+          <th>Время итерации</th>
+          <th>Таймаут до следующей</th>
+          <th>Число плановых<br>подключений</th>
+          <th>Число внезапных<br>отключений</th>
+          <th>Число плановых<br>отключений</th>
+          <th>пройдено итераций<br>из общего числа</th>
+          <th>общий процент<br>выполнения</th>
+        </tr>
+        <tr class="th-sub">
+          <th>с</th>
+          <th>с</th>
+          <th></th><th></th><th></th><th>k / TOTAL</th><th>%</th>
+        </tr>
+      </thead>
+    
+          <tbody>
+            <tr><td>1</td><td class="ts">2026-06-06T22:10:17.755Z</td><td>36.2</td><td>6</td><td>1</td><td>0</td><td>1</td><td>1/4</td><td>25.00</td></tr>
+<tr><td>2</td><td class="ts">2026-06-06T22:11:02.736Z</td><td>41.1</td><td>7</td><td>1</td><td>0</td><td>1</td><td>2/4</td><td>50.00</td></tr>
+<tr><td>3</td><td class="ts">2026-06-06T22:11:53.674Z</td><td>39.9</td><td>7</td><td>1</td><td>0</td><td>1</td><td>3/4</td><td>75.00</td></tr>
+<tr><td>4</td><td class="ts">2026-06-06T22:12:43.359Z</td><td>36.5</td><td></td><td>1</td><td>0</td><td>1</td><td>4/4</td><td>100.00</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>4470 / 3754 / 8655</dd>
+        <dt>rec/min med / min</dt><dd>24.37 / 21.87</dd>
+        <dt>iter с sudden_disconnect ≥ 1</dt><dd>0 / 4</dd>
+        <dt>dirty planned-disconnect</dt><dd>0 / 4</dd>
+      </dl>
+      
+    </div>
+    
+    <h2 id="rd-1500">retry_delay = 1500 ms
+      <span class="badge badge-warn">STABLE *</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 1500</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">timestamp начала</th>
+          <th>Время итерации</th>
+          <th>Таймаут до следующей</th>
+          <th>Число плановых<br>подключений</th>
+          <th>Число внезапных<br>отключений</th>
+          <th>Число плановых<br>отключений</th>
+          <th>пройдено итераций<br>из общего числа</th>
+          <th>общий процент<br>выполнения</th>
+        </tr>
+        <tr class="th-sub">
+          <th>с</th>
+          <th>с</th>
+          <th></th><th></th><th></th><th>k / TOTAL</th><th>%</th>
+        </tr>
+      </thead>
+    
+          <tbody>
+            <tr><td>1</td><td class="ts">2026-06-06T22:13:26.383Z</td><td>37.5</td><td>9</td><td>1</td><td>0</td><td>1</td><td>1/4</td><td>25.00</td></tr>
+<tr><td>2</td><td class="ts">2026-06-06T22:14:15.726Z</td><td>40.1</td><td>10</td><td>2</td><td>1</td><td>1</td><td>2/4</td><td>50.00</td></tr>
+<tr><td>3</td><td class="ts">2026-06-06T22:15:08.601Z</td><td>47.2</td><td>8</td><td>1</td><td>0</td><td>1</td><td>3/4</td><td>75.00</td></tr>
+<tr><td>4</td><td class="ts">2026-06-06T22:16:06.673Z</td><td>45.6</td><td></td><td>1</td><td>0</td><td>1</td><td>4/4</td><td>100.00</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>8029 / 5069 / 12382</dd>
+        <dt>rec/min med / min</dt><dd>20.68 / 14.95</dd>
+        <dt>iter с sudden_disconnect ≥ 1</dt><dd>1 / 4</dd>
+        <dt>dirty planned-disconnect</dt><dd>1 / 4</dd>
+      </dl>
+      <p class="note">точка прошла, но есть отдельная шумная итерация (rec/min &lt; 17 ИЛИ sudden ИЛИ dirty stop)</p>
+    </div>
+    
+    <h2 id="rd-1600">retry_delay = 1600 ms
+      <span class="badge badge-stable">STABLE</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 1600</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">timestamp начала</th>
+          <th>Время итерации</th>
+          <th>Таймаут до следующей</th>
+          <th>Число плановых<br>подключений</th>
+          <th>Число внезапных<br>отключений</th>
+          <th>Число плановых<br>отключений</th>
+          <th>пройдено итераций<br>из общего числа</th>
+          <th>общий процент<br>выполнения</th>
+        </tr>
+        <tr class="th-sub">
+          <th>с</th>
+          <th>с</th>
+          <th></th><th></th><th></th><th>k / TOTAL</th><th>%</th>
+        </tr>
+      </thead>
+    
+          <tbody>
+            <tr><td>1</td><td class="ts">2026-06-06T22:16:58.851Z</td><td>40.0</td><td>10</td><td>1</td><td>0</td><td>1</td><td>1/4</td><td>25.00</td></tr>
+<tr><td>2</td><td class="ts">2026-06-06T22:17:51.657Z</td><td>41.3</td><td>6</td><td>1</td><td>0</td><td>1</td><td>2/4</td><td>50.00</td></tr>
+<tr><td>3</td><td class="ts">2026-06-06T22:18:41.784Z</td><td>41.1</td><td>8</td><td>1</td><td>0</td><td>1</td><td>3/4</td><td>75.00</td></tr>
+<tr><td>4</td><td class="ts">2026-06-06T22:19:33.709Z</td><td>38.5</td><td></td><td>1</td><td>0</td><td>1</td><td>4/4</td><td>100.00</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>5668 / 3909 / 8689</dd>
+        <dt>rec/min med / min</dt><dd>22.92 / 21.79</dd>
+        <dt>iter с sudden_disconnect ≥ 1</dt><dd>0 / 4</dd>
+        <dt>dirty planned-disconnect</dt><dd>0 / 4</dd>
+      </dl>
+      
+    </div>
+    
+    <h2 id="rd-1700">retry_delay = 1700 ms
+      <span class="badge badge-stable">STABLE</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 1700</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">timestamp начала</th>
+          <th>Время итерации</th>
+          <th>Таймаут до следующей</th>
+          <th>Число плановых<br>подключений</th>
+          <th>Число внезапных<br>отключений</th>
+          <th>Число плановых<br>отключений</th>
+          <th>пройдено итераций<br>из общего числа</th>
+          <th>общий процент<br>выполнения</th>
+        </tr>
+        <tr class="th-sub">
+          <th>с</th>
+          <th>с</th>
+          <th></th><th></th><th></th><th>k / TOTAL</th><th>%</th>
+        </tr>
+      </thead>
+    
+          <tbody>
+            <tr><td>1</td><td class="ts">2026-06-06T22:20:18.599Z</td><td>37.4</td><td>8</td><td>1</td><td>0</td><td>1</td><td>1/4</td><td>25.00</td></tr>
+<tr><td>2</td><td class="ts">2026-06-06T22:21:06.681Z</td><td>36.1</td><td>9</td><td>1</td><td>0</td><td>1</td><td>2/4</td><td>50.00</td></tr>
+<tr><td>3</td><td class="ts">2026-06-06T22:21:54.586Z</td><td>36.3</td><td>8</td><td>1</td><td>0</td><td>1</td><td>3/4</td><td>75.00</td></tr>
+<tr><td>4</td><td class="ts">2026-06-06T22:22:41.742Z</td><td>41.1</td><td></td><td>1</td><td>0</td><td>1</td><td>4/4</td><td>100.00</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>4358 / 3720 / 6294</dd>
+        <dt>rec/min med / min</dt><dd>24.04 / 22.48</dd>
+        <dt>iter с sudden_disconnect ≥ 1</dt><dd>0 / 4</dd>
+        <dt>dirty planned-disconnect</dt><dd>0 / 4</dd>
+      </dl>
+      
+    </div>
+    
+    <h2 id="rd-1800">retry_delay = 1800 ms
+      <span class="badge badge-stable">STABLE</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 1800</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">timestamp начала</th>
+          <th>Время итерации</th>
+          <th>Таймаут до следующей</th>
+          <th>Число плановых<br>подключений</th>
+          <th>Число внезапных<br>отключений</th>
+          <th>Число плановых<br>отключений</th>
+          <th>пройдено итераций<br>из общего числа</th>
+          <th>общий процент<br>выполнения</th>
+        </tr>
+        <tr class="th-sub">
+          <th>с</th>
+          <th>с</th>
+          <th></th><th></th><th></th><th>k / TOTAL</th><th>%</th>
+        </tr>
+      </thead>
+    
+          <tbody>
+            <tr><td>1</td><td class="ts">2026-06-06T22:23:29.486Z</td><td>37.6</td><td>8</td><td>1</td><td>0</td><td>1</td><td>1/4</td><td>25.00</td></tr>
+<tr><td>2</td><td class="ts">2026-06-06T22:24:17.830Z</td><td>48.1</td><td>7</td><td>1</td><td>0</td><td>1</td><td>2/4</td><td>50.00</td></tr>
+<tr><td>3</td><td class="ts">2026-06-06T22:25:15.699Z</td><td>39.9</td><td>10</td><td>1</td><td>0</td><td>1</td><td>3/4</td><td>75.00</td></tr>
+<tr><td>4</td><td class="ts">2026-06-06T22:26:08.353Z</td><td>37.6</td><td></td><td>1</td><td>0</td><td>1</td><td>4/4</td><td>100.00</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>5028 / 5012 / 13472</dd>
+        <dt>rec/min med / min</dt><dd>23.94 / 19.96</dd>
+        <dt>iter с sudden_disconnect ≥ 1</dt><dd>0 / 4</dd>
+        <dt>dirty planned-disconnect</dt><dd>0 / 4</dd>
+      </dl>
+      
+    </div>
+    
+
+  <h2 id="analysis">Анализ серии</h2>
+
+  <h3>Сводная таблица</h3>
+  <div class="panel">
+    <table>
+      <thead>
+        <tr>
+          <th>retry_delay, ms</th>
+          <th>latency med, ms</th>
+          <th>latency min</th>
+          <th>latency max</th>
+          <th>rec/min med</th>
+          <th>rec/min min</th>
+          <th>sudden iters</th>
+          <th>dirty stops</th>
+          <th>verdict</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1400</td><td>4470</td><td>3754</td><td>8655</td><td>24.37</td><td>21.87</td><td>0 / 4</td><td>0 / 4</td><td class="verdict-stable">STABLE</td></tr>
+<tr><td>1500</td><td>8029</td><td>5069</td><td>12382</td><td>20.68</td><td>14.95</td><td>1 / 4</td><td>1 / 4</td><td class="verdict-warn">STABLE *</td></tr>
+<tr><td>1600</td><td>5668</td><td>3909</td><td>8689</td><td>22.92</td><td>21.79</td><td>0 / 4</td><td>0 / 4</td><td class="verdict-stable">STABLE</td></tr>
+<tr><td>1700</td><td>4358</td><td>3720</td><td>6294</td><td>24.04</td><td>22.48</td><td>0 / 4</td><td>0 / 4</td><td class="verdict-stable">STABLE</td></tr>
+<tr><td>1800</td><td>5028</td><td>5012</td><td>13472</td><td>23.94</td><td>19.96</td><td>0 / 4</td><td>0 / 4</td><td class="verdict-stable">STABLE</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>График: rec/min от retry_delay</h3>
+  <div class="chart-wrap">
+    <canvas id="rpmChart"></canvas>
+  </div>
+  <p class="note" style="margin-top:-12px;">
+    Точки — каждая отдельная итерация (4 на retry_delay). Линия — медиана по 4 итерациям.
+    Пунктирная горизонталь — порог UNSTABLE 17 rec/min. Серая линия 25 — номинал BLE-канала дозиметра.
+  </p>
+
+  <h3>График: latency подключения от retry_delay</h3>
+  <div class="chart-wrap">
+    <canvas id="latChart"></canvas>
+  </div>
+  <p class="note" style="margin-top:-12px;">
+    Время от <code>am start</code> launcher'а до первого BLE-пакета, по итерациям. Видны выбросы
+    на rd = 1500 (iter#3 = 12.4 с) и rd = 1800 (iter#2 = 13.5 с) — это нормальная BLE-вариация
+    на первом подключении, не failure.
+  </p>
+
+  <h3>Что подтвердилось инфраструктурно</h3>
+  <div class="panel">
+    <ul class="compact">
+      <li><code>smoke_sweep_v6.sh</code> корректно крутит 5 разных retry_delay'ев подряд без накопления state'а между точками.</li>
+      <li>Per-rd persistent save в <code>logs/sweep/rd_&lt;N&gt;/metrics_*.csv</code> работает — данные пишутся сразу, краш в середине не убил бы предыдущие точки.</li>
+      <li>Preflight broadcast <code>SET_RETRY_DELAY</code> → logcat verify (<code>AtomRetry</code> tag) прошёл на всех 5 точках.</li>
+      <li>Все 5 точек по правилу <b>STABLE</b> — adaptive wrapper в test-mode на этом диапазоне прошёл бы все 5 без early-stop.</li>
+      <li><b>rd = 1700</b> — самая чистая точка серии (latency med 4.36 с, rec/min med 24.04, 0 sudden, 0 dirty). На N = 4 это не доказательство оптимума — нужна полная статистика на N = 10/точка с bootstrap-CI.</li>
+    </ul>
+  </div>
+
+  <h3>Дисклеймер</h3>
+  <div class="panel">
+    <p style="margin-top:0;">
+      Это <b>sanity-прогон инфраструктуры</b>, не production-исследование. N = 4 итерации на точку
+      слишком мало для статистических выводов о «лучшем» retry_delay. Цель серии — подтвердить, что
+      обвязка sweep'а (`smoke_sweep_v6.sh`, per-rd save, preflight broadcast, stability rule)
+      работает на 5 разных значениях retry_delay без накопления ошибок.
+    </p>
+    <p>
+      Для production-прогона запланирован <code>run_sweep_adaptive.sh prod</code>: N = 10 итераций на
+      точку × 10–20 минут мониторинга, старт с CENTER = 1600 мс, ход вниз и вверх с early-stop по
+      первой точке, нарушившей stability rule. Результаты пойдут в
+      <code>retry_delay_optimizer.py</code> (Tukey-fence + bootstrap-CI + Mann-Whitney U + Holm correction).
+    </p>
+  </div>
+
+  <div class="footer">
+    AtomFast retry_delay sweep — sanity test. Сгенерировано 2026-06-07.
+    Метрика: PC-side adb-наблюдение BLE-канала телефон ↔ дозиметр через рост <code>arch_*</code> файлов app-sandbox'а.
+  </div>
+
+</div>
+
+<script>
+const RD = [1400, 1500, 1600, 1700, 1800];
+const RPM = {"1400": [24.87, 21.87, 24.06, 24.68], "1500": [23.98, 14.95, 20.32, 21.03], "1600": [22.49, 21.79, 23.35, 24.94], "1700": [22.48, 24.92, 24.75, 23.33], "1800": [23.95, 19.96, 24.08, 23.92]};
+const LAT = {"1400": [3754, 8655, 5065, 3876], "1500": [5078, 5069, 12382, 10980], "1600": [5099, 8689, 6237, 3909], "1700": [4981, 3720, 3735, 6294], "1800": [5034, 13472, 5012, 5021]};
+
+function median(arr) {
+  const s = [...arr].sort((a, b) => a - b);
+  const m = Math.floor(s.length / 2);
+  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+}
+
+function scatterPoints(dict) {
+  const out = [];
+  for (const rd of RD) for (const v of dict[String(rd)]) out.push({ x: rd, y: v });
+  return out;
+}
+function medianLine(dict) {
+  return RD.map(rd => ({ x: rd, y: median(dict[String(rd)]) }));
+}
+
+const baseGrid = { color: 'rgba(138, 160, 184, 0.12)' };
+const baseTick = { color: '#8aa0b8', font: { family: 'Consolas, monospace', size: 11 } };
+
+new Chart(document.getElementById('rpmChart'), {
+  type: 'scatter',
+  data: {
+    datasets: [
+      {
+        label: 'iter (rec/min)',
+        data: scatterPoints(RPM),
+        backgroundColor: 'rgba(78, 168, 222, 0.55)',
+        borderColor: '#4ea8de',
+        pointRadius: 5, pointHoverRadius: 7,
+      },
+      {
+        type: 'line',
+        label: 'median по точке',
+        data: medianLine(RPM),
+        borderColor: '#43c267', backgroundColor: '#43c267',
+        pointRadius: 4, pointBackgroundColor: '#43c267',
+        borderWidth: 2, tension: 0.2, fill: false,
+      },
+      {
+        type: 'line', label: 'UNSTABLE threshold (17)',
+        data: RD.map(rd => ({ x: rd, y: 17 })),
+        borderColor: '#e2624c', borderDash: [6, 4],
+        borderWidth: 1.5, pointRadius: 0, fill: false,
+      },
+      {
+        type: 'line', label: 'номинал BLE (25)',
+        data: RD.map(rd => ({ x: rd, y: 25 })),
+        borderColor: 'rgba(138, 160, 184, 0.4)', borderDash: [3, 3],
+        borderWidth: 1, pointRadius: 0, fill: false,
+      },
+    ],
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { labels: { color: '#d4dbe2', font: { size: 12 } } },
+      tooltip: { callbacks: { label: ctx => `rd=${ctx.parsed.x} ms, rec/min=${ctx.parsed.y.toFixed(2)}` } }
+    },
+    scales: {
+      x: { type: 'linear', title: { display: true, text: 'retry_delay, ms', color: '#d4dbe2' },
+            min: 1350, max: 1850, ticks: { ...baseTick, stepSize: 100 }, grid: baseGrid },
+      y: { title: { display: true, text: 'records per minute', color: '#d4dbe2' },
+            min: 12, max: 27, ticks: baseTick, grid: baseGrid },
+    },
+  },
+});
+
+new Chart(document.getElementById('latChart'), {
+  type: 'scatter',
+  data: {
+    datasets: [
+      {
+        label: 'iter (connect latency)',
+        data: scatterPoints(LAT),
+        backgroundColor: 'rgba(224, 179, 65, 0.55)',
+        borderColor: '#e0b341',
+        pointRadius: 5, pointHoverRadius: 7,
+      },
+      {
+        type: 'line', label: 'median по точке',
+        data: medianLine(LAT),
+        borderColor: '#4ea8de', backgroundColor: '#4ea8de',
+        pointRadius: 4, pointBackgroundColor: '#4ea8de',
+        borderWidth: 2, tension: 0.2, fill: false,
+      },
+    ],
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { labels: { color: '#d4dbe2', font: { size: 12 } } },
+      tooltip: { callbacks: { label: ctx => `rd=${ctx.parsed.x} ms, latency=${ctx.parsed.y.toLocaleString()} ms` } }
+    },
+    scales: {
+      x: { type: 'linear', title: { display: true, text: 'retry_delay, ms', color: '#d4dbe2' },
+            min: 1350, max: 1850, ticks: { ...baseTick, stepSize: 100 }, grid: baseGrid },
+      y: { title: { display: true, text: 'connect latency, ms', color: '#d4dbe2' },
+            min: 0, max: 15000, ticks: baseTick, grid: baseGrid },
+    },
+  },
+});
+</script>
+</body>
+</html>

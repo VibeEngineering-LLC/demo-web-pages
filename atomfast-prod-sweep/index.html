@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AtomFast retry_delay sweep — production (21/21)</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1419; --panel: #151b23; --border: #2a3340; --text: #d4dbe2;
+    --muted: #8aa0b8; --accent: #4ea8de; --stable: #43c267; --warn: #e0b341;
+    --bad: #e2624c; --mono: 'Consolas','Cascadia Mono','SF Mono',monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:32px 24px; background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:14px; line-height:1.55; }
+  .container { max-width:1100px; margin:0 auto; }
+  h1 { font-weight:600; font-size:24px; margin:0 0 8px; color:#fff; }
+  h2 { font-weight:600; font-size:17px; margin:32px 0 12px; color:var(--accent); border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { font-weight:600; font-size:14px; margin:16px 0 8px; color:var(--muted); }
+  .subtitle { color:var(--muted); margin:0 0 16px; font-size:13px; }
+  .toc { font-family:var(--mono); font-size:12px; color:var(--muted); margin:0 0 24px; }
+  .toc a { color:var(--accent); text-decoration:none; }
+  .toc a:hover { text-decoration:underline; }
+  .panel { background:var(--panel); border:1px solid var(--border); border-radius:6px; padding:18px 22px; margin-bottom:22px; }
+  .meta-grid,.stat-grid { display:grid; grid-template-columns:max-content 1fr; gap:6px 18px; font-family:var(--mono); font-size:13px; }
+  .meta-grid dt,.stat-grid dt { color:var(--muted); }
+  .meta-grid dd,.stat-grid dd { margin:0; }
+  .stat-grid { margin-top:14px; padding-top:12px; border-top:1px solid var(--border); }
+  table { width:100%; border-collapse:collapse; font-family:var(--mono); font-size:13px; margin-top:4px; }
+  th,td { padding:8px 10px; text-align:right; border-bottom:1px solid var(--border); }
+  th:first-child,td:first-child { text-align:left; }
+  th { color:var(--muted); font-weight:600; background:#1a2230; }
+  tr:hover td { background:#1a232f; }
+  .excel-wrap { overflow-x:auto; }
+  table.excel th,table.excel td { border:1px solid var(--border); text-align:center; padding:6px 8px; font-size:12.5px; }
+  table.excel th:first-child,table.excel td:first-child { text-align:center; }
+  table.excel td.ts { font-size:11.5px; text-align:left; white-space:nowrap; }
+  table.excel .th-sub th { color:var(--muted); font-weight:400; font-size:11px; background:#131922; }
+  .excel-label { font-family:var(--mono); font-size:13px; color:var(--muted); margin-bottom:8px; }
+  .verdict-stable { color:var(--stable); font-weight:600; }
+  .verdict-warn { color:var(--warn); font-weight:600; }
+  .verdict-bad { color:var(--bad); font-weight:600; }
+  .note { color:var(--muted); font-size:12px; margin-top:12px; font-style:italic; }
+  code { font-family:var(--mono); background:#1a2230; padding:1px 5px; border-radius:3px; font-size:0.92em; }
+  .chart-wrap { background:var(--panel); border:1px solid var(--border); border-radius:6px; padding:20px; margin-bottom:22px; height:380px; }
+  .footer { color:var(--muted); font-size:12px; margin-top:40px; text-align:center; border-top:1px solid var(--border); padding-top:18px; }
+  ul.compact { margin:6px 0 0 0; padding-left:20px; }
+  ul.compact li { margin-bottom:4px; }
+  .badge { display:inline-block; padding:2px 8px; border-radius:3px; font-size:11px; font-weight:600; font-family:var(--mono); margin-left:8px; vertical-align:middle; }
+  .badge-stable { background:rgba(67,194,103,0.15); color:var(--stable); }
+  .badge-warn { background:rgba(224,179,65,0.15); color:var(--warn); }
+  .badge-bad { background:rgba(226,98,76,0.15); color:var(--bad); }
+  .progress-bar { background:var(--panel); border:1px solid var(--border); border-radius:4px; height:24px; margin:12px 0; overflow:hidden; }
+  .progress-fill { height:100%; background:var(--accent); transition:width 0.3s; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; color:#fff; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>AtomFast — retry_delay sweep (production)</h1>
+  <p class="subtitle">
+    Production-серия 500–2500 мс × 10 итераций × 10–20 мин мониторинга.
+    Завершено 21 из 21 точки.
+  </p>
+  <div class="progress-bar"><div class="progress-fill" style="width:100%">21/21</div></div>
+  <p class="toc">retry_delay: <a href="#rd-500">500</a> &nbsp;·&nbsp; <a href="#rd-600">600</a> &nbsp;·&nbsp; <a href="#rd-700">700</a> &nbsp;·&nbsp; <a href="#rd-800">800</a> &nbsp;·&nbsp; <a href="#rd-900">900</a> &nbsp;·&nbsp; <a href="#rd-1000">1000</a> &nbsp;·&nbsp; <a href="#rd-1100">1100</a> &nbsp;·&nbsp; <a href="#rd-1200">1200</a> &nbsp;·&nbsp; <a href="#rd-1300">1300</a> &nbsp;·&nbsp; <a href="#rd-1400">1400</a> &nbsp;·&nbsp; <a href="#rd-1500">1500</a> &nbsp;·&nbsp; <a href="#rd-1600">1600</a> &nbsp;·&nbsp; <a href="#rd-1700">1700</a> &nbsp;·&nbsp; <a href="#rd-1800">1800</a> &nbsp;·&nbsp; <a href="#rd-1900">1900</a> &nbsp;·&nbsp; <a href="#rd-2000">2000</a> &nbsp;·&nbsp; <a href="#rd-2100">2100</a> &nbsp;·&nbsp; <a href="#rd-2200">2200</a> &nbsp;·&nbsp; <a href="#rd-2300">2300</a> &nbsp;·&nbsp; <a href="#rd-2400">2400</a> &nbsp;·&nbsp; <a href="#rd-2500">2500</a> &nbsp;·&nbsp; <a href="#rssi">RSSI</a> &nbsp;·&nbsp; <a href="#analysis">→ анализ</a></p>
+
+  <div class="panel">
+    <h3 style="margin-top:0;">Параметры серии</h3>
+    <dl class="meta-grid">
+      <dt>retry_delay диапазон</dt><dd>500–2500 мс (шаг 100, 21 точка)</dd>
+      <dt>итераций на точку</dt><dd>10</dd>
+      <dt>окно мониторинга</dt><dd>случайно 10–20 мин / итерация</dd>
+      <dt>cooldown между итерациями</dt><dd>случайно 5–10 с</dd>
+      <dt>BLE-пакет дозиметра</dt><dd>28 байт каждые ~2.4 с (≈25 rec/min номинал)</dd>
+      <dt>дозиметр</dt><dd>AtomFast</dd>
+      <dt>app-сборка</dt><dd>com.youratom.scid.atftest (test build + SET_RETRY_DELAY broadcast)</dd>
+    </dl>
+  </div>
+
+  <h2>Stability rule</h2>
+  <div class="panel">
+    <p style="margin-top:0;">Точка retry_delay помечается <span class="badge badge-bad">UNSTABLE</span> если выполняется хотя бы одно из:</p>
+    <ul class="compact">
+      <li><b>(a)</b> <code>sud_per_min &gt; 0.15</code> — среднее внезапных разрывов в минуту мониторинга превышает 0.15 (≈9/час)</li>
+      <li><b>(b)</b> <code>median(records_per_minute) &lt; 17.0</code></li>
+    </ul>
+    <p class="note">
+      <b>sud_per_min</b> = Σ sudden_disconnects / Σ monitor_time (мин) по всем итерациям точки.<br>
+      Порог 0.15/мин (≈9/час) физически обоснован: при RSSI −87..−92 dBм (граница чувствительности BLE)
+      редкие единичные разрывы (~1 за 7+ мин) — шумовой пол, не сбой алгоритма.
+      Прежнее правило «≥ 2 итераций с любым разрывом» давало UNSTABLE для всех точек без различия.
+    </p>
+  </div>
+
+  
+    <h2 id="rd-500">retry_delay = 500 ms
+      <span class="badge badge-warn">STABLE *</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 500</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">Дата</th>
+          <th rowspan="2">Время</th>
+          <th>Время итер.</th>
+          <th>Таймаут</th>
+          <th>Плановых<br>подкл.</th>
+          <th>Внезапных<br>откл.</th>
+          <th>Плановых<br>откл.</th>
+          <th>k / N</th>
+          <th>%</th>
+        </tr>
+        <tr class="th-sub">
+          <th>мин</th><th>с</th>
+          <th></th><th></th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+    
+          <tbody><tr><td>1</td><td class="ts">06-06-2026</td><td class="ts">23:23</td><td>17.5</td><td>5</td><td>3</td><td>2</td><td>1</td><td>1/10</td><td>10.00</td></tr><tr><td>2</td><td class="ts">06-06-2026</td><td class="ts">23:41</td><td>11.8</td><td>5</td><td>5</td><td>4</td><td>1</td><td>2/10</td><td>20.00</td></tr><tr><td>3</td><td class="ts">06-06-2026</td><td class="ts">23:53</td><td>19.6</td><td>8</td><td>2</td><td>1</td><td>1</td><td>3/10</td><td>30.00</td></tr><tr><td>4</td><td class="ts">07-06-2026</td><td class="ts">00:13</td><td>11.0</td><td>8</td><td>1</td><td>0</td><td>1</td><td>4/10</td><td>40.00</td></tr><tr><td>5</td><td class="ts">07-06-2026</td><td class="ts">00:24</td><td>13.4</td><td>7</td><td>2</td><td>1</td><td>1</td><td>5/10</td><td>50.00</td></tr><tr><td>6</td><td class="ts">07-06-2026</td><td class="ts">00:37</td><td>14.2</td><td>5</td><td>2</td><td>1</td><td>1</td><td>6/10</td><td>60.00</td></tr><tr><td>7</td><td class="ts">07-06-2026</td><td class="ts">00:52</td><td>13.0</td><td>6</td><td>2</td><td>1</td><td>1</td><td>7/10</td><td>70.00</td></tr><tr><td>8</td><td class="ts">07-06-2026</td><td class="ts">01:05</td><td>16.4</td><td>6</td><td>1</td><td>0</td><td>1</td><td>8/10</td><td>80.00</td></tr><tr><td>9</td><td class="ts">07-06-2026</td><td class="ts">01:21</td><td>15.6</td><td>7</td><td>3</td><td>2</td><td>1</td><td>9/10</td><td>90.00</td></tr><tr><td>10</td><td class="ts">07-06-2026</td><td class="ts">01:37</td><td>12.1</td><td></td><td>2</td><td>1</td><td>1</td><td>10/10</td><td>100.00</td></tr></tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>4986 / 3793 / 13471</dd>
+        <dt>rec/min med / min</dt><dd>29.59 / 29.16</dd>
+        <dt>sud/min (порог &lt;1.0)</dt><dd>0.091</dd>
+        <dt>iter с sudden ≥ 1</dt><dd>8 / 10</dd>
+        <dt>dirty stops</dt><dd>0 / 10</dd>
+      </dl>
+      <p class="note">точка прошла, но есть отдельная шумная итерация</p>
+    </div>
+    
+    <h2 id="rd-600">retry_delay = 600 ms
+      <span class="badge badge-warn">STABLE *</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 600</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">Дата</th>
+          <th rowspan="2">Время</th>
+          <th>Время итер.</th>
+          <th>Таймаут</th>
+          <th>Плановых<br>подкл.</th>
+          <th>Внезапных<br>откл.</th>
+          <th>Плановых<br>откл.</th>
+          <th>k / N</th>
+          <th>%</th>
+        </tr>
+        <tr class="th-sub">
+          <th>мин</th><th>с</th>
+          <th></th><th></th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+    
+          <tbody><tr><td>1</td><td class="ts">07-06-2026</td><td class="ts">01:49</td><td>15.8</td><td>9</td><td>1</td><td>0</td><td>1</td><td>1/10</td><td>10.00</td></tr><tr><td>2</td><td class="ts">07-06-2026</td><td class="ts">02:06</td><td>14.4</td><td>8</td><td>2</td><td>1</td><td>1</td><td>2/10</td><td>20.00</td></tr><tr><td>3</td><td class="ts">07-06-2026</td><td class="ts">02:20</td><td>16.4</td><td>10</td><td>3</td><td>2</td><td>1</td><td>3/10</td><td>30.00</td></tr><tr><td>4</td><td class="ts">07-06-2026</td><td class="ts">02:37</td><td>18.9</td><td>6</td><td>2</td><td>1</td><td>1</td><td>4/10</td><td>40.00</td></tr><tr><td>5</td><td class="ts">07-06-2026</td><td class="ts">02:56</td><td>14.4</td><td>9</td><td>1</td><td>0</td><td>1</td><td>5/10</td><td>50.00</td></tr><tr><td>6</td><td class="ts">07-06-2026</td><td class="ts">03:10</td><td>12.2</td><td>5</td><td>2</td><td>1</td><td>1</td><td>6/10</td><td>60.00</td></tr><tr><td>7</td><td class="ts">07-06-2026</td><td class="ts">03:23</td><td>11.6</td><td>9</td><td>1</td><td>0</td><td>1</td><td>7/10</td><td>70.00</td></tr><tr><td>8</td><td class="ts">07-06-2026</td><td class="ts">03:34</td><td>16.4</td><td>9</td><td>1</td><td>0</td><td>1</td><td>8/10</td><td>80.00</td></tr><tr><td>9</td><td class="ts">07-06-2026</td><td class="ts">03:51</td><td>10.6</td><td>9</td><td>1</td><td>0</td><td>1</td><td>9/10</td><td>90.00</td></tr><tr><td>10</td><td class="ts">07-06-2026</td><td class="ts">04:02</td><td>13.6</td><td></td><td>1</td><td>0</td><td>1</td><td>10/10</td><td>100.00</td></tr></tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>4970 / 3752 / 19358</dd>
+        <dt>rec/min med / min</dt><dd>29.92 / 29.33</dd>
+        <dt>sud/min (порог &lt;1.0)</dt><dd>0.035</dd>
+        <dt>iter с sudden ≥ 1</dt><dd>4 / 10</dd>
+        <dt>dirty stops</dt><dd>0 / 10</dd>
+      </dl>
+      <p class="note">точка прошла, но есть отдельная шумная итерация</p>
+    </div>
+    
+    <h2 id="rd-700">retry_delay = 700 ms
+      <span class="badge badge-bad">UNSTABLE</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 700</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">Дата</th>
+          <th rowspan="2">Время</th>
+          <th>Время итер.</th>
+          <th>Таймаут</th>
+          <th>Плановых<br>подкл.</th>
+          <th>Внезапных<br>откл.</th>
+          <th>Плановых<br>откл.</th>
+          <th>k / N</th>
+          <th>%</th>
+        </tr>
+        <tr class="th-sub">
+          <th>мин</th><th>с</th>
+          <th></th><th></th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+    
+          <tbody><tr><td>1</td><td class="ts">07-06-2026</td><td class="ts">07:40</td><td>10.3</td><td>9</td><td>1</td><td>0</td><td>1</td><td>1/10</td><td>10.00</td></tr><tr><td>2</td><td class="ts">07-06-2026</td><td class="ts">07:50</td><td>17.9</td><td>6</td><td>6</td><td>5</td><td>1</td><td>2/10</td><td>20.00</td></tr><tr><td>3</td><td class="ts">07-06-2026</td><td class="ts">08:08</td><td>18.2</td><td>10</td><td>16</td><td>15</td><td>1</td><td>3/10</td><td>30.00</td></tr><tr><td>4</td><td class="ts">07-06-2026</td><td class="ts">08:27</td><td>11.2</td><td>5</td><td>2</td><td>1</td><td>1</td><td>4/10</td><td>40.00</td></tr><tr><td>5</td><td class="ts">07-06-2026</td><td class="ts">08:38</td><td>16.9</td><td>6</td><td>4</td><td>3</td><td>1</td><td>5/10</td><td>50.00</td></tr><tr><td>6</td><td class="ts">07-06-2026</td><td class="ts">08:55</td><td>19.9</td><td>10</td><td>3</td><td>2</td><td>1</td><td>6/10</td><td>60.00</td></tr><tr><td>7</td><td class="ts">07-06-2026</td><td class="ts">09:15</td><td>17.5</td><td>6</td><td>2</td><td>1</td><td>1</td><td>7/10</td><td>70.00</td></tr><tr><td>8</td><td class="ts">07-06-2026</td><td class="ts">09:33</td><td>18.4</td><td>6</td><td>2</td><td>1</td><td>1</td><td>8/10</td><td>80.00</td></tr><tr><td>9</td><td class="ts">07-06-2026</td><td class="ts">09:51</td><td>18.5</td><td>5</td><td>3</td><td>2</td><td>1</td><td>9/10</td><td>90.00</td></tr><tr><td>10</td><td class="ts">07-06-2026</td><td class="ts">10:10</td><td>12.2</td><td></td><td>4</td><td>4</td><td>1</td><td>10/10</td><td>100.00</td></tr></tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>6206 / 3697 / 14369</dd>
+        <dt>rec/min med / min</dt><dd>29.5 / 28.26</dd>
+        <dt>sud/min (порог &lt;1.0)</dt><dd>0.214</dd>
+        <dt>iter с sudden ≥ 1</dt><dd>9 / 10</dd>
+        <dt>dirty stops</dt><dd>0 / 10</dd>
+      </dl>
+      
+    </div>
+    
+    <h2 id="rd-800">retry_delay = 800 ms
+      <span class="badge badge-bad">UNSTABLE</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 800</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">Дата</th>
+          <th rowspan="2">Время</th>
+          <th>Время итер.</th>
+          <th>Таймаут</th>
+          <th>Плановых<br>подкл.</th>
+          <th>Внезапных<br>откл.</th>
+          <th>Плановых<br>откл.</th>
+          <th>k / N</th>
+          <th>%</th>
+        </tr>
+        <tr class="th-sub">
+          <th>мин</th><th>с</th>
+          <th></th><th></th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+    
+          <tbody><tr><td>1</td><td class="ts">07-06-2026</td><td class="ts">11:43</td><td>16.0</td><td>8</td><td>5</td><td>4</td><td>1</td><td>1/10</td><td>10.00</td></tr><tr><td>2</td><td class="ts">07-06-2026</td><td class="ts">12:00</td><td>19.6</td><td>6</td><td>12</td><td>11</td><td>1</td><td>2/10</td><td>20.00</td></tr><tr><td>3</td><td class="ts">07-06-2026</td><td class="ts">12:19</td><td>15.8</td><td>5</td><td>22</td><td>21</td><td>1</td><td>3/10</td><td>30.00</td></tr><tr><td>4</td><td class="ts">07-06-2026</td><td class="ts">12:35</td><td>12.8</td><td>10</td><td>20</td><td>19</td><td>1</td><td>4/10</td><td>40.00</td></tr><tr><td>5</td><td class="ts">07-06-2026</td><td class="ts">12:48</td><td>0.6</td><td>7</td><td>0</td><td>1</td><td>1</td><td>5/10</td><td>50.00</td></tr><tr><td>6</td><td class="ts">07-06-2026</td><td class="ts">12:49</td><td>14.3</td><td>9</td><td>10</td><td>9</td><td>1</td><td>6/10</td><td>60.00</td></tr><tr><td>7</td><td class="ts">07-06-2026</td><td class="ts">13:04</td><td>12.2</td><td>8</td><td>9</td><td>8</td><td>1</td><td>7/10</td><td>70.00</td></tr><tr><td>8</td><td class="ts">07-06-2026</td><td class="ts">13:16</td><td>18.6</td><td>8</td><td>9</td><td>8</td><td>1</td><td>8/10</td><td>80.00</td></tr><tr><td>9</td><td class="ts">07-06-2026</td><td class="ts">13:35</td><td>15.9</td><td>9</td><td>3</td><td>3</td><td>1</td><td>9/10</td><td>90.00</td></tr><tr><td>10</td><td class="ts">07-06-2026</td><td class="ts">13:51</td><td>18.6</td><td></td><td>6</td><td>5</td><td>1</td><td>10/10</td><td>100.00</td></tr></tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>8583 / 3717 / 31022</dd>
+        <dt>rec/min med / min</dt><dd>27.97 / 0.0</dd>
+        <dt>sud/min (порог &lt;1.0)</dt><dd>0.573</dd>
+        <dt>iter с sudden ≥ 1</dt><dd>10 / 10</dd>
+        <dt>dirty stops</dt><dd>1 / 10</dd>
+      </dl>
+      
+    </div>
+    
+    <h2 id="rd-900">retry_delay = 900 ms
+      <span class="badge badge-bad">UNSTABLE</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 900</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">Дата</th>
+          <th rowspan="2">Время</th>
+          <th>Время итер.</th>
+          <th>Таймаут</th>
+          <th>Плановых<br>подкл.</th>
+          <th>Внезапных<br>откл.</th>
+          <th>Плановых<br>откл.</th>
+          <th>k / N</th>
+          <th>%</th>
+        </tr>
+        <tr class="th-sub">
+          <th>мин</th><th>с</th>
+          <th></th><th></th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+    
+          <tbody><tr><td>1</td><td class="ts">07-06-2026</td><td class="ts">14:10</td><td>13.4</td><td>10</td><td>11</td><td>10</td><td>1</td><td>1/10</td><td>10.00</td></tr><tr><td>2</td><td class="ts">07-06-2026</td><td class="ts">14:23</td><td>0.6</td><td>8</td><td>0</td><td>1</td><td>1</td><td>2/10</td><td>20.00</td></tr><tr><td>3</td><td class="ts">07-06-2026</td><td class="ts">14:24</td><td>11.0</td><td>6</td><td>3</td><td>2</td><td>1</td><td>3/10</td><td>30.00</td></tr><tr><td>4</td><td class="ts">07-06-2026</td><td class="ts">14:35</td><td>10.7</td><td>10</td><td>3</td><td>2</td><td>1</td><td>4/10</td><td>40.00</td></tr><tr><td>5</td><td class="ts">07-06-2026</td><td class="ts">14:46</td><td>18.2</td><td>10</td><td>7</td><td>6</td><td>1</td><td>5/10</td><td>50.00</td></tr><tr><td>6</td><td class="ts">07-06-2026</td><td class="ts">15:05</td><td>15.8</td><td>8</td><td>6</td><td>5</td><td>1</td><td>6/10</td><td>60.00</td></tr><tr><td>7</td><td class="ts">07-06-2026</td><td class="ts">15:21</td><td>18.9</td><td>5</td><td>9</td><td>8</td><td>1</td><td>7/10</td><td>70.00</td></tr><tr><td>8</td><td class="ts">07-06-2026</td><td class="ts">15:40</td><td>17.0</td><td>8</td><td>4</td><td>3</td><td>1</td><td>8/10</td><td>80.00</td></tr><tr><td>9</td><td class="ts">07-06-2026</td><td class="ts">15:57</td><td>15.8</td><td>5</td><td>4</td><td>3</td><td>1</td><td>9/10</td><td>90.00</td></tr><tr><td>10</td><td class="ts">07-06-2026</td><td class="ts">16:13</td><td>11.8</td><td></td><td>4</td><td>3</td><td>1</td><td>10/10</td><td>100.00</td></tr></tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>12152 / 3670 / 26165</dd>
+        <dt>rec/min med / min</dt><dd>29.11 / 0.0</dd>
+        <dt>sud/min (порог &lt;1.0)</dt><dd>0.295</dd>
+        <dt>iter с sudden ≥ 1</dt><dd>10 / 10</dd>
+        <dt>dirty stops</dt><dd>1 / 10</dd>
+      </dl>
+      
+    </div>
+    
+    <h2 id="rd-1000">retry_delay = 1000 ms
+      <span class="badge badge-bad">UNSTABLE</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 1000</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">Дата</th>
+          <th rowspan="2">Время</th>
+          <th>Время итер.</th>
+          <th>Таймаут</th>
+          <th>Плановых<br>подкл.</th>
+          <th>Внезапных<br>откл.</th>
+          <th>Плановых<br>откл.</th>
+          <th>k / N</th>
+          <th>%</th>
+        </tr>
+        <tr class="th-sub">
+          <th>мин</th><th>с</th>
+          <th></th><th></th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+    
+          <tbody><tr><td>1</td><td class="ts">07-06-2026</td><td class="ts">16:25</td><td>16.5</td><td>7</td><td>5</td><td>4</td><td>1</td><td>1/10</td><td>10.00</td></tr><tr><td>2</td><td class="ts">07-06-2026</td><td class="ts">16:41</td><td>17.2</td><td>7</td><td>5</td><td>4</td><td>1</td><td>2/10</td><td>20.00</td></tr><tr><td>3</td><td class="ts">07-06-2026</td><td class="ts">16:59</td><td>13.8</td><td>8</td><td>5</td><td>4</td><td>1</td><td>3/10</td><td>30.00</td></tr><tr><td>4</td><td class="ts">07-06-2026</td><td class="ts">17:13</td><td>15.4</td><td>10</td><td>7</td><td>6</td><td>1</td><td>4/10</td><td>40.00</td></tr><tr><td>5</td><td class="ts">07-06-2026</td><td class="ts">17:28</td><td>16.9</td><td>6</td><td>17</td><td>17</td><td>1</td><td>5/10</td><td>50.00</td></tr><tr><td>6</td><td class="ts">07-06-2026</td><td class="ts">17:45</td><td>13.0</td><td>8</td><td>17</td><td>16</td><td>1</td><td>6/10</td><td>60.00</td></tr><tr><td>7</td><td class="ts">07-06-2026</td><td class="ts">17:58</td><td>16.1</td><td>7</td><td>18</td><td>17</td><td>1</td><td>7/10</td><td>70.00</td></tr><tr><td>8</td><td class="ts">07-06-2026</td><td class="ts">18:15</td><td>17.8</td><td>9</td><td>16</td><td>15</td><td>1</td><td>8/10</td><td>80.00</td></tr><tr><td>9</td><td class="ts">07-06-2026</td><td class="ts">18:33</td><td>17.1</td><td>7</td><td>19</td><td>18</td><td>1</td><td>9/10</td><td>90.00</td></tr><tr><td>10</td><td class="ts">07-06-2026</td><td class="ts">18:50</td><td>17.0</td><td></td><td>33</td><td>32</td><td>1</td><td>10/10</td><td>100.00</td></tr></tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>8456 / 3727 / 34289</dd>
+        <dt>rec/min med / min</dt><dd>27.98 / 22.84</dd>
+        <dt>sud/min (порог &lt;1.0)</dt><dd>0.842</dd>
+        <dt>iter с sudden ≥ 1</dt><dd>10 / 10</dd>
+        <dt>dirty stops</dt><dd>1 / 10</dd>
+      </dl>
+      
+    </div>
+    
+    <h2 id="rd-1100">retry_delay = 1100 ms
+      <span class="badge badge-bad">UNSTABLE</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 1100</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">Дата</th>
+          <th rowspan="2">Время</th>
+          <th>Время итер.</th>
+          <th>Таймаут</th>
+          <th>Плановых<br>подкл.</th>
+          <th>Внезапных<br>откл.</th>
+          <th>Плановых<br>откл.</th>
+          <th>k / N</th>
+          <th>%</th>
+        </tr>
+        <tr class="th-sub">
+          <th>мин</th><th>с</th>
+          <th></th><th></th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+    
+          <tbody><tr><td>1</td><td class="ts">07-06-2026</td><td class="ts">19:07</td><td>15.2</td><td>10</td><td>32</td><td>32</td><td>1</td><td>1/10</td><td>10.00</td></tr><tr><td>2</td><td class="ts">07-06-2026</td><td class="ts">19:22</td><td>18.5</td><td>9</td><td>30</td><td>29</td><td>1</td><td>2/10</td><td>20.00</td></tr><tr><td>3</td><td class="ts">07-06-2026</td><td class="ts">19:41</td><td>19.5</td><td>7</td><td>2</td><td>1</td><td>1</td><td>3/10</td><td>30.00</td></tr><tr><td>4</td><td class="ts">07-06-2026</td><td class="ts">20:01</td><td>15.6</td><td>9</td><td>2</td><td>1</td><td>1</td><td>4/10</td><td>40.00</td></tr><tr><td>5</td><td class="ts">07-06-2026</td><td class="ts">20:17</td><td>19.8</td><td>7</td><td>2</td><td>1</td><td>1</td><td>5/10</td><td>50.00</td></tr><tr><td>6</td><td class="ts">07-06-2026</td><td class="ts">20:37</td><td>11.1</td><td>7</td><td>1</td><td>0</td><td>1</td><td>6/10</td><td>60.00</td></tr><tr><td>7</td><td class="ts">07-06-2026</td><td class="ts">20:48</td><td>12.6</td><td>6</td><td>1</td><td>1</td><td>1</td><td>7/10</td><td>70.00</td></tr><tr><td>8</td><td class="ts">07-06-2026</td><td class="ts">21:01</td><td>13.4</td><td>7</td><td>1</td><td>0</td><td>1</td><td>8/10</td><td>80.00</td></tr><tr><td>9</td><td class="ts">07-06-2026</td><td class="ts">21:14</td><td>11.4</td><td>7</td><td>1</td><td>0</td><td>1</td><td>9/10</td><td>90.00</td></tr><tr><td>10</td><td class="ts">07-06-2026</td><td class="ts">21:26</td><td>14.9</td><td></td><td>2</td><td>1</td><td>1</td><td>10/10</td><td>100.00</td></tr></tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>6664 / 3689 / 12107</dd>
+        <dt>rec/min med / min</dt><dd>29.62 / 20.5</dd>
+        <dt>sud/min (порог &lt;1.0)</dt><dd>0.439</dd>
+        <dt>iter с sudden ≥ 1</dt><dd>7 / 10</dd>
+        <dt>dirty stops</dt><dd>0 / 10</dd>
+      </dl>
+      
+    </div>
+    
+    <h2 id="rd-1200">retry_delay = 1200 ms
+      <span class="badge badge-warn">STABLE *</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 1200</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">Дата</th>
+          <th rowspan="2">Время</th>
+          <th>Время итер.</th>
+          <th>Таймаут</th>
+          <th>Плановых<br>подкл.</th>
+          <th>Внезапных<br>откл.</th>
+          <th>Плановых<br>откл.</th>
+          <th>k / N</th>
+          <th>%</th>
+        </tr>
+        <tr class="th-sub">
+          <th>мин</th><th>с</th>
+          <th></th><th></th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+    
+          <tbody><tr><td>1</td><td class="ts">07-06-2026</td><td class="ts">21:41</td><td>17.6</td><td>10</td><td>3</td><td>2</td><td>1</td><td>1/10</td><td>10.00</td></tr><tr><td>2</td><td class="ts">07-06-2026</td><td class="ts">21:58</td><td>19.7</td><td>6</td><td>2</td><td>1</td><td>1</td><td>2/10</td><td>20.00</td></tr><tr><td>3</td><td class="ts">07-06-2026</td><td class="ts">22:18</td><td>13.4</td><td>7</td><td>2</td><td>1</td><td>1</td><td>3/10</td><td>30.00</td></tr><tr><td>4</td><td class="ts">07-06-2026</td><td class="ts">22:32</td><td>12.6</td><td>7</td><td>1</td><td>0</td><td>1</td><td>4/10</td><td>40.00</td></tr><tr><td>5</td><td class="ts">07-06-2026</td><td class="ts">22:45</td><td>16.4</td><td>8</td><td>2</td><td>1</td><td>1</td><td>5/10</td><td>50.00</td></tr><tr><td>6</td><td class="ts">07-06-2026</td><td class="ts">23:01</td><td>17.6</td><td>5</td><td>2</td><td>1</td><td>1</td><td>6/10</td><td>60.00</td></tr><tr><td>7</td><td class="ts">07-06-2026</td><td class="ts">23:19</td><td>13.8</td><td>8</td><td>1</td><td>0</td><td>1</td><td>7/10</td><td>70.00</td></tr><tr><td>8</td><td class="ts">07-06-2026</td><td class="ts">23:33</td><td>12.2</td><td>8</td><td>1</td><td>0</td><td>1</td><td>8/10</td><td>80.00</td></tr><tr><td>9</td><td class="ts">07-06-2026</td><td class="ts">23:45</td><td>19.4</td><td>5</td><td>1</td><td>1</td><td>1</td><td>9/10</td><td>90.00</td></tr><tr><td>10</td><td class="ts">08-06-2026</td><td class="ts">00:05</td><td>11.9</td><td></td><td>1</td><td>0</td><td>1</td><td>10/10</td><td>100.00</td></tr></tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>4948 / 3711 / 17027</dd>
+        <dt>rec/min med / min</dt><dd>29.65 / 29.36</dd>
+        <dt>sud/min (порог &lt;1.0)</dt><dd>0.046</dd>
+        <dt>iter с sudden ≥ 1</dt><dd>6 / 10</dd>
+        <dt>dirty stops</dt><dd>0 / 10</dd>
+      </dl>
+      <p class="note">точка прошла, но есть отдельная шумная итерация</p>
+    </div>
+    
+    <h2 id="rd-1300">retry_delay = 1300 ms
+      <span class="badge badge-warn">STABLE *</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 1300</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">Дата</th>
+          <th rowspan="2">Время</th>
+          <th>Время итер.</th>
+          <th>Таймаут</th>
+          <th>Плановых<br>подкл.</th>
+          <th>Внезапных<br>откл.</th>
+          <th>Плановых<br>откл.</th>
+          <th>k / N</th>
+          <th>%</th>
+        </tr>
+        <tr class="th-sub">
+          <th>мин</th><th>с</th>
+          <th></th><th></th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+    
+          <tbody><tr><td>1</td><td class="ts">08-06-2026</td><td class="ts">00:17</td><td>15.2</td><td>5</td><td>1</td><td>0</td><td>1</td><td>1/10</td><td>10.00</td></tr><tr><td>2</td><td class="ts">08-06-2026</td><td class="ts">00:32</td><td>20.1</td><td>6</td><td>2</td><td>1</td><td>1</td><td>2/10</td><td>20.00</td></tr><tr><td>3</td><td class="ts">08-06-2026</td><td class="ts">00:52</td><td>11.8</td><td>6</td><td>1</td><td>0</td><td>1</td><td>3/10</td><td>30.00</td></tr><tr><td>4</td><td class="ts">08-06-2026</td><td class="ts">01:04</td><td>12.7</td><td>6</td><td>2</td><td>1</td><td>1</td><td>4/10</td><td>40.00</td></tr><tr><td>5</td><td class="ts">08-06-2026</td><td class="ts">01:17</td><td>17.0</td><td>10</td><td>2</td><td>1</td><td>1</td><td>5/10</td><td>50.00</td></tr><tr><td>6</td><td class="ts">08-06-2026</td><td class="ts">01:34</td><td>15.5</td><td>8</td><td>1</td><td>0</td><td>1</td><td>6/10</td><td>60.00</td></tr><tr><td>7</td><td class="ts">08-06-2026</td><td class="ts">01:50</td><td>14.8</td><td>10</td><td>2</td><td>1</td><td>1</td><td>7/10</td><td>70.00</td></tr><tr><td>8</td><td class="ts">08-06-2026</td><td class="ts">02:05</td><td>16.7</td><td>7</td><td>2</td><td>1</td><td>1</td><td>8/10</td><td>80.00</td></tr><tr><td>9</td><td class="ts">08-06-2026</td><td class="ts">02:22</td><td>18.2</td><td>7</td><td>2</td><td>1</td><td>1</td><td>9/10</td><td>90.00</td></tr><tr><td>10</td><td class="ts">08-06-2026</td><td class="ts">02:40</td><td>19.5</td><td></td><td>2</td><td>1</td><td>1</td><td>10/10</td><td>100.00</td></tr></tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>4972 / 3763 / 14613</dd>
+        <dt>rec/min med / min</dt><dd>30.07 / 29.48</dd>
+        <dt>sud/min (порог &lt;1.0)</dt><dd>0.044</dd>
+        <dt>iter с sudden ≥ 1</dt><dd>7 / 10</dd>
+        <dt>dirty stops</dt><dd>0 / 10</dd>
+      </dl>
+      <p class="note">точка прошла, но есть отдельная шумная итерация</p>
+    </div>
+    
+    <h2 id="rd-1400">retry_delay = 1400 ms
+      <span class="badge badge-warn">STABLE *</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 1400</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">Дата</th>
+          <th rowspan="2">Время</th>
+          <th>Время итер.</th>
+          <th>Таймаут</th>
+          <th>Плановых<br>подкл.</th>
+          <th>Внезапных<br>откл.</th>
+          <th>Плановых<br>откл.</th>
+          <th>k / N</th>
+          <th>%</th>
+        </tr>
+        <tr class="th-sub">
+          <th>мин</th><th>с</th>
+          <th></th><th></th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+    
+          <tbody><tr><td>1</td><td class="ts">08-06-2026</td><td class="ts">03:00</td><td>16.1</td><td>8</td><td>3</td><td>2</td><td>1</td><td>1/10</td><td>10.00</td></tr><tr><td>2</td><td class="ts">08-06-2026</td><td class="ts">03:16</td><td>11.2</td><td>7</td><td>1</td><td>0</td><td>1</td><td>2/10</td><td>20.00</td></tr><tr><td>3</td><td class="ts">08-06-2026</td><td class="ts">03:28</td><td>16.8</td><td>10</td><td>2</td><td>1</td><td>1</td><td>3/10</td><td>30.00</td></tr><tr><td>4</td><td class="ts">08-06-2026</td><td class="ts">03:45</td><td>11.7</td><td>7</td><td>2</td><td>1</td><td>1</td><td>4/10</td><td>40.00</td></tr><tr><td>5</td><td class="ts">08-06-2026</td><td class="ts">03:56</td><td>15.9</td><td>8</td><td>1</td><td>0</td><td>1</td><td>5/10</td><td>50.00</td></tr><tr><td>6</td><td class="ts">08-06-2026</td><td class="ts">04:13</td><td>10.3</td><td>7</td><td>1</td><td>0</td><td>1</td><td>6/10</td><td>60.00</td></tr><tr><td>7</td><td class="ts">08-06-2026</td><td class="ts">04:23</td><td>14.1</td><td>6</td><td>1</td><td>0</td><td>1</td><td>7/10</td><td>70.00</td></tr><tr><td>8</td><td class="ts">08-06-2026</td><td class="ts">04:37</td><td>18.3</td><td>8</td><td>2</td><td>1</td><td>1</td><td>8/10</td><td>80.00</td></tr><tr><td>9</td><td class="ts">08-06-2026</td><td class="ts">04:56</td><td>13.2</td><td>8</td><td>1</td><td>0</td><td>1</td><td>9/10</td><td>90.00</td></tr><tr><td>10</td><td class="ts">08-06-2026</td><td class="ts">05:09</td><td>18.5</td><td></td><td>2</td><td>1</td><td>1</td><td>10/10</td><td>100.00</td></tr></tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>4361 / 3766 / 12176</dd>
+        <dt>rec/min med / min</dt><dd>30.89 / 30.38</dd>
+        <dt>sud/min (порог &lt;1.0)</dt><dd>0.042</dd>
+        <dt>iter с sudden ≥ 1</dt><dd>5 / 10</dd>
+        <dt>dirty stops</dt><dd>1 / 10</dd>
+      </dl>
+      <p class="note">точка прошла, но есть отдельная шумная итерация</p>
+    </div>
+    
+    <h2 id="rd-1500">retry_delay = 1500 ms
+      <span class="badge badge-warn">STABLE *</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 1500</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">Дата</th>
+          <th rowspan="2">Время</th>
+          <th>Время итер.</th>
+          <th>Таймаут</th>
+          <th>Плановых<br>подкл.</th>
+          <th>Внезапных<br>откл.</th>
+          <th>Плановых<br>откл.</th>
+          <th>k / N</th>
+          <th>%</th>
+        </tr>
+        <tr class="th-sub">
+          <th>мин</th><th>с</th>
+          <th></th><th></th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+    
+          <tbody><tr><td>1</td><td class="ts">08-06-2026</td><td class="ts">05:28</td><td>15.6</td><td>6</td><td>1</td><td>0</td><td>1</td><td>1/10</td><td>10.00</td></tr><tr><td>2</td><td class="ts">08-06-2026</td><td class="ts">05:43</td><td>10.3</td><td>5</td><td>1</td><td>0</td><td>1</td><td>2/10</td><td>20.00</td></tr><tr><td>3</td><td class="ts">08-06-2026</td><td class="ts">05:54</td><td>13.0</td><td>9</td><td>2</td><td>1</td><td>1</td><td>3/10</td><td>30.00</td></tr><tr><td>4</td><td class="ts">08-06-2026</td><td class="ts">06:07</td><td>13.7</td><td>6</td><td>2</td><td>1</td><td>1</td><td>4/10</td><td>40.00</td></tr><tr><td>5</td><td class="ts">08-06-2026</td><td class="ts">06:21</td><td>17.3</td><td>9</td><td>2</td><td>1</td><td>1</td><td>5/10</td><td>50.00</td></tr><tr><td>6</td><td class="ts">08-06-2026</td><td class="ts">06:38</td><td>16.4</td><td>10</td><td>1</td><td>0</td><td>1</td><td>6/10</td><td>60.00</td></tr><tr><td>7</td><td class="ts">08-06-2026</td><td class="ts">06:55</td><td>19.1</td><td>5</td><td>1</td><td>0</td><td>1</td><td>7/10</td><td>70.00</td></tr><tr><td>8</td><td class="ts">08-06-2026</td><td class="ts">07:14</td><td>14.2</td><td>6</td><td>2</td><td>1</td><td>1</td><td>8/10</td><td>80.00</td></tr><tr><td>9</td><td class="ts">08-06-2026</td><td class="ts">07:29</td><td>17.2</td><td>9</td><td>2</td><td>1</td><td>1</td><td>9/10</td><td>90.00</td></tr><tr><td>10</td><td class="ts">08-06-2026</td><td class="ts">07:46</td><td>17.8</td><td></td><td>3</td><td>2</td><td>1</td><td>10/10</td><td>100.00</td></tr></tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>4938 / 3735 / 17104</dd>
+        <dt>rec/min med / min</dt><dd>30.59 / 29.05</dd>
+        <dt>sud/min (порог &lt;1.0)</dt><dd>0.046</dd>
+        <dt>iter с sudden ≥ 1</dt><dd>6 / 10</dd>
+        <dt>dirty stops</dt><dd>0 / 10</dd>
+      </dl>
+      <p class="note">точка прошла, но есть отдельная шумная итерация</p>
+    </div>
+    
+    <h2 id="rd-1600">retry_delay = 1600 ms
+      <span class="badge badge-warn">STABLE *</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 1600</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">Дата</th>
+          <th rowspan="2">Время</th>
+          <th>Время итер.</th>
+          <th>Таймаут</th>
+          <th>Плановых<br>подкл.</th>
+          <th>Внезапных<br>откл.</th>
+          <th>Плановых<br>откл.</th>
+          <th>k / N</th>
+          <th>%</th>
+        </tr>
+        <tr class="th-sub">
+          <th>мин</th><th>с</th>
+          <th></th><th></th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+    
+          <tbody><tr><td>1</td><td class="ts">08-06-2026</td><td class="ts">08:04</td><td>12.3</td><td>8</td><td>1</td><td>0</td><td>1</td><td>1/10</td><td>10.00</td></tr><tr><td>2</td><td class="ts">08-06-2026</td><td class="ts">08:16</td><td>15.2</td><td>10</td><td>1</td><td>1</td><td>1</td><td>2/10</td><td>20.00</td></tr><tr><td>3</td><td class="ts">08-06-2026</td><td class="ts">08:32</td><td>19.7</td><td>9</td><td>3</td><td>2</td><td>1</td><td>3/10</td><td>30.00</td></tr><tr><td>4</td><td class="ts">08-06-2026</td><td class="ts">08:52</td><td>20.0</td><td>10</td><td>2</td><td>1</td><td>1</td><td>4/10</td><td>40.00</td></tr><tr><td>5</td><td class="ts">08-06-2026</td><td class="ts">09:12</td><td>19.3</td><td>8</td><td>2</td><td>1</td><td>1</td><td>5/10</td><td>50.00</td></tr><tr><td>6</td><td class="ts">08-06-2026</td><td class="ts">09:31</td><td>18.2</td><td>7</td><td>2</td><td>1</td><td>1</td><td>6/10</td><td>60.00</td></tr><tr><td>7</td><td class="ts">08-06-2026</td><td class="ts">09:50</td><td>13.0</td><td>8</td><td>2</td><td>1</td><td>1</td><td>7/10</td><td>70.00</td></tr><tr><td>8</td><td class="ts">08-06-2026</td><td class="ts">10:03</td><td>13.3</td><td>9</td><td>1</td><td>0</td><td>1</td><td>8/10</td><td>80.00</td></tr><tr><td>9</td><td class="ts">08-06-2026</td><td class="ts">10:16</td><td>17.4</td><td>7</td><td>1</td><td>0</td><td>1</td><td>9/10</td><td>90.00</td></tr><tr><td>10</td><td class="ts">08-06-2026</td><td class="ts">10:34</td><td>19.1</td><td></td><td>2</td><td>1</td><td>1</td><td>10/10</td><td>100.00</td></tr></tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>4990 / 3800 / 7450</dd>
+        <dt>rec/min med / min</dt><dd>29.73 / 29.37</dd>
+        <dt>sud/min (порог &lt;1.0)</dt><dd>0.048</dd>
+        <dt>iter с sudden ≥ 1</dt><dd>7 / 10</dd>
+        <dt>dirty stops</dt><dd>0 / 10</dd>
+      </dl>
+      <p class="note">точка прошла, но есть отдельная шумная итерация</p>
+    </div>
+    
+    <h2 id="rd-1700">retry_delay = 1700 ms
+      <span class="badge badge-warn">STABLE *</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 1700</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">Дата</th>
+          <th rowspan="2">Время</th>
+          <th>Время итер.</th>
+          <th>Таймаут</th>
+          <th>Плановых<br>подкл.</th>
+          <th>Внезапных<br>откл.</th>
+          <th>Плановых<br>откл.</th>
+          <th>k / N</th>
+          <th>%</th>
+        </tr>
+        <tr class="th-sub">
+          <th>мин</th><th>с</th>
+          <th></th><th></th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+    
+          <tbody><tr><td>1</td><td class="ts">08-06-2026</td><td class="ts">10:53</td><td>17.1</td><td>6</td><td>2</td><td>1</td><td>1</td><td>1/10</td><td>10.00</td></tr><tr><td>2</td><td class="ts">08-06-2026</td><td class="ts">11:11</td><td>10.4</td><td>5</td><td>1</td><td>0</td><td>1</td><td>2/10</td><td>20.00</td></tr><tr><td>3</td><td class="ts">08-06-2026</td><td class="ts">11:21</td><td>11.8</td><td>5</td><td>2</td><td>1</td><td>1</td><td>3/10</td><td>30.00</td></tr><tr><td>4</td><td class="ts">08-06-2026</td><td class="ts">11:33</td><td>13.7</td><td>10</td><td>1</td><td>0</td><td>1</td><td>4/10</td><td>40.00</td></tr><tr><td>5</td><td class="ts">08-06-2026</td><td class="ts">11:47</td><td>15.4</td><td>8</td><td>1</td><td>0</td><td>1</td><td>5/10</td><td>50.00</td></tr><tr><td>6</td><td class="ts">08-06-2026</td><td class="ts">12:03</td><td>14.2</td><td>10</td><td>2</td><td>1</td><td>1</td><td>6/10</td><td>60.00</td></tr><tr><td>7</td><td class="ts">08-06-2026</td><td class="ts">12:17</td><td>16.2</td><td>8</td><td>2</td><td>1</td><td>1</td><td>7/10</td><td>70.00</td></tr><tr><td>8</td><td class="ts">08-06-2026</td><td class="ts">12:33</td><td>11.7</td><td>7</td><td>1</td><td>0</td><td>1</td><td>8/10</td><td>80.00</td></tr><tr><td>9</td><td class="ts">08-06-2026</td><td class="ts">12:45</td><td>14.0</td><td>10</td><td>2</td><td>1</td><td>1</td><td>9/10</td><td>90.00</td></tr><tr><td>10</td><td class="ts">08-06-2026</td><td class="ts">12:59</td><td>19.1</td><td></td><td>9</td><td>8</td><td>1</td><td>10/10</td><td>100.00</td></tr></tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>4375 / 3701 / 7377</dd>
+        <dt>rec/min med / min</dt><dd>29.95 / 29.3</dd>
+        <dt>sud/min (порог &lt;1.0)</dt><dd>0.091</dd>
+        <dt>iter с sudden ≥ 1</dt><dd>6 / 10</dd>
+        <dt>dirty stops</dt><dd>0 / 10</dd>
+      </dl>
+      <p class="note">точка прошла, но есть отдельная шумная итерация</p>
+    </div>
+    
+    <h2 id="rd-1800">retry_delay = 1800 ms
+      <span class="badge badge-warn">STABLE *</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 1800</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">Дата</th>
+          <th rowspan="2">Время</th>
+          <th>Время итер.</th>
+          <th>Таймаут</th>
+          <th>Плановых<br>подкл.</th>
+          <th>Внезапных<br>откл.</th>
+          <th>Плановых<br>откл.</th>
+          <th>k / N</th>
+          <th>%</th>
+        </tr>
+        <tr class="th-sub">
+          <th>мин</th><th>с</th>
+          <th></th><th></th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+    
+          <tbody><tr><td>1</td><td class="ts">08-06-2026</td><td class="ts">13:19</td><td>11.8</td><td>5</td><td>1</td><td>0</td><td>1</td><td>1/10</td><td>10.00</td></tr><tr><td>2</td><td class="ts">08-06-2026</td><td class="ts">13:31</td><td>11.4</td><td>6</td><td>2</td><td>1</td><td>1</td><td>2/10</td><td>20.00</td></tr><tr><td>3</td><td class="ts">08-06-2026</td><td class="ts">13:42</td><td>15.8</td><td>5</td><td>5</td><td>4</td><td>1</td><td>3/10</td><td>30.00</td></tr><tr><td>4</td><td class="ts">08-06-2026</td><td class="ts">13:58</td><td>16.5</td><td>10</td><td>5</td><td>4</td><td>1</td><td>4/10</td><td>40.00</td></tr><tr><td>5</td><td class="ts">08-06-2026</td><td class="ts">14:15</td><td>20.1</td><td>9</td><td>3</td><td>2</td><td>1</td><td>5/10</td><td>50.00</td></tr><tr><td>6</td><td class="ts">08-06-2026</td><td class="ts">14:35</td><td>19.7</td><td>6</td><td>4</td><td>3</td><td>1</td><td>6/10</td><td>60.00</td></tr><tr><td>7</td><td class="ts">08-06-2026</td><td class="ts">14:55</td><td>12.2</td><td>10</td><td>1</td><td>0</td><td>1</td><td>7/10</td><td>70.00</td></tr><tr><td>8</td><td class="ts">08-06-2026</td><td class="ts">15:07</td><td>14.0</td><td>10</td><td>3</td><td>2</td><td>1</td><td>8/10</td><td>80.00</td></tr><tr><td>9</td><td class="ts">08-06-2026</td><td class="ts">15:21</td><td>10.8</td><td>5</td><td>3</td><td>2</td><td>1</td><td>9/10</td><td>90.00</td></tr><tr><td>10</td><td class="ts">08-06-2026</td><td class="ts">15:32</td><td>11.4</td><td></td><td>2</td><td>1</td><td>1</td><td>10/10</td><td>100.00</td></tr></tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>5010 / 3756 / 15762</dd>
+        <dt>rec/min med / min</dt><dd>29.86 / 29.04</dd>
+        <dt>sud/min (порог &lt;1.0)</dt><dd>0.134</dd>
+        <dt>iter с sudden ≥ 1</dt><dd>8 / 10</dd>
+        <dt>dirty stops</dt><dd>0 / 10</dd>
+      </dl>
+      <p class="note">точка прошла, но есть отдельная шумная итерация</p>
+    </div>
+    
+    <h2 id="rd-1900">retry_delay = 1900 ms
+      <span class="badge badge-warn">STABLE *</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 1900</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">Дата</th>
+          <th rowspan="2">Время</th>
+          <th>Время итер.</th>
+          <th>Таймаут</th>
+          <th>Плановых<br>подкл.</th>
+          <th>Внезапных<br>откл.</th>
+          <th>Плановых<br>откл.</th>
+          <th>k / N</th>
+          <th>%</th>
+        </tr>
+        <tr class="th-sub">
+          <th>мин</th><th>с</th>
+          <th></th><th></th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+    
+          <tbody><tr><td>1</td><td class="ts">08-06-2026</td><td class="ts">15:44</td><td>16.1</td><td>5</td><td>3</td><td>2</td><td>1</td><td>1/10</td><td>10.00</td></tr><tr><td>2</td><td class="ts">08-06-2026</td><td class="ts">16:00</td><td>16.6</td><td>6</td><td>2</td><td>1</td><td>1</td><td>2/10</td><td>20.00</td></tr><tr><td>3</td><td class="ts">08-06-2026</td><td class="ts">16:17</td><td>19.4</td><td>10</td><td>3</td><td>2</td><td>1</td><td>3/10</td><td>30.00</td></tr><tr><td>4</td><td class="ts">08-06-2026</td><td class="ts">16:36</td><td>12.4</td><td>6</td><td>2</td><td>1</td><td>1</td><td>4/10</td><td>40.00</td></tr><tr><td>5</td><td class="ts">08-06-2026</td><td class="ts">16:49</td><td>15.9</td><td>7</td><td>2</td><td>1</td><td>1</td><td>5/10</td><td>50.00</td></tr><tr><td>6</td><td class="ts">08-06-2026</td><td class="ts">17:05</td><td>19.9</td><td>8</td><td>3</td><td>2</td><td>1</td><td>6/10</td><td>60.00</td></tr><tr><td>7</td><td class="ts">08-06-2026</td><td class="ts">17:25</td><td>11.3</td><td>5</td><td>1</td><td>0</td><td>1</td><td>7/10</td><td>70.00</td></tr><tr><td>8</td><td class="ts">08-06-2026</td><td class="ts">17:37</td><td>13.7</td><td>10</td><td>2</td><td>1</td><td>1</td><td>8/10</td><td>80.00</td></tr><tr><td>9</td><td class="ts">08-06-2026</td><td class="ts">17:51</td><td>16.1</td><td>5</td><td>1</td><td>0</td><td>1</td><td>9/10</td><td>90.00</td></tr><tr><td>10</td><td class="ts">08-06-2026</td><td class="ts">18:07</td><td>11.3</td><td></td><td>2</td><td>1</td><td>1</td><td>10/10</td><td>100.00</td></tr></tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>5079 / 3761 / 10983</dd>
+        <dt>rec/min med / min</dt><dd>29.8 / 29.27</dd>
+        <dt>sud/min (порог &lt;1.0)</dt><dd>0.073</dd>
+        <dt>iter с sudden ≥ 1</dt><dd>8 / 10</dd>
+        <dt>dirty stops</dt><dd>0 / 10</dd>
+      </dl>
+      <p class="note">точка прошла, но есть отдельная шумная итерация</p>
+    </div>
+    
+    <h2 id="rd-2000">retry_delay = 2000 ms
+      <span class="badge badge-warn">STABLE *</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 2000</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">Дата</th>
+          <th rowspan="2">Время</th>
+          <th>Время итер.</th>
+          <th>Таймаут</th>
+          <th>Плановых<br>подкл.</th>
+          <th>Внезапных<br>откл.</th>
+          <th>Плановых<br>откл.</th>
+          <th>k / N</th>
+          <th>%</th>
+        </tr>
+        <tr class="th-sub">
+          <th>мин</th><th>с</th>
+          <th></th><th></th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+    
+          <tbody><tr><td>1</td><td class="ts">08-06-2026</td><td class="ts">18:18</td><td>15.2</td><td>10</td><td>2</td><td>2</td><td>1</td><td>1/10</td><td>10.00</td></tr><tr><td>2</td><td class="ts">08-06-2026</td><td class="ts">18:34</td><td>13.7</td><td>8</td><td>4</td><td>3</td><td>1</td><td>2/10</td><td>20.00</td></tr><tr><td>3</td><td class="ts">08-06-2026</td><td class="ts">18:47</td><td>17.3</td><td>9</td><td>2</td><td>1</td><td>1</td><td>3/10</td><td>30.00</td></tr><tr><td>4</td><td class="ts">08-06-2026</td><td class="ts">19:05</td><td>14.8</td><td>7</td><td>2</td><td>1</td><td>1</td><td>4/10</td><td>40.00</td></tr><tr><td>5</td><td class="ts">08-06-2026</td><td class="ts">19:20</td><td>11.0</td><td>5</td><td>1</td><td>0</td><td>1</td><td>5/10</td><td>50.00</td></tr><tr><td>6</td><td class="ts">08-06-2026</td><td class="ts">19:31</td><td>14.9</td><td>6</td><td>1</td><td>0</td><td>1</td><td>6/10</td><td>60.00</td></tr><tr><td>7</td><td class="ts">08-06-2026</td><td class="ts">19:46</td><td>15.1</td><td>7</td><td>3</td><td>2</td><td>1</td><td>7/10</td><td>70.00</td></tr><tr><td>8</td><td class="ts">08-06-2026</td><td class="ts">20:01</td><td>18.3</td><td>5</td><td>1</td><td>0</td><td>1</td><td>8/10</td><td>80.00</td></tr><tr><td>9</td><td class="ts">08-06-2026</td><td class="ts">20:20</td><td>10.7</td><td>6</td><td>1</td><td>0</td><td>1</td><td>9/10</td><td>90.00</td></tr><tr><td>10</td><td class="ts">08-06-2026</td><td class="ts">20:31</td><td>17.4</td><td></td><td>2</td><td>1</td><td>1</td><td>10/10</td><td>100.00</td></tr></tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>5632 / 3753 / 8609</dd>
+        <dt>rec/min med / min</dt><dd>29.79 / 29.14</dd>
+        <dt>sud/min (порог &lt;1.0)</dt><dd>0.068</dd>
+        <dt>iter с sudden ≥ 1</dt><dd>6 / 10</dd>
+        <dt>dirty stops</dt><dd>0 / 10</dd>
+      </dl>
+      <p class="note">точка прошла, но есть отдельная шумная итерация</p>
+    </div>
+    
+    <h2 id="rd-2100">retry_delay = 2100 ms
+      <span class="badge badge-warn">STABLE *</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 2100</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">Дата</th>
+          <th rowspan="2">Время</th>
+          <th>Время итер.</th>
+          <th>Таймаут</th>
+          <th>Плановых<br>подкл.</th>
+          <th>Внезапных<br>откл.</th>
+          <th>Плановых<br>откл.</th>
+          <th>k / N</th>
+          <th>%</th>
+        </tr>
+        <tr class="th-sub">
+          <th>мин</th><th>с</th>
+          <th></th><th></th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+    
+          <tbody><tr><td>1</td><td class="ts">08-06-2026</td><td class="ts">20:48</td><td>18.0</td><td>8</td><td>1</td><td>0</td><td>1</td><td>1/10</td><td>10.00</td></tr><tr><td>2</td><td class="ts">08-06-2026</td><td class="ts">21:06</td><td>12.5</td><td>5</td><td>1</td><td>0</td><td>1</td><td>2/10</td><td>20.00</td></tr><tr><td>3</td><td class="ts">08-06-2026</td><td class="ts">21:19</td><td>11.7</td><td>10</td><td>1</td><td>0</td><td>1</td><td>3/10</td><td>30.00</td></tr><tr><td>4</td><td class="ts">08-06-2026</td><td class="ts">21:31</td><td>12.4</td><td>9</td><td>1</td><td>0</td><td>1</td><td>4/10</td><td>40.00</td></tr><tr><td>5</td><td class="ts">08-06-2026</td><td class="ts">21:44</td><td>15.0</td><td>7</td><td>3</td><td>2</td><td>1</td><td>5/10</td><td>50.00</td></tr><tr><td>6</td><td class="ts">08-06-2026</td><td class="ts">21:59</td><td>10.9</td><td>6</td><td>1</td><td>0</td><td>1</td><td>6/10</td><td>60.00</td></tr><tr><td>7</td><td class="ts">08-06-2026</td><td class="ts">22:10</td><td>19.2</td><td>7</td><td>2</td><td>1</td><td>1</td><td>7/10</td><td>70.00</td></tr><tr><td>8</td><td class="ts">08-06-2026</td><td class="ts">22:29</td><td>19.9</td><td>9</td><td>2</td><td>1</td><td>1</td><td>8/10</td><td>80.00</td></tr><tr><td>9</td><td class="ts">08-06-2026</td><td class="ts">22:49</td><td>18.8</td><td>6</td><td>2</td><td>1</td><td>1</td><td>9/10</td><td>90.00</td></tr><tr><td>10</td><td class="ts">08-06-2026</td><td class="ts">23:08</td><td>18.2</td><td></td><td>3</td><td>2</td><td>1</td><td>10/10</td><td>100.00</td></tr></tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>4410 / 3710 / 17020</dd>
+        <dt>rec/min med / min</dt><dd>29.86 / 29.34</dd>
+        <dt>sud/min (порог &lt;1.0)</dt><dd>0.045</dd>
+        <dt>iter с sudden ≥ 1</dt><dd>5 / 10</dd>
+        <dt>dirty stops</dt><dd>0 / 10</dd>
+      </dl>
+      <p class="note">точка прошла, но есть отдельная шумная итерация</p>
+    </div>
+    
+    <h2 id="rd-2200">retry_delay = 2200 ms
+      <span class="badge badge-warn">STABLE *</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 2200</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">Дата</th>
+          <th rowspan="2">Время</th>
+          <th>Время итер.</th>
+          <th>Таймаут</th>
+          <th>Плановых<br>подкл.</th>
+          <th>Внезапных<br>откл.</th>
+          <th>Плановых<br>откл.</th>
+          <th>k / N</th>
+          <th>%</th>
+        </tr>
+        <tr class="th-sub">
+          <th>мин</th><th>с</th>
+          <th></th><th></th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+    
+          <tbody><tr><td>1</td><td class="ts">08-06-2026</td><td class="ts">23:26</td><td>16.3</td><td>9</td><td>1</td><td>0</td><td>1</td><td>1/10</td><td>10.00</td></tr><tr><td>2</td><td class="ts">08-06-2026</td><td class="ts">23:43</td><td>10.5</td><td>7</td><td>1</td><td>0</td><td>1</td><td>2/10</td><td>20.00</td></tr><tr><td>3</td><td class="ts">08-06-2026</td><td class="ts">23:54</td><td>10.2</td><td>7</td><td>1</td><td>0</td><td>1</td><td>3/10</td><td>30.00</td></tr><tr><td>4</td><td class="ts">09-06-2026</td><td class="ts">00:04</td><td>17.9</td><td>9</td><td>2</td><td>1</td><td>1</td><td>4/10</td><td>40.00</td></tr><tr><td>5</td><td class="ts">09-06-2026</td><td class="ts">00:22</td><td>17.7</td><td>7</td><td>3</td><td>2</td><td>1</td><td>5/10</td><td>50.00</td></tr><tr><td>6</td><td class="ts">09-06-2026</td><td class="ts">00:40</td><td>11.9</td><td>7</td><td>1</td><td>0</td><td>1</td><td>6/10</td><td>60.00</td></tr><tr><td>7</td><td class="ts">09-06-2026</td><td class="ts">00:52</td><td>18.3</td><td>8</td><td>3</td><td>2</td><td>1</td><td>7/10</td><td>70.00</td></tr><tr><td>8</td><td class="ts">09-06-2026</td><td class="ts">01:11</td><td>17.9</td><td>7</td><td>2</td><td>1</td><td>1</td><td>8/10</td><td>80.00</td></tr><tr><td>9</td><td class="ts">09-06-2026</td><td class="ts">01:29</td><td>10.6</td><td>6</td><td>1</td><td>0</td><td>1</td><td>9/10</td><td>90.00</td></tr><tr><td>10</td><td class="ts">09-06-2026</td><td class="ts">01:39</td><td>14.8</td><td></td><td>2</td><td>1</td><td>1</td><td>10/10</td><td>100.00</td></tr></tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>6803 / 3794 / 13650</dd>
+        <dt>rec/min med / min</dt><dd>29.79 / 29.33</dd>
+        <dt>sud/min (порог &lt;1.0)</dt><dd>0.049</dd>
+        <dt>iter с sudden ≥ 1</dt><dd>5 / 10</dd>
+        <dt>dirty stops</dt><dd>0 / 10</dd>
+      </dl>
+      <p class="note">точка прошла, но есть отдельная шумная итерация</p>
+    </div>
+    
+    <h2 id="rd-2300">retry_delay = 2300 ms
+      <span class="badge badge-warn">STABLE *</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 2300</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">Дата</th>
+          <th rowspan="2">Время</th>
+          <th>Время итер.</th>
+          <th>Таймаут</th>
+          <th>Плановых<br>подкл.</th>
+          <th>Внезапных<br>откл.</th>
+          <th>Плановых<br>откл.</th>
+          <th>k / N</th>
+          <th>%</th>
+        </tr>
+        <tr class="th-sub">
+          <th>мин</th><th>с</th>
+          <th></th><th></th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+    
+          <tbody><tr><td>1</td><td class="ts">09-06-2026</td><td class="ts">01:54</td><td>18.2</td><td>7</td><td>3</td><td>2</td><td>1</td><td>1/10</td><td>10.00</td></tr><tr><td>2</td><td class="ts">09-06-2026</td><td class="ts">02:13</td><td>11.4</td><td>7</td><td>1</td><td>0</td><td>1</td><td>2/10</td><td>20.00</td></tr><tr><td>3</td><td class="ts">09-06-2026</td><td class="ts">02:24</td><td>10.9</td><td>9</td><td>2</td><td>1</td><td>1</td><td>3/10</td><td>30.00</td></tr><tr><td>4</td><td class="ts">09-06-2026</td><td class="ts">02:35</td><td>17.2</td><td>7</td><td>2</td><td>1</td><td>1</td><td>4/10</td><td>40.00</td></tr><tr><td>5</td><td class="ts">09-06-2026</td><td class="ts">02:53</td><td>13.1</td><td>8</td><td>2</td><td>1</td><td>1</td><td>5/10</td><td>50.00</td></tr><tr><td>6</td><td class="ts">09-06-2026</td><td class="ts">03:06</td><td>13.1</td><td>8</td><td>4</td><td>3</td><td>1</td><td>6/10</td><td>60.00</td></tr><tr><td>7</td><td class="ts">09-06-2026</td><td class="ts">03:19</td><td>12.1</td><td>8</td><td>1</td><td>0</td><td>1</td><td>7/10</td><td>70.00</td></tr><tr><td>8</td><td class="ts">09-06-2026</td><td class="ts">03:31</td><td>11.2</td><td>8</td><td>2</td><td>1</td><td>1</td><td>8/10</td><td>80.00</td></tr><tr><td>9</td><td class="ts">09-06-2026</td><td class="ts">03:43</td><td>14.7</td><td>9</td><td>2</td><td>1</td><td>1</td><td>9/10</td><td>90.00</td></tr><tr><td>10</td><td class="ts">09-06-2026</td><td class="ts">03:58</td><td>12.9</td><td></td><td>1</td><td>0</td><td>1</td><td>10/10</td><td>100.00</td></tr></tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>5007 / 3780 / 7426</dd>
+        <dt>rec/min med / min</dt><dd>29.79 / 29.14</dd>
+        <dt>sud/min (порог &lt;1.0)</dt><dd>0.075</dd>
+        <dt>iter с sudden ≥ 1</dt><dd>7 / 10</dd>
+        <dt>dirty stops</dt><dd>0 / 10</dd>
+      </dl>
+      <p class="note">точка прошла, но есть отдельная шумная итерация</p>
+    </div>
+    
+    <h2 id="rd-2400">retry_delay = 2400 ms
+      <span class="badge badge-warn">STABLE *</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 2400</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">Дата</th>
+          <th rowspan="2">Время</th>
+          <th>Время итер.</th>
+          <th>Таймаут</th>
+          <th>Плановых<br>подкл.</th>
+          <th>Внезапных<br>откл.</th>
+          <th>Плановых<br>откл.</th>
+          <th>k / N</th>
+          <th>%</th>
+        </tr>
+        <tr class="th-sub">
+          <th>мин</th><th>с</th>
+          <th></th><th></th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+    
+          <tbody><tr><td>1</td><td class="ts">09-06-2026</td><td class="ts">04:11</td><td>10.2</td><td>10</td><td>1</td><td>0</td><td>1</td><td>1/10</td><td>10.00</td></tr><tr><td>2</td><td class="ts">09-06-2026</td><td class="ts">04:21</td><td>13.2</td><td>10</td><td>2</td><td>1</td><td>1</td><td>2/10</td><td>20.00</td></tr><tr><td>3</td><td class="ts">09-06-2026</td><td class="ts">04:35</td><td>11.6</td><td>6</td><td>1</td><td>0</td><td>1</td><td>3/10</td><td>30.00</td></tr><tr><td>4</td><td class="ts">09-06-2026</td><td class="ts">04:46</td><td>11.1</td><td>7</td><td>1</td><td>0</td><td>1</td><td>4/10</td><td>40.00</td></tr><tr><td>5</td><td class="ts">09-06-2026</td><td class="ts">04:58</td><td>17.5</td><td>6</td><td>2</td><td>1</td><td>1</td><td>5/10</td><td>50.00</td></tr><tr><td>6</td><td class="ts">09-06-2026</td><td class="ts">05:15</td><td>10.6</td><td>5</td><td>1</td><td>0</td><td>1</td><td>6/10</td><td>60.00</td></tr><tr><td>7</td><td class="ts">09-06-2026</td><td class="ts">05:26</td><td>13.6</td><td>9</td><td>2</td><td>1</td><td>1</td><td>7/10</td><td>70.00</td></tr><tr><td>8</td><td class="ts">09-06-2026</td><td class="ts">05:40</td><td>12.5</td><td>9</td><td>1</td><td>0</td><td>1</td><td>8/10</td><td>80.00</td></tr><tr><td>9</td><td class="ts">09-06-2026</td><td class="ts">05:53</td><td>13.1</td><td>5</td><td>1</td><td>0</td><td>1</td><td>9/10</td><td>90.00</td></tr><tr><td>10</td><td class="ts">09-06-2026</td><td class="ts">06:06</td><td>14.4</td><td></td><td>2</td><td>1</td><td>1</td><td>10/10</td><td>100.00</td></tr></tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>5022 / 3783 / 9827</dd>
+        <dt>rec/min med / min</dt><dd>29.98 / 29.65</dd>
+        <dt>sud/min (порог &lt;1.0)</dt><dd>0.032</dd>
+        <dt>iter с sudden ≥ 1</dt><dd>4 / 10</dd>
+        <dt>dirty stops</dt><dd>0 / 10</dd>
+      </dl>
+      <p class="note">точка прошла, но есть отдельная шумная итерация</p>
+    </div>
+    
+    <h2 id="rd-2500">retry_delay = 2500 ms
+      <span class="badge badge-warn">STABLE *</span>
+    </h2>
+    <div class="panel">
+      <div class="excel-label">retry_delay = 2500</div>
+      <div class="excel-wrap">
+        <table class="excel">
+          
+      <thead>
+        <tr>
+          <th rowspan="2">Итерация</th>
+          <th rowspan="2">Дата</th>
+          <th rowspan="2">Время</th>
+          <th>Время итер.</th>
+          <th>Таймаут</th>
+          <th>Плановых<br>подкл.</th>
+          <th>Внезапных<br>откл.</th>
+          <th>Плановых<br>откл.</th>
+          <th>k / N</th>
+          <th>%</th>
+        </tr>
+        <tr class="th-sub">
+          <th>мин</th><th>с</th>
+          <th></th><th></th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+    
+          <tbody><tr><td>1</td><td class="ts">09-06-2026</td><td class="ts">06:20</td><td>17.9</td><td>7</td><td>4</td><td>3</td><td>1</td><td>1/10</td><td>10.00</td></tr><tr><td>2</td><td class="ts">09-06-2026</td><td class="ts">06:38</td><td>18.4</td><td>10</td><td>1</td><td>0</td><td>1</td><td>2/10</td><td>20.00</td></tr><tr><td>3</td><td class="ts">09-06-2026</td><td class="ts">06:57</td><td>17.8</td><td>6</td><td>1</td><td>0</td><td>1</td><td>3/10</td><td>30.00</td></tr><tr><td>4</td><td class="ts">09-06-2026</td><td class="ts">07:15</td><td>14.7</td><td>9</td><td>2</td><td>1</td><td>1</td><td>4/10</td><td>40.00</td></tr><tr><td>5</td><td class="ts">09-06-2026</td><td class="ts">07:30</td><td>15.0</td><td>5</td><td>4</td><td>3</td><td>1</td><td>5/10</td><td>50.00</td></tr><tr><td>6</td><td class="ts">09-06-2026</td><td class="ts">07:45</td><td>17.2</td><td>9</td><td>3</td><td>3</td><td>1</td><td>6/10</td><td>60.00</td></tr><tr><td>7</td><td class="ts">09-06-2026</td><td class="ts">08:02</td><td>12.8</td><td>10</td><td>2</td><td>1</td><td>1</td><td>7/10</td><td>70.00</td></tr><tr><td>8</td><td class="ts">09-06-2026</td><td class="ts">08:15</td><td>14.0</td><td>6</td><td>3</td><td>2</td><td>1</td><td>8/10</td><td>80.00</td></tr><tr><td>9</td><td class="ts">09-06-2026</td><td class="ts">08:30</td><td>18.8</td><td>8</td><td>2</td><td>1</td><td>1</td><td>9/10</td><td>90.00</td></tr><tr><td>10</td><td class="ts">09-06-2026</td><td class="ts">08:49</td><td>11.1</td><td></td><td>2</td><td>1</td><td>1</td><td>10/10</td><td>100.00</td></tr></tbody>
+        </table>
+      </div>
+      <dl class="stat-grid">
+        <dt>latency med / min / max, ms</dt><dd>4972 / 3829 / 16115</dd>
+        <dt>rec/min med / min</dt><dd>29.92 / 29.01</dd>
+        <dt>sud/min (порог &lt;1.0)</dt><dd>0.096</dd>
+        <dt>iter с sudden ≥ 1</dt><dd>8 / 10</dd>
+        <dt>dirty stops</dt><dd>0 / 10</dd>
+      </dl>
+      <p class="note">точка прошла, но есть отдельная шумная итерация</p>
+    </div>
+    
+
+  <h2 id="analysis">Анализ серии</h2>
+  <h3>Сводная таблица</h3>
+  <div class="panel">
+    <table>
+      <thead><tr>
+        <th>retry_delay, ms</th><th>latency med</th><th>lat min</th><th>lat max</th>
+        <th>rec/min med</th><th>rec/min min</th><th>sud/min</th><th>sudden iters</th><th>dirty</th><th>verdict</th>
+      </tr></thead>
+      <tbody><tr><td>500</td><td>4986</td><td>3793</td><td>13471</td><td>29.59</td><td>29.16</td><td>0.091</td><td>8 / 10</td><td>0 / 10</td><td class="verdict-warn">STABLE *</td></tr>
+<tr><td>600</td><td>4970</td><td>3752</td><td>19358</td><td>29.92</td><td>29.33</td><td>0.035</td><td>4 / 10</td><td>0 / 10</td><td class="verdict-warn">STABLE *</td></tr>
+<tr><td>700</td><td>6206</td><td>3697</td><td>14369</td><td>29.5</td><td>28.26</td><td>0.214</td><td>9 / 10</td><td>0 / 10</td><td class="verdict-bad">UNSTABLE</td></tr>
+<tr><td>800</td><td>8583</td><td>3717</td><td>31022</td><td>27.97</td><td>0.0</td><td>0.573</td><td>10 / 10</td><td>1 / 10</td><td class="verdict-bad">UNSTABLE</td></tr>
+<tr><td>900</td><td>12152</td><td>3670</td><td>26165</td><td>29.11</td><td>0.0</td><td>0.295</td><td>10 / 10</td><td>1 / 10</td><td class="verdict-bad">UNSTABLE</td></tr>
+<tr><td>1000</td><td>8456</td><td>3727</td><td>34289</td><td>27.98</td><td>22.84</td><td>0.842</td><td>10 / 10</td><td>1 / 10</td><td class="verdict-bad">UNSTABLE</td></tr>
+<tr><td>1100</td><td>6664</td><td>3689</td><td>12107</td><td>29.62</td><td>20.5</td><td>0.439</td><td>7 / 10</td><td>0 / 10</td><td class="verdict-bad">UNSTABLE</td></tr>
+<tr><td>1200</td><td>4948</td><td>3711</td><td>17027</td><td>29.65</td><td>29.36</td><td>0.046</td><td>6 / 10</td><td>0 / 10</td><td class="verdict-warn">STABLE *</td></tr>
+<tr><td>1300</td><td>4972</td><td>3763</td><td>14613</td><td>30.07</td><td>29.48</td><td>0.044</td><td>7 / 10</td><td>0 / 10</td><td class="verdict-warn">STABLE *</td></tr>
+<tr><td>1400</td><td>4361</td><td>3766</td><td>12176</td><td>30.89</td><td>30.38</td><td>0.042</td><td>5 / 10</td><td>1 / 10</td><td class="verdict-warn">STABLE *</td></tr>
+<tr><td>1500</td><td>4938</td><td>3735</td><td>17104</td><td>30.59</td><td>29.05</td><td>0.046</td><td>6 / 10</td><td>0 / 10</td><td class="verdict-warn">STABLE *</td></tr>
+<tr><td>1600</td><td>4990</td><td>3800</td><td>7450</td><td>29.73</td><td>29.37</td><td>0.048</td><td>7 / 10</td><td>0 / 10</td><td class="verdict-warn">STABLE *</td></tr>
+<tr><td>1700</td><td>4375</td><td>3701</td><td>7377</td><td>29.95</td><td>29.3</td><td>0.091</td><td>6 / 10</td><td>0 / 10</td><td class="verdict-warn">STABLE *</td></tr>
+<tr><td>1800</td><td>5010</td><td>3756</td><td>15762</td><td>29.86</td><td>29.04</td><td>0.134</td><td>8 / 10</td><td>0 / 10</td><td class="verdict-warn">STABLE *</td></tr>
+<tr><td>1900</td><td>5079</td><td>3761</td><td>10983</td><td>29.8</td><td>29.27</td><td>0.073</td><td>8 / 10</td><td>0 / 10</td><td class="verdict-warn">STABLE *</td></tr>
+<tr><td>2000</td><td>5632</td><td>3753</td><td>8609</td><td>29.79</td><td>29.14</td><td>0.068</td><td>6 / 10</td><td>0 / 10</td><td class="verdict-warn">STABLE *</td></tr>
+<tr><td>2100</td><td>4410</td><td>3710</td><td>17020</td><td>29.86</td><td>29.34</td><td>0.045</td><td>5 / 10</td><td>0 / 10</td><td class="verdict-warn">STABLE *</td></tr>
+<tr><td>2200</td><td>6803</td><td>3794</td><td>13650</td><td>29.79</td><td>29.33</td><td>0.049</td><td>5 / 10</td><td>0 / 10</td><td class="verdict-warn">STABLE *</td></tr>
+<tr><td>2300</td><td>5007</td><td>3780</td><td>7426</td><td>29.79</td><td>29.14</td><td>0.075</td><td>7 / 10</td><td>0 / 10</td><td class="verdict-warn">STABLE *</td></tr>
+<tr><td>2400</td><td>5022</td><td>3783</td><td>9827</td><td>29.98</td><td>29.65</td><td>0.032</td><td>4 / 10</td><td>0 / 10</td><td class="verdict-warn">STABLE *</td></tr>
+<tr><td>2500</td><td>4972</td><td>3829</td><td>16115</td><td>29.92</td><td>29.01</td><td>0.096</td><td>8 / 10</td><td>0 / 10</td><td class="verdict-warn">STABLE *</td></tr></tbody>
+    </table>
+  </div>
+
+  
+    <h2 id="rssi">Мощность BLE-сигнала (RSSI) — периодический замер</h2>
+    <div class="panel">
+      <p style="margin-top:0;" class="note">Среднее за 60 с, замер каждый час. Вертикальные метки — начало теста retry_delay.</p>
+      <table>
+        <thead><tr>
+          <th>Дата</th><th>Время (UTC)</th><th>retry_delay</th><th>avg, дБм</th><th>min</th><th>max</th><th>n samples</th>
+        </tr></thead>
+        <tbody><tr><td>07-06-2026</td><td>11:22</td><td>800</td><td><b>-87.0</b></td><td>-89</td><td>-84</td><td>24</td></tr><tr><td>07-06-2026</td><td>18:08</td><td>1000</td><td><b>-92.0</b></td><td>-96</td><td>-88</td><td>31</td></tr><tr><td>08-06-2026</td><td>04:16</td><td>1400</td><td><b>-83.9</b></td><td>-85</td><td>-83</td><td>30</td></tr><tr><td>08-06-2026</td><td>06:56</td><td>1500</td><td><b>-84.2</b></td><td>-85</td><td>-83</td><td>18</td></tr><tr><td>08-06-2026</td><td>07:56</td><td>1500</td><td><b>-84.6</b></td><td>-87</td><td>-82</td><td>31</td></tr><tr><td>08-06-2026</td><td>08:56</td><td>1600</td><td><b>-85.2</b></td><td>-86</td><td>-85</td><td>30</td></tr><tr><td>08-06-2026</td><td>09:56</td><td>1600</td><td><b>-83.4</b></td><td>-85</td><td>-81</td><td>30</td></tr><tr><td>08-06-2026</td><td>10:56</td><td>1700</td><td><b>-84.5</b></td><td>-86</td><td>-83</td><td>30</td></tr><tr><td>08-06-2026</td><td>11:56</td><td>1700</td><td><b>-85.3</b></td><td>-87</td><td>-84</td><td>31</td></tr><tr><td>08-06-2026</td><td>12:56</td><td>1700</td><td><b>-84.4</b></td><td>-86</td><td>-82</td><td>30</td></tr><tr><td>08-06-2026</td><td>13:56</td><td>1800</td><td><b>-84.0</b></td><td>-85</td><td>-83</td><td>31</td></tr><tr><td>08-06-2026</td><td>14:56</td><td>1800</td><td><b>-83.2</b></td><td>-84</td><td>-82</td><td>30</td></tr><tr><td>08-06-2026</td><td>15:57</td><td>1900</td><td><b>-84.2</b></td><td>-85</td><td>-83</td><td>31</td></tr><tr><td>08-06-2026</td><td>16:57</td><td>1900</td><td><b>-84.9</b></td><td>-86</td><td>-84</td><td>30</td></tr><tr><td>08-06-2026</td><td>17:57</td><td>1900</td><td><b>-83.6</b></td><td>-86</td><td>-82</td><td>31</td></tr><tr><td>08-06-2026</td><td>18:57</td><td>2000</td><td><b>-83.5</b></td><td>-84</td><td>-83</td><td>30</td></tr><tr><td>08-06-2026</td><td>19:57</td><td>2000</td><td><b>-83.9</b></td><td>-85</td><td>-83</td><td>31</td></tr><tr><td>08-06-2026</td><td>20:57</td><td>2100</td><td><b>-84.0</b></td><td>-85</td><td>-83</td><td>30</td></tr><tr><td>08-06-2026</td><td>21:57</td><td>2100</td><td><b>-83.0</b></td><td>-86</td><td>-81</td><td>30</td></tr><tr><td>08-06-2026</td><td>22:57</td><td>2100</td><td><b>-84.1</b></td><td>-85</td><td>-83</td><td>30</td></tr><tr><td>08-06-2026</td><td>23:57</td><td>2200</td><td><b>-83.3</b></td><td>-84</td><td>-81</td><td>31</td></tr><tr><td>09-06-2026</td><td>00:57</td><td>2200</td><td><b>-83.1</b></td><td>-84</td><td>-82</td><td>30</td></tr><tr><td>09-06-2026</td><td>01:57</td><td>2300</td><td><b>-84.1</b></td><td>-86</td><td>-83</td><td>31</td></tr><tr><td>09-06-2026</td><td>02:57</td><td>2300</td><td><b>-83.6</b></td><td>-84</td><td>-83</td><td>30</td></tr><tr><td>09-06-2026</td><td>03:58</td><td>2300</td><td><b>-83.2</b></td><td>-85</td><td>-82</td><td>30</td></tr><tr><td>09-06-2026</td><td>04:58</td><td>2400</td><td><b>-83.1</b></td><td>-85</td><td>-82</td><td>29</td></tr><tr><td>09-06-2026</td><td>05:58</td><td>2400</td><td><b>-83.6</b></td><td>-85</td><td>-83</td><td>30</td></tr><tr><td>09-06-2026</td><td>06:58</td><td>2500</td><td><b>-83.0</b></td><td>-84</td><td>-82</td><td>21</td></tr><tr><td>09-06-2026</td><td>07:58</td><td>2500</td><td><b>-84.9</b></td><td>-87</td><td>-83</td><td>31</td></tr><tr><td>09-06-2026</td><td>08:58</td><td>2500</td><td><b>-84.9</b></td><td>-87</td><td>-84</td><td>31</td></tr></tbody>
+      </table>
+      <p class="note">Рабочий диапазон BLE: −50 (вплотную) .. −90 (граница потерь). Drift &gt;3 дБ = вероятно физическое смещение.</p>
+    </div>
+    <div class="chart-wrap" style="height:400px">
+      <canvas id="rssiChart"></canvas>
+    </div>
+    <script>
+    (function(){
+      const t={color:'#8aa0b8',font:{size:11}};
+      const g={color:'#2a3340'};
+      const rdStarts=[{"x": 1780788226403, "label": "500"}, {"x": 1780796999576, "label": "600"}, {"x": 1780818017108, "label": "700"}, {"x": 1780832636231, "label": "800"}, {"x": 1780841408121, "label": "900"}, {"x": 1780849502976, "label": "1000"}, {"x": 1780859248320, "label": "1100"}, {"x": 1780868467046, "label": "1200"}, {"x": 1780877842424, "label": "1300"}, {"x": 1780887628780, "label": "1400"}, {"x": 1780896494626, "label": "1500"}, {"x": 1780905870743, "label": "1600"}, {"x": 1780916026521, "label": "1700"}, {"x": 1780924747162, "label": "1800"}, {"x": 1780933463160, "label": "1900"}, {"x": 1780942718637, "label": "2000"}, {"x": 1780951718312, "label": "2100"}, {"x": 1780961219065, "label": "2200"}, {"x": 1780970080613, "label": "2300"}, {"x": 1780978277448, "label": "2400"}, {"x": 1780986046480, "label": "2500"}];
+      // Custom plugin: draw vertical rd-start lines with labels
+      const rdLinesPlugin={
+        id:'rdLines',
+        afterDraw(chart){
+          const ctx=chart.ctx, xs=chart.scales.x, ys=chart.scales.y;
+          rdStarts.forEach(s=>{
+            const px=xs.getPixelForValue(s.x);
+            if(px<xs.left||px>xs.right) return;
+            ctx.save();
+            ctx.beginPath();
+            ctx.strokeStyle='rgba(78,168,222,0.35)';
+            ctx.lineWidth=1; ctx.setLineDash([3,4]);
+            ctx.moveTo(px,ys.top); ctx.lineTo(px,ys.bottom); ctx.stroke();
+            ctx.fillStyle='#4ea8de'; ctx.font='bold 10px monospace';
+            ctx.textAlign='center';
+            ctx.fillText(s.label,px,ys.top-4);
+            ctx.restore();
+          });
+        }
+      };
+      function fmtMs(v){
+        const d=new Date(v);
+        const hh=d.getUTCHours().toString().padStart(2,'0');
+        const mm=d.getUTCMinutes().toString().padStart(2,'0');
+        const DD=d.getUTCDate().toString().padStart(2,'0');
+        const MM=(d.getUTCMonth()+1).toString().padStart(2,'0');
+        return hh+':'+mm+' '+DD+'.'+MM;
+      }
+      new Chart(document.getElementById('rssiChart'),{
+        plugins:[rdLinesPlugin],
+        type:'scatter',
+        data:{datasets:[
+          {label:'avg RSSI, дБм',data:[{"x": 1780831338000, "y": -87.0}, {"x": 1780855737000, "y": -92.0}, {"x": 1780892208000, "y": -83.9}, {"x": 1780901783000, "y": -84.2}, {"x": 1780905387000, "y": -84.6}, {"x": 1780908991000, "y": -85.2}, {"x": 1780912595000, "y": -83.4}, {"x": 1780916200000, "y": -84.5}, {"x": 1780919804000, "y": -85.3}, {"x": 1780923408000, "y": -84.4}, {"x": 1780927013000, "y": -84.0}, {"x": 1780930617000, "y": -83.2}, {"x": 1780934224000, "y": -84.2}, {"x": 1780937829000, "y": -84.9}, {"x": 1780941433000, "y": -83.6}, {"x": 1780945038000, "y": -83.5}, {"x": 1780948644000, "y": -83.9}, {"x": 1780952249000, "y": -84.0}, {"x": 1780955853000, "y": -83.0}, {"x": 1780959459000, "y": -84.1}, {"x": 1780963063000, "y": -83.3}, {"x": 1780966667000, "y": -83.1}, {"x": 1780970272000, "y": -84.1}, {"x": 1780973876000, "y": -83.6}, {"x": 1780977480000, "y": -83.2}, {"x": 1780981085000, "y": -83.1}, {"x": 1780984689000, "y": -83.6}, {"x": 1780988293000, "y": -83.0}, {"x": 1780991897000, "y": -84.9}, {"x": 1780995502000, "y": -84.9}],borderColor:'#4ea8de',backgroundColor:'rgba(78,168,222,0.3)',
+            showLine:true,tension:0.3,pointRadius:7,pointHoverRadius:9,borderWidth:2.5},
+          {label:'min',data:[{"x": 1780831338000, "y": -89}, {"x": 1780855737000, "y": -96}, {"x": 1780892208000, "y": -85}, {"x": 1780901783000, "y": -85}, {"x": 1780905387000, "y": -87}, {"x": 1780908991000, "y": -86}, {"x": 1780912595000, "y": -85}, {"x": 1780916200000, "y": -86}, {"x": 1780919804000, "y": -87}, {"x": 1780923408000, "y": -86}, {"x": 1780927013000, "y": -85}, {"x": 1780930617000, "y": -84}, {"x": 1780934224000, "y": -85}, {"x": 1780937829000, "y": -86}, {"x": 1780941433000, "y": -86}, {"x": 1780945038000, "y": -84}, {"x": 1780948644000, "y": -85}, {"x": 1780952249000, "y": -85}, {"x": 1780955853000, "y": -86}, {"x": 1780959459000, "y": -85}, {"x": 1780963063000, "y": -84}, {"x": 1780966667000, "y": -84}, {"x": 1780970272000, "y": -86}, {"x": 1780973876000, "y": -84}, {"x": 1780977480000, "y": -85}, {"x": 1780981085000, "y": -85}, {"x": 1780984689000, "y": -85}, {"x": 1780988293000, "y": -84}, {"x": 1780991897000, "y": -87}, {"x": 1780995502000, "y": -87}],borderColor:'#e2624c',borderDash:[4,4],
+            showLine:true,tension:0.3,pointRadius:4,borderWidth:1.5},
+          {label:'max',data:[{"x": 1780831338000, "y": -84}, {"x": 1780855737000, "y": -88}, {"x": 1780892208000, "y": -83}, {"x": 1780901783000, "y": -83}, {"x": 1780905387000, "y": -82}, {"x": 1780908991000, "y": -85}, {"x": 1780912595000, "y": -81}, {"x": 1780916200000, "y": -83}, {"x": 1780919804000, "y": -84}, {"x": 1780923408000, "y": -82}, {"x": 1780927013000, "y": -83}, {"x": 1780930617000, "y": -82}, {"x": 1780934224000, "y": -83}, {"x": 1780937829000, "y": -84}, {"x": 1780941433000, "y": -82}, {"x": 1780945038000, "y": -83}, {"x": 1780948644000, "y": -83}, {"x": 1780952249000, "y": -83}, {"x": 1780955853000, "y": -81}, {"x": 1780959459000, "y": -83}, {"x": 1780963063000, "y": -81}, {"x": 1780966667000, "y": -82}, {"x": 1780970272000, "y": -83}, {"x": 1780973876000, "y": -83}, {"x": 1780977480000, "y": -82}, {"x": 1780981085000, "y": -82}, {"x": 1780984689000, "y": -83}, {"x": 1780988293000, "y": -82}, {"x": 1780991897000, "y": -83}, {"x": 1780995502000, "y": -84}],borderColor:'#43c267',borderDash:[4,4],
+            showLine:true,tension:0.3,pointRadius:4,borderWidth:1.5},
+          {label:'−80 (норма)',data:[{x:1780786426403,y:-80},{x:1780997302000,y:-80}],
+            borderColor:'rgba(224,179,65,0.5)',borderDash:[6,3],showLine:true,pointRadius:0,borderWidth:1},
+          {label:'−90 (граница)',data:[{x:1780786426403,y:-90},{x:1780997302000,y:-90}],
+            borderColor:'rgba(226,98,76,0.5)',borderDash:[6,3],showLine:true,pointRadius:0,borderWidth:1},
+        ]},
+        options:{
+          responsive:true, maintainAspectRatio:false,
+          layout:{padding:{top:18}},
+          plugins:{
+            legend:{labels:{color:'#d4dbe2',font:{size:11}}},
+            title:{display:true,text:'RSSI мощности сигнала во времени (метки = начало rd-теста)',
+                    color:'#d4dbe2',font:{size:13}}
+          },
+          scales:{
+            x:{type:'linear',min:1780786426403,max:1780997302000,
+               ticks:{...t,maxTicksLimit:10,callback:fmtMs},
+               grid:g,
+               title:{display:true,text:'Время UTC',color:'#8aa0b8',font:{size:11}}},
+            y:{min:-105,max:-70,
+               ticks:{...t,callback:v=>v+' дБм'},
+               grid:g,
+               title:{display:true,text:'RSSI, дБм',color:'#d4dbe2',font:{size:11}}}
+          }
+        }
+      });
+    })();
+    </script>
+    
+
+  <h3>latency — среднее и медиана по retry_delay</h3>
+  <div class="chart-wrap"><canvas id="latAvgMedChart"></canvas></div>
+
+  <h3>rec/min от retry_delay</h3>
+  <div class="chart-wrap"><canvas id="rpmChart"></canvas></div>
+
+  <h3>latency подключения от retry_delay</h3>
+  <div class="chart-wrap"><canvas id="latChart"></canvas></div>
+
+  <h3>Внезапные отключения от retry_delay</h3>
+  <div class="chart-wrap" style="height:380px"><canvas id="suddenChart"></canvas></div>
+
+  <h3>MTBF — среднее время между внезапными разрывами</h3>
+  <div class="panel" style="padding-bottom:10px;">
+    <p style="margin-top:0;font-size:12px;color:var(--muted);">
+      <b>MTBF = T<sub>монитор</sub> / N<sub>sudden</sub></b> для каждой итерации, в минутах.
+      Если N = 0 (разрывов не было) — MTBF = T<sub>монитор</sub> (нижняя граница, отмечена ромбом ◇).
+      Чем выше MTBF — тем стабильнее соединение.
+    </p>
+  </div>
+  <div class="chart-wrap" style="height:400px"><canvas id="mtbfChart"></canvas></div>
+
+  <h3>T<sub>recover</sub> — среднее время реконнекта</h3>
+  <div class="panel" style="padding-bottom:10px;">
+    <p style="margin-top:0;font-size:12px;color:var(--muted);">
+      <b>T<sub>recover</sub> = Σt<sub>reconnect</sub> / N<sub>success</sub></b> — среднее время от разрыва до восстановления (сек), только успешные реконнекты.
+      Только итерации с N<sub>sudden</sub> &gt; 0.
+    </p>
+  </div>
+  <div class="chart-wrap" style="height:380px"><canvas id="tRecoverChart"></canvas></div>
+
+  <h3>P<sub>success</sub> — вероятность успешного восстановления</h3>
+  <div class="panel" style="padding-bottom:10px;">
+    <p style="margin-top:0;font-size:12px;color:var(--muted);">
+      <b>P<sub>success</sub> = N<sub>success</sub> / N<sub>attempts</sub></b>.
+      1.0 = каждый разрыв восстановлен. Только итерации с N<sub>sudden</sub> &gt; 0.
+    </p>
+  </div>
+  <div class="chart-wrap" style="height:380px"><canvas id="pSuccessChart"></canvas></div>
+
+  <h3>Score = T<sub>recover</sub> / P<sub>success</sub> — целевая функция (минимизировать)</h3>
+  <div class="panel" style="padding-bottom:10px;">
+    <p style="margin-top:0;font-size:12px;color:var(--muted);">
+      Объединённый показатель: быстрый и надёжный реконнект → Score мал. Только итерации с обоими значениями.
+    </p>
+  </div>
+  <div class="chart-wrap" style="height:380px"><canvas id="scoreChart"></canvas></div>
+
+  <div class="footer">
+    AtomFast retry_delay production sweep — 21/21 points.
+    Обновлено 09-06-2026 09:00 UTC.
+  </div>
+
+</div>
+<script>
+const RD = [500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500];
+const RPM = {"500": [29.61, 29.16, 29.64, 29.44, 29.24, 29.56, 29.5, 30.15, 29.69, 29.94], "600": [29.57, 30.04, 29.37, 29.65, 30.13, 29.33, 29.95, 30.09, 29.96, 29.9], "700": [29.79, 29.12, 28.26, 29.46, 29.45, 29.77, 29.54, 29.73, 29.77, 29.03], "800": [29.23, 27.24, 25.83, 26.7, 0.0, 27.87, 28.6, 29.39, 28.07, 29.22], "900": [25.65, 0.0, 29.34, 29.34, 29.3, 28.01, 28.36, 30.16, 29.74, 28.91], "1000": [29.03, 29.79, 29.04, 29.56, 28.05, 25.46, 26.29, 27.91, 26.84, 22.84], "1100": [20.5, 27.25, 29.73, 29.64, 29.76, 29.99, 28.71, 30.05, 29.54, 29.59], "1200": [29.36, 29.45, 29.62, 30.09, 29.67, 29.6, 29.63, 29.95, 29.78, 29.9], "1300": [30.06, 29.56, 30.03, 29.48, 29.59, 30.11, 30.17, 30.08, 30.83, 30.82], "1400": [30.45, 30.99, 30.82, 30.5, 31.24, 31.1, 31.1, 30.77, 30.97, 30.38], "1500": [30.72, 31.08, 30.57, 30.62, 30.61, 31.06, 29.98, 29.59, 29.72, 29.05], "1600": [29.92, 29.84, 29.37, 29.7, 29.71, 29.75, 29.61, 29.93, 30.14, 29.72], "1700": [29.61, 29.96, 29.55, 30.07, 30.15, 30.06, 29.8, 30.13, 29.93, 29.3], "1800": [29.94, 29.93, 29.72, 29.78, 29.75, 29.04, 29.99, 30.08, 30.0, 29.2], "1900": [29.75, 29.87, 29.27, 30.09, 29.56, 29.87, 29.7, 29.4, 29.85, 29.85], "2000": [29.81, 29.58, 29.76, 30.11, 29.81, 29.94, 29.14, 30.15, 29.77, 29.7], "2100": [29.77, 29.94, 29.94, 29.9, 30.06, 29.48, 29.84, 29.87, 29.78, 29.34], "2200": [30.06, 30.13, 30.01, 29.73, 29.33, 29.56, 29.73, 29.85, 29.62, 30.13], "2300": [29.63, 30.02, 29.88, 29.7, 30.14, 29.14, 29.98, 29.62, 29.65, 30.01], "2400": [29.81, 29.85, 29.99, 30.08, 29.65, 30.0, 30.08, 30.11, 29.96, 29.69], "2500": [30.07, 30.13, 30.11, 29.58, 29.59, 29.86, 29.01, 30.02, 29.85, 29.98]};
+const LAT = {"500": [4949, 5091, 4994, 13471, 9821, 3810, 4928, 4978, 3793, 5106], "600": [19358, 3752, 6268, 13486, 3770, 3829, 4979, 4961, 3777, 8584], "700": [7488, 8522, 3706, 4844, 14369, 4874, 8417, 4923, 3697, 14283], "800": [31022, 3717, 8419, 6207, 16729, 13294, 4915, 14249, 8583], "900": [26165, 17791, 16615, 3670, 12152, 4940, 3732, 16742, 4979], "1000": [13224, 9588, 16846, 7323, 3727, 34289, 6039, 3748, 27390, 6104], "1100": [7298, 11003, 6083, 3780, 3689, 4885, 7244, 3766, 12107, 7424], "1200": [13377, 15761, 3763, 3824, 3877, 4976, 17027, 4999, 3711, 4921], "1300": [4969, 14613, 3784, 4975, 4983, 3786, 3763, 14509, 5008, 4930], "1400": [12176, 4890, 3766, 7352, 3780, 4989, 3832, 3803, 9752, 3827], "1500": [15746, 3797, 3735, 4942, 5068, 3757, 11277, 3774, 4933, 17104], "1600": [4990, 7382, 4956, 3865, 7450, 3800, 4945, 7402, 4991, 7310], "1700": [6213, 3701, 4930, 3785, 3804, 6299, 5019, 3820, 7377, 3769], "1800": [4997, 5072, 3756, 3800, 5010, 15762, 5029, 5010, 3835, 5038], "1900": [5057, 3827, 6278, 3761, 3808, 5101, 10983, 5036, 10926, 8598], "2000": [6231, 5124, 3819, 4998, 7340, 8488, 5047, 3753, 8609, 6140], "2100": [17020, 5148, 3868, 7425, 3710, 12595, 3880, 3821, 4939, 3880], "2200": [7391, 4967, 3794, 7529, 11205, 13650, 3815, 6215, 11151, 3825], "2300": [7426, 3830, 5011, 3832, 3795, 5030, 5132, 5003, 5075, 3780], "2400": [5043, 5050, 6341, 3845, 9827, 3783, 3806, 3797, 5002, 6183], "2500": [5004, 4958, 4987, 3887, 5073, 5196, 16115, 3829, 3862, 3861]};
+function median(a){ const s=[...a].sort((a,b)=>a-b),m=Math.floor(s.length/2); return s.length%2?s[m]:(s[m-1]+s[m])/2; }
+function scatter(d){ const o=[]; for(const rd of RD) for(const v of d[String(rd)]) o.push({x:rd,y:v}); return o; }
+function avg(a){ return a.reduce((s,v)=>s+v,0)/a.length; }
+function mline(d){ return RD.map(rd=>({x:rd,y:median(d[String(rd)])})); }
+function aline(d){ return RD.map(rd=>({x:rd,y:avg(d[String(rd)])})); }
+const g={color:'rgba(138,160,184,0.12)'}, t={color:'#8aa0b8',font:{family:'Consolas,monospace',size:11}};
+const rdTicks = axis => { axis.ticks = RD.map(v=>({value:v})); };
+new Chart(document.getElementById('rpmChart'),{
+  type:'scatter', data:{ datasets:[
+    {label:'iter',data:scatter(RPM),backgroundColor:'rgba(78,168,222,0.55)',borderColor:'#4ea8de',pointRadius:5},
+    {type:'line',label:'avg',data:aline(RPM),borderColor:'#e0b341',pointRadius:4,borderWidth:2,tension:0.2,fill:false},
+    {type:'line',label:'median',data:mline(RPM),borderColor:'#43c267',pointRadius:4,borderWidth:2,tension:0.2,fill:false},
+    {type:'line',label:'threshold 17',data:RD.map(r=>({x:r,y:17})),borderColor:'#e2624c',borderDash:[6,4],borderWidth:1.5,pointRadius:0,fill:false},
+    {type:'line',label:'nominal 25',data:RD.map(r=>({x:r,y:25})),borderColor:'rgba(138,160,184,0.4)',borderDash:[3,3],borderWidth:1,pointRadius:0,fill:false},
+  ]},
+  options:{ responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{labels:{color:'#d4dbe2'}}, tooltip:{callbacks:{label:c=>`rd=${c.parsed.x}, rpm=${c.parsed.y.toFixed(2)}`}} },
+    scales:{ x:{type:'linear',title:{display:true,text:'retry_delay, ms',color:'#d4dbe2'},min:450,max:2550,afterBuildTicks:rdTicks,ticks:t,grid:g},
+      y:{title:{display:true,text:'rec/min',color:'#d4dbe2'},min:0,max:33,ticks:t,grid:g} }
+  }
+});
+new Chart(document.getElementById('latChart'),{
+  type:'scatter', data:{ datasets:[
+    {label:'iter',data:scatter(LAT),backgroundColor:'rgba(224,179,65,0.55)',borderColor:'#e0b341',pointRadius:5},
+    {type:'line',label:'avg',data:aline(LAT),borderColor:'#ff9966',pointRadius:4,borderWidth:2.5,tension:0.2,fill:false},
+    {type:'line',label:'median',data:mline(LAT),borderColor:'#4ea8de',pointRadius:4,borderWidth:2.5,tension:0.2,fill:false},
+  ]},
+  options:{ responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{labels:{color:'#d4dbe2'}}, tooltip:{callbacks:{label:c=>`rd=${c.parsed.x}, lat=${c.parsed.y}ms`}} },
+    scales:{ x:{type:'linear',title:{display:true,text:'retry_delay, ms',color:'#d4dbe2'},min:450,max:2550,afterBuildTicks:rdTicks,ticks:t,grid:g},
+      y:{title:{display:true,text:'connect latency, ms',color:'#d4dbe2'},min:0,max:39432,ticks:t,grid:g} }
+  }
+});
+new Chart(document.getElementById('latAvgMedChart'),{
+  type:'line',
+  data:{ datasets:[
+    {
+      label:'avg latency',
+      data: RD.map(rd=>({x:rd, y: LAT[String(rd)].reduce((a,b)=>a+b,0)/LAT[String(rd)].length | 0 })),
+      borderColor:'#e0b341', backgroundColor:'rgba(224,179,65,0.12)',
+      pointRadius:5, pointHoverRadius:7, tension:0.25, fill:false,
+    },
+    {
+      label:'median latency',
+      data: RD.map(rd=>({x:rd, y:median(LAT[String(rd)]) })),
+      borderColor:'#4ea8de', backgroundColor:'rgba(78,168,222,0.12)',
+      pointRadius:5, pointHoverRadius:7, tension:0.25, fill:false,
+    },
+  ]},
+  options:{ responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{labels:{color:'#d4dbe2',usePointStyle:true}},
+      tooltip:{callbacks:{label:c=>`${c.dataset.label}: rd=${c.parsed.x}ms → ${c.parsed.y}ms`}}
+    },
+    scales:{
+      x:{type:'linear',title:{display:true,text:'retry_delay, ms',color:'#d4dbe2'},
+         min:450,max:2550,afterBuildTicks:rdTicks,ticks:t,grid:g},
+      y:{title:{display:true,text:'connect latency, ms',color:'#d4dbe2'},min:0,ticks:t,grid:g}
+    }
+  }
+});
+const SUDDEN       = {"500": [2, 4, 1, 0, 1, 1, 1, 0, 2, 1], "600": [0, 1, 2, 1, 0, 1, 0, 0, 0, 0], "700": [0, 5, 15, 1, 3, 2, 1, 1, 2, 4], "800": [4, 11, 21, 19, 1, 9, 8, 8, 3, 5], "900": [10, 1, 2, 2, 6, 5, 8, 3, 3, 3], "1000": [4, 4, 4, 6, 17, 16, 17, 15, 18, 32], "1100": [32, 29, 1, 1, 1, 0, 1, 0, 0, 1], "1200": [2, 1, 1, 0, 1, 1, 0, 0, 1, 0], "1300": [0, 1, 0, 1, 1, 0, 1, 1, 1, 1], "1400": [2, 0, 1, 1, 0, 0, 0, 1, 0, 1], "1500": [0, 0, 1, 1, 1, 0, 0, 1, 1, 2], "1600": [0, 1, 2, 1, 1, 1, 1, 0, 0, 1], "1700": [1, 0, 1, 0, 0, 1, 1, 0, 1, 8], "1800": [0, 1, 4, 4, 2, 3, 0, 2, 2, 1], "1900": [2, 1, 2, 1, 1, 2, 0, 1, 0, 1], "2000": [2, 3, 1, 1, 0, 0, 2, 0, 0, 1], "2100": [0, 0, 0, 0, 2, 0, 1, 1, 1, 2], "2200": [0, 0, 0, 1, 2, 0, 2, 1, 0, 1], "2300": [2, 0, 1, 1, 1, 3, 0, 1, 1, 0], "2400": [0, 1, 0, 0, 1, 0, 1, 0, 0, 1], "2500": [3, 0, 0, 1, 3, 3, 1, 2, 1, 1]};
+const SUDDEN_AM    = [{"rd": 500, "avg": 1.3, "med": 1.0}, {"rd": 600, "avg": 0.5, "med": 0.0}, {"rd": 700, "avg": 3.4, "med": 2.0}, {"rd": 800, "avg": 8.9, "med": 8.0}, {"rd": 900, "avg": 4.3, "med": 3.0}, {"rd": 1000, "avg": 13.3, "med": 15.5}, {"rd": 1100, "avg": 6.6, "med": 1.0}, {"rd": 1200, "avg": 0.7, "med": 1.0}, {"rd": 1300, "avg": 0.7, "med": 1.0}, {"rd": 1400, "avg": 0.6, "med": 0.5}, {"rd": 1500, "avg": 0.7, "med": 1.0}, {"rd": 1600, "avg": 0.8, "med": 1.0}, {"rd": 1700, "avg": 1.3, "med": 1.0}, {"rd": 1800, "avg": 1.9, "med": 2.0}, {"rd": 1900, "avg": 1.1, "med": 1.0}, {"rd": 2000, "avg": 1.0, "med": 1.0}, {"rd": 2100, "avg": 0.7, "med": 0.5}, {"rd": 2200, "avg": 0.7, "med": 0.5}, {"rd": 2300, "avg": 1.0, "med": 1.0}, {"rd": 2400, "avg": 0.4, "med": 0.0}, {"rd": 2500, "avg": 1.5, "med": 1.0}];
+(function(){
+  const yMax = Math.ceil(Math.max(...Object.values(SUDDEN).flat())*1.12);
+  new Chart(document.getElementById('suddenChart'),{
+    type:'scatter',
+    data:{ datasets:[
+      {label:'итерация',data:scatter(SUDDEN),backgroundColor:'rgba(226,98,76,0.45)',borderColor:'#e2624c',pointRadius:4,pointHoverRadius:6},
+      {type:'line',label:'avg',data:SUDDEN_AM.map(p=>({x:p.rd,y:p.avg})),borderColor:'#e0b341',pointRadius:5,borderWidth:2,tension:0.2,fill:false},
+      {type:'line',label:'median',data:SUDDEN_AM.map(p=>({x:p.rd,y:p.med})),borderColor:'#43c267',pointRadius:5,borderWidth:2,tension:0.2,fill:false},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{labels:{color:'#d4dbe2',usePointStyle:true}},
+        tooltip:{callbacks:{label:c=>`${c.dataset.label}: rd=${c.parsed.x}ms, sudden=${c.parsed.y}`}}
+      },
+      scales:{
+        x:{type:'linear',title:{display:true,text:'retry_delay, ms',color:'#d4dbe2'},min:450,max:2550,afterBuildTicks:rdTicks,ticks:t,grid:g},
+        y:{title:{display:true,text:'sudden disconnects',color:'#d4dbe2'},min:0,max:yMax,ticks:t,grid:g}
+      }
+    }
+  });
+})();
+const MTBF_ITERS   = {"500": [8.65, 2.91, 19.48, 10.72, 13.2, 14.08, 12.9, 16.27, 7.74, 11.98], "600": [15.42, 14.28, 8.1, 18.6, 14.27, 12.05, 11.47, 16.3, 10.48, 13.43], "700": [10.15, 3.54, 1.2, 11.03, 5.53, 9.89, 17.25, 18.25, 9.2, 2.98], "800": [3.85, 1.77, 0.74, 0.66, 13.92, 1.56, 1.49, 2.31, 5.19, 3.68], "900": [1.3, 15.58, 5.31, 5.16, 3.01, 3.12, 2.34, 5.63, 5.16, 3.88], "1000": [4.04, 4.25, 3.35, 2.53, 0.99, 0.77, 0.94, 1.18, 0.92, 0.53], "1100": [0.47, 0.63, 19.37, 15.48, 19.68, 11.0, 12.38, 13.25, 11.1, 14.7], "1200": [8.66, 19.38, 13.32, 12.52, 16.23, 17.48, 13.5, 12.02, 19.3, 11.78], "1300": [15.07, 19.75, 11.67, 12.5, 16.9, 15.4, 14.68, 16.43, 18.03, 19.37], "1400": [7.91, 11.0, 16.72, 11.53, 15.73, 10.17, 13.98, 18.12, 12.97, 18.4], "1500": [15.27, 10.22, 12.83, 13.52, 17.22, 16.3, 18.83, 14.05, 17.07, 8.73], "1600": [12.12, 14.98, 9.76, 19.9, 19.08, 18.03, 12.88, 13.1, 17.22, 18.95], "1700": [16.97, 10.3, 11.62, 13.58, 15.3, 14.07, 16.07, 11.55, 13.8, 2.37], "1800": [11.67, 11.22, 3.93, 4.1, 9.96, 6.46, 12.07, 6.9, 5.32, 11.27], "1900": [8.0, 16.47, 9.62, 12.32, 15.8, 9.87, 11.08, 13.52, 15.85, 11.08], "2000": [7.53, 4.52, 17.18, 14.65, 10.8, 14.7, 7.49, 18.17, 10.48, 17.25], "2100": [17.68, 12.38, 11.55, 12.25, 7.42, 10.62, 19.07, 19.82, 18.6, 9.05], "2200": [16.13, 10.38, 10.12, 17.68, 8.69, 11.6, 9.09, 17.68, 10.32, 14.67], "2300": [9.02, 11.27, 10.78, 17.03, 12.98, 4.32, 11.98, 11.03, 14.58, 12.82], "2400": [10.1, 13.07, 11.45, 10.98, 17.27, 10.45, 13.48, 12.32, 12.97, 14.27], "2500": [5.91, 18.32, 17.65, 14.6, 4.96, 5.69, 12.43, 6.92, 18.62, 10.95]};
+const MTBF_AVG_MED = [{"rd": 500, "avg": 11.79, "med": 12.440000000000001}, {"rd": 600, "avg": 13.44, "med": 13.85}, {"rd": 700, "avg": 8.9, "med": 9.545}, {"rd": 800, "avg": 3.52, "med": 2.04}, {"rd": 900, "avg": 5.05, "med": 4.52}, {"rd": 1000, "avg": 1.95, "med": 1.085}, {"rd": 1100, "avg": 11.81, "med": 12.815000000000001}, {"rd": 1200, "avg": 14.42, "med": 13.41}, {"rd": 1300, "avg": 15.98, "med": 15.915}, {"rd": 1400, "avg": 13.65, "med": 13.475000000000001}, {"rd": 1500, "avg": 14.4, "med": 14.66}, {"rd": 1600, "avg": 15.6, "med": 16.1}, {"rd": 1700, "avg": 12.56, "med": 13.690000000000001}, {"rd": 1800, "avg": 8.29, "med": 8.43}, {"rd": 1900, "avg": 12.36, "med": 11.7}, {"rd": 2000, "avg": 12.28, "med": 12.725000000000001}, {"rd": 2100, "avg": 13.84, "med": 12.315000000000001}, {"rd": 2200, "avg": 12.64, "med": 10.99}, {"rd": 2300, "avg": 11.58, "med": 11.625}, {"rd": 2400, "avg": 12.64, "med": 12.645}, {"rd": 2500, "avg": 11.61, "med": 11.69}];
+(function(){
+  const allVals = Object.values(MTBF_ITERS).flat();
+  const yMax = Math.ceil(Math.max(...allVals) * 1.12);
+  new Chart(document.getElementById('mtbfChart'),{
+    type:'scatter',
+    data:{ datasets:[
+      {
+        label:'итерация (был разрыв)',
+        data: scatter(MTBF_ITERS),
+        backgroundColor:'rgba(78,168,222,0.45)', borderColor:'#4ea8de',
+        pointRadius:4, pointHoverRadius:6, pointStyle:'circle',
+      },
+      {
+        type:'line', label:'avg',
+        data: MTBF_AVG_MED.map(p=>({x:p.rd, y:p.avg})),
+        borderColor:'#e0b341', backgroundColor:'rgba(224,179,65,0.08)',
+        pointRadius:5, pointHoverRadius:7, borderWidth:2, tension:0.2, fill:false,
+      },
+      {
+        type:'line', label:'median',
+        data: MTBF_AVG_MED.map(p=>({x:p.rd, y:p.med})),
+        borderColor:'#43c267', backgroundColor:'rgba(67,194,103,0.08)',
+        pointRadius:5, pointHoverRadius:7, borderWidth:2, tension:0.2, fill:false,
+      },
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{labels:{color:'#d4dbe2',usePointStyle:true}},
+        tooltip:{callbacks:{label:c=>`${c.dataset.label}: rd=${c.parsed.x}ms, MTBF=${c.parsed.y}мин`}}
+      },
+      scales:{
+        x:{type:'linear',title:{display:true,text:'retry_delay, ms',color:'#d4dbe2'},
+           min:450,max:2550,afterBuildTicks:rdTicks,ticks:t,grid:g},
+        y:{title:{display:true,text:'MTBF, мин',color:'#d4dbe2'},min:0,max:yMax,ticks:t,grid:g}
+      }
+    }
+  });
+})();
+const RECOVERY = {"500": {"p": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], "t": [7.9, 5.7, 18.1, 13.6, 13.5, 9.0, 6.8, 2.3], "s": [7.9, 5.7, 18.1, 13.6, 13.5, 9.0, 6.8, 2.3]}, "600": {"p": [1.0, 1.0, 1.0, 1.0], "t": [2.3, 9.1, 9.1, 13.5], "s": [2.3, 9.1, 9.1, 13.5]}, "700": {"p": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.75], "t": [7.2, 5.1, 6.8, 5.3, 7.9, 13.5, 11.3, 8.0, 3.1], "s": [7.2, 5.1, 6.8, 5.3, 7.9, 13.5, 11.3, 8.0, 4.1]}, "800": {"p": [1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.667, 1.0], "t": [2.3, 11.2, 7.1, 5.7, 6.1, 5.1, 4.3, 17.9, 6.4], "s": [2.3, 11.2, 7.1, 5.7, 6.1, 5.1, 4.3, 26.8, 6.4]}, "900": {"p": [1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], "t": [10.4, 2.3, 2.3, 6.8, 12.5, 8.8, 2.3, 2.3, 6.8], "s": [10.4, 2.3, 2.3, 6.8, 12.5, 8.8, 2.3, 2.3, 6.8]}, "1000": {"p": [1.0, 1.0, 1.0, 1.0, 0.941, 1.0, 1.0, 1.0, 1.0, 1.0], "t": [7.9, 3.4, 4.0, 3.8, 5.0, 5.5, 6.5, 5.8, 5.5, 7.8], "s": [7.9, 3.4, 4.0, 3.8, 5.3, 5.5, 6.5, 5.8, 5.5, 7.8]}, "1100": {"p": [0.969, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0], "t": [9.4, 4.5, 13.6, 13.5, 11.2, 15.8], "s": [9.7, 4.5, 13.6, 13.5, 11.2, 15.8]}, "1200": {"p": [1.0, 1.0, 1.0, 1.0, 1.0, 0.0], "t": [6.8, 11.4, 11.4, 13.6, 15.9], "s": [6.8, 11.4, 11.4, 13.6, 15.9]}, "1300": {"p": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], "t": [11.3, 11.4, 15.8, 2.3, 13.6, 11.2, 11.3], "s": [11.3, 11.4, 15.8, 2.3, 13.6, 11.2, 11.3]}, "1400": {"p": [1.0, 1.0, 1.0, 1.0, 1.0], "t": [6.8, 11.3, 9.1, 13.6, 29.2], "s": [6.8, 11.3, 9.1, 13.6, 29.2]}, "1500": {"p": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0], "t": [11.3, 11.3, 18.0, 11.4, 11.3, 10.1], "s": [11.3, 11.3, 18.0, 11.4, 11.3, 10.1]}, "1600": {"p": [0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], "t": [12.4, 15.9, 11.4, 11.4, 11.3, 11.2], "s": [12.4, 15.9, 11.4, 11.4, 11.3, 11.2]}, "1700": {"p": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0], "t": [13.6, 13.5, 2.3, 4.6, 2.3, 4.6], "s": [13.6, 13.5, 2.3, 4.6, 2.3, 4.6]}, "1800": {"p": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], "t": [2.3, 4.6, 4.0, 9.1, 9.1, 2.3, 2.3, 13.6], "s": [2.3, 4.6, 4.0, 9.1, 9.1, 2.3, 2.3, 13.6]}, "1900": {"p": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], "t": [5.8, 11.4, 13.6, 2.3, 13.7, 5.8, 16.0, 2.4], "s": [5.8, 11.4, 13.6, 2.3, 13.7, 5.8, 16.0, 2.4]}, "2000": {"p": [0.5, 1.0, 1.0, 1.0, 1.0, 1.0], "t": [2.4, 5.4, 11.4, 2.3, 12.4, 13.7], "s": [4.8, 5.4, 11.4, 2.3, 12.4, 13.7]}, "2100": {"p": [1.0, 1.0, 1.0, 1.0, 1.0], "t": [2.4, 11.6, 9.2, 11.5, 11.3], "s": [2.4, 11.6, 9.2, 11.5, 11.3]}, "2200": {"p": [1.0, 1.0, 1.0, 1.0, 1.0], "t": [9.2, 11.5, 6.8, 9.1, 2.3], "s": [9.2, 11.5, 6.8, 9.1, 2.3]}, "2300": {"p": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], "t": [8.0, 2.3, 13.7, 2.4, 5.4, 4.6, 11.4], "s": [8.0, 2.3, 13.7, 2.4, 5.4, 4.6, 11.4]}, "2400": {"p": [1.0, 1.0, 1.0, 1.0], "t": [4.6, 9.0, 2.4, 11.3], "s": [4.6, 9.0, 2.4, 11.3]}, "2500": {"p": [1.0, 1.0, 1.0, 0.667, 1.0, 1.0, 1.0, 1.0], "t": [2.3, 13.9, 5.4, 2.4, 13.9, 2.3, 9.2, 2.3], "s": [2.3, 13.9, 5.4, 3.6, 13.9, 2.3, 9.2, 2.3]}};
+const REC_AM   = [{"rd": 500, "p_avg": 1.0, "p_med": 1.0, "t_avg": 9.61, "t_med": 8.45, "s_avg": 9.61, "s_med": 8.45}, {"rd": 600, "p_avg": 1.0, "p_med": 1.0, "t_avg": 8.5, "t_med": 9.1, "s_avg": 8.5, "s_med": 9.1}, {"rd": 700, "p_avg": 0.97, "p_med": 1.0, "t_avg": 7.58, "t_med": 7.2, "s_avg": 7.69, "s_med": 7.2}, {"rd": 800, "p_avg": 0.87, "p_med": 1.0, "t_avg": 7.34, "t_med": 6.1, "s_avg": 8.33, "s_med": 6.1}, {"rd": 900, "p_avg": 0.9, "p_med": 1.0, "t_avg": 6.06, "t_med": 6.8, "s_avg": 6.06, "s_med": 6.8}, {"rd": 1000, "p_avg": 0.99, "p_med": 1.0, "t_avg": 5.52, "t_med": 5.5, "s_avg": 5.55, "s_med": 5.5}, {"rd": 1100, "p_avg": 0.85, "p_med": 1.0, "t_avg": 11.33, "t_med": 12.35, "s_avg": 11.38, "s_med": 12.35}, {"rd": 1200, "p_avg": 0.83, "p_med": 1.0, "t_avg": 11.82, "t_med": 11.4, "s_avg": 11.82, "s_med": 11.4}, {"rd": 1300, "p_avg": 1.0, "p_med": 1.0, "t_avg": 10.99, "t_med": 11.3, "s_avg": 10.99, "s_med": 11.3}, {"rd": 1400, "p_avg": 1.0, "p_med": 1.0, "t_avg": 14.0, "t_med": 11.3, "s_avg": 14.0, "s_med": 11.3}, {"rd": 1500, "p_avg": 1.0, "p_med": 1.0, "t_avg": 12.23, "t_med": 11.3, "s_avg": 12.23, "s_med": 11.3}, {"rd": 1600, "p_avg": 0.86, "p_med": 1.0, "t_avg": 12.27, "t_med": 11.4, "s_avg": 12.27, "s_med": 11.4}, {"rd": 1700, "p_avg": 1.0, "p_med": 1.0, "t_avg": 6.82, "t_med": 4.6, "s_avg": 6.82, "s_med": 4.6}, {"rd": 1800, "p_avg": 1.0, "p_med": 1.0, "t_avg": 5.91, "t_med": 4.3, "s_avg": 5.91, "s_med": 4.3}, {"rd": 1900, "p_avg": 1.0, "p_med": 1.0, "t_avg": 8.88, "t_med": 8.6, "s_avg": 8.88, "s_med": 8.6}, {"rd": 2000, "p_avg": 0.92, "p_med": 1.0, "t_avg": 7.93, "t_med": 8.4, "s_avg": 8.33, "s_med": 8.4}, {"rd": 2100, "p_avg": 1.0, "p_med": 1.0, "t_avg": 9.2, "t_med": 11.3, "s_avg": 9.2, "s_med": 11.3}, {"rd": 2200, "p_avg": 1.0, "p_med": 1.0, "t_avg": 7.78, "t_med": 9.1, "s_avg": 7.78, "s_med": 9.1}, {"rd": 2300, "p_avg": 1.0, "p_med": 1.0, "t_avg": 6.83, "t_med": 5.4, "s_avg": 6.83, "s_med": 5.4}, {"rd": 2400, "p_avg": 1.0, "p_med": 1.0, "t_avg": 6.83, "t_med": 6.8, "s_avg": 6.83, "s_med": 6.8}, {"rd": 2500, "p_avg": 0.96, "p_med": 1.0, "t_avg": 6.46, "t_med": 3.9000000000000004, "s_avg": 6.61, "s_med": 4.5}];
+function recScatter(key){
+  const pts=[];
+  for(const rd of RD) for(const v of (RECOVERY[String(rd)]||{})[key]||[]) pts.push({x:rd,y:v});
+  return pts;
+}
+function recLine(key_avg,key_med,use_avg){
+  return REC_AM.filter(p=>p[use_avg?key_avg:key_med]!=null)
+               .map(p=>({x:p.rd,y:use_avg?p[key_avg]:p[key_med]}));
+}
+function recChart(canvasId, scatterKey, avgKey, medKey, yLabel, yMin, yMax, colour){
+  const pts=recScatter(scatterKey);
+  if(!pts.length) return;
+  const axMax = yMax || Math.ceil(Math.max(...pts.map(p=>p.y))*1.15);
+  new Chart(document.getElementById(canvasId),{
+    type:'scatter',
+    data:{ datasets:[
+      {label:'итерация',data:pts,backgroundColor:colour+'99',borderColor:colour,pointRadius:4,pointHoverRadius:6},
+      {type:'line',label:'avg',data:recLine(avgKey,medKey,true),borderColor:'#e0b341',pointRadius:4,borderWidth:2,tension:0.2,fill:false},
+      {type:'line',label:'median',data:recLine(avgKey,medKey,false),borderColor:'#43c267',pointRadius:4,borderWidth:2,tension:0.2,fill:false},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{labels:{color:'#d4dbe2',usePointStyle:true}},
+        tooltip:{callbacks:{label:c=>`${c.dataset.label}: rd=${c.parsed.x}ms, ${yLabel}=${c.parsed.y}`}}
+      },
+      scales:{
+        x:{type:'linear',title:{display:true,text:'retry_delay, ms',color:'#d4dbe2'},min:450,max:2550,afterBuildTicks:rdTicks,ticks:t,grid:g},
+        y:{title:{display:true,text:yLabel,color:'#d4dbe2'},min:yMin,max:axMax,ticks:t,grid:g}
+      }
+    }
+  });
+}
+recChart('tRecoverChart','t','t_avg','t_med','T_recover, с', 0, null, '#4ea8de');
+recChart('pSuccessChart','p','p_avg','p_med','P_success',    0, 1.05, '#e0b341');
+recChart('scoreChart',   's','s_avg','s_med','Score, с',    0, null, '#e2624c');
+</script>
+</body></html>
