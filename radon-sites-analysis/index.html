@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Радон: анализ англоязычных сайтов + проект RU-сайта</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin:0; min-height:100vh; padding:48px 18px 80px;
+    font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1200px 600px at 50% -10%, #1b2a4a 0%, #0b0f1a 60%) fixed;
+    color:#e6ebf5; line-height:1.55; }
+  .wrap { max-width:960px; margin:0 auto; }
+  header { text-align:center; margin-bottom:34px; }
+  h1 { font-size:1.9rem; margin:0 0 10px; }
+  .sub { color:#9fb0cc; margin:0 auto; max-width:700px; }
+  .meta { color:#6b7a96; font-size:.82rem; margin-top:10px; }
+  section { margin:34px 0; }
+  h2 { font-size:1.3rem; color:#cfe0ff; border-bottom:1px solid #243150; padding-bottom:8px; }
+  h3 { color:#cfe0ff; font-size:1.05rem; margin:22px 0 10px; }
+  a { color:#6ea0ff; }
+  details { background:#131a2b; border:1px solid #243150; border-radius:12px; padding:12px 16px; margin:12px 0; }
+  summary { cursor:pointer; font-weight:600; color:#cfe0ff; outline:none; }
+  summary::-webkit-details-marker { color:#6ea0ff; }
+  .cat summary { display:flex; flex-direction:column; gap:2px; }
+  .cat-t { font-size:1.05rem; }
+  .cat-s { font-size:.8rem; color:#9fb0cc; font-weight:400; }
+  table { width:100%; border-collapse:collapse; margin-top:12px; font-size:.92rem; }
+  th,td { text-align:left; padding:8px 10px; border-bottom:1px solid #1e2740; vertical-align:top; }
+  th { color:#88a0c8; font-size:.78rem; text-transform:uppercase; letter-spacing:.4px; }
+  td:first-child { width:42%; }
+  .url { color:#6b7a96; font-size:.78rem; margin-top:2px; word-break:break-all; }
+  .sm-note { color:#9fb0cc; font-size:.84rem; margin:6px 0 10px; }
+  ul.tree { list-style:none; margin:6px 0 6px 4px; padding-left:16px; border-left:1px solid #2a3550; }
+  ul.tree li { padding:3px 0; }
+  ul.tree li.leaf::before { content:"> "; color:#6ea0ff; }
+  ul.tree details { background:transparent; border:none; padding:0; margin:4px 0; }
+  ul.tree summary { font-weight:500; }
+  .note { color:#9fb0cc; font-weight:400; font-size:.88em; }
+  .models { display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); }
+  .mcard { background:#131a2b; border:1px solid #243150; border-radius:12px; padding:16px; }
+  .mcard h4 { margin:0 0 4px; color:#cfe0ff; }
+  .mform { font-family:monospace; color:#88e0c0; font-size:.82rem; margin-bottom:8px; }
+  .mcard p { margin:0; color:#9fb0cc; font-size:.88rem; }
+  .ru-top { border-left:3px solid #3a72ff; }
+  .ru-mod { border-left:3px solid #d8a24a; background:#1a1710; }
+  .ru-label { font-size:1.02rem; }
+  .wp { color:#7fd0b0; font-size:.82rem; margin:6px 0 4px; font-family:monospace; }
+  .badge { display:inline-block; font-size:.68rem; border-radius:999px; padding:1px 9px; margin-left:6px; vertical-align:middle; }
+  .badge.mod { color:#ffcf8f; border:1px solid #7a5a2a; }
+  .badge.utp { color:#ffd166; border:1px solid #7a6a2a; }
+  ul.tree li.star { color:#ffe0a0; }
+  .callout { background:#10233a; border:1px solid #234a72; border-radius:12px; padding:16px 18px; }
+  .platform { background:#131a2b; border:1px solid #243150; border-radius:12px; padding:6px 18px; }
+  .platform li { margin:8px 0; }
+  footer { margin-top:50px; color:#6b7a96; font-size:.8rem; text-align:center; }
+  code { background:#0e1626; border:1px solid #22304e; border-radius:5px; padding:1px 5px; font-size:.86em; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Радон: англоязычные сайты и проект русскоязычного сайта</h1>
+    <p class="sub">Разбор специализированных радон-сайтов, их карты и предлагаемая карта разделов
+      RU-сайта с подключаемыми магазином и услугами.</p>
+    <p class="meta">Контур Радоновый риск | снято 2026-07-09 | платформа проекта: WordPress + WooCommerce</p>
+  </header>
+
+  <section>
+    <h2>A. Список англоязычных радон-сайтов</h2>
+    <p class="sub" style="text-align:left">Пять категорий: гос/международные | профассоциации |
+      НКО-awareness | коммерция (приборы) | митигация. Ссылки открываются в новой вкладке.</p>
+  <details class="cat" open>
+    <summary><span class="cat-t">A1. Госорганы, здравоохранение, международные авторитеты</span><span class="cat-s">Нормы, риск, просвещение</span></summary>
+    <table><thead><tr><th>Сайт</th><th>Роль</th></tr></thead><tbody>
+      <tr><td><a href="https://www.epa.gov/radon" target="_blank" rel="noopener">US EPA - Radon</a><div class="url">www.epa.gov/radon</div></td><td>Эталон гос-портала: риск, карты зон, стандарты, план действий</td></tr>
+      <tr><td><a href="https://www.cdc.gov/radon/" target="_blank" rel="noopener">US CDC - Radon</a><div class="url">www.cdc.gov/radon/</div></td><td>Здоровье, статистика (~21 000 смертей/год в США)</td></tr>
+      <tr><td><a href="https://www.who.int/news-room/fact-sheets/detail/radon-and-health" target="_blank" rel="noopener">WHO - Radon</a><div class="url">www.who.int/news-room/fact-sheets/detail/radon-and-health</div></td><td>Междунар. нормы, до 15% рака лёгкого; Handbook on Indoor Radon</td></tr>
+      <tr><td><a href="https://www.iaea.org/topics/radiation-protection/radon" target="_blank" rel="noopener">IAEA - Radon</a><div class="url">www.iaea.org/topics/radiation-protection/radon</div></td><td>Basic Safety Standards, референсные уровни, radon action plans; партнёр WHO</td></tr>
+      <tr><td><a href="https://icrpaedia.org/General_Information_on_Radon" target="_blank" rel="noopener">ICRPaedia - Radon</a><div class="url">icrpaedia.org/General_Information_on_Radon</div></td><td>Вики ICRP: дозовые коэффициенты, референсные уровни, научная база</td></tr>
+      <tr><td><a href="https://www.ukradon.org" target="_blank" rel="noopener">UK HSA / UKradon</a><div class="url">www.ukradon.org</div></td><td>Address-search риск-зон, паки измерения, sector guidance</td></tr>
+      <tr><td><a href="https://www.canada.ca/en/health-canada/services/radon.html" target="_blank" rel="noopener">Health Canada - Radon</a><div class="url">www.canada.ca/en/health-canada/services/radon.html</div></td><td>Нац. руководства, разбивка по провинциям</td></tr>
+      <tr><td><a href="https://www.health.ny.gov/environmental/radiological/radon/" target="_blank" rel="noopener">NY State DOH - Radon</a><div class="url">www.health.ny.gov/environmental/radiological/radon/</div></td><td>Пример регионального портала</td></tr>
+    </tbody></table>
+  </details>
+  <details class="cat" open>
+    <summary><span class="cat-t">A2. Профассоциации и сертификация</span><span class="cat-s">Стандарты, обучение, реестры специалистов</span></summary>
+    <table><thead><tr><th>Сайт</th><th>Роль</th></tr></thead><tbody>
+      <tr><td><a href="https://aarst.org" target="_blank" rel="noopener">AARST (Indoor Environments Assoc.)</a><div class="url">aarst.org</div></td><td>ANSI-стандарты, обучение, конференция, членство</td></tr>
+      <tr><td><a href="https://standards.aarst.org" target="_blank" rel="noopener">AARST Standards</a><div class="url">standards.aarst.org</div></td><td>Тексты стандартов измерения/митигации</td></tr>
+      <tr><td><a href="https://nrpp.info" target="_blank" rel="noopener">NRPP</a><div class="url">nrpp.info</div></td><td>Сертификация специалистов (ANAB/ISO 17024), реестр</td></tr>
+      <tr><td><a href="https://www.aarst-nrpp.com" target="_blank" rel="noopener">AARST-NRPP</a><div class="url">www.aarst-nrpp.com</div></td><td>Портал сертификации</td></tr>
+      <tr><td><a href="https://sosradon.org" target="_blank" rel="noopener">National Radon Program Services (KSU)</a><div class="url">sosradon.org</div></td><td>Стандарты, тест-киты, нац. хотлайн</td></tr>
+    </tbody></table>
+  </details>
+  <details class="cat" open>
+    <summary><span class="cat-t">A3. Образование / НКО / awareness</span><span class="cat-s">Кампании, гражданская наука, просвещение</span></summary>
+    <table><thead><tr><th>Сайт</th><th>Роль</th></tr></thead><tbody>
+      <tr><td><a href="https://takeactiononradon.ca" target="_blank" rel="noopener">Take Action on Radon</a><div class="url">takeactiononradon.ca</div></td><td>Эталон awareness: Test/Protect/Learn/Resources, кампании</td></tr>
+      <tr><td><a href="https://evictradon.org" target="_blank" rel="noopener">Evict Radon (Канада)</a><div class="url">evictradon.org</div></td><td>Гражданская наука + национальное тестирование</td></tr>
+      <tr><td><a href="https://carst.ca" target="_blank" rel="noopener">CARST</a><div class="url">carst.ca</div></td><td>Канадская ассоциация специалистов по радону</td></tr>
+      <tr><td><a href="https://www.lung.org/clean-air/at-home/indoor-air-pollutants/radon" target="_blank" rel="noopener">American Lung Association</a><div class="url">www.lung.org/clean-air/at-home/indoor-air-pollutants/radon</div></td><td>НКО + продажа тест-китов</td></tr>
+    </tbody></table>
+  </details>
+  <details class="cat" open>
+    <summary><span class="cat-t">A4. Коммерция: приборы и тест-киты</span><span class="cat-s">Модель магазин + услуги - образец для RU-сайта</span></summary>
+    <table><thead><tr><th>Сайт</th><th>Роль</th></tr></thead><tbody>
+      <tr><td><a href="https://ecosense.io/" target="_blank" rel="noopener">Ecosense</a><div class="url">ecosense.io/</div></td><td>Производитель RadonEye: континуальные мониторы + магазин + поддержка</td></tr>
+      <tr><td><a href="https://radonova.com" target="_blank" rel="noopener">Radonova</a><div class="url">radonova.com</div></td><td>Эталон: продукты (дом/профи/мониторы) + лаб-услуги + знания</td></tr>
+      <tr><td><a href="https://www.airthings.com" target="_blank" rel="noopener">Airthings</a><div class="url">www.airthings.com</div></td><td>Производитель мониторов + контент/приложение</td></tr>
+      <tr><td><a href="https://www.radon.com" target="_blank" rel="noopener">AccuStar / radon.com</a><div class="url">www.radon.com</div></td><td>Лаборатория + тест-киты</td></tr>
+      <tr><td><a href="https://shop.aprilaire.com" target="_blank" rel="noopener">AprilAire Shop</a><div class="url">shop.aprilaire.com</div></td><td>Тест-киты (e-commerce)</td></tr>
+      <tr><td><a href="https://www.prolabinc.com" target="_blank" rel="noopener">PRO-LAB / First Alert</a><div class="url">www.prolabinc.com</div></td><td>Розница тест-китов (+ Home Depot/Lowe&#x27;s/Amazon)</td></tr>
+    </tbody></table>
+  </details>
+  <details class="cat" open>
+    <summary><span class="cat-t">A5. Митигация: системы, подрядчики, вентиляторы</span><span class="cat-s">Снижение радона - образец для разделов Снизить/Услуги</span></summary>
+    <table><thead><tr><th>Сайт</th><th>Роль</th></tr></thead><tbody>
+      <tr><td><a href="https://www.radonaway.com" target="_blank" rel="noopener">RadonAway</a><div class="url">www.radonaway.com</div></td><td>Крупнейший производитель вентиляторов + каталог сертиф. подрядчиков</td></tr>
+      <tr><td><a href="https://www.festaradontech.com" target="_blank" rel="noopener">Festa Radon Technologies</a><div class="url">www.festaradontech.com</div></td><td>Производитель AMG-вентиляторов (Eagle/Legend), US-сборка</td></tr>
+      <tr><td><a href="https://www.fantech.net/en-us/products/fans-and-accessories/radon-fans" target="_blank" rel="noopener">Fantech</a><div class="url">www.fantech.net/en-us/products/fans-and-accessories/radon-fans</div></td><td>Вентиляторы (PDS-150 - отраслевой стандарт, Energy Star)</td></tr>
+      <tr><td><a href="https://radonpds.com" target="_blank" rel="noopener">PDS Radon Supply</a><div class="url">radonpds.com</div></td><td>Снабжение митигации: Fantech + RadonAway + инструмент</td></tr>
+      <tr><td><a href="https://swat-radon.com" target="_blank" rel="noopener">SWAT Environmental</a><div class="url">swat-radon.com</div></td><td>Подрядчик по всей США, гарантийные системы + видео-ресурсы</td></tr>
+      <tr><td><a href="https://www.theradoncompany.com" target="_blank" rel="noopener">The Radon Company</a><div class="url">www.theradoncompany.com</div></td><td>Типы систем: SSD, sub-membrane, HRV (рекуперация)</td></tr>
+      <tr><td><a href="https://americanradonmitigation.com" target="_blank" rel="noopener">American Radon Mitigation</a><div class="url">americanradonmitigation.com</div></td><td>Подрядчик (Колорадо) + YouTube/DIY + NRPP CE-курсы + онлайн-консультации</td></tr>
+    </tbody></table>
+  </details>
+  </section>
+
+  <section>
+    <h2>B. Карты сайтов образцов</h2>
+    <p class="sub" style="text-align:left">Разверните узел, чтобы увидеть структуру.
+      EPA / UKradon / Take Action сняты живым обходом; AARST / Radonova / RadonAway - из поисковой выдачи.</p>
+  <details class="sm">
+    <summary>EPA - гос-портал</summary>
+    <p class="sm-note">Модель риск -&gt; решение -&gt; стандарты -&gt; контакты. Источник: WebFetch epa.gov/radon, 2026-07-09.</p>
+    <ul class="tree"><li class="leaf">Radon Risks and Solutions <span class="note">- здоровье, снижение риска</span></li><li class="leaf">National Radon Action Plan <span class="note">- межсекторная стратегия</span></li><li class="leaf">Standards of Practice <span class="note">- технические стандарты для профи</span></li><li class="leaf">FAQ</li><li class="leaf">State &amp; Tribal Indoor Radon Grants (SIRG)</li><li class="leaf">Radon Outreach &amp; Media <span class="note">- просвещение, коммуникации</span></li><li class="leaf">EPA Map of Radon Zones <span class="note">- карты зон</span></li><li class="leaf">Publications, Webinars, Videos</li><li class="leaf">Regional &amp; State Contacts <span class="note">- гео-контакты</span></li></ul>
+  </details>
+  <details class="sm">
+    <summary>UKradon - воронка + сегменты</summary>
+    <p class="sm-note">Модель Check -&gt; Measure -&gt; Act + сегментация аудитории. Источник: WebFetch ukradon.org, 2026-07-09.</p>
+    <ul class="tree"><li><details open><summary>About Radon</summary><ul class="tree"><li class="leaf">Что такое, в домах, риски, зоны, снижение</li></ul></details></li><li class="leaf">Radon Address Search <span class="note">- проверка вероятности по адресу</span></li><li><details open><summary>Sector Guidance</summary><ul class="tree"><li class="leaf">Householders <span class="note">- продажа недвижимости, здоровье</span></li><li class="leaf">Employers <span class="note">- охрана труда</span></li><li class="leaf">Professionals <span class="note">- юристы, строители, соц-арендодатели</span></li><li class="leaf">Local Authorities &amp; Housing Associations</li></ul></details></li><li><details open><summary>Our Services</summary><ul class="tree"><li class="leaf">Measurement Packs <span class="note">- домашние / рабочие</span></li><li class="leaf">Laboratory Services</li></ul></details></li><li class="leaf">About Us</li><li class="leaf">FAQ</li><li class="leaf">Resources</li></ul>
+  </details>
+  <details class="sm">
+    <summary>Take Action on Radon - awareness</summary>
+    <p class="sm-note">Модель Test / Protect / Learn / Resources + двуязычность. Источник: WebFetch takeactiononradon.ca, 2026-07-09.</p>
+    <ul class="tree"><li><details open><summary>Test</summary><ul class="tree"><li class="leaf">How to test</li><li class="leaf">Order test kit</li><li class="leaf">Interpret results</li><li class="leaf">Find measurement pro</li><li class="leaf">Share data / story</li><li class="leaf">Test challenges</li></ul></details></li><li><details open><summary>Protect</summary><ul class="tree"><li class="leaf">Protect yourself</li><li class="leaf">Reducing radon</li><li class="leaf">Find mitigation pro</li></ul></details></li><li><details open><summary>Learn</summary><ul class="tree"><li class="leaf">Health effects</li><li class="leaf">FAQ</li><li class="leaf">Radon Action Month</li><li class="leaf">Become certified pro</li></ul></details></li><li><details open><summary>Resources</summary><ul class="tree"><li class="leaf">Monitor lending</li><li class="leaf">Health professionals</li><li class="leaf">Schools</li><li class="leaf">Homeowners</li><li class="leaf">Contractors</li><li class="leaf">Stakeholders</li></ul></details></li><li class="leaf">About | News | Contact</li></ul>
+  </details>
+  <details class="sm">
+    <summary>AARST / NRPP - профассоциация</summary>
+    <p class="sm-note">Модель членской организации: стандарты + обучение + сертификация. Источник: поисковая выдача, 2026-07-09.</p>
+    <ul class="tree"><li><details open><summary>Standards</summary><ul class="tree"><li class="leaf">измерение, митигация, школы, многоквартирные</li></ul></details></li><li><details open><summary>Education &amp; Training</summary><ul class="tree"><li class="leaf">курсы, exam-prep ~20 ч, CE 8 ч / 2 года</li></ul></details></li><li><details open><summary>Certification</summary><ul class="tree"><li class="leaf">RMFT, Measurement Pro, Mitigation, SGM-CI; реестр</li></ul></details></li><li class="leaf">Membership</li><li class="leaf">Annual Conference</li><li class="leaf">Find a Professional</li><li class="leaf">Store <span class="note">- учебники</span></li></ul>
+  </details>
+  <details class="sm">
+    <summary>Radonova - коммерция</summary>
+    <p class="sm-note">Модель инфо + продукты + услуги + корзина. Источник: поисковая выдача, 2026-07-09.</p>
+    <ul class="tree"><li class="leaf">About Radon <span class="note">- знания</span></li><li><details open><summary>Products / Shop</summary><ul class="tree"><li class="leaf">For Home <span class="note">- короткие / длинные тест-киты</span></li><li class="leaf">For Professionals <span class="note">- проф. измерение</span></li><li class="leaf">Radon Monitors <span class="note">- континуальные приборы</span></li></ul></details></li><li><details open><summary>Services</summary><ul class="tree"><li class="leaf">измерение, лаб-анализ, консалтинг</li></ul></details></li><li class="leaf">Support / Knowledge</li><li class="leaf">About</li><li class="leaf">Cart / Checkout</li></ul>
+  </details>
+  <details class="sm">
+    <summary>RadonAway - митигация-снабжение</summary>
+    <p class="sm-note">Модель продукты + найти подрядчика + обучение. Источник: поисковая выдача, 2026-07-09.</p>
+    <ul class="tree"><li><details open><summary>Products</summary><ul class="tree"><li class="leaf">Radon Fans <span class="note">- линейки ProSeries и др.</span></li><li class="leaf">System Parts &amp; Monitors</li><li class="leaf">Test Kits</li></ul></details></li><li><details open><summary>Fixing a Radon Problem</summary><ul class="tree"><li class="leaf">Find a Certified Contractor <span class="note">- каталог</span></li><li class="leaf">How mitigation works</li></ul></details></li><li><details open><summary>Pro Resources</summary><ul class="tree"><li class="leaf">For mitigators / dealers</li></ul></details></li><li class="leaf">Support / Warranty</li><li class="leaf">Cart / Checkout</li></ul>
+  </details>
+    <h3>Опорные модели</h3>
+<div class="models">
+    <div class="mcard"><h4>Воронка действия</h4><div class="mform">Check/Test -&gt; Measure -&gt; Act/Protect</div><p>UKradon, Take Action - ведёт от вопроса есть ли радон? к измерению и снижению.</p></div>
+    <div class="mcard"><h4>Сегментация аудитории</h4><div class="mform">дом / работодатель / профи / регион</div><p>UKradon Sector Guidance, Take Action Resources - один контент под разные роли.</p></div>
+    <div class="mcard"><h4>Коммерческий слой</h4><div class="mform">продукты + услуги + корзина поверх контента</div><p>Radonova, Ecosense, Airthings - монетизация на базе доверия от просветительского ядра.</p></div>
+    <div class="mcard"><h4>Митигация-провайдер</h4><div class="mform">услуги + обучение + продукты + онлайн-консультация</div><p>American Radon Mitigation, SWAT - подрядчик как контент-эксперт (YouTube/DIY/CE-курсы).</p></div>
+  </div>
+  </section>
+
+  <section>
+    <h2>C. Проект RU-сайта: карта разделов</h2>
+    <div class="callout">
+      <strong>Костяк - воронка Узнать -> Измерить -> Снизить</strong> (адаптация Test/Protect/Learn),
+      поверх - УТП контура (онлайн-оценка риска по показаниям прибора) и подключаемые модули
+      Магазин / Услуги. Синяя рамка - контент-разделы, жёлтая - pluggable-модули (старт: заглушки скоро).
+    </div>
+    <div class="ru-map" style="margin-top:16px">
+    <details class="ru-top" open>
+      <summary><span class="ru-label">1. О радоне</span> <span class="note">- контент-ядро, SEO под Яндекс</span></summary>
+      <div class="wp">WP: Страницы WP + таксономии тем</div>
+      <ul class="tree"><li class="">Что такое радон и откуда берётся</li><li class="">Чем опасен: рак лёгкого, годовая доза <span class="note">- нормы WHO/EPA/IAEA/ICRP/НРБ-99/EU-BSS</span></li><li class="">Радон в доме / школе / на работе</li><li class="">Карта радоноопасности регионов РФ</li><li class="">FAQ</li></ul>
+    </details>
+    <details class="ru-top" open>
+      <summary><span class="ru-label">2. Измерить радон</span> <span class="note">- воронка -&gt; сервис</span></summary>
+      <div class="wp">WP: Страницы + кастомный шаблон/виджет калькулятора</div>
+      <ul class="tree"><li class="">Как измерять <span class="note">- приборы, длительность, где ставить</span></li><li class="">Приборы: RadonEye, AtomFast, Radex <span class="note">- обзор / сравнение</span></li><li class="star">★ Онлайн-оценка риска <span class="badge utp">★ УТП</span> <span class="note">- загрузка показаний -&gt; годовая доза + риск = УТП контура</span></li><li class="">Интерпретация результатов <span class="note">- Бк/м3 -&gt; действие</span></li></ul>
+    </details>
+    <details class="ru-top" open>
+      <summary><span class="ru-label">3. Снизить радон</span> <span class="note">- Act</span></summary>
+      <div class="wp">WP: Страницы WP</div>
+      <ul class="tree"><li class="">Методы снижения <span class="note">- SSD/депрессуризация под плитой, проветривание, HRV, герметизация</span></li><li class="">Когда нужна профессиональная митигация</li><li class="">Найти специалиста / заказать услугу <span class="note">- -&gt; модуль Услуги</span></li></ul>
+    </details>
+    <details class="ru-top ru-mod" open>
+      <summary><span class="ru-label">4. Магазин</span> <span class="badge mod">МОДУЛЬ</span> <span class="note">- pluggable-модуль, включается позже</span></summary>
+      <div class="wp">WP: WooCommerce Products + категории</div>
+      <ul class="tree"><li class="">Детекторы радона <span class="note">- континуальные мониторы</span></li><li class="">Тест-киты <span class="note">- пассивные, лаб-анализ</span></li><li class="">Митигация: вентиляторы, комплектующие</li><li class="">Корзина / Оформление / Доставка / Оплата</li></ul>
+    </details>
+    <details class="ru-top ru-mod" open>
+      <summary><span class="ru-label">5. Услуги</span> <span class="badge mod">МОДУЛЬ</span> <span class="note">- pluggable-модуль, включается позже</span></summary>
+      <div class="wp">WP: CPT service или Woo-booking</div>
+      <ul class="tree"><li class="">Профессиональное измерение <span class="note">- выезд</span></li><li class="">Лабораторный анализ</li><li class="">Митигация / проектирование системы</li><li class="">Онлайн / виртуальная консультация <span class="note">- расширение сервиса оценки риска</span></li><li class="">Форма заявки / калькулятор стоимости</li></ul>
+    </details>
+    <details class="ru-top" open>
+      <summary><span class="ru-label">6. Блог / Новости</span> <span class="note">- SEO-трафик, awareness-кампании</span></summary>
+      <div class="wp">WP: Записи WP + рубрики</div>
+      
+    </details>
+    <details class="ru-top" open>
+      <summary><span class="ru-label">7. Ресурсы</span></summary>
+      <div class="wp">WP: Страницы + вложения + встраивание видео</div>
+      <ul class="tree"><li class="">Методички, нормы РФ</li><li class="">Видео / DIY <span class="note">- по образцу American Radon Mitigation</span></li><li class="">Для врачей / школ / застройщиков</li></ul>
+    </details>
+    <details class="ru-top" open>
+      <summary><span class="ru-label">8. О нас / Контакты</span> <span class="note">- доверие</span></summary>
+      <div class="wp">WP: Страницы + форма</div>
+      <ul class="tree"><li class="">Методология, приборная база</li><li class="">Обратная связь</li></ul>
+    </details>
+    </div>
+
+    <h3>Платформа: WordPress + WooCommerce</h3>
+    <ul class="platform">
+      <li>Разделы 1-3, 6-8 -> <strong>страницы</strong> WP + <strong>записи</strong> (блог);
+        таксономии для сегментов аудитории (дом/работа/профи/регион) и тем.</li>
+      <li>Раздел 4 Магазин -> <strong>WooCommerce Products</strong> (детекторы / тест-киты / митигация);
+        корзина, чекаут, оплата, доставка - штатные Woo. Старт: каталог скрыт / скоро.</li>
+      <li>Раздел 5 Услуги -> <strong>CPT <code>service</code></strong> (или Woo-booking); форма заявки +
+        калькулятор стоимости. Онлайн-оценка риска - кастомный шаблон/плагин-виджет.</li>
+      <li>Расширяемость: Woo и CPT добавляются без переделки темы; меню-пункты <code>/shop</code>,
+        <code>/services</code> зарезервированы с самого начала.</li>
+      <li>SEO под Яндекс: Schema.org (<code>Product</code>, <code>Organization</code>, <code>FAQPage</code>),
+        человекочитаемые ЧПУ-URL; переиспользовать методику <code>seo-audit-ru</code>.</li>
+    </ul>
+  </section>
+
+  <footer>
+    Проектный документ контура Радоновый риск. Deliverable - карта, не код сайта;
+    разработка - отдельный этап после утверждения.
+  </footer>
+</div>
+</body>
+</html>
