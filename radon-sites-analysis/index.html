@@ -45,15 +45,20 @@
   .mcard p { margin:0; color:#9fb0cc; font-size:.88rem; }
   .ru-top { border-left:3px solid #3a72ff; }
   .ru-mod { border-left:3px solid #d8a24a; background:#1a1710; }
+  .ru-plat { border-left:3px solid #46b98c; }
   .ru-label { font-size:1.02rem; }
   .wp { color:#7fd0b0; font-size:.82rem; margin:6px 0 4px; font-family:monospace; }
   .badge { display:inline-block; font-size:.68rem; border-radius:999px; padding:1px 9px; margin-left:6px; vertical-align:middle; }
   .badge.mod { color:#ffcf8f; border:1px solid #7a5a2a; }
   .badge.utp { color:#ffd166; border:1px solid #7a6a2a; }
+  .badge.plat { color:#8fe6c0; border:1px solid #2a7a5a; }
   ul.tree li.star { color:#ffe0a0; }
   .callout { background:#10233a; border:1px solid #234a72; border-radius:12px; padding:16px 18px; }
+  .callout.green { background:#102e24; border-color:#23724f; }
   .platform { background:#131a2b; border:1px solid #243150; border-radius:12px; padding:6px 18px; }
   .platform li { margin:8px 0; }
+  .exchange { display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); margin-top:14px; }
+  .exchange .platform { margin:0; }
   footer { margin-top:50px; color:#6b7a96; font-size:.8rem; text-align:center; }
   code { background:#0e1626; border:1px solid #22304e; border-radius:5px; padding:1px 5px; font-size:.86em; }
 </style>
@@ -64,7 +69,8 @@
     <h1>Радон: англоязычные сайты и проект русскоязычного сайта</h1>
     <p class="sub">Разбор специализированных радон-сайтов, их карты и предлагаемая карта разделов
       RU-сайта с подключаемыми магазином и услугами.</p>
-    <p class="meta">Контур Радоновый риск | снято 2026-07-09 | платформа проекта: WordPress + WooCommerce</p>
+    <p class="meta">Контур Радоновый риск | v2 2026-07-09: карта откорректирована по ТЗ RNTest и
+      Предложению TPARadon | движок сайта: WordPress + WooCommerce</p>
   </header>
 
   <section>
@@ -168,77 +174,124 @@
     <div class="mcard"><h4>Сегментация аудитории</h4><div class="mform">дом / работодатель / профи / регион</div><p>UKradon Sector Guidance, Take Action Resources - один контент под разные роли.</p></div>
     <div class="mcard"><h4>Коммерческий слой</h4><div class="mform">продукты + услуги + корзина поверх контента</div><p>Radonova, Ecosense, Airthings - монетизация на базе доверия от просветительского ядра.</p></div>
     <div class="mcard"><h4>Митигация-провайдер</h4><div class="mform">услуги + обучение + продукты + онлайн-консультация</div><p>American Radon Mitigation, SWAT - подрядчик как контент-эксперт (YouTube/DIY/CE-курсы).</p></div>
+    <div class="mcard"><h4>Сайт + лабораторная платформа</h4><div class="mform">публичный сайт &lt;-&gt; система управления измерениями</div><p>TPARadon/RNTest: сайт - витрина и вход; протоколы, БД и алгоритмы - во внешней платформе, обмен по API.</p></div>
   </div>
   </section>
 
   <section>
-    <h2>C. Проект RU-сайта: карта разделов</h2>
+    <h2>C. Проект RU-сайта: карта разделов (v2)</h2>
     <div class="callout">
-      <strong>Костяк - воронка Узнать -> Измерить -> Снизить</strong> (адаптация Test/Protect/Learn),
-      поверх - УТП контура (онлайн-оценка риска по показаниям прибора) и подключаемые модули
-      Магазин / Услуги. Синяя рамка - контент-разделы, жёлтая - pluggable-модули (старт: заглушки скоро).
+      <strong>Костяк - воронка Узнать -> Измерить -> Снизить</strong>, дополненная разделами из
+      ТЗ RNTest / Предложения TPARadon: радоновые карты, сервис для профессионалов, личный кабинет.
+      Синяя рамка - контент, жёлтая - pluggable-модули (старт: заглушки скоро),
+      зелёная - разделы, живущие данными из внешней лабораторной платформы.
+    </div>
+    <div class="callout green" style="margin-top:12px">
+      <strong>Ключевое разграничение:</strong> web-платформа RNTest/TPARadon из документов -
+      это <strong>система управления лабораторией и измерениями</strong>. Она НЕ является частью
+      сайта: протоколы методов, базы данных, алгоритмы решений и контроль качества живут в
+      платформе, а сайт - публичная витрина и точка входа. Сайт и платформа обмениваются данными по API.
     </div>
     <div class="ru-map" style="margin-top:16px">
     <details class="ru-top" open>
-      <summary><span class="ru-label">1. О радоне</span> <span class="note">- контент-ядро, SEO под Яндекс</span></summary>
-      <div class="wp">WP: Страницы WP + таксономии тем</div>
-      <ul class="tree"><li class="">Что такое радон и откуда берётся</li><li class="">Чем опасен: рак лёгкого, годовая доза <span class="note">- нормы WHO/EPA/IAEA/ICRP/НРБ-99/EU-BSS</span></li><li class="">Радон в доме / школе / на работе</li><li class="">Карта радоноопасности регионов РФ</li><li class="">FAQ</li></ul>
-    </details>
-    <details class="ru-top" open>
-      <summary><span class="ru-label">2. Измерить радон</span> <span class="note">- воронка -&gt; сервис</span></summary>
-      <div class="wp">WP: Страницы + кастомный шаблон/виджет калькулятора</div>
-      <ul class="tree"><li class="">Как измерять <span class="note">- приборы, длительность, где ставить</span></li><li class="">Приборы: RadonEye, AtomFast, Radex <span class="note">- обзор / сравнение</span></li><li class="star">★ Онлайн-оценка риска <span class="badge utp">★ УТП</span> <span class="note">- загрузка показаний -&gt; годовая доза + риск = УТП контура</span></li><li class="">Интерпретация результатов <span class="note">- Бк/м3 -&gt; действие</span></li></ul>
-    </details>
-    <details class="ru-top" open>
-      <summary><span class="ru-label">3. Снизить радон</span> <span class="note">- Act</span></summary>
+      <summary><span class="ru-label">1. О проекте</span> <span class="note">- разделы 1 из ТЗ/Предложения</span></summary>
       <div class="wp">WP: Страницы WP</div>
-      <ul class="tree"><li class="">Методы снижения <span class="note">- SSD/депрессуризация под плитой, проветривание, HRV, герметизация</span></li><li class="">Когда нужна профессиональная митигация</li><li class="">Найти специалиста / заказать услугу <span class="note">- -&gt; модуль Услуги</span></li></ul>
+      <ul class="tree"><li class="">Цель и суть проекта <span class="note">- массовые измерения радона при участии населения</span></li><li class="">Команда, методология, доверие</li></ul>
+    </details>
+    <details class="ru-top" open>
+      <summary><span class="ru-label">2. О радоне и качестве воздуха (IAQ)</span> <span class="note">- контент-ядро, SEO под Яндекс</span></summary>
+      <div class="wp">WP: Страницы WP + таксономии тем</div>
+      <ul class="tree"><li class="">Что такое радон и откуда берётся</li><li class="">Чем опасен: рак лёгкого, годовая доза <span class="note">- нормы WHO/EPA/IAEA/ICRP/НРБ-99/EU-BSS</span></li><li class="">Нормативные требования <span class="note">- среднегодовая ОА, НРБ; отдельный раздел 3 из документов</span></li><li class="">Другие загрязнители воздуха в зданиях <span class="note">- IAQ; реализация может быть отложена</span></li><li class="">FAQ</li></ul>
+    </details>
+    <details class="ru-top" open>
+      <summary><span class="ru-label">3. Измерить радон</span> <span class="note">- воронка -&gt; сервисы платформы</span></summary>
+      <div class="wp">WP: Страницы + лендинги методов; сами протоколы - в платформе</div>
+      <ul class="tree"><li class="">Эффективная стратегия измерений <span class="note">- краткосрочный тест 4-7 сут достаточен в 70-90% случаев; стоимость тестов</span></li><li class="star">НАРОДНЫЙ метод (дозиметр + респиратор) <span class="badge utp">★ УТП</span> <span class="note">- ЭРОА радона; вход в сервис платформы</span></li><li class="">УГОЛЬНЫЙ метод <span class="note">- пробоотборники через маркетплейсы (Яндекс/OZON/WB), QR-идентификация, анализ в лаборатории</span></li><li class="">Метод МОНИТОРА <span class="note">- краткосрочные и долгосрочные непрерывные измерения; обзор мониторов рынка РФ</span></li><li class="">ДЕТАЛЬНОЕ тестирование здания <span class="note">- выявление путей поступления радона; + радон/радий в воде; прокат 4-10 мониторов</span></li><li class="">Обеспечение качества измерений <span class="note">- проверки мониторов и угольного метода в радоновой комнате; прослеживаемость к эталону</span></li><li class="star">★ Онлайн-оценка риска по показаниям прибора <span class="badge utp">★ УТП</span> <span class="note">- УТП контура: загрузка показаний -&gt; годовая доза + риск</span></li></ul>
+    </details>
+    <details class="ru-top ru-plat" open>
+      <summary><span class="ru-label">4. Радоновые карты</span> <span class="badge plat">ДАННЫЕ ИЗ ПЛАТФОРМЫ</span> <span class="note">- гексагональная сетка, усреднение, цветовая шкала; публичный и авторизованный режимы</span></summary>
+      <div class="wp">WP: Встраиваемый JS-виджет карт; данные приходят из платформы по API</div>
+      <ul class="tree"><li class="">Радон в зданиях <span class="note">- точки видят только их авторы и топ-менеджер - конфиденциальность</span></li><li class="">Плотность потока радона с поверхности грунта <span class="note">- данные от лабораторий</span></li><li class="">Радон (и радий) в водных источниках <span class="note">- данные от лабораторий</span></li><li class="">Мощность дозы на открытой местности <span class="note">- данные от населения и лабораторий</span></li><li class="">Статистические распределения по стране и регионам</li></ul>
+    </details>
+    <details class="ru-top" open>
+      <summary><span class="ru-label">5. Снизить радон (сервис защиты зданий)</span> <span class="note">- раздел 6 из документов; Act</span></summary>
+      <div class="wp">WP: Страницы + форма заявки; workflow заявки - в платформе</div>
+      <ul class="tree"><li class="">Эффективная стратегия защитных мероприятий <span class="note">- и ориентировочная стоимость</span></li><li class="">Сбор исходных данных и проектирование <span class="note">- заявка + поэтажный план -&gt; проект мер со сметой</span></li><li class="">Проведение защитных мероприятий <span class="note">- SSD/депрессия грунта, вентиляция, герметизация</span></li><li class="">Оценка эффективности <span class="note">- критерии + повторное выборочное тестирование</span></li><li class="">Партнёры в регионах <span class="note">- квалифицированные исполнители</span></li></ul>
+    </details>
+    <details class="ru-top" open>
+      <summary><span class="ru-label">6. Для профессионалов (лабораторий)</span> <span class="note">- раздел 7 из документов</span></summary>
+      <div class="wp">WP: Страницы + лендинги; абонентские сервисы - в платформе</div>
+      <ul class="tree"><li class="">Обновление Комплекса КАМЕРА <span class="note">- софт + коммутатор МК-2; ~300 лабораторий в РФ</span></li><li class="">Сервис ввода данных <span class="note">- результаты измерений -&gt; БД и карты</span></li><li class="">Испытания средств измерений в радоновой комнате</li><li class="">Обучение / сертификация / франшиза / гранты <span class="note">- долгосрочная перспектива</span></li></ul>
     </details>
     <details class="ru-top ru-mod" open>
-      <summary><span class="ru-label">4. Магазин</span> <span class="badge mod">МОДУЛЬ</span> <span class="note">- pluggable-модуль, включается позже</span></summary>
-      <div class="wp">WP: WooCommerce Products + категории</div>
-      <ul class="tree"><li class="">Детекторы радона <span class="note">- континуальные мониторы</span></li><li class="">Тест-киты <span class="note">- пассивные, лаб-анализ</span></li><li class="">Митигация: вентиляторы, комплектующие</li><li class="">Корзина / Оформление / Доставка / Оплата</li></ul>
+      <summary><span class="ru-label">7. Магазин</span> <span class="badge mod">МОДУЛЬ</span> <span class="note">- pluggable-модуль; часть товаров - витрина маркетплейсов</span></summary>
+      <div class="wp">WP: WooCommerce Products + внешние/партнёрские товары</div>
+      <ul class="tree"><li class="">Мониторы радона <span class="note">- перекупка разных типов; в перспективе фирменный монитор</span></li><li class="">Угольные пробоотборники <span class="note">- дистрибьюция через маркетплейсы Яндекс/OZON/WB - витрина со ссылками</span></li><li class="">Коммутатор МК-2 и оборудование для лабораторий</li><li class="">Корзина / Оформление / Доставка / Оплата</li></ul>
     </details>
     <details class="ru-top ru-mod" open>
-      <summary><span class="ru-label">5. Услуги</span> <span class="badge mod">МОДУЛЬ</span> <span class="note">- pluggable-модуль, включается позже</span></summary>
-      <div class="wp">WP: CPT service или Woo-booking</div>
-      <ul class="tree"><li class="">Профессиональное измерение <span class="note">- выезд</span></li><li class="">Лабораторный анализ</li><li class="">Митигация / проектирование системы</li><li class="">Онлайн / виртуальная консультация <span class="note">- расширение сервиса оценки риска</span></li><li class="">Форма заявки / калькулятор стоимости</li></ul>
+      <summary><span class="ru-label">8. Услуги</span> <span class="badge mod">МОДУЛЬ</span> <span class="note">- pluggable-модуль</span></summary>
+      <div class="wp">WP: CPT service или Woo-booking; исполнение - через платформу</div>
+      <ul class="tree"><li class="">Детальное тестирование под ключ <span class="note">- вкл. прокат мониторов</span></li><li class="">Проектирование и проведение защиты от радона</li><li class="">Оценка эффективности защитных мер</li><li class="">Онлайн-консультация / расчёт риска</li><li class="">Форма заявки / калькулятор стоимости</li></ul>
     </details>
     <details class="ru-top" open>
-      <summary><span class="ru-label">6. Блог / Новости</span> <span class="note">- SEO-трафик, awareness-кампании</span></summary>
-      <div class="wp">WP: Записи WP + рубрики</div>
-      
+      <summary><span class="ru-label">9. Новости / Блог / Форум</span></summary>
+      <div class="wp">WP: Записи WP + bbPress (или отложить форум)</div>
+      <ul class="tree"><li class="">Новости и блог <span class="note">- SEO-трафик, awareness</span></li><li class="">Форум <span class="note">- разделы 8-9 из документов</span></li></ul>
     </details>
     <details class="ru-top" open>
-      <summary><span class="ru-label">7. Ресурсы</span></summary>
-      <div class="wp">WP: Страницы + вложения + встраивание видео</div>
-      <ul class="tree"><li class="">Методички, нормы РФ</li><li class="">Видео / DIY <span class="note">- по образцу American Radon Mitigation</span></li><li class="">Для врачей / школ / застройщиков</li></ul>
+      <summary><span class="ru-label">10. Ресурсы</span></summary>
+      <div class="wp">WP: Страницы + вложения</div>
+      <ul class="tree"><li class="">Методички, нормы РФ</li><li class="">Руководства пользователя по методам <span class="note">- тексты 2.0/3.0/4.0/5.0 из ТЗ - публичные версии</span></li><li class="">Видео / DIY</li></ul>
+    </details>
+    <details class="ru-top ru-plat" open>
+      <summary><span class="ru-label">11. Личный кабинет</span> <span class="badge plat">ДАННЫЕ ИЗ ПЛАТФОРМЫ</span> <span class="note">- витрина данных платформы: сайт показывает, платформа хранит и считает</span></summary>
+      <div class="wp">WP: SSO/JWT-мост WP &lt;-&gt; платформа; данные по API</div>
+      <ul class="tree"><li class="">Регистрация: частное лицо / лаборатория <span class="note">- формы 1.1.1 / 1.1.2</span></li><li class="">Мои измерения и отчёты <span class="note">- форма 1.4; свои точки на картах</span></li><li class="">Мои приборы <span class="note">- регистрация дозиметра/монитора, форма 1.3</span></li><li class="">Абонентская оплата сервисов <span class="note">- ~900 руб/год население, ~9-19 тыс руб/год лаборатории</span></li><li class="">Претензии / чат с менеджером <span class="note">- форма 1.8</span></li></ul>
     </details>
     <details class="ru-top" open>
-      <summary><span class="ru-label">8. О нас / Контакты</span> <span class="note">- доверие</span></summary>
-      <div class="wp">WP: Страницы + форма</div>
-      <ul class="tree"><li class="">Методология, приборная база</li><li class="">Обратная связь</li></ul>
+      <summary><span class="ru-label">12. Контакты / Обратная связь</span></summary>
+      <div class="wp">WP: Страница + форма</div>
+      <ul class="tree"><li class="">Форма обратной связи, реквизиты</li></ul>
     </details>
     </div>
 
-    <h3>Платформа: WordPress + WooCommerce</h3>
+    <h3>Внешняя лабораторная платформа: что в ней (НЕ на сайте)</h3>
     <ul class="platform">
-      <li>Разделы 1-3, 6-8 -> <strong>страницы</strong> WP + <strong>записи</strong> (блог);
+      <li><strong>Протоколы методов измерений:</strong> пошаговые workflow народного/угольного/мониторного/детального методов (разделы 2-5 ТЗ), старт/стоп измерений, QR-идентификация образцов</li>
+      <li><strong>Базы данных:</strong> СИ (средства измерений), Х2-Х7 (данные методов), ХХ (результаты), Константы, реестр прав доступа</li>
+      <li><strong>Алгоритмы и модули:</strong> оценка данных и решение о соответствии нормативу (модули 2.4, 3.3.3.x, 4.3, 7.5), расчёт ОА, поправочные коэффициенты</li>
+      <li><strong>Контроль качества:</strong> проверки мониторов и угольного метода (раздел 6 ТЗ), образцовые СИ, метрологическая прослеживаемость</li>
+      <li><strong>Управление лабораторией:</strong> регистрация/анализ образцов, интерфейсы детекторов (БДБ-13, МК-2), Комплекс КАМЕРА</li>
+      <li><strong>Пользователи и доступ:</strong> учётные записи, права (форма 1.9), абонентские тарифы, чат-претензии (форма 1.8)</li>
+    </ul>
+    <h3>Обмен данными сайт &lt;-&gt; платформа</h3>
+    <div class="exchange">
+      <ul class="platform">
+      <li><strong>Сайт -&gt; платформа:</strong> регистрации пользователей и приборов, заявки на услуги/защиту, старт сценариев измерений (переход по ссылке/QR в интерфейс платформы)</li>
+      <li><strong>Платформа -&gt; сайт:</strong> результаты и отчёты для личного кабинета, агрегированные данные для радоновых карт, статусы заявок, статистика для публичных страниц</li>
+      </ul>
+    </div>
+
+    <h3>Движок сайта: WordPress + WooCommerce</h3>
+    <ul class="platform">
+      <li>Контент-разделы (1-3, 5-6, 9-10, 12) -> <strong>страницы</strong> WP + <strong>записи</strong>;
         таксономии для сегментов аудитории (дом/работа/профи/регион) и тем.</li>
-      <li>Раздел 4 Магазин -> <strong>WooCommerce Products</strong> (детекторы / тест-киты / митигация);
-        корзина, чекаут, оплата, доставка - штатные Woo. Старт: каталог скрыт / скоро.</li>
-      <li>Раздел 5 Услуги -> <strong>CPT <code>service</code></strong> (или Woo-booking); форма заявки +
-        калькулятор стоимости. Онлайн-оценка риска - кастомный шаблон/плагин-виджет.</li>
-      <li>Расширяемость: Woo и CPT добавляются без переделки темы; меню-пункты <code>/shop</code>,
-        <code>/services</code> зарезервированы с самого начала.</li>
+      <li>Раздел 7 Магазин -> <strong>WooCommerce Products</strong>; часть позиций - витрина
+        маркетплейсов (Яндекс/OZON/WB) с внешними ссылками. Старт: каталог скрыт / скоро.</li>
+      <li>Раздел 8 Услуги -> <strong>CPT <code>service</code></strong> (или Woo-booking); форма заявки +
+        калькулятор. Исполнение заявок - workflow во внешней платформе.</li>
+      <li>Разделы 4 и 11 (карты, личный кабинет) - интеграционные: SSO-мост и REST API к платформе;
+        сайт не хранит измерения, только отображает.</li>
+      <li>Онлайн-оценка риска - кастомный шаблон/плагин-виджет (УТП контура).</li>
       <li>SEO под Яндекс: Schema.org (<code>Product</code>, <code>Organization</code>, <code>FAQPage</code>),
-        человекочитаемые ЧПУ-URL; переиспользовать методику <code>seo-audit-ru</code>.</li>
+        ЧПУ-URL; методика <code>seo-audit-ru</code>.</li>
     </ul>
   </section>
 
   <footer>
     Проектный документ контура Радоновый риск. Deliverable - карта, не код сайта;
-    разработка - отдельный этап после утверждения.
+    разработка - отдельный этап после утверждения. Источники v2: Проект ТЗ RNTest v1 27.04.26,
+    Предложение по радоновому проекту TPARadon v1.
   </footer>
 </div>
 </body>
