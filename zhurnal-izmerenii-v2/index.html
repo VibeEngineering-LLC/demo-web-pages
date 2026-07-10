@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Журнал измерений — AtomFast (вариант D)</title>
+<style>
+  :root{
+    /* instrument ground — green-biased near-black, chosen not defaulted */
+    --bg:#0b0d0a; --frame:#050604; --panel:#14170f; --panel-2:#191d13;
+    --line:#2a3020; --line-2:#363d28;
+    --ink:#eef2e6;            /* primary text */
+    --ink-2:#b7c0a6;          /* secondary — AA on --panel (>4.5:1) */
+    --ink-3:#8f9a7e;          /* tertiary labels — AA-large / used ≥13px 600 */
+    --accent:#b6f24a;         /* AtomFast lime — the one bold hue */
+    --accent-dim:#7f9b3c;
+    /* semantic dose bands — NOT the accent */
+    --ok:#4fd08a; --ok-bg:#123021;
+    --warn:#e6b23c; --warn-bg:#332711;
+    --crit:#f0553f; --crit-bg:#3a1510;
+    --mono:ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,"SF Mono",monospace;
+    --sans:system-ui,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:
+      radial-gradient(1200px 600px at 50% -10%,#12160e 0%,var(--bg) 60%);
+      color:var(--ink);font-family:var(--sans);min-height:100vh;
+      display:flex;flex-direction:column;align-items:center;gap:22px;padding:34px 16px 60px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.22em;color:var(--accent-dim);
+      text-transform:uppercase;margin:0}
+  .h1{font-size:26px;font-weight:700;margin:6px 0 4px;text-wrap:balance;text-align:center;letter-spacing:-.01em}
+  .sub{color:var(--ink-2);max-width:52ch;text-align:center;margin:0;line-height:1.5;font-size:14px}
+
+  /* ---- phone frame ---- */
+  .phone{width:390px;max-width:100%;background:var(--frame);border-radius:38px;
+      padding:12px;box-shadow:0 0 0 1px #000,0 30px 80px -20px #000,inset 0 0 0 2px #1c2115;position:relative}
+  .screen{background:var(--bg);border-radius:28px;overflow:hidden;height:748px;
+      display:flex;flex-direction:column;position:relative}
+
+  /* ---- status bar: NO mac address (flaw #1 fixed) ---- */
+  .status{display:flex;align-items:center;justify-content:space-between;
+      padding:11px 18px 9px;font-family:var(--mono);font-size:12.5px;color:var(--ink-2);
+      background:linear-gradient(#0f120c,#0b0d0a)}
+  .status .l,.status .r{display:flex;align-items:center;gap:10px}
+  .status .clock{color:var(--ink);font-weight:600}
+  .dot-batt{color:var(--ok)}
+  .devchip{font-family:var(--mono);font-size:11px;color:var(--ink-3);border:1px solid var(--line);
+      border-radius:6px;padding:2px 7px;letter-spacing:.04em;cursor:pointer}
+  .devchip:hover{color:var(--ink-2);border-color:var(--line-2)}
+
+  /* ---- header ---- */
+  .head{padding:14px 18px 10px;display:flex;flex-direction:column;gap:12px;border-bottom:1px solid var(--line)}
+  .head-top{display:flex;align-items:flex-end;justify-content:space-between}
+  .title{font-size:20px;font-weight:700;margin:0}
+  .count{font-family:var(--mono);font-size:12px;color:var(--ink-2);margin-top:3px}
+  .toolbar{display:flex;gap:8px;align-items:center}
+  .seg{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:9px;overflow:hidden}
+  .seg button{background:none;border:0;color:var(--ink-3);font-family:var(--sans);font-size:12.5px;
+      font-weight:600;padding:7px 12px;cursor:pointer;display:flex;align-items:center;gap:6px}
+  .seg button[aria-pressed="true"]{background:var(--accent);color:#0b0d0a}
+  .btn{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:9px;
+      font-family:var(--sans);font-weight:600;font-size:12.5px;padding:7px 12px;cursor:pointer;
+      display:flex;align-items:center;gap:7px;position:relative}
+  .btn:hover{border-color:var(--line-2)}
+  .btn .badge{background:var(--accent);color:#0b0d0a;font-family:var(--mono);font-size:10px;
+      border-radius:20px;min-width:16px;height:16px;display:grid;place-items:center;padding:0 4px}
+
+  /* ---- threshold legend (flaw #2 fixed) ---- */
+  .legend{display:flex;gap:6px;padding:2px 0 0}
+  .legend .lg{flex:1;display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);
+      border-radius:8px;padding:6px 8px;font-family:var(--mono);font-size:10.5px;color:var(--ink-2);line-height:1.1}
+  .legend .sw{width:9px;height:9px;border-radius:2px;flex:none}
+  .legend b{color:var(--ink);font-weight:600;display:block;font-size:11px}
+  .sw.ok{background:var(--ok)} .sw.warn{background:var(--warn)} .sw.crit{background:var(--crit)}
+
+  /* ---- scroll body ---- */
+  .body{flex:1;overflow-y:auto;overflow-x:hidden}
+  .body::-webkit-scrollbar{width:0}
+
+  /* ---- FEED view (grouped by date) ---- */
+  .daybar{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:baseline;
+      padding:9px 18px;background:#0f120c;border-bottom:1px solid var(--line);backdrop-filter:blur(4px)}
+  .daybar .d{font-size:13px;font-weight:700;color:var(--ink)}
+  .daybar .n{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+  .rec{display:grid;grid-template-columns:4px 1fr auto 22px;gap:0 12px;align-items:center;
+      padding:12px 18px 12px 0;border-bottom:1px solid var(--line);cursor:pointer;position:relative}
+  .rec:hover{background:#10130c}
+  .stripe{width:4px;align-self:stretch;border-radius:0 3px 3px 0}
+  .stripe.ok{background:var(--ok)} .stripe.warn{background:var(--warn)} .stripe.crit{background:var(--crit)}
+  .rec .main{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .rec .time{font-family:var(--mono);font-size:12px;color:var(--ink-2);letter-spacing:.02em}
+  .rec .dose{font-family:var(--mono);font-size:26px;font-weight:600;line-height:1;
+      font-variant-numeric:tabular-nums;display:flex;align-items:baseline;gap:7px}
+  .rec .dose .u{font-size:11px;color:var(--ink-3);font-weight:400}
+  .dose.ok{color:var(--ok)} .dose.warn{color:var(--accent)} .dose.crit{color:var(--crit)}
+  .rec .side{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .rec .side .cps{font-size:14px;color:var(--ink);font-weight:600}
+  .rec .side .cps .u{font-size:10px;color:var(--ink-3);font-weight:400;margin-left:3px}
+  .rec .side .err{font-size:11px;color:var(--ink-2);margin-top:4px}
+  .rec .side .err .k{color:var(--ink-3)}
+  .chev{color:var(--ink-3);font-size:18px;justify-self:center;transition:transform .18s}
+  .rec[aria-expanded="true"] .chev{transform:rotate(90deg);color:var(--accent)}
+  .crit-tag{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;
+      color:var(--crit);background:var(--crit-bg);border:1px solid #5a2118;border-radius:4px;padding:1px 5px;margin-left:4px}
+
+  /* expand panel */
+  .exp{grid-column:2/5;overflow:hidden;max-height:0;transition:max-height .22s ease}
+  .rec[aria-expanded="true"] .exp{max-height:240px}
+  .exp-in{padding:12px 0 4px;display:flex;flex-direction:column;gap:10px}
+  .kv{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--ink-2)}
+  .kv span b{color:var(--ink);font-weight:600}
+  .cmt{display:flex;flex-direction:column;gap:7px}
+  .cmt textarea{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:9px;
+      color:var(--ink);font-family:var(--sans);font-size:13px;padding:9px 11px;resize:none;min-height:52px}
+  .cmt textarea:focus{outline:2px solid var(--accent-dim);outline-offset:0;border-color:transparent}
+  .cmt-row{display:flex;gap:8px;justify-content:flex-end}
+  .mini{font-size:12px;font-weight:600;border-radius:8px;padding:6px 13px;cursor:pointer;border:1px solid var(--line);
+      background:var(--panel);color:var(--ink-2)}
+  .mini.pri{background:var(--accent);color:#0b0d0a;border-color:transparent}
+  .saved-note{font-family:var(--mono);font-size:11px;color:var(--ink-2);display:flex;gap:6px;align-items:center}
+  .saved-note::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
+
+  /* ---- TABLE view (units in header — flaw #4) ---- */
+  .tbl{display:none;font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .tbl.on{display:block}
+  .feed.off{display:none}
+  .thead,.trow{display:grid;grid-template-columns:1.35fr 1fr .7fr .8fr;gap:8px;padding:9px 16px;align-items:center}
+  .thead{position:sticky;top:0;background:#0f120c;border-bottom:1px solid var(--line-2);z-index:2}
+  .thead div{font-size:9.5px;letter-spacing:.09em;color:var(--ink-3);text-transform:uppercase;line-height:1.25}
+  .thead .u{color:var(--accent-dim);display:block;font-size:9px}
+  .thead .num,.trow .num{text-align:right}
+  .trow{border-bottom:1px solid var(--line);font-size:13px;cursor:pointer}
+  .trow:hover{background:#10130c}
+  .trow .dt{color:var(--ink-2);font-size:11.5px;line-height:1.35}
+  .trow .dt b{color:var(--ink);font-weight:600;font-size:13px;display:block}
+  .trow .val{font-weight:600;display:flex;align-items:center;justify-content:flex-end;gap:6px}
+  .val .band{width:8px;height:8px;border-radius:2px;flex:none}
+  .band.ok{background:var(--ok)} .band.warn{background:var(--warn)} .band.crit{background:var(--crit)}
+  .val.ok{color:var(--ok)} .val.warn{color:var(--ink)} .val.crit{color:var(--crit)}
+  .trow .cps{color:var(--ink)} .trow .err{color:var(--ink-2)}
+
+  /* ---- bottom nav ---- */
+  .nav{display:flex;justify-content:space-around;padding:9px 6px 12px;border-top:1px solid var(--line);
+      background:linear-gradient(#0b0d0a,#0f120c)}
+  .nav a{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink-3);
+      font-size:10px;text-decoration:none;font-weight:600}
+  .nav a.act{color:var(--accent)}
+  .nav .ic{width:20px;height:20px;display:grid;place-items:center;font-size:16px}
+  .nav a.act .ic{filter:drop-shadow(0 0 6px var(--accent-dim))}
+  .nav a.act::after{content:"";width:16px;height:2px;border-radius:2px;background:var(--accent);margin-top:1px}
+
+  /* ---- filter sheet ---- */
+  .scrim{position:absolute;inset:0;background:#000a;opacity:0;pointer-events:none;transition:opacity .2s;z-index:5}
+  .scrim.on{opacity:1;pointer-events:auto}
+  .sheet{position:absolute;left:0;right:0;bottom:0;z-index:6;background:var(--panel-2);
+      border-top:1px solid var(--line-2);border-radius:20px 20px 0 0;padding:16px 18px 20px;
+      transform:translateY(100%);transition:transform .24s cubic-bezier(.2,.8,.2,1);
+      display:flex;flex-direction:column;gap:14px}
+  .sheet.on{transform:translateY(0)}
+  .sheet h3{margin:0;font-size:15px;display:flex;justify-content:space-between;align-items:center}
+  .sheet h3 button{background:none;border:0;color:var(--ink-3);font-size:20px;cursor:pointer;line-height:1}
+  .fgrp{display:flex;flex-direction:column;gap:7px}
+  .fgrp label{font-size:11px;letter-spacing:.05em;color:var(--ink-3);text-transform:uppercase;font-weight:600}
+  .frow{display:flex;gap:9px;align-items:center}
+  .frow input{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--ink);
+      font-family:var(--mono);font-size:13px;padding:9px 11px;min-width:0}
+  .frow input:focus{outline:2px solid var(--accent-dim);border-color:transparent}
+  .frow .sep{color:var(--ink-3);font-family:var(--mono)}
+  .funit{font-family:var(--mono);font-size:11px;color:var(--accent-dim);align-self:center}
+  .sheet-act{display:flex;gap:10px;margin-top:2px}
+  .sheet-act button{flex:1;font-size:14px;font-weight:600;border-radius:10px;padding:12px;cursor:pointer;border:1px solid var(--line)}
+  .sheet-act .reset{background:var(--panel);color:var(--ink-2)}
+  .sheet-act .apply{background:var(--accent);color:#0b0d0a;border-color:transparent}
+
+  /* ---- fixes strip below phone ---- */
+  .notes{width:390px;max-width:100%;display:flex;flex-direction:column;gap:8px}
+  .note{display:grid;grid-template-columns:auto 1fr;gap:11px;align-items:baseline;
+      background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 13px}
+  .note .n{font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:600;white-space:nowrap}
+  .note p{margin:0;font-size:13px;color:var(--ink-2);line-height:1.45}
+  .note p b{color:var(--ink);font-weight:600}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<p class="eyebrow">AtomFast · вариант D</p>
+<h1 class="h1">Журнал измерений — без недостатков</h1>
+<p class="sub">Гибрид: лента по датам как база, таблица режимом-переключателем, фильтр выезжающим листом. Легенда порогов, контраст AA, единицы в шапке. Тапни запись — раскрытие с комментарием.</p>
+
+<div class="phone">
+ <div class="screen">
+
+  <!-- status bar: no MAC -->
+  <div class="status">
+    <div class="l"><span class="clock">14:31</span><span class="devchip" title="Прибор — тап открывает карточку устройства">HD 5G96 ⌄</span></div>
+    <div class="r"><span>📶 −70</span><span>21°C</span><span class="dot-batt">▮ 46%</span></div>
+  </div>
+
+  <!-- header -->
+  <div class="head">
+    <div class="head-top">
+      <div><h2 class="title">Журнал измерений</h2><div class="count">7 записей · 08.07–08.08.2026</div></div>
+      <div class="toolbar">
+        <div class="seg" role="group" aria-label="Вид">
+          <button id="vFeed"  aria-pressed="true"  onclick="setView('feed')">☰ Лента</button>
+          <button id="vTable" aria-pressed="false" onclick="setView('table')">▦ Таблица</button>
+        </div>
+      </div>
+    </div>
+    <div class="head-top" style="align-items:center">
+      <button class="btn" onclick="openSheet()">▽ Фильтр <span class="badge" id="fBadge" style="display:none">0</span></button>
+      <!-- threshold legend -->
+      <div class="legend" style="flex:1;margin-left:10px">
+        <div class="lg"><span class="sw ok"></span><span><b>≤0.10</b>норма</span></div>
+        <div class="lg"><span class="sw warn"></span><span><b>0.10–0.30</b>повыш.</span></div>
+        <div class="lg"><span class="sw crit"></span><span><b>&gt;0.30</b>тревога</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="body">
+    <!-- FEED -->
+    <div class="feed" id="feed"></div>
+    <!-- TABLE -->
+    <div class="tbl" id="tbl">
+      <div class="thead">
+        <div>Дата · время</div>
+        <div class="num">Доза<span class="u">мкЗв/ч</span></div>
+        <div class="num">cps</div>
+        <div class="num">погр.<span class="u">±%</span></div>
+      </div>
+      <div id="trows"></div>
+    </div>
+  </div>
+
+  <!-- bottom nav -->
+  <nav class="nav">
+    <a class="act" href="#"><span class="ic">☢</span>Дисплей</a>
+    <a href="#"><span class="ic">◠</span>Архив</a>
+    <a href="#"><span class="ic">▦</span>Карта</a>
+    <a href="#"><span class="ic">⚙</span>Настройки</a>
+    <a href="#"><span class="ic">⤶</span>Выход</a>
+  </nav>
+
+  <!-- filter sheet -->
+  <div class="scrim" id="scrim" onclick="closeSheet()"></div>
+  <div class="sheet" id="sheet" role="dialog" aria-label="Фильтр">
+    <h3>Фильтр <button onclick="closeSheet()" aria-label="Закрыть">×</button></h3>
+    <div class="fgrp"><label>Период</label>
+      <div class="frow"><input value="08.07.2026"><span class="sep">—</span><input value="09.07.2026"></div></div>
+    <div class="fgrp"><label>Мощность дозы</label>
+      <div class="frow"><input value="0.00"><span class="sep">—</span><input value="0.20"><span class="funit">мкЗв/ч</span></div></div>
+    <div class="fgrp"><label>Счёт</label>
+      <div class="frow"><input value="18"><span class="sep">—</span><input value="45"><span class="funit">cps</span></div></div>
+    <div class="sheet-act">
+      <button class="reset" onclick="resetFilter()">Сбросить</button>
+      <button class="apply" onclick="applyFilter()">Применить</button>
+    </div>
+  </div>
+
+ </div>
+</div>
+
+<div class="notes">
+  <div class="note"><span class="n">◦ MAC</span><p><b>Убран из статус-бара.</b> Прибор — в чипе «HD 5G96 ⌄», полный MAC/RSSI по тапу, не в постоянном шуме.</p></div>
+  <div class="note"><span class="n">◦ Порог</span><p><b>Легенда + цветовые зоны.</b> Полоса слева и цвет дозы кодируют норма/повыш./тревога с явной шкалой. 0.3120 → красный «тревога».</p></div>
+  <div class="note"><span class="n">◦ Контраст</span><p><b>Серые подняты до AA.</b> Время, погрешность, единицы читаемы на тёмном (≥4.5:1).</p></div>
+  <div class="note"><span class="n">◦ Единицы</span><p><b>Не дублируются.</b> В таблице — в шапке колонки; в ленте — приглушённо один раз у числа.</p></div>
+  <div class="note"><span class="n">◦ Погр.</span><p><b>Явная метка «погр. ±%»</b> вместо висячей звёздочки-сноски.</p></div>
+  <div class="note"><span class="n">◦ Точность</span><p><b>3 знака в списке</b> (0.115), полные 4 знака + cps/погр./координаты — в раскрытии записи.</p></div>
+</div>
+
+<script>
+const DATA=[
+ {d:"9 июля 2026",date:"09.07.2026",rows:[
+   {t:"14:31:12",dose:0.1149,cps:21.4,err:5.0},
+   {t:"14:22:47",dose:0.1702,cps:24.1,err:4.2},
+   {t:"14:10:05",dose:0.0987,cps:19.8,err:6.1},
+   {t:"13:58:33",dose:0.3120,cps:41.0,err:3.8,cmt:"Поверка у источника — Cs-137, эталон"},
+   {t:"13:40:19",dose:0.1210,cps:22.0,err:5.0},
+   {t:"13:12:52",dose:0.1085,cps:20.6,err:5.4},
+ ]},
+ {d:"8 августа 2026",date:"08.08.2026",rows:[
+   {t:"19:20:11",dose:0.1602,cps:23.9,err:4.5},
+ ]},
+];
+const band=v=> v<=0.10?"ok": v<=0.30?"warn":"crit";
+const f3=v=>v.toFixed(3), f4=v=>v.toFixed(4);
+
+function renderFeed(){
+  let h="";
+  for(const g of DATA){
+    h+=`<div class="daybar"><span class="d">${g.d}</span><span class="n">${g.rows.length} зап.</span></div>`;
+    g.rows.forEach((r,i)=>{
+      const b=band(r.dose);
+      const tag=b==="crit"?`<span class="crit-tag">ТРЕВОГА</span>`:"";
+      h+=`<div class="rec" role="button" tabindex="0" aria-expanded="false"
+             onclick="tog(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();tog(this)}">
+        <span class="stripe ${b}"></span>
+        <div class="main">
+          <span class="time">${r.t}</span>
+          <span class="dose ${b}">${f3(r.dose)}<span class="u">мкЗв/ч</span>${tag}</span>
+        </div>
+        <div class="side">
+          <div class="cps">${r.cps.toFixed(1)}<span class="u">cps</span></div>
+          <div class="err"><span class="k">погр.</span> ±${r.err.toFixed(1)}%</div>
+        </div>
+        <span class="chev">›</span>
+        <div class="exp"><div class="exp-in">
+          <div class="kv">
+            <span>доза: <b>${f4(r.dose)}</b> мкЗв/ч</span>
+            <span>счёт: <b>${r.cps.toFixed(1)}</b> cps</span>
+            <span>погр.: <b>±${r.err.toFixed(1)}%</b></span>
+            <span>дата: <b>${g.date} ${r.t}</b></span>
+          </div>
+          <div class="cmt">
+            ${r.cmt?`<div class="saved-note">${r.cmt}</div>`:``}
+            <textarea placeholder="Добавить комментарий к замеру…">${r.cmt||""}</textarea>
+            <div class="cmt-row"><button class="mini">Отмена</button><button class="mini pri">Сохранить</button></div>
+          </div>
+        </div></div>
+      </div>`;
+    });
+  }
+  document.getElementById("feed").innerHTML=h;
+}
+function renderTable(){
+  let h="";
+  for(const g of DATA) g.rows.forEach(r=>{
+    const b=band(r.dose);
+    h+=`<div class="trow">
+      <div class="dt"><b>${r.t}</b>${g.date}</div>
+      <div class="num val ${b}"><span class="band ${b}"></span>${f4(r.dose)}</div>
+      <div class="num cps">${r.cps.toFixed(1)}</div>
+      <div class="num err">±${r.err.toFixed(1)}</div>
+    </div>`;
+  });
+  document.getElementById("trows").innerHTML=h;
+}
+function tog(el){const on=el.getAttribute("aria-expanded")==="true";el.setAttribute("aria-expanded",!on)}
+function setView(v){
+  const feed=document.getElementById("feed"),tbl=document.getElementById("tbl");
+  const bf=document.getElementById("vFeed"),bt=document.getElementById("vTable");
+  const f=v==="feed";
+  feed.classList.toggle("off",!f);tbl.classList.toggle("on",!f);
+  bf.setAttribute("aria-pressed",f);bt.setAttribute("aria-pressed",!f);
+}
+function openSheet(){document.getElementById("sheet").classList.add("on");document.getElementById("scrim").classList.add("on")}
+function closeSheet(){document.getElementById("sheet").classList.remove("on");document.getElementById("scrim").classList.remove("on")}
+function applyFilter(){const b=document.getElementById("fBadge");b.style.display="grid";b.textContent="3";closeSheet()}
+function resetFilter(){const b=document.getElementById("fBadge");b.style.display="none"}
+renderFeed();renderTable();
+</script>
+
+</body>
+</html>
