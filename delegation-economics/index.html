@@ -107,6 +107,17 @@
   code{font-family:var(--mono);font-size:.92em;background:var(--panel-2);padding:1px 6px;border-radius:5px}
   .caveat{font-size:13.5px;color:var(--ink-soft)}
   .caveat b{color:var(--ink)}
+  .rig{border:1px solid var(--accent);border-radius:10px;padding:18px 20px;background:var(--panel);
+    margin-top:22px;display:flex;flex-direction:column;gap:14px}
+  .rig .tag{font-family:var(--mono);text-transform:uppercase;letter-spacing:.16em;font-size:11.5px;
+    color:var(--accent-ink);font-weight:600}
+  .rig-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(138px,1fr));gap:12px}
+  .rig-cell .k{font-family:var(--mono);color:var(--ink-faint);font-size:11px;text-transform:uppercase;
+    letter-spacing:.08em;margin-bottom:3px}
+  .rig-cell .v{font-weight:600;font-size:15px}
+  .rig .foot{color:var(--ink-faint);font-size:12.5px;border-top:1px solid var(--line-soft);padding-top:11px}
+  td .measured{color:var(--good);font-family:var(--mono);font-size:11px;margin-left:.4em}
+  .refcol{color:var(--accent-ink);font-weight:600}
 </style>
 </head>
 <body>
@@ -120,9 +131,30 @@
     <div class="meta">
       <span><b>Метод:</b> solo vs delegated, tiktoken o200k как прокси</span>
       <span><b>Данные:</b> 4 реальных файла, 2.5–96&nbsp;КБ</span>
+      <span><b>Стенд:</b> RTX&nbsp;4090 · qwen3-coder:30b</span>
       <span><b>Дата:</b> 2026-07-10</span>
     </div>
   </header>
+
+  <section>
+    <span class="eyebrow">Стенд</span>
+    <h2>Железо реального замера</h2>
+    <div class="rig">
+      <span class="tag">Конфигурация прогона</span>
+      <div class="rig-grid">
+        <div class="rig-cell"><div class="k">GPU</div><div class="v">RTX&nbsp;4090 · 24&nbsp;ГБ</div></div>
+        <div class="rig-cell"><div class="k">CPU</div><div class="v">Core&nbsp;i9-13900KF</div></div>
+        <div class="rig-cell"><div class="k">RAM</div><div class="v">64&nbsp;ГБ</div></div>
+        <div class="rig-cell"><div class="k">Runtime</div><div class="v">Ollama&nbsp;0.31.1</div></div>
+        <div class="rig-cell"><div class="k">Модель</div><div class="v">qwen3-coder:30b</div></div>
+        <div class="rig-cell"><div class="k">Архитектура</div><div class="v">MoE · ~3B&nbsp;active</div></div>
+      </div>
+      <p class="foot">Все числа замера ниже — фактический прогон на этом железе. Токены — tiktoken
+        <code>o200k_base</code> как прокси токенизатора frontier (ratio-надёжен, абсолюты ±10–15%).
+        Конфиги 8&nbsp;ГБ / 12&nbsp;ГБ в таблице ниже — расчётная экстраполяция по той же физике,
+        <b>не</b> отдельный прогон.</p>
+    </div>
+  </section>
 
   <section>
     <span class="eyebrow">TL;DR</span>
@@ -228,6 +260,87 @@
       <li><span class="k">прайс</span>Input-цены — публичный прайс Anthropic (снимок 2026-06-24);
         Sonnet&nbsp;5 intro $2/1M действует до 2026-08-31. Output здесь не участвует: и solo, и делегация
         тратят на файл только input.</li>
+    </ul>
+  </section>
+
+  <section>
+    <span class="eyebrow">Прикидка · другое железо</span>
+    <h2>А если карта слабее — что меняется</h2>
+    <p>Замер сделан на RTX&nbsp;4090 с <code>qwen3-coder:30b</code>. На слабом железе ставят модель
+      поменьше. <b>Две независимые оси, не путать:</b></p>
+    <div class="split">
+      <div class="note"><b>Ось $ — frontier-модель.</b> Долларовая экономия зависит <b>только</b> от того,
+        какая frontier-модель платит за контекст (Fable/Opus/Sonnet). Локальная LLM бесплатна — её размер
+        на $-экономию <b>не влияет</b>.</div>
+      <div class="note"><b>Ось надёжности — локальное железо.</b> Меньше карта → меньше модель → ниже
+        скорость и надёжность выжимки, чуть больше <span class="mono">D</span> (±20–30%). Экономия&nbsp;%
+        почти та же.</div>
+    </div>
+    <p>Проверка пессимизмом (мелкая модель, <span class="mono">D×2</span>, JSON-лог):
+      (27&nbsp;680−2&nbsp;500)/27&nbsp;680 = <span class="chip hi">91%</span> вместо 95.5% — всё ещё 90%+.
+      Порог рентабельности (~10&nbsp;КБ) и цифры экономии переносятся на 7b/14b <b>почти без изменений</b>.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr>
+          <th>Параметр</th><th>Ноут 3070 · 8&nbsp;ГБ</th><th>Десктоп 3060 · 12&nbsp;ГБ</th>
+          <th class="refcol">Референс 4090 · 24&nbsp;ГБ</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>Модель класса</td><td>qwen2.5-coder:7b</td><td>qwen2.5-coder:14b</td>
+            <td class="refcol">qwen3-coder:30b<span class="measured">✓ замер</span></td></tr>
+          <tr><td>VRAM модели (Q4)</td><td class="num">~4.4&nbsp;ГБ</td><td class="num">~9&nbsp;ГБ</td>
+            <td class="num">18&nbsp;ГБ (MoE)</td></tr>
+          <tr><td>Экономия % (≥26&nbsp;КБ)</td><td>83–94%</td><td>88–96%</td>
+            <td class="refcol">91–97% ✓</td></tr>
+          <tr><td>Порог рентабельности</td><td>~10&nbsp;КБ / 150&nbsp;стр</td><td>тот же</td>
+            <td class="refcol">тот же</td></tr>
+          <tr><td>$-экономия / 1000&nbsp;файлов</td><td colspan="3" style="white-space:normal">
+            <b>одинакова на любом железе</b> — задаётся frontier-моделью (см. секцию «деньги»), не картой</td></tr>
+          <tr><td>Скорость ген. (оценка)</td><td class="num">50–90 tok/s</td><td class="num">20–30 tok/s</td>
+            <td class="refcol num">~34 tok/s</td></tr>
+          <tr><td>Надёжность выжимки</td><td><span class="chip lo">ниже</span></td>
+            <td>средняя</td><td class="refcol">якорь</td></tr>
+          <tr><td>Дефолт N подряд → solo</td><td><span class="chip lo">1</span></td>
+            <td><span class="chip mid">2</span></td><td class="refcol"><span class="chip mid">2</span></td></tr>
+          <tr><td>Делегировать числа</td><td><span class="chip lo">нет</span></td>
+            <td>осторожно, строже валидация</td><td class="refcol">да, со сверкой</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="caveat">Скорости — грубая оценка по VRAM-bandwidth (3060 ≈360&nbsp;ГБ/с, 4090 ≈1008&nbsp;ГБ/с);
+      30b — MoE с ~3B активных, потому быстрая несмотря на 18&nbsp;ГБ веса. 8/12&nbsp;ГБ — расчёт, не прогон.</p>
+
+    <h3 style="margin-top:26px">Модель + настройки Ollama под железо</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Железо</th><th class="num">VRAM</th><th>Модель</th><th>Quant</th>
+          <th class="num">num_ctx</th><th class="num">keep_alive</th></tr></thead>
+        <tbody>
+          <tr><td>Ноут 3070 / 4060</td><td class="num">8&nbsp;ГБ</td><td>qwen2.5-coder:7b</td>
+            <td>Q4_K_M</td><td class="num">8192</td><td class="num">5m</td></tr>
+          <tr><td>Десктоп 3060</td><td class="num">12&nbsp;ГБ</td><td>qwen2.5-coder:14b</td>
+            <td>Q4_K_M</td><td class="num">16384</td><td class="num">10m</td></tr>
+          <tr class="total"><td>Десктоп 4090 (замер)</td><td class="num">24&nbsp;ГБ</td><td>qwen3-coder:30b</td>
+            <td>Q4·MoE</td><td class="num">32768</td><td class="num">30m</td></tr>
+          <tr><td>CPU-only fallback</td><td class="num">—</td><td>qwen2.5-coder:3b</td>
+            <td>Q4</td><td class="num">4096</td><td class="num">2m</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="formula" style="font-size:13.5px">
+      <span class="c">// extraction-вызов, Ollama HTTP API</span><br>
+      "format": "json",      <span class="c">// форс JSON-грамматики → режет bad_json</span><br>
+      "options": { "temperature": 0, <span class="c">// детерминизм → меньше галлюцинаций</span><br>
+      &nbsp;&nbsp;"num_ctx": 16384,   <span class="c">// по VRAM: 8ГБ→8192, 24ГБ→32768+</span><br>
+      &nbsp;&nbsp;"num_predict": 2048 <span class="c">// потолок выхода = потолок D</span> }
+    </div>
+    <ul class="rule">
+      <li><span class="k">num_ctx</span>Масштабируй по VRAM — KV-cache ест память сверх весов.
+        Превысишь → выгрузка в RAM и обвал скорости 2–5×.</li>
+      <li><span class="k">8&nbsp;ГБ</span><b>Числа / метрология / финансы — НЕ делегировать</b> на 7b/4b:
+        только грубая классификация/шаблон, где ошибка дёшева и видна глазом.</li>
+      <li><span class="k">не&nbsp;тяни</span>14b на 8&nbsp;ГБ — частичная выгрузка слоёв даёт 2–5× замедление;
+        проще 7b целиком в VRAM.</li>
     </ul>
   </section>
 
