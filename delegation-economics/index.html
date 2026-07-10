@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Делегировать bulk-работу на локальную LLM — окупается?</title>
+<style>
+  :root{
+    --bg:#F5F7F8; --panel:#FFFFFF; --panel-2:#EEF2F3;
+    --ink:#19222A; --ink-soft:#48565F; --ink-faint:#7B8891;
+    --line:#DCE3E6; --line-soft:#E8EDEF;
+    --accent:#C77D1A; --accent-ink:#8A5410;
+    --good:#1F8F82; --good-bg:#E1F0ED;
+    --warn:#C9532F; --warn-bg:#F6E4DD;
+    --grid:#E3E9EB;
+    --mono:"Cascadia Code","Cascadia Mono","SF Mono","JetBrains Mono","Consolas",ui-monospace,monospace;
+    --sans:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0F1519; --panel:#161E24; --panel-2:#1B252C;
+      --ink:#E7EEF2; --ink-soft:#A7B4BC; --ink-faint:#6E7C85;
+      --line:#26323A; --line-soft:#1F2A31;
+      --accent:#E8A13A; --accent-ink:#F2BE6E;
+      --good:#3DB3A4; --good-bg:#12332F;
+      --warn:#E5654B; --warn-bg:#39211B;
+      --grid:#212D34;
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#F5F7F8; --panel:#FFFFFF; --panel-2:#EEF2F3;
+    --ink:#19222A; --ink-soft:#48565F; --ink-faint:#7B8891;
+    --line:#DCE3E6; --line-soft:#E8EDEF;
+    --accent:#C77D1A; --accent-ink:#8A5410;
+    --good:#1F8F82; --good-bg:#E1F0ED;
+    --warn:#C9532F; --warn-bg:#F6E4DD;
+    --grid:#E3E9EB;
+  }
+  :root[data-theme="dark"]{
+    --bg:#0F1519; --panel:#161E24; --panel-2:#1B252C;
+    --ink:#E7EEF2; --ink-soft:#A7B4BC; --ink-faint:#6E7C85;
+    --line:#26323A; --line-soft:#1F2A31;
+    --accent:#E8A13A; --accent-ink:#F2BE6E;
+    --good:#3DB3A4; --good-bg:#12332F;
+    --warn:#E5654B; --warn-bg:#39211B;
+    --grid:#212D34;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.6;-webkit-font-smoothing:antialiased;font-size:16px}
+  .wrap{max-width:860px;margin:0 auto;padding:clamp(28px,5vw,72px) clamp(18px,4vw,32px)}
+  .mono{font-family:var(--mono)}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--accent-ink);font-weight:600;display:block;margin-bottom:10px}
+  h1{font-family:var(--mono);font-weight:700;font-size:clamp(26px,4.6vw,40px);line-height:1.14;
+    letter-spacing:-.01em;margin:.1em 0 .35em;text-wrap:balance}
+  h2{font-family:var(--mono);font-weight:700;font-size:clamp(19px,2.6vw,23px);letter-spacing:-.005em;
+    margin:0 0 6px;text-wrap:balance}
+  h3{font-family:var(--mono);font-weight:600;font-size:15px;margin:0 0 4px;color:var(--ink)}
+  p{margin:0 0 14px;max-width:66ch}
+  a{color:var(--accent-ink);text-decoration:underline;text-underline-offset:2px}
+  .lede{font-size:clamp(17px,2.2vw,19px);color:var(--ink-soft);max-width:64ch}
+  header.top{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:8px}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;font-family:var(--mono);
+    font-size:12.5px;color:var(--ink-faint)}
+  .meta b{color:var(--ink-soft);font-weight:600}
+  section{padding:34px 0;border-bottom:1px solid var(--line-soft)}
+  section:last-of-type{border-bottom:0}
+  .grid-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:22px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 18px 16px}
+  .card .big{font-family:var(--mono);font-weight:700;font-size:30px;line-height:1;letter-spacing:-.02em;
+    font-variant-numeric:tabular-nums}
+  .card.good .big{color:var(--good)} .card.warn .big{color:var(--warn)} .card.acc .big{color:var(--accent-ink)}
+  .card .lbl{font-size:13.5px;color:var(--ink-soft);margin-top:8px}
+  .tablewrap{overflow-x:auto;margin:20px 0 8px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+  table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+  th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line-soft);white-space:nowrap}
+  thead th{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--ink-faint);font-weight:600;background:var(--panel-2)}
+  tbody tr:last-child td{border-bottom:0}
+  td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+  tr.total td{font-weight:700}
+  .bar{position:relative;height:11px;border-radius:6px;background:var(--panel-2);overflow:hidden;min-width:90px}
+  .bar>span{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:var(--good);
+    transform-origin:left;animation:grow .9s cubic-bezier(.2,.7,.2,1) both}
+  .bar.warn>span{background:var(--warn)}
+  @keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  @media (prefers-reduced-motion:reduce){.bar>span{animation:none}}
+  .chip{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;padding:2px 9px;
+    border-radius:20px;font-variant-numeric:tabular-nums}
+  .chip.hi{background:var(--good-bg);color:var(--good)}
+  .chip.mid{background:var(--accent);color:#20160a}
+  .chip.lo{background:var(--warn-bg);color:var(--warn)}
+  .formula{font-family:var(--mono);background:var(--panel);border:1px solid var(--line);
+    border-left:3px solid var(--accent);border-radius:8px;padding:16px 18px;margin:18px 0;
+    font-size:15px;overflow-x:auto}
+  .formula .c{color:var(--ink-faint)}
+  .note{background:var(--panel-2);border-radius:8px;padding:14px 16px;font-size:14px;color:var(--ink-soft);margin:14px 0}
+  .note b{color:var(--ink)}
+  ul.rule{list-style:none;padding:0;margin:16px 0;display:flex;flex-direction:column;gap:10px}
+  ul.rule li{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:13px 15px;font-size:14.5px}
+  ul.rule li .k{font-family:var(--mono);font-weight:700;color:var(--accent-ink);margin-right:8px}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:560px){.split{grid-template-columns:1fr}}
+  .mini{font-family:var(--mono);font-size:12.5px;color:var(--ink-faint);font-variant-numeric:tabular-nums}
+  footer{padding-top:28px;color:var(--ink-faint);font-size:12.5px;font-family:var(--mono)}
+  code{font-family:var(--mono);font-size:.92em;background:var(--panel-2);padding:1px 6px;border-radius:5px}
+  .caveat{font-size:13.5px;color:var(--ink-soft)}
+  .caveat b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">Инженерный замер · экономика делегирования</span>
+    <h1>Делегировать bulk-работу на локальную LLM — окупается?</h1>
+    <p class="lede">Замер на реальных данных: сколько токенов контекста frontier-модели экономит
+      выгрузка объёмной обработки на локальную <span class="mono">Qwen3-Coder&nbsp;30B</span> — и
+      модель падений: после скольких провалов делегации выгоднее сделать самому.</p>
+    <div class="meta">
+      <span><b>Метод:</b> solo vs delegated, tiktoken o200k как прокси</span>
+      <span><b>Данные:</b> 4 реальных файла, 2.5–96&nbsp;КБ</span>
+      <span><b>Дата:</b> 2026-07-10</span>
+    </div>
+  </header>
+
+  <section>
+    <span class="eyebrow">TL;DR</span>
+    <h2>Три вывода</h2>
+    <div class="grid-cards">
+      <div class="card good"><div class="big">90–97%</div>
+        <div class="lbl">экономия контекста на файлах ≥26&nbsp;КБ. Наступает <b>рано</b> — не с сотен КБ.</div></div>
+      <div class="card acc"><div class="big">~10&nbsp;КБ</div>
+        <div class="lbl">порог рентабельности. Ниже — solo проще, делегация не окупается.</div></div>
+      <div class="card warn"><div class="big">N&nbsp;=&nbsp;2</div>
+        <div class="lbl">дефолт: два подряд провала → делай сам. Но тип падения важнее числа.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Метод</span>
+    <h2>Что и как меряли</h2>
+    <p>Задача — bulk-обработка (суммаризация лога, извлечение полей, классификация): читать сырой
+      файл целиком в контекст frontier-модели дорого. Альтернатива — локальная модель жуёт файл
+      у себя (0 токенов frontier) и отдаёт компактную JSON-выжимку; frontier видит только выжимку.</p>
+    <div class="split">
+      <div class="note"><b>solo</b> = весь файл в контекст + инструкция. Стоимость <span class="mono">S</span>.</div>
+      <div class="note"><b>delegated</b> = локальная LLM → JSON-выжимка + обёртка вызова. Стоимость <span class="mono">D</span>.</div>
+    </div>
+    <p class="caveat"><b>Счётчик:</b> <code>tiktoken o200k_base</code> как прокси токенизатора frontier
+      (точный API-счётчик недоступен без ключа). Для <b>отношения</b> экономии это корректно — solo и
+      delegated меряются одним счётчиком, systematic bias сокращается; абсолюты ±10–15%. Калибровка
+      сошлась: 96&nbsp;КБ = 27&nbsp;680 ток ≈ 3.5 симв/ток.</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">Результат · экономия</span>
+    <h2>Экономия контекста наступает рано</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr>
+          <th>Файл</th><th class="num">КБ</th><th class="num">solo&nbsp;ток</th>
+          <th class="num">deleg&nbsp;ток</th><th class="num">экономия</th><th style="width:34%">&nbsp;</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>текст-карточка</td><td class="num">2.5</td><td class="num">511</td><td class="num">509</td>
+            <td class="num">0.4%</td><td><div class="bar warn"><span style="width:0.4%"></span></div></td></tr>
+          <tr><td>код-анализ</td><td class="num">26.5</td><td class="num">6 732</td><td class="num">579</td>
+            <td class="num">91.4%</td><td><div class="bar"><span style="width:91.4%"></span></div></td></tr>
+          <tr><td>changelog</td><td class="num">50.9</td><td class="num">14 225</td><td class="num">435</td>
+            <td class="num">96.9%</td><td><div class="bar"><span style="width:96.9%"></span></div></td></tr>
+          <tr><td>JSON-лог</td><td class="num">96.4</td><td class="num">27 680</td><td class="num">1 243</td>
+            <td class="num">95.5%</td><td><div class="bar"><span style="width:95.5%"></span></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Между break-even (~3&nbsp;КБ) и 90%+ (~26&nbsp;КБ) — узкая зона. Вывод: <b>делегируй bulk уже
+      с ~10&nbsp;КБ / ~150 строк</b>, не жди «сотен КБ и тысяч строк».</p>
+    <div class="note"><b>Поправка к интуитивной прикидке.</b> Ручная оценка давала «мелкий файл → −100%
+      (хуже)», потому что считала стоимость <i>написать helper с нуля</i> каждый раз. В steady-state
+      скрипт написан один раз и лежит в проекте → overhead ≈ 0, мелкий файл выходит в break-even
+      (+0.4%), а не в минус. На крупных файлах реальность оказалась <b>лучше</b> прикидки (95% против
+      ожидаемых 83%).</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">Модель падений</span>
+    <h2>Делегация падает — когда бросить и сделать самому</h2>
+    <p>Каждый провал делегации тоже жжёт токены frontier: надо прочитать ошибку/мусор и решить
+      «повторить или escalate». Обозначим цену одного провала <span class="mono">f</span>. Решение
+      forward-looking (уже потраченное — sunk cost, в расчёт не идёт):</p>
+    <div class="formula">
+      E[retry] = D + f·(1−p)/p<span class="c">   // ожидаемая стоимость «повторять до успеха»</span><br>
+      solo выгоднее, когда  E[retry] &gt; S
+    </div>
+    <p>Провалы на <b>одном</b> входе не независимы — патологичный файл ломает систематически. Оценка
+      вероятности успеха по Лапласу после <span class="mono">k</span> провалов подряд:
+      <span class="mono">p̂ = 1/(k+2)</span> → <span class="mono">(1−p)/p = k+1</span>. Критерий
+      сворачивается в порог:</p>
+    <div class="formula" style="border-left-color:var(--good)">
+      N<sub>switch</sub> = ⌊(S − D) / f⌋<span class="c">   // столько провалов подряд терпим, дальше — solo</span>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Цена провала</span>
+    <h2>Тип падения решает — не количество</h2>
+    <p>Измеренная стоимость <span class="mono">f</span> одного провала в токенах контекста frontier:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Тип падения</th><th class="num">f, ток</th><th>Как измерено</th><th style="width:30%">&nbsp;</th></tr></thead>
+        <tbody>
+          <tr><td>пустой ответ</td><td class="num">130</td><td>обёртка вызова</td>
+            <td><div class="bar warn"><span style="width:8%"></span></div></td></tr>
+          <tr><td>HTTP 500</td><td class="num">143</td><td>строка ошибки</td>
+            <td><div class="bar warn"><span style="width:9%"></span></div></td></tr>
+          <tr><td>timeout</td><td class="num">145</td><td>traceback</td>
+            <td><div class="bar warn"><span style="width:9%"></span></div></td></tr>
+          <tr><td>VRAM-guard</td><td class="num">150</td><td>строка</td>
+            <td><div class="bar warn"><span style="width:10%"></span></div></td></tr>
+          <tr><td>bad_json (проза вместо JSON)</td><td class="num">885</td><td>реальный прогон, 755 ток прозы</td>
+            <td><div class="bar warn"><span style="width:56%"></span></div></td></tr>
+          <tr><td>галлюцинация</td><td class="num">D + α·S</td><td>валидация дочитывает долю α источника</td>
+            <td><div class="bar warn"><span style="width:100%"></span></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Инфра-сбои дёшевы (~140 ток), <b>bad_json</b> дороже, <b>галлюцинация</b> — самая дорогая: она
+      невидима, и проверка выжимки заставляет дочитывать сам источник.</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">Матрица порога</span>
+    <h2>Сколько провалов терпеть — N<sub>switch</sub></h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr>
+          <th>Файл</th><th class="num">S−D</th><th>инфра ~140</th><th>bad_json 885</th>
+          <th>галлюц α=0.25</th><th>галлюц α=0.5</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>текст-карточка 2.5&nbsp;КБ</td><td class="num">2</td>
+            <td><span class="chip lo">0</span></td><td><span class="chip lo">0</span></td>
+            <td><span class="chip lo">0</span></td><td><span class="chip lo">0</span></td></tr>
+          <tr><td>код-анализ 26&nbsp;КБ</td><td class="num">6 153</td>
+            <td><span class="chip hi">41–47</span></td><td><span class="chip mid">6</span></td>
+            <td><span class="chip lo">2</span></td><td><span class="chip lo">1</span></td></tr>
+          <tr><td>changelog 51&nbsp;КБ</td><td class="num">13 790</td>
+            <td><span class="chip hi">91–106</span></td><td><span class="chip mid">15</span></td>
+            <td><span class="chip lo">3</span></td><td><span class="chip lo">1</span></td></tr>
+          <tr><td>JSON-лог 96&nbsp;КБ</td><td class="num">26 437</td>
+            <td><span class="chip hi">176–203</span></td><td><span class="chip mid">29</span></td>
+            <td><span class="chip lo">3</span></td><td><span class="chip lo">1</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>Токен-порог нельзя брать буквально.</b> Для инфры он огромен (40–200), но
+      ретраить 200 раз нельзя: доминирует <b>время</b> (N × timeout) и политика «краш локальной модели →
+      отчёт, не молчаливый бесконечный ретрай». Реальный порог = <span class="mono">min(токен-порог,
+      practical&nbsp;cap)</span>.</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">Правило</span>
+    <h2>Операциональный критерий</h2>
+    <ul class="rule">
+      <li><span class="k">дефолт</span><b>2 подряд провала → solo.</b> Безопасный cap по времени и надёжности.</li>
+      <li><span class="k">N=1</span><b>сразу сам</b>, если файл &lt;~10&nbsp;КБ (делегация не окупалась)
+        <b>или</b> галлюцинация на крупном/критичном (метрология, финансы — там α≥0.5 → порог 1).</li>
+      <li><span class="k">N=3</span><b>терпи третий ретрай</b>, если провал — чистая инфра
+        (перезапуск локальной модели / подождать VRAM) на файле &gt;50&nbsp;КБ и время терпит; иначе — отчёт.</li>
+    </ul>
+    <p>Суть: <b>дешёвый и видимый</b> провал (пусто/HTTP/timeout) — ретрай почти бесплатен, не паникуй.
+      <b>Дорогой и скрытый</b> (галлюцинация) — уходи в solo рано, пока не потратил больше, чем сэкономил.</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">Честные оговорки</span>
+    <h2>Границы применимости</h2>
+    <ul class="rule">
+      <li><span class="k">прокси</span>Счётчик — <code>tiktoken</code>, не токенизатор frontier. Отношения (экономия %, порог) устойчивы; абсолютные токены ±10–15%.</li>
+      <li><span class="k">steady-state</span>Экономия измерена при готовом helper-скрипте. Первый прогон несёт разовую стоимость написания скрипта.</li>
+      <li><span class="k">α</span>Цена галлюцинации параметризована долей источника на сверку (α∈{0.1, 0.25, 0.5}) — не измерена напрямую, дан диапазон.</li>
+      <li><span class="k">токены≠всё</span>Модель считает токены. Качество и надёжность выжимки — отдельная ось: каждое число из выжимки сверять с источником (anti-hallucination).</li>
+      <li><span class="k">cap</span>Practical cap (2–3) — инженерное решение по wall-clock и политике, а не токен-оптимум. Чистый токен-оптимум для инфры выше, но нереализуем по времени.</li>
+    </ul>
+  </section>
+
+  <footer>
+    Воспроизводимо: <code>bench_delegation.py</code> (экономия) + <code>bench_failures.py</code>
+    (модель падений). Данные анонимизированы; числа и метод — как измерены. · 2026-07-10
+  </footer>
+</div>
+</body>
+</html>
