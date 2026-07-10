@@ -184,6 +184,54 @@
   </section>
 
   <section>
+    <span class="eyebrow">Результат · деньги</span>
+    <h2>Сколько это в деньгах — Fable, Opus, Sonnet</h2>
+    <p>Экономия — это <b>input-токены</b> (файл в контексте = input; делегация меняет его на компактную
+      выжимку). Долларовая цена = сэкономленные токены × input-цена модели:</p>
+    <div class="formula">
+      $<sub>saved</sub> = (S − D) × цена<sub>in</sub> / 1&nbsp;000&nbsp;000<span class="c">   // за один файл</span>
+    </div>
+    <p>За один файл — десятые цента. Значимость проявляется <b>в объёме</b>. Ниже — экономия за
+      <b>1000 файлов</b> одного класса (типичный bulk-прогон):</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr>
+          <th>Файл (×1000)</th><th class="num">экон.&nbsp;ток</th>
+          <th class="num">Fable&nbsp;5<br><span class="mini">$10/1M</span></th>
+          <th class="num">Opus&nbsp;4.8<br><span class="mini">$5/1M</span></th>
+          <th class="num">Sonnet&nbsp;5<br><span class="mini">$3/1M</span></th>
+          <th class="num">Sonnet&nbsp;intro<br><span class="mini">$2/1M</span></th>
+        </tr></thead>
+        <tbody>
+          <tr><td>текст-карточка 2.5&nbsp;КБ</td><td class="num">2&nbsp;тыс</td>
+            <td class="num">$0.02</td><td class="num">$0.01</td><td class="num">$0.01</td><td class="num">&lt;$0.01</td></tr>
+          <tr><td>код-анализ 26&nbsp;КБ</td><td class="num">6.15&nbsp;млн</td>
+            <td class="num">$61.53</td><td class="num">$30.76</td><td class="num">$18.46</td><td class="num">$12.31</td></tr>
+          <tr><td>changelog 51&nbsp;КБ</td><td class="num">13.8&nbsp;млн</td>
+            <td class="num">$137.90</td><td class="num">$68.95</td><td class="num">$41.37</td><td class="num">$27.58</td></tr>
+          <tr class="total"><td>JSON-лог 96&nbsp;КБ</td><td class="num">26.4&nbsp;млн</td>
+            <td class="num">$264.37</td><td class="num">$132.19</td><td class="num">$79.31</td><td class="num">$52.87</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>Цена растёт с моделью, экономия % — нет.</b> Процент экономии контекста
+      инвариантен к модели (тот же файл, тот же токенизатор); в деньги он превращается по input-цене,
+      поэтому на <b>Fable дороже контекст → делегация окупается вдвое сильнее, чем на Opus, и в 3–5&nbsp;раз
+      сильнее, чем на Sonnet</b>. Чем дороже frontier — тем ценнее выгрузка на локальную LLM.</div>
+    <ul class="rule">
+      <li><span class="k">×ходы</span>Числа — за <b>однократное</b> чтение. Пока файл висит в контексте
+        многоходового диалога, input переотправляется каждый ход → фактическая экономия ×&nbsp;(число ходов).
+        Делегация выгружает его один раз.</li>
+      <li><span class="k">кэш</span>Prompt caching удешевляет повторный input (cached ≈ 10% цены) — это
+        <b>верхняя</b> граница денежной экономии; с активным кэшем разрыв меньше, но выжимка всё равно
+        не раздувает контекст.</li>
+      <li><span class="k">прайс</span>Input-цены — публичный прайс Anthropic (снимок 2026-06-24);
+        Sonnet&nbsp;5 intro $2/1M действует до 2026-08-31. Output здесь не участвует: и solo, и делегация
+        тратят на файл только input.</li>
+    </ul>
+  </section>
+
+  <section>
     <span class="eyebrow">Модель падений</span>
     <h2>Делегация падает — когда бросить и сделать самому</h2>
     <p>Каждый провал делегации тоже жжёт токены frontier: надо прочитать ошибку/мусор и решить
@@ -288,7 +336,8 @@
 
   <footer>
     Воспроизводимо: <code>bench_delegation.py</code> (экономия) + <code>bench_failures.py</code>
-    (модель падений). Данные анонимизированы; числа и метод — как измерены. · 2026-07-10
+    (модель падений) + <code>bench_dollars.py</code> (перевод в деньги). Данные анонимизированы;
+    числа и метод — как измерены, цены — публичный прайс. · 2026-07-10
   </footer>
 </div>
 </body>
