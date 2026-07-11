@@ -292,8 +292,8 @@
 
       <div class="card" id="c-esp32">
         <div class="shot">
-          <img loading="lazy" src="https://raw.githubusercontent.com/VibeEngineering-LLC/atomspectra-waterfall-esp32/main/images/web-ui-spectrum.png"
-               alt="Web UI шлюза: живой спектр 8192 канала, лог-шкала, экспорт XML/CSV/N42/SPE">
+          <img loading="lazy" src="img/web-spectrum.jpg"
+               alt="Web UI шлюза, вкладка Спектр: живой спектр с маркерами линий Th-232 и K-40, мощность дозы, экспорт XML/CSV/N42/SPE">
         </div>
         <div class="card-body">
           <div class="card-top"><h3>atomspectra-waterfall-esp32</h3><span class="role-tag">прошивка · ESP32-S3</span></div>
@@ -328,8 +328,8 @@
 
       <div class="card" id="c-recorder">
         <div class="shot">
-          <img loading="lazy" src="https://raw.githubusercontent.com/VibeEngineering-LLC/atomspectra-waterfall-esp32/main/images/web-ui-waterfall.png"
-               alt="Вкладка «Водопад» Web UI шлюза: спектрограмма в палитре Viridis, срез спектра под курсором">
+          <img loading="lazy" src="img/web-waterfall.jpg"
+               alt="Вкладка «Водопад» Web UI шлюза: спектрограмма в палитре Turbo с маркерами линий, запись на flash, срез спектра">
         </div>
         <div class="card-body">
           <div class="card-top"><h3>wf-recorder</h3><span class="role-tag">desktop · Windows / stdlib</span></div>
@@ -345,19 +345,9 @@
       </div>
 
       <div class="card" id="c-flasher">
-        <div class="shot flasher-shot" role="img" aria-label="Окно AtomSpectra Waterfall Flasher 0.2.2: выбор проекта и COM-порта, кнопка Установить">
-          <div class="fw">
-            <div class="fw-title"><span class="fw-t">AtomSpectra Waterfall Flasher 0.2.2</span><span class="fw-btns"><i>–</i><i>□</i><i>×</i></span></div>
-            <div class="fw-body">
-              <div class="fw-row"><span class="fw-l">Проект:</span><span class="fw-select">AtomSpectra (водопад ESP32-S3)<i>▾</i></span></div>
-              <div class="fw-row fw-ok">Прошивка: firmware-v1.1.2 (загружено)</div>
-              <div class="fw-row"><span class="fw-l">COM-порт:</span><span class="fw-select">COM16 — USB-Enhanced-SERIAL CH343 (COM16)<i>▾</i></span><span class="fw-mini">Обновить</span></div>
-              <div class="fw-row fw-check"><span class="fw-box"></span>Полный сброс перед прошивкой (стереть настройки WiFi, ~30-60с дольше)</div>
-              <div class="fw-install">Установить</div>
-              <div class="fw-status">готов</div>
-              <div class="fw-log">[ports] показано: 2 (всего 2)</div>
-            </div>
-          </div>
+        <div class="shot contain">
+          <img loading="lazy" src="img/flasher.png"
+               alt="Окно AtomSpectra Waterfall Flasher 0.2.2: выбор проекта и COM-порта, загруженная прошивка firmware-v1.1.2, кнопка Установить">
         </div>
         <div class="card-body">
           <div class="card-top"><h3>atomspectra-waterfall-esp32-flasher</h3><span class="role-tag">desktop · Windows / Python</span></div>
@@ -404,6 +394,15 @@
       <div class="flow-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h12M9 3l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <div class="flow-node"><span class="k">Анализ</span><span class="v">waterfall-viewer</span><span class="d">3D/2D спектрограмма, нуклиды</span></div>
     </div>
+    <figure style="margin:22px auto 0;max-width:640px;">
+      <div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--panel);">
+        <img loading="lazy" src="img/web-monitor.jpg" style="width:100%;display:block;"
+             alt="Вкладка «Мониторинг» Web UI шлюза: текущий и средний CPS с погрешностями, график по интервалам, таблица отсчётов, выгрузка CSV">
+      </div>
+      <figcaption style="font-size:12.5px;color:var(--muted);margin-top:8px;text-align:center;">
+        Вкладка «Мониторинг» Web UI: CPS по интервалам с погрешностями, SMA-сглаживание, выгрузка CSV.
+      </figcaption>
+    </figure>
   </section>
 
   <section id="compat">
