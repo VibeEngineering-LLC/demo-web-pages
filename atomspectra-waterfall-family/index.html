@@ -283,6 +283,10 @@
         <span class="body"><span class="name">esp32s3-diag</span><br><span class="role">диагностика USB Host — «рентген платы» при проблемах связи</span></span>
         <span class="ver">v0.2.0</span>
       </a>
+      <p style="margin:2px 2px 0;font-size:12.5px;color:var(--muted);line-height:1.5;">
+        Программирование и сборка не требуются: на страницах релизов — готовые
+        <span class="mono" style="font-size:11.5px;">.exe</span> для Windows, прошивка платы заливается флешером в несколько кликов.
+      </p>
     </div>
   </div>
 
@@ -328,8 +332,8 @@
 
       <div class="card" id="c-recorder">
         <div class="shot">
-          <img loading="lazy" src="img/web-waterfall.jpg"
-               alt="Вкладка «Водопад» Web UI шлюза: спектрограмма в палитре Turbo с маркерами линий, запись на flash, срез спектра">
+          <img loading="lazy" src="img/recorder.png"
+               alt="Окно wf_recorder: идёт запись, журнал сегментов с проверкой CRC32, сегмент стирается на плате после подтверждения">
         </div>
         <div class="card-body">
           <div class="card-top"><h3>wf-recorder</h3><span class="role-tag">desktop · Windows / stdlib</span></div>
@@ -394,15 +398,26 @@
       <div class="flow-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h12M9 3l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <div class="flow-node"><span class="k">Анализ</span><span class="v">waterfall-viewer</span><span class="d">3D/2D спектрограмма, нуклиды</span></div>
     </div>
-    <figure style="margin:22px auto 0;max-width:640px;">
-      <div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--panel);">
-        <img loading="lazy" src="img/web-monitor.jpg" style="width:100%;display:block;"
-             alt="Вкладка «Мониторинг» Web UI шлюза: текущий и средний CPS с погрешностями, график по интервалам, таблица отсчётов, выгрузка CSV">
-      </div>
-      <figcaption style="font-size:12.5px;color:var(--muted);margin-top:8px;text-align:center;">
-        Вкладка «Мониторинг» Web UI: CPS по интервалам с погрешностями, SMA-сглаживание, выгрузка CSV.
-      </figcaption>
-    </figure>
+    <div style="margin:22px auto 0;max-width:960px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;">
+      <figure style="margin:0;">
+        <div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--panel);">
+          <img loading="lazy" src="img/web-waterfall.jpg" style="width:100%;display:block;"
+               alt="Вкладка «Водопад» Web UI шлюза: спектрограмма в палитре Turbo с маркерами линий, запись на flash, срез спектра">
+        </div>
+        <figcaption style="font-size:12.5px;color:var(--muted);margin-top:8px;text-align:center;">
+          Вкладка «Водопад»: спектрограмма на плате, экспорт .n42 / .aswf.
+        </figcaption>
+      </figure>
+      <figure style="margin:0;">
+        <div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--panel);">
+          <img loading="lazy" src="img/web-monitor.jpg" style="width:100%;display:block;"
+               alt="Вкладка «Мониторинг» Web UI шлюза: текущий и средний CPS с погрешностями, график по интервалам, таблица отсчётов, выгрузка CSV">
+        </div>
+        <figcaption style="font-size:12.5px;color:var(--muted);margin-top:8px;text-align:center;">
+          Вкладка «Мониторинг»: CPS по интервалам с погрешностями, выгрузка CSV.
+        </figcaption>
+      </figure>
+    </div>
   </section>
 
   <section id="compat">
