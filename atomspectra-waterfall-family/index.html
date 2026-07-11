@@ -1,572 +1,731 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SpectraWaterfall — открытые инструменты для гамма-спектрометрии</title>
-<meta name="description" content="Пять открытых инструментов для гамма-спектрометрии: WiFi-шлюз ESP32-S3, просмотрщик водопада, рекордер записи, прошивальщик плат, USB-диагностика. Автономная работа от павербанка.">
+<meta name="description" content="Пять открытых инструментов для гамма-спектрометрии: WiFi-шлюз ESP32-S3, просмотрщик водопада, рекордер записи, прошивальщик плат, USB-диагностика. Автономная работа от павербанка, ≈1 Вт.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#0c1014; --panel:#12181f; --panel-2:#182028;
-    --border:#222c36; --border-soft:#1a222b;
-    --text:#e9edf0; --text-dim:#9aa5b0; --muted:#6d7883;
-    --accent:#2fd4c0; --accent-text:#06211d; --accent-soft:rgba(47,212,192,.1); --accent-border:rgba(47,212,192,.3);
-    --violet:#7c62c9; --violet-soft:rgba(124,98,201,.12);
-    --amber:#e0a03e; --amber-soft:rgba(224,160,62,.1);
-    --radius:12px; --radius-sm:8px;
-    --shadow:0 10px 34px rgba(0,0,0,.4);
-    --sans:"Fira Sans",-apple-system,"Segoe UI",sans-serif;
-    --mono:"Fira Code","Cascadia Code",ui-monospace,monospace;
-  }
-  :root[data-theme="light"]{
-    --bg:#f4f6f7; --panel:#ffffff; --panel-2:#eef1f3;
-    --border:#d9dee2; --border-soft:#e5e9ec;
-    --text:#12161a; --text-dim:#454e57; --muted:#6b747c;
-    --accent:#0b8d7e; --accent-text:#ffffff; --accent-soft:rgba(11,141,126,.08); --accent-border:rgba(11,141,126,.28);
-    --violet:#6a52b8; --violet-soft:rgba(106,82,184,.1);
-    --amber:#996810; --amber-soft:rgba(153,104,16,.09);
-    --shadow:0 10px 30px rgba(15,23,32,.12);
-  }
-  @media (prefers-color-scheme: light){
-    :root:not([data-theme="dark"]){
-      --bg:#f4f6f7; --panel:#ffffff; --panel-2:#eef1f3;
-      --border:#d9dee2; --border-soft:#e5e9ec;
-      --text:#12161a; --text-dim:#454e57; --muted:#6b747c;
-      --accent:#0b8d7e; --accent-text:#ffffff; --accent-soft:rgba(11,141,126,.08); --accent-border:rgba(11,141,126,.28);
-      --violet:#6a52b8; --violet-soft:rgba(106,82,184,.1);
-      --amber:#996810; --amber-soft:rgba(153,104,16,.09);
-      --shadow:0 10px 30px rgba(15,23,32,.12);
-    }
-  }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15.5px;line-height:1.55;-webkit-font-smoothing:antialiased;}
-  a{color:inherit;text-decoration:none;}
-  a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px;}
-  .wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
-  code,.mono{font-family:var(--mono);}
-  h1,h2,h3{margin:0;letter-spacing:-.01em;}
-  img{max-width:100%;display:block;}
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: #d9d7d0; font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+  a { color: #2f9c7f; text-decoration: none; }
+  a:hover { color: #37c79c; }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  .sg { font-family: 'Space Grotesk', sans-serif; }
 
-  /* header */
-  header{border-bottom:1px solid var(--border-soft);padding:18px 0;}
-  .head-row{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;}
-  .brand{display:flex;align-items:center;gap:11px;}
-  .brand .logo{width:58px;height:58px;border-radius:12px;background:#fff;padding:2px;flex:none;display:block;}
-  .brand .logo img{width:100%;height:100%;display:block;}
-  .brand h1{font-size:18px;font-weight:700;}
-  .brand .sub{font-size:13.5px;color:var(--muted);border-left:1px solid var(--border);padding-left:12px;margin-left:2px;}
-  @media (max-width:700px){.brand .sub{display:none;}}
-  .head-links{display:flex;gap:9px;flex-wrap:wrap;}
-  .pill-link{font-size:13px;color:var(--text-dim);border:1px solid var(--border);padding:7px 13px;border-radius:100px;display:inline-flex;align-items:center;gap:7px;}
-  .pill-link:hover{color:var(--text);border-color:var(--accent-border);}
-  .pill-link svg{width:13px;height:13px;}
+  .page-pad { display: flex; justify-content: center; padding: 48px 24px; }
+  .frame { width: 1240px; max-width: 100%; background: #0a0c0f; color: #e8ecef;
+           border: 1px solid #232a32; box-shadow: 0 40px 120px rgba(0,0,0,.35);
+           overflow: hidden; position: relative; }
 
-  /* intro: фото комплекта + реестр экосистемы, всё на первом экране */
-  .intro{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:22px;padding:26px 0 8px;align-items:stretch;}
-  @media (max-width:900px){.intro{grid-template-columns:1fr;}}
-  .kit{
-    position:relative;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);
-    background:var(--panel);box-shadow:var(--shadow);min-height:320px;
-  }
-  .kit img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
-  .kit .cap{
-    position:absolute;left:0;right:0;bottom:0;padding:36px 22px 16px;
-    background:linear-gradient(180deg, rgba(7,10,13,0) 0%, rgba(7,10,13,.82) 55%);
-    color:#e9edf0;font-size:13.5px;line-height:1.5;
-  }
-  .kit .cap strong{color:#fff;}
-  .kit .cap .m{font-family:var(--mono);color:#2fd4c0;}
-  .eco{display:flex;flex-direction:column;gap:10px;}
-  .eco-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:2px 2px 0;}
-  .eco-head h2{font-size:12.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);}
-  .eco-head a{font-size:12.5px;color:var(--accent);}
-  .eco-head a:hover{text-decoration:underline;}
-  .eco-item{
-    display:flex;align-items:center;gap:14px;background:var(--panel);
-    border:1px solid var(--border);border-radius:var(--radius-sm);padding:13px 16px;flex:1;
-  }
-  .eco-item:hover{border-color:var(--accent-border);}
-  .eco-item .no{font-family:var(--mono);font-size:11px;color:var(--muted);width:18px;flex:none;}
-  .eco-item .body{min-width:0;flex:1;}
-  .eco-item .name{font-family:var(--mono);font-size:13.5px;font-weight:600;letter-spacing:-.01em;overflow-wrap:anywhere;}
-  .eco-item .role{font-size:12px;color:var(--text-dim);}
-  .eco-item .ver{font-family:var(--mono);font-size:11.5px;color:var(--accent);white-space:nowrap;flex:none;}
+  /* nav */
+  .nav { display: flex; align-items: center; justify-content: space-between; gap: 16px;
+         padding: 18px 40px; border-bottom: 1px solid #1b2127; background: rgba(10,12,15,.85); }
+  .nav-brand { display: flex; align-items: center; gap: 13px; }
+  .nav-logo { width: 44px; height: 44px; border-radius: 8px; background: #fff; padding: 2px; flex: none; display: block; }
+  .nav-logo img { width: 100%; height: 100%; display: block; }
+  .nav-title { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 16px; letter-spacing: .01em; color: #e8ecef; }
+  .nav-title .sep { color: #5c6773; }
+  .nav-links { display: flex; align-items: center; gap: 28px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
+  .nav-links a { color: #8a95a1; }
+  .nav-links a:hover { color: #37c79c; }
+  .nav-links a.gh { color: #0a0c0f; background: #37c79c; padding: 7px 13px; font-weight: 600; }
+  .nav-links a.gh:hover { color: #0a0c0f; background: #4fe0b4; }
 
-  main{padding-top:8px;}
-  section{padding:34px 0;}
-  section + section{border-top:1px solid var(--border-soft);}
-  .section-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
-  .section-head h2{font-size:12.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);}
+  /* hero */
+  .hero { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #1b2127; }
+  .hero-left { padding: 56px 40px 48px; }
+  .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .16em; color: #37c79c; margin-bottom: 22px; }
+  .hero h1 { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 46px; line-height: 1.05;
+             margin: 0 0 10px; letter-spacing: -0.01em; color: #e8ecef; }
+  .hero-sub-en { font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #8a95a1; margin-bottom: 24px; }
+  .hero-p-ru { font-size: 16px; line-height: 1.6; color: #b9c1c9; max-width: 44ch; margin: 0 0 14px; }
+  .hero-p-ru strong { color: #e8ecef; font-weight: 600; }
+  .hero-p-en { font-size: 13px; line-height: 1.55; color: #6f7a86; max-width: 46ch; margin: 0 0 30px; }
+  .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 8px; color: #0a0c0f; background: #37c79c;
+                 padding: 13px 20px; font-weight: 600; font-size: 14px; }
+  .btn-primary:hover { color: #0a0c0f; background: #4fe0b4; }
+  .btn-ghost { display: inline-flex; align-items: center; gap: 8px; color: #e8ecef; border: 1px solid #2c343d;
+               padding: 13px 20px; font-weight: 500; font-size: 14px; font-family: 'IBM Plex Mono', monospace; }
+  .btn-ghost:hover { color: #e8ecef; border-color: #37c79c; }
 
-  /* карточки с картинками */
-  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
-  @media (max-width:860px){.grid{grid-template-columns:1fr;}}
-  .card{
-    background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
-    overflow:hidden;display:flex;flex-direction:column;
-  }
-  .shot{
-    aspect-ratio:16/9;background:var(--panel-2);border-bottom:1px solid var(--border-soft);
-    overflow:hidden;position:relative;
-  }
-  .shot img{width:100%;height:100%;object-fit:cover;object-position:top center;}
-  .shot.contain img{object-fit:contain;padding:8px;}
-  .shot .ph{
-    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
-    color:var(--muted);font-family:var(--mono);font-size:12px;
-  }
-  .shot .ph svg{width:34px;height:34px;opacity:.6;}
-  /* мокап окна флешера (воспроизведение реального UI v0.2.2) */
-  .flasher-shot{display:flex;align-items:center;justify-content:center;padding:14px;background:var(--panel-2);}
-  .fw{
-    width:100%;max-width:420px;background:#f3f3f3;border-radius:8px;overflow:hidden;
-    border:1px solid #c9ccd1;box-shadow:0 8px 22px rgba(0,0,0,.35);
-    font-family:"Segoe UI",var(--sans);color:#1a1a1a;font-size:11px;line-height:1.35;
-  }
-  .fw-title{display:flex;align-items:center;justify-content:space-between;padding:7px 10px 5px;background:#f3f3f3;}
-  .fw-title .fw-t{font-size:10.5px;color:#1a1a1a;}
-  .fw-btns{display:flex;gap:10px;color:#444;font-style:normal;font-size:10px;}
-  .fw-btns i{font-style:normal;}
-  .fw-body{padding:8px 12px 12px;display:flex;flex-direction:column;gap:7px;}
-  .fw-row{display:flex;align-items:center;gap:8px;}
-  .fw-l{color:#333;flex:none;}
-  .fw-select{
-    flex:1;display:flex;align-items:center;justify-content:space-between;gap:8px;
-    background:#fff;border:1px solid #b8bcc2;border-radius:4px;padding:4px 8px;color:#1a1a1a;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;
-  }
-  .fw-select i{font-style:normal;color:#666;flex:none;}
-  .fw-mini{background:#fdfdfd;border:1px solid #b8bcc2;border-radius:4px;padding:4px 9px;flex:none;}
-  .fw-ok{color:#0a7a3d;}
-  .fw-check{color:#333;}
-  .fw-box{width:11px;height:11px;border:1px solid #8a8f96;border-radius:2px;background:#fff;flex:none;}
-  .fw-install{
-    text-align:center;background:#fdfdfd;border:1px solid #b8bcc2;border-radius:4px;
-    padding:9px;font-size:12px;font-weight:600;color:#1a1a1a;
-  }
-  .fw-status{text-align:right;color:#555;border-top:1px solid #d8dbdf;padding-top:4px;font-size:10px;}
-  .fw-log{
-    background:#fff;border:1px solid #c9ccd1;border-radius:4px;padding:7px 9px;
-    font-family:var(--mono);font-size:10px;color:#222;min-height:44px;
-  }
-  .card-body{padding:16px 18px 15px;display:flex;flex-direction:column;gap:9px;flex:1;}
-  .card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
-  .card-top h3{font-family:var(--mono);font-size:14.5px;font-weight:600;letter-spacing:-.01em;overflow-wrap:anywhere;}
-  .role-tag{font-size:11px;color:var(--muted);white-space:nowrap;padding-top:2px;}
-  .card p.desc{margin:0;font-size:13.6px;color:var(--text-dim);line-height:1.55;}
-  .card .meta{
-    margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
-    padding-top:11px;border-top:1px solid var(--border-soft);font-size:12.5px;
-  }
-  .meta .ver{font-family:var(--mono);color:var(--accent);}
-  .meta .date{color:var(--muted);margin-left:6px;}
-  .meta .links{display:flex;gap:12px;}
-  .meta .links a{color:var(--text-dim);}
-  .meta .links a:hover{color:var(--accent);}
+  .hero-right { position: relative; border-left: 1px solid #1b2127; background: #070809;
+                overflow: hidden; min-height: 420px; display: flex; flex-direction: column; }
+  .hud-l { position: absolute; top: 16px; left: 16px; z-index: 3; font-family: 'IBM Plex Mono', monospace;
+           font-size: 11px; color: #8a95a1; letter-spacing: .08em; }
+  .hud-r { position: absolute; top: 16px; right: 16px; z-index: 3; display: flex; align-items: center; gap: 6px;
+           font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #37c79c; }
+  .rec-dot { width: 7px; height: 7px; border-radius: 50%; background: #37c79c; animation: blink 1.6s infinite; }
+  .wf-box { flex: 1; position: relative; overflow: hidden; margin: 44px 16px 8px; background: #160a33; }
+  .wf-box canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .wf-tick { position: absolute; z-index: 2; font-family: 'IBM Plex Mono', monospace; font-size: 10px; }
+  .spectrum-shot { position: relative; margin: 0 16px 16px; border-top: 1px solid #1b2127; padding-top: 10px; }
+  .spectrum-shot img { width: 100%; display: block; }
+  .spectrum-cap { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #6f7a86; margin-top: 6px; }
 
-  /* flow */
-  .flow{display:flex;flex-wrap:wrap;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--panel);}
-  .flow-node{flex:1 1 150px;padding:16px 18px;border-right:1px solid var(--border-soft);min-width:150px;}
-  .flow-node:last-child{border-right:none;}
-  .flow-node .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px;}
-  .flow-node .v{font-size:13.5px;font-weight:700;display:block;margin-bottom:3px;}
-  .flow-node .d{font-size:12px;color:var(--text-dim);}
-  .flow-node.hub{background:var(--accent-soft);}
-  .flow-node.hub .v{color:var(--accent);}
-  .flow-arrow{display:flex;align-items:center;justify-content:center;padding:0 2px;color:var(--muted);flex:0 0 auto;}
-  .flow-arrow svg{width:14px;height:14px;}
-  @media (max-width:720px){
-    .flow{flex-direction:column;}
-    .flow-node{border-right:none;border-bottom:1px solid var(--border-soft);}
-    .flow-node:last-child{border-bottom:none;}
-    .flow-arrow{padding:6px 0;transform:rotate(90deg);}
-  }
+  /* stat strip */
+  .stats { display: grid; grid-template-columns: repeat(4,1fr); border-bottom: 1px solid #1b2127;
+           font-family: 'IBM Plex Mono', monospace; }
+  .stat { padding: 22px 30px; border-right: 1px solid #1b2127; }
+  .stat:first-child { padding-left: 40px; }
+  .stat:last-child { border-right: 0; }
+  .stat-v { font-size: 30px; font-weight: 600; color: #e8ecef; }
+  .stat-v.acc { color: #37c79c; }
+  .stat-l { font-size: 11px; color: #6f7a86; letter-spacing: .06em; margin-top: 4px; }
 
-  /* таблица */
-  .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--panel);}
-  table{width:100%;border-collapse:collapse;font-size:13.5px;}
-  th,td{padding:10px 16px;border-bottom:1px solid var(--border-soft);text-align:left;white-space:nowrap;}
-  tr:last-child td{border-bottom:none;}
-  th{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;}
-  td.mono{font-family:var(--mono);color:var(--text-dim);}
-  .yes{color:var(--accent);font-weight:700;}
+  /* value props */
+  .props { display: grid; grid-template-columns: repeat(3,1fr); border-bottom: 1px solid #1b2127; }
+  .prop { padding: 34px 40px; border-right: 1px solid #1b2127; }
+  .prop:last-child { border-right: 0; }
+  .prop-num { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #37c79c; margin-bottom: 12px; }
+  .prop h3 { font-family: 'Space Grotesk', sans-serif; font-size: 19px; margin: 0 0 8px; font-weight: 600; }
+  .prop-ru { font-size: 14px; line-height: 1.55; color: #9aa4ae; margin: 0 0 6px; }
+  .prop-en { font-size: 12px; line-height: 1.5; color: #6f7a86; margin: 0; }
+
+  /* section headers */
+  .sect-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
+  .sect-head h2 { font-family: 'Space Grotesk', sans-serif; font-size: 28px; margin: 0; font-weight: 600; }
+  .sect-meta { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #6f7a86; }
+  .sect-lead { font-size: 13px; color: #8a95a1; margin: 0 0 26px; }
+  .sect-lead .en { color: #6f7a86; }
+
+  /* ecosystem rows */
+  .repo-row { display: grid; grid-template-columns: 64px 1fr 320px; border-bottom: 1px solid #1b2127; }
+  .repo-num { padding: 28px 0 28px 40px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #37c79c; }
+  .repo-main { padding: 28px 30px 28px 0; }
+  .repo-title-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+  .repo-name { font-family: 'IBM Plex Mono', monospace; font-size: 17px; margin: 0; font-weight: 600; color: #e8ecef; }
+  .repo-tag { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .06em;
+              color: #0a0c0f; background: #4675ed; padding: 3px 7px; }
+  .repo-platform { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #6f7a86; }
+  .repo-role { font-family: 'Space Grotesk', sans-serif; font-size: 15px; color: #c6cdd4; margin-bottom: 10px; }
+  .repo-role .en { color: #6f7a86; }
+  .repo-desc { font-size: 13.5px; line-height: 1.6; color: #9aa4ae; margin: 0; max-width: 60ch; }
+  .repo-side { padding: 28px 40px 28px 24px; border-left: 1px solid #1b2127;
+               display: flex; flex-direction: column; gap: 12px; justify-content: center; }
+  .repo-ver-row { display: flex; align-items: center; gap: 8px; }
+  .repo-ver { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #37c79c;
+              background: rgba(55,199,156,.1); border: 1px solid rgba(55,199,156,.3); padding: 4px 9px; }
+  .repo-date { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #6f7a86; }
+  .repo-links { display: flex; gap: 16px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+  .repo-links a.rep { color: #8a95a1; }
+  .repo-links a.rel { color: #37c79c; }
+
+  /* connection chain */
+  .chain-row { display: flex; align-items: stretch; }
+  .chain-conn { width: 52px; align-self: center; position: relative; height: 2px; flex: none; }
+  .chain-conn .base { position: absolute; inset: 0; background: #232a32; }
+  .chain-conn .lit { position: absolute; inset: 0; background: #37c79c; overflow: hidden; display: none; }
+  .chain-conn.on .lit { display: block; }
+  .chain-conn .dot { position: absolute; top: -2px; width: 14px; height: 6px; background: #a4fc3b;
+                     box-shadow: 0 0 8px #a4fc3b; animation: flow 2.4s linear infinite; }
+  .chain-node { flex: 1; position: relative; background: #0f1318; border: 1px solid #232a32;
+                padding: 20px 18px; cursor: pointer; min-height: 150px; }
+  .chain-node:hover { border-color: #37c79c; }
+  .chain-node .glow { position: absolute; inset: 0; border: 1px solid rgba(55,199,156,.55);
+                      box-shadow: 0 0 26px rgba(55,199,156,.14) inset; pointer-events: none; display: none; }
+  .chain-node .bar { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: #37c79c; display: none; }
+  .chain-node.lit .glow, .chain-node.lit .bar { display: block; }
+  .cn-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #37c79c; margin-bottom: 10px; }
+  .cn-ru { font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 600; margin-bottom: 2px; }
+  .cn-en { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #6f7a86; margin-bottom: 12px; }
+  .cn-node { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #c6cdd4; line-height: 1.4; }
+
+  .chain-detail { margin-top: 18px; border: 1px solid #232a32; border-left: 3px solid #37c79c;
+                  background: #0f1318; padding: 26px 28px; }
+  .cd-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  .cd-stage { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #0a0c0f; background: #37c79c;
+              padding: 3px 8px; font-weight: 600; }
+  .cd-ru { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 600; color: #e8ecef; }
+  .cd-en { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #6f7a86; }
+  .cd-node { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #c6cdd4; margin-left: auto; }
+  .cd-more { font-size: 15px; line-height: 1.6; color: #c6cdd4; margin: 0 0 6px; max-width: 82ch; }
+  .cd-more-en { font-size: 12.5px; line-height: 1.5; color: #6f7a86; font-family: 'IBM Plex Mono', monospace;
+                margin: 0 0 22px; max-width: 88ch; }
+  .cd-shots { display: grid; gap: 14px; }
+  .cd-shots figure { margin: 0; }
+  .cd-shots .imgbox { border: 1px solid #232a32; background: #070809; overflow: hidden; cursor: zoom-in; }
+  .cd-shots img { width: 100%; display: block; }
+  .cd-shots figcaption { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; line-height: 1.45;
+                         color: #8a95a1; margin-top: 10px; }
+
+  /* formats */
+  .fmt-table { border: 1px solid #1b2127; font-family: 'IBM Plex Mono', monospace; }
+  .fmt-head, .fmt-row { display: grid; grid-template-columns: 1.4fr .7fr .7fr 2fr; }
+  .fmt-head { background: #0f1318; border-bottom: 1px solid #1b2127; font-size: 11px;
+              letter-spacing: .05em; color: #6f7a86; }
+  .fmt-head div { padding: 12px 18px; }
+  .fmt-head div:nth-child(2), .fmt-head div:nth-child(3) { padding: 12px 12px; }
+  .fmt-row { border-bottom: 1px solid #14181c; font-size: 13px; }
+  .fmt-row:last-child { border-bottom: 0; }
+  .fmt-row div { padding: 13px 18px; color: #9aa4ae; }
+  .fmt-row div:first-child { color: #e8ecef; }
+  .fmt-row div:nth-child(2), .fmt-row div:nth-child(3) { padding: 13px 12px; }
+  .fmt-row div:last-child { color: #8a95a1; }
+
+  /* demo */
+  .demo-frame { border: 1px solid #232a32; background: #0f1318; }
+  .demo-bar { display: flex; align-items: center; gap: 10px; padding: 11px 16px;
+              border-bottom: 1px solid #1b2127; background: #0b0e12; }
+  .demo-dots { display: flex; gap: 7px; }
+  .demo-dots span { width: 11px; height: 11px; border-radius: 50%; background: #2c343d; }
+  .demo-addr { flex: 1; font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: #8a95a1;
+               background: #12161b; border: 1px solid #1b2127; padding: 5px 12px; text-align: center;
+               overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .demo-full { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: #37c79c; white-space: nowrap; }
+  .demo-view { position: relative; width: 100%; height: 660px; background: #160a33; }
+  .demo-view iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+  .demo-note { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #6f7a86; margin: 12px 0 0; }
 
   /* roadmap */
-  .road{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
-  @media (max-width:860px){.road{grid-template-columns:1fr;}}
-  .road-item{
-    border:1px dashed var(--border);border-radius:var(--radius);padding:17px 19px;
-    background:var(--violet-soft);display:flex;flex-direction:column;gap:7px;
-  }
-  .road-item .tag{
-    align-self:flex-start;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
-    color:var(--violet);border:1px solid color-mix(in srgb, var(--violet) 45%, transparent);
-    padding:2px 8px;border-radius:100px;
-  }
-  .road-item h3{font-size:14.5px;font-weight:700;}
-  .road-item p{margin:0;font-size:13.3px;color:var(--text-dim);line-height:1.5;}
+  .roadmap { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+  .rm-card { border: 1px dashed #2c343d; padding: 22px; background: #0d1014; }
+  .rm-badge { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .1em; color: #f9c229;
+              border: 1px solid rgba(249,194,41,.4); padding: 3px 8px; }
+  .rm-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 16px; margin: 16px 0 6px; font-weight: 600; }
+  .rm-en { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #6f7a86; margin-bottom: 10px; }
+  .rm-card p { font-size: 13px; line-height: 1.55; color: #9aa4ae; margin: 0; }
 
-  .callout{display:flex;gap:13px;padding:16px 18px;border-radius:var(--radius);border:1px solid color-mix(in srgb, var(--amber) 35%, var(--border));background:var(--amber-soft);}
-  .callout svg{flex:none;width:17px;height:17px;color:var(--amber);margin-top:2px;}
-  .callout p{margin:0;font-size:13.5px;color:var(--text-dim);}
-  .callout strong{color:var(--text);}
-  .callout .cbody{display:flex;flex-direction:column;gap:9px;}
-  .callout ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--text-dim);display:flex;flex-direction:column;gap:5px;}
+  /* caution */
+  .caution { margin: 0 40px 40px; border: 1px solid rgba(249,194,41,.35); background: rgba(249,194,41,.05);
+             padding: 20px 24px; }
+  .caution-title { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #f9c229; margin-bottom: 10px; }
+  .caution p { font-size: 13px; line-height: 1.55; color: #c6cdd4; margin: 0 0 10px; }
+  .caution p:last-child { margin-bottom: 0; }
+  .caution strong { color: #e8ecef; }
+  .caution ul { margin: 0 0 10px; padding-left: 18px; font-size: 13px; line-height: 1.55; color: #c6cdd4; }
+  .caution li { margin-bottom: 5px; }
+  .caution code { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #e8ecef; }
 
-  /* слайдер Web UI / водопадов */
-  .slider{margin:22px auto 0;max-width:980px;}
-  .slides{position:relative;border:1px solid var(--border);border-radius:var(--radius);background:var(--panel);overflow:hidden;}
-  .slide{display:none;margin:0;}
-  .slide.active{display:block;}
-  .slide img{width:100%;max-height:620px;object-fit:contain;display:block;cursor:zoom-in;background:var(--panel);}
-  .slide figcaption{font-size:12.5px;color:var(--muted);padding:10px 14px;border-top:1px solid var(--border-soft);text-align:center;}
-  .slider-nav{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:12px;}
-  .s-btn{background:var(--panel);border:1px solid var(--border);color:var(--text-dim);border-radius:100px;width:34px;height:34px;font-size:18px;line-height:1;cursor:pointer;}
-  .s-btn:hover{border-color:var(--accent-border);color:var(--text);}
-  .dots{display:flex;gap:8px;}
-  .dot{width:8px;height:8px;border-radius:50%;background:var(--border);border:none;cursor:pointer;padding:0;}
-  .dot.on{background:var(--accent);}
-  /* лайтбокс */
-  .lb{position:fixed;inset:0;background:rgba(4,7,9,.93);display:none;align-items:center;justify-content:center;z-index:100;padding:28px;cursor:zoom-out;}
-  .lb.open{display:flex;}
-  .lb img{max-width:96vw;max-height:90vh;object-fit:contain;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.6);}
-  .lb .lb-cap{position:fixed;bottom:12px;left:0;right:0;text-align:center;color:#9aa5b0;font-size:13px;pointer-events:none;}
-  .shot img{cursor:zoom-in;}
-  footer{border-top:1px solid var(--border-soft);padding:22px 0 34px;}
-  .foot-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12.5px;color:var(--muted);}
-  footer a:hover{color:var(--accent);}
+  /* footer */
+  .footer { display: flex; align-items: center; justify-content: space-between; padding: 24px 40px;
+            border-top: 1px solid #1b2127; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #6f7a86; }
+  .footer a { color: #8a95a1; }
+
+  /* lightbox */
+  .lb { position: fixed; inset: 0; z-index: 50; display: none; align-items: center; justify-content: center;
+        flex-direction: column; gap: 14px; background: rgba(7,8,9,.92); padding: 40px; cursor: zoom-out; }
+  .lb.open { display: flex; }
+  .lb img { max-width: 94vw; max-height: 82vh; border: 1px solid #232a32; box-shadow: 0 30px 90px rgba(0,0,0,.6); }
+  .lb-cap { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: #c6cdd4; max-width: 90ch;
+            text-align: center; line-height: 1.5; }
+
+  @keyframes flow { 0% { transform: translateX(-140%); opacity: 0; } 12% { opacity: 1; }
+                    88% { opacity: 1; } 100% { transform: translateX(1240%); opacity: 0; } }
+  @keyframes blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0.15; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chain-conn .dot, .rec-dot { animation: none; }
+  }
+
+  /* responsive */
+  @media (max-width: 1100px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { border-left: 0; border-top: 1px solid #1b2127; min-height: 360px; }
+    .props { grid-template-columns: 1fr; }
+    .prop { border-right: 0; border-bottom: 1px solid #1b2127; }
+    .prop:last-child { border-bottom: 0; }
+    .repo-row { grid-template-columns: 48px 1fr; }
+    .repo-num { padding-left: 24px; }
+    .repo-side { grid-column: 2; border-left: 0; padding: 0 24px 24px 0; }
+    .stats { grid-template-columns: repeat(2,1fr); }
+    .stat { border-bottom: 1px solid #1b2127; }
+    .chain-row { flex-direction: column; }
+    .chain-conn { width: 2px; height: 30px; margin-left: 40px; align-self: flex-start; }
+    .roadmap { grid-template-columns: 1fr; }
+    .cd-shots { grid-template-columns: 1fr !important; }
+    .nav { flex-wrap: wrap; }
+    .nav-links { flex-wrap: wrap; gap: 14px; }
+    .hero h1 { font-size: 34px; }
+    .page-pad { padding: 0; }
+  }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="wrap head-row">
-    <div class="brand">
-      <a class="logo" href="https://github.com/VibeEngineering-LLC" target="_blank" rel="noopener"><img src="img/ve-logo.png" alt="Логотип VibeEngineering LLC" width="42" height="42"></a>
-      <h1>SpectraWaterfall</h1>
-      <span class="sub">открытые инструменты для гамма-спектрометрии</span>
+<div class="page-pad">
+<section class="frame">
+
+  <!-- nav -->
+  <header class="nav">
+    <div class="nav-brand">
+      <a class="nav-logo" href="https://github.com/VibeEngineering-LLC" target="_blank" rel="noopener"><img src="img/ve-logo.png" alt="Логотип VibeEngineering LLC" width="44" height="44"></a>
+      <span class="nav-title">Spectra<span class="sep"> // </span>Waterfall</span>
     </div>
-    <div class="head-links">
-      <a class="pill-link" href="https://github.com/VibeEngineering-LLC" target="_blank" rel="noopener">
-        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.7-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.53 7.53 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"/></svg>
-        VibeEngineering LLC
-      </a>
-      <a class="pill-link" href="https://github.com/search?q=topic%3Aatomspectra-waterfall-esp32+org%3AVibeEngineering-LLC&type=Repositories" target="_blank" rel="noopener">Все репозитории</a>
-    </div>
-  </div>
-</header>
+    <nav class="nav-links">
+      <a href="#a-eco">экосистема</a>
+      <a href="#a-demo">демо</a>
+      <a href="#a-chain">схема</a>
+      <a href="#a-fmt">форматы</a>
+      <a class="gh" href="https://github.com/VibeEngineering-LLC" target="_blank" rel="noopener">GitHub ↗</a>
+    </nav>
+  </header>
 
-<main class="wrap">
-
-  <!-- первый экран: фото комплекта + вся экосистема -->
-  <div class="intro">
-    <figure class="kit" style="margin:0;">
-      <img src="https://raw.githubusercontent.com/VibeEngineering-LLC/atomspectra-waterfall-esp32/main/images/assembly.jpg"
-           alt="Комплект в сборе: гамма-спектрометр, плата ESP32-S3 и павербанк; USB-тестер показывает потребление около 1 Вт" fetchpriority="high">
-      <figcaption class="cap">
-        <strong>Комплект в сборе:</strong> спектрометр + ESP32-S3 + павербанк.
-        Питание больше не привязано к телефону или ПК — весь комплект потребляет
-        <span class="m">≈1&nbsp;Вт</span> (на фото — замер USB-тестером) и работает
-        в поле от обычного павербанка, раздавая спектр по WiFi.
-      </figcaption>
-    </figure>
-
-    <div class="eco">
-      <div class="eco-head">
-        <h2>Экосистема — 5 репозиториев</h2>
-        <a href="#toolkit">подробнее ↓</a>
+  <!-- hero -->
+  <div class="hero">
+    <div class="hero-left">
+      <div class="eyebrow">OPEN&nbsp;SOURCE&nbsp;TOOLKIT · MIT · ESP32-S3</div>
+      <h1>Гамма-спектрометрия без привязки к ПК или телефону</h1>
+      <div class="hero-sub-en">Portable gamma spectrometry, streamed over WiFi — no PC or phone required.</div>
+      <p class="hero-p-ru">Пять открытых инструментов для <strong>гамма-спектрометрии</strong>. ESP32-S3 подключается к спектрометру по USB и раздаёт спектр по WiFi — весь комплект работает в поле от обычного павербанка.</p>
+      <p class="hero-p-en">Five open tools for gamma spectrometry. An ESP32-S3 bridges the spectrometer over USB and streams the spectrum over WiFi — the whole kit runs in the field from an ordinary power bank.</p>
+      <div class="hero-cta">
+        <a class="btn-primary" href="https://github.com/search?q=topic%3Aatomspectra-waterfall-esp32+org%3AVibeEngineering-LLC&type=Repositories" target="_blank" rel="noopener">Все репозитории →</a>
+        <a class="btn-ghost" href="#a-chain">как это работает ↓</a>
       </div>
-      <a class="eco-item" href="#c-esp32">
-        <span class="no">01</span>
-        <span class="body"><span class="name">waterfall-esp32</span><br><span class="role">WiFi-шлюз — прошивка ESP32-S3, спектр в браузере</span></span>
-        <span class="ver">firmware-v1.1.2</span>
-      </a>
-      <a class="eco-item" href="#c-viewer">
-        <span class="no">02</span>
-        <span class="body"><span class="name">waterfall-viewer</span><br><span class="role">просмотрщик спектрограмм — 3D/2D, срезы, нуклиды</span></span>
-        <span class="ver">v0.1.10</span>
-      </a>
-      <a class="eco-item" href="#c-recorder">
-        <span class="no">03</span>
-        <span class="body"><span class="name">wf-recorder</span><br><span class="role">непрерывная запись водопада на диск ПК</span></span>
-        <span class="ver">v0.2.1</span>
-      </a>
-      <a class="eco-item" href="#c-flasher">
-        <span class="no">04</span>
-        <span class="body"><span class="name">waterfall-esp32-flasher</span><br><span class="role">прошивальщик плат — прошивка с GitHub Releases по USB</span></span>
-        <span class="ver">v0.2.2</span>
-      </a>
-      <a class="eco-item" href="#c-diag">
-        <span class="no">05</span>
-        <span class="body"><span class="name">esp32s3-diag</span><br><span class="role">диагностика USB Host — «рентген платы» при проблемах связи</span></span>
-        <span class="ver">v0.2.0</span>
-      </a>
-      <p style="margin:2px 2px 0;font-size:12.5px;color:var(--muted);line-height:1.5;">
-        Программирование и сборка не требуются: на страницах релизов — готовые
-        <span class="mono" style="font-size:11.5px;">.exe</span> для Windows, прошивка платы заливается флешером в несколько кликов.
-      </p>
+    </div>
+
+    <div class="hero-right">
+      <div class="hud-l">LIVE · WATERFALL · TURBO</div>
+      <div class="hud-r"><span class="rec-dot"></span>REC</div>
+      <div class="wf-box">
+        <canvas id="wf-canvas"></canvas>
+        <div class="wf-tick" style="left:8px; bottom:6px; color:rgba(255,255,255,.85);">t ↓</div>
+        <div class="wf-tick" style="left:8px; top:6px; color:rgba(255,255,255,.7);">0 keV</div>
+        <div class="wf-tick" style="right:8px; top:6px; color:rgba(255,255,255,.7);">→ 3000 keV</div>
+      </div>
+      <div class="spectrum-shot">
+        <img src="img/real-spectrum.png" alt="Реальный гамма-спектр: CPS × keV, лог-шкала, пик K-40 ~1461 кэВ">
+        <div class="spectrum-cap">реальный спектр · CPS × keV · лог-шкала</div>
+      </div>
     </div>
   </div>
 
-  <section id="toolkit" style="border-top:none;">
-    <div class="section-head"><h2>Компоненты</h2></div>
-    <div class="grid">
+  <!-- stat strip -->
+  <div class="stats">
+    <div class="stat"><div class="stat-v acc">≈1 Вт</div><div class="stat-l">ПОТРЕБЛЕНИЕ · POWER DRAW</div></div>
+    <div class="stat"><div class="stat-v">8192</div><div class="stat-l">КАНАЛА · CHANNELS</div></div>
+    <div class="stat"><div class="stat-v">5</div><div class="stat-l">ИНСТРУМЕНТОВ · TOOLS</div></div>
+    <div class="stat"><div class="stat-v">6</div><div class="stat-l">ФОРМАТОВ · FORMATS</div></div>
+  </div>
 
-      <div class="card" id="c-esp32">
-        <div class="shot">
-          <img loading="lazy" src="img/web-spectrum.jpg"
-               alt="Web UI шлюза, вкладка Спектр: живой спектр с маркерами линий Th-232 и K-40, мощность дозы, экспорт XML/CSV/N42/SPE">
-        </div>
-        <div class="card-body">
-          <div class="card-top"><h3>waterfall-esp32</h3><span class="role-tag">прошивка · ESP32-S3</span></div>
-          <p class="desc">Сердце комплекта: плата ESP32-S3 подключается к спектрометру по USB (OTG Host) и заменяет телефон или ПК — спектр смотрят в браузере с любого устройства в той же сети. Web UI показывает живой 8192-канальный спектр с маркерами линий и мощностью дозы, водопад накоплений и мониторинг платы; в поле шлюз сам поднимает точку доступа и работает от павербанка. Накопленное хранится на flash и выгружается прямо из браузера в форматах BecqMoni, InterSpec, N42.42 и ЛСРМ .spe. Для десктопного ПО открыт TCP-мост (порт 8234): BecqMoni или wf-recorder получают поток так, будто прибор подключён напрямую.</p>
-          <div class="meta">
-            <span><span class="ver">firmware-v1.1.2</span><span class="date">11.07.2026</span></span>
-            <span class="links">
-              <a href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32" target="_blank" rel="noopener">репозиторий</a>
-              <a href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32/releases" target="_blank" rel="noopener">релизы</a>
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card" id="c-viewer">
-        <div class="shot">
-          <img loading="lazy" src="img/viewer-ui.jpg"
-               alt="waterfall-viewer: 3D-поверхность Время × Энергия × Отсчёты с панелями срезов, сечений и регулировок отображения">
-        </div>
-        <div class="card-body">
-          <div class="card-top"><h3>waterfall-viewer</h3><span class="role-tag">desktop · Windows / Python</span></div>
-          <p class="desc">Анализ длительных записей: суточный лог разворачивается в 3D-поверхность или 2D-карту «время × энергия», где короткий всплеск активности или дрейф фона виден сразу — без перебора сотен спектров вручную. Любой момент записи раскрывается в обычный спектр, любая энергетическая линия — в график её хода во времени; выделенный ROI сверяется с библиотекой 21 нуклида. Читает .aswf, RadiaCode .rcspg и N42.42; многочасовые файлы грузятся потоково, без загрузки целиком в память.</p>
-          <div class="meta">
-            <span><span class="ver">v0.1.10</span><span class="date">12.07.2026</span></span>
-            <span class="links">
-              <a href="https://github.com/VibeEngineering-LLC/waterfall-viewer" target="_blank" rel="noopener">репозиторий</a>
-              <a href="https://github.com/VibeEngineering-LLC/waterfall-viewer/releases" target="_blank" rel="noopener">релизы</a>
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card" id="c-recorder">
-        <div class="shot">
-          <img loading="lazy" src="img/recorder.png"
-               alt="Окно wf_recorder: идёт запись, журнал сегментов с проверкой CRC32, сегмент стирается на плате после подтверждения">
-        </div>
-        <div class="card-body">
-          <div class="card-top"><h3>wf-recorder</h3><span class="role-tag">desktop · Windows / stdlib</span></div>
-          <p class="desc">Страховка длинных сессий: клиент на ПК периодически забирает сегменты водопада со шлюза и сшивает их в единый .aswf — суточная запись не зависит от открытой вкладки браузера и переживает обрывы WiFi. Сегмент удаляется с платы только после подтверждённой записи на диск (fsync); целостность контролируют CRC32 и порядковые номера, поэтому пропуск в записи виден сразу, а не при разборе данных. Параллельно ведёт лог температуры платы в CSV; на странице релизов — готовый .exe без зависимостей.</p>
-          <div class="meta">
-            <span><span class="ver">v0.2.1</span><span class="date">11.07.2026</span></span>
-            <span class="links">
-              <a href="https://github.com/VibeEngineering-LLC/wf-recorder" target="_blank" rel="noopener">репозиторий</a>
-              <a href="https://github.com/VibeEngineering-LLC/wf-recorder/releases" target="_blank" rel="noopener">релизы</a>
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card" id="c-flasher">
-        <div class="shot contain">
-          <img loading="lazy" src="img/flasher.png"
-               alt="Окно флешера v0.2.2: выбор проекта и COM-порта, загруженная прошивка firmware-v1.1.2, кнопка Установить">
-        </div>
-        <div class="card-body">
-          <div class="card-top"><h3>waterfall-esp32-flasher</h3><span class="role-tag">desktop · Windows / Python</span></div>
-          <p class="desc">Убирает главный барьер — прошивку платы: вместо esptool и командной строки — окно с двумя списками. Флешер сам находит COM-порт, скачивает актуальный релиз прошивки с GitHub и заливает его по USB в несколько кликов; обновление на новую версию — та же процедура. Один инструмент обслуживает четыре проекта: AtomSpectra, AtomFast, Radex, RadonEye.</p>
-          <div class="meta">
-            <span><span class="ver">v0.2.2</span><span class="date">10.07.2026</span></span>
-            <span class="links">
-              <a href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32-flasher" target="_blank" rel="noopener">репозиторий</a>
-              <a href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32-flasher/releases" target="_blank" rel="noopener">релизы</a>
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card" id="c-diag">
-        <div class="shot">
-          <img loading="lazy" src="https://raw.githubusercontent.com/VibeEngineering-LLC/esp32s3-diag/main/docs/screenshots/03-web-diagnostics.png"
-               alt="Web UI esp32s3-diag: шесть этапов диагностики Boot → WiFi → USB Host → Enum → Detect → Handshake со статусами OK/FTDI/FOUND">
-        </div>
-        <div class="card-body">
-          <div class="card-top"><h3>esp32s3-diag</h3><span class="role-tag">прошивка · ESP32-S3 + флешер</span></div>
-          <p class="desc">«Рентген платы» на случай, когда прибор и шлюз не видят друг друга: диагностическая прошивка прогоняет цепочку Boot → WiFi → USB Host → Enum → Detect → Handshake и показывает в Web UI, на каком именно звене обрывается связь. Читает USB-дескрипторы и endpoints, выполняет FTDI vendor init и пробует SHPROTO-рукопожатие — вместо гадания по симптомам получается точный диагноз. Ставится one-click флешером; перед тестами обязателен backup настроек прибора (см. README), после — возврат штатной прошивки тем же флешером.</p>
-          <div class="meta">
-            <span><span class="ver">v0.2.0</span><span class="date">08.07.2026</span></span>
-            <span class="links">
-              <a href="https://github.com/VibeEngineering-LLC/esp32s3-diag" target="_blank" rel="noopener">репозиторий</a>
-              <a href="https://github.com/VibeEngineering-LLC/esp32s3-diag/releases" target="_blank" rel="noopener">релизы</a>
-            </span>
-          </div>
-        </div>
-      </div>
-
+  <!-- value props -->
+  <div class="props">
+    <div class="prop">
+      <div class="prop-num">01 · АВТОНОМНОСТЬ</div>
+      <h3>Работа в поле от павербанка</h3>
+      <p class="prop-ru">Питание не привязано к телефону или ПК. Комплект потребляет ≈1 Вт и раздаёт спектр по WiFi.</p>
+      <p class="prop-en">Untethered field operation from a power bank.</p>
     </div>
-  </section>
-
-  <section id="architecture">
-    <div class="section-head"><h2>Как связаны компоненты</h2></div>
-    <div class="flow">
-      <div class="flow-node"><span class="k">Прибор</span><span class="v">Гамма-спектрометр</span><span class="d">8192 канала, USB (shproto)</span></div>
-      <div class="flow-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h12M9 3l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <div class="flow-node hub"><span class="k">Шлюз</span><span class="v">waterfall-esp32</span><span class="d">ESP32-S3, USB OTG Host, WiFi · питание от павербанка</span></div>
-      <div class="flow-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h12M9 3l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <div class="flow-node"><span class="k">Приём</span><span class="v">Браузер · TCP:8234 · wf-recorder</span><span class="d">Web UI, BecqMoni, pull-клиент</span></div>
-      <div class="flow-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h12M9 3l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <div class="flow-node"><span class="k">Анализ</span><span class="v">waterfall-viewer</span><span class="d">3D/2D спектрограмма, нуклиды</span></div>
+    <div class="prop">
+      <div class="prop-num">02 · БЕЗ КОДА</div>
+      <h3>Программировать не нужно</h3>
+      <p class="prop-ru">Готовые .exe на страницах релизов, прошивка платы заливается флешером в несколько кликов.</p>
+      <p class="prop-en">Prebuilt .exe releases, flashing in a few clicks.</p>
     </div>
-    <div class="slider" id="webui-slider" aria-roledescription="карусель" aria-label="Вкладки Web UI шлюза">
-      <div class="slides">
-        <figure class="slide active">
-          <img src="img/web-spectrum.jpg" alt="Вкладка «Спектр» Web UI шлюза: живой спектр с маркерами линий Th-232 и K-40, мощность дозы, экспорт XML/CSV/N42/SPE">
-          <figcaption>Вкладка «Спектр»: живой спектр, маркеры линий Th-232 / K-40, мощность дозы, экспорт в 4 формата.</figcaption>
-        </figure>
-        <figure class="slide">
-          <img src="img/web-waterfall.jpg" alt="Вкладка «Водопад» Web UI шлюза: спектрограмма в палитре Turbo с маркерами линий, запись на flash, срез спектра" loading="lazy">
-          <figcaption>Вкладка «Водопад»: спектрограмма на плате, запись во flash, экспорт .n42 / .aswf.</figcaption>
-        </figure>
-        <figure class="slide">
-          <img src="img/web-monitor.jpg" alt="Вкладка «Мониторинг» Web UI шлюза: текущий и средний CPS с погрешностями, график по интервалам, таблица отсчётов, выгрузка CSV" loading="lazy">
-          <figcaption>Вкладка «Мониторинг»: CPS по интервалам с погрешностями, выгрузка CSV.</figcaption>
-        </figure>
-        <figure class="slide">
-          <img src="img/viewer-ui.jpg" alt="waterfall-viewer: 3D-поверхность Время × Энергия × Отсчёты с панелями срезов и сечений" loading="lazy">
-          <figcaption>waterfall-viewer: 3D-водопад суточной записи, панели срезов / сечений / регулировок.</figcaption>
-        </figure>
-        <figure class="slide">
-          <img src="img/viewer-2d.jpg" alt="waterfall-viewer: 2D-карта Время × Энергия с выборкой по энергоокну Cs-137" loading="lazy">
-          <figcaption>waterfall-viewer: 2D-карта Время×Энергия, энергоокно Cs-137 662 кэВ, полоса ROI.</figcaption>
-        </figure>
+    <div class="prop">
+      <div class="prop-num">03 · СОВМЕСТИМОСТЬ</div>
+      <h3>Индустриальные форматы</h3>
+      <p class="prop-ru">N42.42, BecqMoni, InterSpec, ЛСРМ и RadiaCode — данные открываются в привычном ПО.</p>
+      <p class="prop-en">Opens in the analysis software you already use.</p>
+    </div>
+  </div>
+
+  <!-- ecosystem -->
+  <div id="a-eco" style="padding:48px 40px 20px;">
+    <div class="sect-head">
+      <h2>Экосистема</h2>
+      <span class="sect-meta">5 REPOSITORIES</span>
+    </div>
+    <p class="sect-lead">Пять репозиториев, закрывающих полный путь сигнала: прибор → шлюз → приём → анализ.</p>
+  </div>
+
+  <div id="a-comp" style="border-top:1px solid #1b2127;">
+
+    <div class="repo-row">
+      <div class="repo-num">01</div>
+      <div class="repo-main">
+        <div class="repo-title-row">
+          <h3 class="repo-name">waterfall-esp32</h3>
+          <span class="repo-tag">прошивка</span>
+          <span class="repo-platform">ESP32-S3</span>
+        </div>
+        <div class="repo-role">WiFi-шлюз <span class="en">· WiFi gateway</span></div>
+        <p class="repo-desc">Сердце комплекта: плата ESP32-S3 подключается к спектрометру по USB (OTG Host) и заменяет телефон или ПК — спектр смотрят в браузере с любого устройства в той же сети. Web UI показывает живой 8192-канальный спектр с маркерами линий и мощностью дозы, водопад накоплений и мониторинг платы; в поле шлюз сам поднимает точку доступа и работает от павербанка. Накопленное хранится на flash и выгружается прямо из браузера в форматах BecqMoni, InterSpec, N42.42 и ЛСРМ .spe. Для десктопного ПО открыт TCP-мост (порт 8234): BecqMoni или wf-recorder получают поток так, будто прибор подключён напрямую.</p>
       </div>
-      <div class="slider-nav">
-        <button type="button" class="s-btn" data-dir="-1" aria-label="Предыдущий кадр">‹</button>
-        <div class="dots" role="tablist"></div>
-        <button type="button" class="s-btn" data-dir="1" aria-label="Следующий кадр">›</button>
+      <div class="repo-side">
+        <div class="repo-ver-row"><span class="repo-ver">firmware-v1.1.2</span><span class="repo-date">11.07.2026</span></div>
+        <div class="repo-links">
+          <a class="rep" href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32" target="_blank" rel="noopener">репозиторий ↗</a>
+          <a class="rel" href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32/releases" target="_blank" rel="noopener">релизы ↗</a>
+        </div>
       </div>
     </div>
-  </section>
 
-  <section id="compat">
-    <div class="section-head"><h2>Форматы</h2></div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Формат</th><th>Шлюз</th><th>Вьюер</th><th>Назначение</th></tr></thead>
-        <tbody>
-          <tr><td class="mono">.aswf</td><td class="yes">пишет</td><td class="yes">читает</td><td>нативный водопад</td></tr>
-          <tr><td class="mono">N42.42-2011</td><td class="yes">экспорт</td><td class="yes">читает</td><td>индустриальный обменный формат</td></tr>
-          <tr><td class="mono">BecqMoni XML</td><td class="yes">экспорт</td><td>—</td><td>анализ в BecqMoni</td></tr>
-          <tr><td class="mono">InterSpec CSV</td><td class="yes">экспорт</td><td>—</td><td>анализ в InterSpec (Sandia)</td></tr>
-          <tr><td class="mono">ЛСРМ .spe</td><td class="yes">экспорт</td><td>—</td><td>гамма-анализ SpectraLine</td></tr>
-          <tr><td class="mono">RadiaCode .rcspg</td><td>—</td><td class="yes">читает</td><td>кросс-совместимость с RadiaCode-110</td></tr>
-        </tbody>
-      </table>
+    <div class="repo-row">
+      <div class="repo-num">02</div>
+      <div class="repo-main">
+        <div class="repo-title-row">
+          <h3 class="repo-name">waterfall-viewer</h3>
+          <span class="repo-tag">desktop</span>
+          <span class="repo-platform">Windows / Python</span>
+        </div>
+        <div class="repo-role">Просмотрщик спектрограмм <span class="en">· Spectrogram viewer</span></div>
+        <p class="repo-desc">Анализ длительных записей: суточный лог разворачивается в 3D-поверхность или 2D-карту «время × энергия», где короткий всплеск активности или дрейф фона виден сразу — без перебора сотен спектров вручную. Любой момент записи раскрывается в обычный спектр, любая энергетическая линия — в график её хода во времени; выделенный ROI сверяется с библиотекой 21 нуклида. Читает .aswf, RadiaCode .rcspg и N42.42; многочасовые файлы грузятся потоково, без загрузки целиком в память.</p>
+      </div>
+      <div class="repo-side">
+        <div class="repo-ver-row"><span class="repo-ver">v0.1.10</span><span class="repo-date">12.07.2026</span></div>
+        <div class="repo-links">
+          <a class="rep" href="https://github.com/VibeEngineering-LLC/waterfall-viewer" target="_blank" rel="noopener">репозиторий ↗</a>
+          <a class="rel" href="https://github.com/VibeEngineering-LLC/waterfall-viewer/releases" target="_blank" rel="noopener">релизы ↗</a>
+        </div>
+      </div>
     </div>
-  </section>
 
-  <section id="roadmap">
-    <div class="section-head"><h2>В разработке</h2></div>
-    <div class="road">
-      <div class="road-item">
-        <span class="tag">скоро</span>
+    <div class="repo-row">
+      <div class="repo-num">03</div>
+      <div class="repo-main">
+        <div class="repo-title-row">
+          <h3 class="repo-name">wf-recorder</h3>
+          <span class="repo-tag">desktop</span>
+          <span class="repo-platform">Windows / stdlib</span>
+        </div>
+        <div class="repo-role">Непрерывная запись <span class="en">· Continuous recorder</span></div>
+        <p class="repo-desc">Страховка длинных сессий: клиент на ПК периодически забирает сегменты водопада со шлюза и сшивает их в единый .aswf — суточная запись не зависит от открытой вкладки браузера и переживает обрывы WiFi. Сегмент удаляется с платы только после подтверждённой записи на диск (fsync); целостность контролируют CRC32 и порядковые номера, поэтому пропуск в записи виден сразу, а не при разборе данных. Параллельно ведёт лог температуры платы в CSV; на странице релизов — готовый .exe без зависимостей.</p>
+      </div>
+      <div class="repo-side">
+        <div class="repo-ver-row"><span class="repo-ver">v0.2.1</span><span class="repo-date">11.07.2026</span></div>
+        <div class="repo-links">
+          <a class="rep" href="https://github.com/VibeEngineering-LLC/wf-recorder" target="_blank" rel="noopener">репозиторий ↗</a>
+          <a class="rel" href="https://github.com/VibeEngineering-LLC/wf-recorder/releases" target="_blank" rel="noopener">релизы ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="repo-row">
+      <div class="repo-num">04</div>
+      <div class="repo-main">
+        <div class="repo-title-row">
+          <h3 class="repo-name">waterfall-esp32-flasher</h3>
+          <span class="repo-tag">desktop</span>
+          <span class="repo-platform">Windows / Python</span>
+        </div>
+        <div class="repo-role">Прошивальщик плат <span class="en">· Board flasher</span></div>
+        <p class="repo-desc">Убирает главный барьер — прошивку платы: вместо esptool и командной строки — окно с двумя списками. Флешер сам находит COM-порт, скачивает актуальный релиз прошивки с GitHub и заливает его по USB в несколько кликов; обновление на новую версию — та же процедура. Один инструмент обслуживает четыре проекта: AtomSpectra, AtomFast, Radex, RadonEye.</p>
+      </div>
+      <div class="repo-side">
+        <div class="repo-ver-row"><span class="repo-ver">v0.2.2</span><span class="repo-date">10.07.2026</span></div>
+        <div class="repo-links">
+          <a class="rep" href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32-flasher" target="_blank" rel="noopener">репозиторий ↗</a>
+          <a class="rel" href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32-flasher/releases" target="_blank" rel="noopener">релизы ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="repo-row">
+      <div class="repo-num">05</div>
+      <div class="repo-main">
+        <div class="repo-title-row">
+          <h3 class="repo-name">esp32s3-diag</h3>
+          <span class="repo-tag">прошивка</span>
+          <span class="repo-platform">ESP32-S3 + флешер</span>
+        </div>
+        <div class="repo-role">Диагностика USB Host <span class="en">· USB Host diagnostics</span></div>
+        <p class="repo-desc">«Рентген платы» на случай, когда прибор и шлюз не видят друг друга: диагностическая прошивка прогоняет цепочку Boot → WiFi → USB Host → Enum → Detect → Handshake и показывает в Web UI, на каком именно звене обрывается связь. Читает USB-дескрипторы и endpoints, выполняет FTDI vendor init и пробует SHPROTO-рукопожатие — вместо гадания по симптомам получается точный диагноз. Ставится one-click флешером; перед тестами обязателен backup настроек прибора (см. README), после — возврат штатной прошивки тем же флешером.</p>
+      </div>
+      <div class="repo-side">
+        <div class="repo-ver-row"><span class="repo-ver">v0.2.0</span><span class="repo-date">08.07.2026</span></div>
+        <div class="repo-links">
+          <a class="rep" href="https://github.com/VibeEngineering-LLC/esp32s3-diag" target="_blank" rel="noopener">репозиторий ↗</a>
+          <a class="rel" href="https://github.com/VibeEngineering-LLC/esp32s3-diag/releases" target="_blank" rel="noopener">релизы ↗</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- connection chain -->
+  <div id="a-chain" style="padding:48px 40px;">
+    <div class="sect-head">
+      <h2>Как связаны компоненты</h2>
+      <span class="sect-meta">SIGNAL PATH · КЛИКНИТЕ УЗЕЛ</span>
+    </div>
+    <p class="sect-lead">Кликните по узлу — раскроется подробное описание этапа и скриншоты. <span class="en">Click a node for a detailed description and screenshots.</span></p>
+
+    <div class="chain-row" id="chain-nodes"></div>
+    <div id="chain-detail"></div>
+  </div>
+
+  <!-- formats -->
+  <div id="a-fmt" style="padding:8px 40px 48px;">
+    <div class="sect-head" style="margin-bottom:20px;">
+      <h2>Форматы</h2>
+      <span class="sect-meta">INTERCHANGE FORMATS</span>
+    </div>
+    <div class="fmt-table">
+      <div class="fmt-head">
+        <div>ФОРМАТ</div><div>ШЛЮЗ</div><div>ВЬЮЕР</div><div>НАЗНАЧЕНИЕ</div>
+      </div>
+      <div class="fmt-row"><div>.aswf</div><div>пишет</div><div>читает</div><div>нативный водопад · native waterfall</div></div>
+      <div class="fmt-row"><div>N42.42-2011</div><div>экспорт</div><div>читает</div><div>индустриальный обмен · interchange</div></div>
+      <div class="fmt-row"><div>BecqMoni XML</div><div>экспорт</div><div>—</div><div>анализ в BecqMoni</div></div>
+      <div class="fmt-row"><div>InterSpec CSV</div><div>экспорт</div><div>—</div><div>анализ в InterSpec (Sandia)</div></div>
+      <div class="fmt-row"><div>ЛСРМ .spe</div><div>экспорт</div><div>—</div><div>гамма-анализ SpectraLine</div></div>
+      <div class="fmt-row"><div>RadiaCode .rcspg</div><div>—</div><div>читает</div><div>кросс-совместимость RadiaCode-110</div></div>
+    </div>
+  </div>
+
+  <!-- live demo -->
+  <div id="a-demo" style="padding:48px 40px; border-bottom:1px solid #1b2127;">
+    <div class="sect-head">
+      <h2>Живое демо шлюза</h2>
+      <span class="sect-meta">LIVE WEB UI · В БРАУЗЕРЕ</span>
+    </div>
+    <p class="sect-lead" style="max-width:80ch;">Тот же интерфейс, что открывается в браузере при подключении к шлюзу — вкладки «Спектр», «Водопад», «Мониторинг». Можно покликать прямо здесь. <span class="en">The actual gateway Web UI — interact with it right here.</span></p>
+
+    <div class="demo-frame">
+      <div class="demo-bar">
+        <div class="demo-dots"><span></span><span></span><span></span></div>
+        <div class="demo-addr">waterfall-esp32 · demo</div>
+        <a class="demo-full" href="https://vibeengineering-llc.github.io/atomspectra-waterfall-esp32/demo/index.html" target="_blank" rel="noopener">во весь экран ↗</a>
+      </div>
+      <div class="demo-view">
+        <iframe src="https://vibeengineering-llc.github.io/atomspectra-waterfall-esp32/demo/index.html" title="SpectraWaterfall — живое демо Web UI" loading="lazy"></iframe>
+      </div>
+    </div>
+    <p class="demo-note">демо-режим без подключённого прибора · данные симулированы</p>
+  </div>
+
+  <!-- roadmap -->
+  <div style="padding:48px 40px;">
+    <div class="sect-head" style="margin-bottom:20px;">
+      <h2>В разработке</h2>
+      <span class="sect-meta">ROADMAP</span>
+    </div>
+    <div class="roadmap">
+      <div class="rm-card">
+        <span class="rm-badge">СКОРО · SOON</span>
         <h3>Запись на внешние носители</h3>
-        <p>Сохранение водопада напрямую на SD-карту платы — многосуточные записи без ПК и без ограничения объёмом встроенного flash.</p>
+        <div class="rm-en">External storage</div>
+        <p>Сохранение водопада напрямую на SD-карту платы — многосуточные записи без ПК и без ограничения объёмом flash.</p>
       </div>
-      <div class="road-item">
-        <span class="tag">скоро</span>
+      <div class="rm-card">
+        <span class="rm-badge">СКОРО · SOON</span>
         <h3>Подключение GPS</h3>
+        <div class="rm-en">GPS support</div>
         <p>Привязка каждого спектра к координатам приёмника — трек измерений вместе с данными в одном файле.</p>
       </div>
-      <div class="road-item">
-        <span class="tag">скоро</span>
-        <h3>Поиск и картирование загрязнений</h3>
-        <p>GPS + автономное питание + непрерывная запись превращают комплект в инструмент обследования местности: поиск источников и картирование радиоактивных загрязнений.</p>
+      <div class="rm-card">
+        <span class="rm-badge">СКОРО · SOON</span>
+        <h3>Поиск и картирование</h3>
+        <div class="rm-en">Contamination mapping</div>
+        <p>GPS + автономное питание + непрерывная запись: поиск источников и картирование радиоактивных загрязнений.</p>
       </div>
     </div>
-  </section>
-
-  <section id="safety">
-    <div class="callout">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3 2 20h20L12 3Z" stroke-linejoin="round"/><path d="M12 9v5M12 17h.01" stroke-linecap="round"/></svg>
-      <div class="cbody">
-        <p><strong>Все эксперименты со спектрометрами и подключённым оборудованием вы проводите на свой страх и риск.</strong> Проекты предоставляются «как есть» (as is), без каких-либо гарантий. Авторы и участники не несут ответственности за любой вред, прямой или косвенный: повреждение спектрометра, детектора, ФЭУ, ESP32-платы, компьютера или иного оборудования, потерю данных или настроек прибора.</p>
-        <p>В частности:</p>
-        <ul>
-          <li>Команды настройки прибора (<code>-ris</code>, <code>-fall</code>, <code>-nos</code>, <code>-max</code>, <code>-hyst</code>, <code>-U</code>, <code>-V</code>, <code>-step</code> и др.) изменяют внутреннюю конфигурацию обработки сигнала и аппаратные параметры HV/усиления (POT / POT2). Неверные значения могут сбить заводскую настройку детектора или повредить прибор. Параметры индивидуальны для каждого экземпляра — не записывайте их «вслепую» и не копируйте чужие значения.</li>
-          <li>Высокое напряжение (HV) детектора — потенциально опасно для прибора при неверной настройке.</li>
-          <li>Восстановление сбитой настройки детектора выполняет производитель прибора, а не шлюз. При сбое заводского профиля детектора обращайтесь к производителю, не пытайтесь восстановить параметры самостоятельно.</li>
-          <li>Опция очистки спектра при старте шлюза стирает накопленные на приборе данные — сохраните их штатным ПО заранее.</li>
-          <li>Флешер перезаписывает flash выбранной платы: проверяйте COM-порт, посторонние USB-устройства прошивать нельзя.</li>
-        </ul>
-        <p>Используя эти проекты, вы соглашаетесь, что понимаете риски и принимаете полную ответственность за свои действия с оборудованием. Полный текст условий — в README каждого репозитория.</p>
-      </div>
-    </div>
-  </section>
-
-</main>
-
-<footer>
-  <div class="wrap foot-row">
-    <span>MIT © VibeEngineering LLC</span>
-    <span><a href="https://github.com/VibeEngineering-LLC" target="_blank" rel="noopener">github.com/VibeEngineering-LLC</a></span>
   </div>
-</footer>
 
+  <!-- caution -->
+  <div class="caution">
+    <div class="caution-title">⚠ ВНИМАНИЕ · CAUTION</div>
+    <p><strong>Все эксперименты со спектрометрами и подключённым оборудованием вы проводите на свой страх и риск.</strong> Проекты предоставляются «как есть» (as is), без каких-либо гарантий. Авторы и участники не несут ответственности за любой вред, прямой или косвенный: повреждение спектрометра, детектора, ФЭУ, ESP32-платы, компьютера или иного оборудования, потерю данных или настроек прибора.</p>
+    <p>В частности:</p>
+    <ul>
+      <li>Команды настройки прибора (<code>-ris</code>, <code>-fall</code>, <code>-nos</code>, <code>-max</code>, <code>-hyst</code>, <code>-U</code>, <code>-V</code>, <code>-step</code> и др.) изменяют внутреннюю конфигурацию обработки сигнала и аппаратные параметры HV/усиления (POT / POT2). Неверные значения могут сбить заводскую настройку детектора или повредить прибор. Параметры индивидуальны для каждого экземпляра — не записывайте их «вслепую» и не копируйте чужие значения.</li>
+      <li>Высокое напряжение (HV) детектора — потенциально опасно для прибора при неверной настройке.</li>
+      <li>Восстановление сбитой настройки детектора выполняет производитель прибора, а не шлюз. При сбое заводского профиля детектора обращайтесь к производителю, не пытайтесь восстановить параметры самостоятельно.</li>
+      <li>Опция очистки спектра при старте шлюза стирает накопленные на приборе данные — сохраните их штатным ПО заранее.</li>
+      <li>Флешер перезаписывает flash выбранной платы: проверяйте COM-порт, посторонние USB-устройства прошивать нельзя.</li>
+    </ul>
+    <p>Используя эти проекты, вы соглашаетесь, что понимаете риски и принимаете полную ответственность за свои действия с оборудованием. Полный текст условий — в README каждого репозитория.</p>
+  </div>
+
+  <!-- footer -->
+  <footer class="footer">
+    <span>MIT © VibeEngineering LLC</span>
+    <a href="https://github.com/VibeEngineering-LLC" target="_blank" rel="noopener">github.com/VibeEngineering-LLC ↗</a>
+  </footer>
+
+</section>
+</div>
+
+<!-- lightbox -->
 <div class="lb" id="lightbox" role="dialog" aria-label="Просмотр изображения">
   <img id="lb-img" src="" alt="">
   <div class="lb-cap" id="lb-cap"></div>
 </div>
 
 <script>
-(function(){
-  var slider=document.getElementById('webui-slider');
-  var slides=slider.querySelectorAll('.slide');
-  var dotsBox=slider.querySelector('.dots');
-  var idx=0,timer=null;
-  slides.forEach(function(_,i){
-    var d=document.createElement('button');
-    d.type='button';d.className='dot'+(i===0?' on':'');
-    d.setAttribute('aria-label','Кадр '+(i+1));
-    d.addEventListener('click',function(){go(i);restart();});
-    dotsBox.appendChild(d);
-  });
-  var dots=dotsBox.querySelectorAll('.dot');
-  function go(i){
-    slides[idx].classList.remove('active');dots[idx].classList.remove('on');
-    idx=(i+slides.length)%slides.length;
-    slides[idx].classList.add('active');dots[idx].classList.add('on');
+/* ===== waterfall canvas (Turbo, falling dots) ===== */
+(function () {
+  function turbo(t) {
+    var s = [[48,18,59],[64,69,171],[70,117,237],[27,207,212],[36,236,166],[97,252,108],[164,252,59],[209,233,53],[249,194,41],[253,145,59],[217,56,6],[122,4,3]];
+    t = Math.max(0, Math.min(1, t));
+    var f = t * (s.length - 1), i = Math.floor(f), g = f - i;
+    var a = s[i], b = s[Math.min(i + 1, s.length - 1)];
+    return 'rgb(' + Math.round(a[0]+(b[0]-a[0])*g) + ',' + Math.round(a[1]+(b[1]-a[1])*g) + ',' + Math.round(a[2]+(b[2]-a[2])*g) + ')';
   }
-  slider.querySelectorAll('.s-btn').forEach(function(b){
-    b.addEventListener('click',function(){go(idx+parseInt(b.dataset.dir,10));restart();});
-  });
-  var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function start(){if(!reduced){timer=setInterval(function(){go(idx+1);},7000);}}
-  function stop(){if(timer){clearInterval(timer);timer=null;}}
-  function restart(){stop();start();}
-  slider.addEventListener('mouseenter',stop);
-  slider.addEventListener('mouseleave',start);
-  start();
+  var cv = document.getElementById('wf-canvas');
+  if (!cv) return;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var parent = cv.parentElement;
+  var dpr = Math.min(2, window.devicePixelRatio || 1);
+  var ctx = cv.getContext('2d');
+  var BG = '#160a33';
+  var cell = Math.max(2, Math.round(2.5 * dpr));
+  var speed = 26 * dpr;
+  var buf = document.createElement('canvas');
+  var bctx = buf.getContext('2d');
+  var cols = 1, offset = 0;
+  function genRow() {
+    bctx.drawImage(buf, 0, cell);
+    bctx.fillStyle = BG; bctx.fillRect(0, 0, buf.width, cell);
+    for (var x = 0; x < cols; x++) {
+      var fx = x / cols;
+      var base = Math.pow(1 - fx, 1.6);
+      var density = 0.06 + base * 0.92;
+      if (Math.random() < density) {
+        var val = Math.min(1, Math.max(0, base * 0.85 + (Math.random() - 0.28) * 0.22));
+        bctx.fillStyle = turbo(val);
+        bctx.fillRect(x * cell, 0, cell - 0.5, cell - 0.5);
+      }
+    }
+  }
+  function resize() {
+    var r = parent.getBoundingClientRect();
+    cv.width = Math.max(1, Math.round(r.width * dpr));
+    cv.height = Math.max(1, Math.round(r.height * dpr));
+    cols = Math.ceil(cv.width / cell);
+    buf.width = cv.width; buf.height = cv.height + cell;
+    bctx.fillStyle = BG; bctx.fillRect(0, 0, buf.width, buf.height);
+    for (var i = 0; i < Math.ceil(buf.height / cell); i++) genRow();
+    offset = 0;
+    ctx.fillStyle = BG; ctx.fillRect(0, 0, cv.width, cv.height);
+    ctx.drawImage(buf, 0, -cell);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  if (reduced) return; /* статичный кадр при reduced-motion */
+  var last = performance.now();
+  function render(ts) {
+    offset += speed * (Math.min(50, ts - last) / 1000); last = ts;
+    while (offset >= cell) { genRow(); offset -= cell; }
+    ctx.fillStyle = BG; ctx.fillRect(0, 0, cv.width, cv.height);
+    ctx.drawImage(buf, 0, offset - cell);
+    requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
+})();
 
-  // лайтбокс: клик по кадру слайдера или скрину карточки
-  var lb=document.getElementById('lightbox'),lbImg=document.getElementById('lb-img'),lbCap=document.getElementById('lb-cap');
-  function openLb(img){
-    lbImg.src=img.src;lbImg.alt=img.alt;
-    var fc=img.closest('figure');var c=fc?fc.querySelector('figcaption'):null;
-    lbCap.textContent=c?c.textContent:(img.alt||'');
-    lb.classList.add('open');stop();
+/* ===== connection chain ===== */
+(function () {
+  var IMG = 'img/';
+  var chainData = [
+    { ru: 'Прибор', en: 'Device', node: 'Гамма-спектрометр',
+      more: 'Сцинтилляционный гамма-спектрометр отдаёт 8192-канальный спектр по USB (протокол shproto). Весь измерительный комплект — прибор + плата ESP32-S3 + павербанк — потребляет ≈1 Вт и работает автономно в поле, без привязки к телефону или ПК.',
+      moreEn: 'A scintillation gamma spectrometer streams an 8192-channel spectrum over USB (shproto). The whole kit draws ≈1 W and runs untethered in the field.',
+      grid: '1fr',
+      shots: [
+        { img: 'https://raw.githubusercontent.com/VibeEngineering-LLC/atomspectra-waterfall-esp32/main/images/assembly.jpg',
+          cap: 'Комплект в сборе: гамма-спектрометр + ESP32-S3 + павербанк; USB-тестер показывает потребление ≈1 Вт.' }
+      ] },
+    { ru: 'Шлюз', en: 'Gateway', node: 'waterfall-esp32',
+      more: 'waterfall-esp32 — прошивка ESP32-S3. Плата подключается к прибору по USB (OTG Host) и отдаёт спектр в браузер в реальном времени: вкладки «Спектр», «Водопад» и «Мониторинг». Экспорт BecqMoni / InterSpec / N42.42 / ЛСРМ, TCP-мост (порт 8234) для десктопного ПО, запись на flash, полевой режим точки доступа.',
+      moreEn: 'ESP32-S3 firmware. USB OTG Host to the device, live spectrum in the browser — Spectrum, Waterfall and Monitoring tabs. Exports to 4 formats, TCP bridge on port 8234, flash recording, AP field mode.',
+      grid: '1fr 1fr 1fr',
+      shots: [
+        { img: IMG + 'web-spectrum.jpg', cap: 'Спектр: живой спектр, маркеры линий Th-232 / K-40, мощность дозы, экспорт XML/CSV/N42/SPE.' },
+        { img: IMG + 'web-waterfall.jpg', cap: 'Водопад: спектрограмма в палитре Turbo, запись во flash, экспорт .n42 / .aswf.' },
+        { img: IMG + 'web-monitor.jpg', cap: 'Мониторинг: CPS по интервалам с погрешностями, график, таблица, выгрузка CSV.' }
+      ] },
+    { ru: 'Приём', en: 'Capture', node: 'Браузер · TCP:8234 · wf-recorder',
+      more: 'Спектр принимается в браузере или десктопным ПО (BecqMoni) через TCP:8234. wf-recorder — pull-клиент непрерывной записи: забирает сегменты водопада со шлюза и сшивает их в единый .aswf. Сегмент удаляется с платы только после fsync на диск; целостность гарантируют CRC32 и порядковые номера, температура пишется в CSV.',
+      moreEn: 'Received in the browser or desktop software via TCP:8234. wf-recorder is a pull client: it fetches waterfall segments and stitches a single .aswf; segments are dropped only after fsync, with CRC32 + sequence-number integrity.',
+      grid: '1fr 1fr',
+      shots: [
+        { img: IMG + 'recorder.png', cap: 'wf-recorder: идёт запись, журнал сегментов с проверкой CRC32, сегмент стирается на плате после подтверждения.' },
+        { img: IMG + 'web-waterfall.jpg', cap: 'Источник данных — вкладка «Водопад» Web UI шлюза.' }
+      ] },
+    { ru: 'Анализ', en: 'Analysis', node: 'waterfall-viewer',
+      more: 'waterfall-viewer — просмотрщик спектрограмм. 3D-поверхность и 2D-карта Время × Энергия, срезы по времени, сечения по полосе энергий, выборки ROI, библиотека 21 нуклида. Читает .aswf, RadiaCode .rcspg и N42.42; суточные записи грузятся потоково.',
+      moreEn: 'Spectrogram viewer: 3D surface and 2D Time×Energy map, time slices, energy-band cross-sections, ROI selections, 21-nuclide library. Reads .aswf, RadiaCode .rcspg and N42.42; day-long records stream in.',
+      grid: '1fr 1fr',
+      shots: [
+        { img: IMG + 'viewer-ui.jpg', cap: '3D-поверхность Время × Энергия × Отсчёты с панелями срезов, сечений и регулировок.' },
+        { img: IMG + 'viewer-2d.jpg', cap: '2D-карта Время × Энергия, энергоокно Cs-137 662 кэВ, полоса ROI.' }
+      ] }
+  ];
+
+  var sel = 1;
+  var nodesBox = document.getElementById('chain-nodes');
+  var detailBox = document.getElementById('chain-detail');
+
+  function pad(i) { return String(i + 1).padStart(2, '0'); }
+
+  function renderNodes() {
+    nodesBox.innerHTML = '';
+    chainData.forEach(function (n, i) {
+      if (i > 0) {
+        var conn = document.createElement('div');
+        conn.className = 'chain-conn' + (i <= sel ? ' on' : '');
+        conn.innerHTML = '<div class="base"></div><div class="lit"><div class="dot"></div></div>';
+        nodesBox.appendChild(conn);
+      }
+      var el = document.createElement('div');
+      el.className = 'chain-node' + (i <= sel ? ' lit' : '');
+      el.setAttribute('role', 'button');
+      el.setAttribute('tabindex', '0');
+      el.innerHTML = '<div class="glow"></div><div class="bar"></div>' +
+        '<div class="cn-num">' + pad(i) + '</div>' +
+        '<div class="cn-ru">' + n.ru + '</div>' +
+        '<div class="cn-en">' + n.en + '</div>' +
+        '<div class="cn-node">' + n.node + '</div>';
+      el.addEventListener('click', function () { sel = i; renderNodes(); renderDetail(); });
+      el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sel = i; renderNodes(); renderDetail(); } });
+      nodesBox.appendChild(el);
+    });
   }
-  function closeLb(){lb.classList.remove('open');lbImg.src='';start();}
-  document.querySelectorAll('.slide img, .shot img').forEach(function(img){
-    img.addEventListener('click',function(){openLb(img);});
-  });
-  lb.addEventListener('click',closeLb);
-  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&lb.classList.contains('open'))closeLb();});
+
+  function renderDetail() {
+    var n = chainData[sel];
+    var shots = n.shots.map(function (sh) {
+      return '<figure><div class="imgbox"><img loading="lazy" src="' + sh.img + '" alt="' + sh.cap + '"></div>' +
+             '<figcaption>' + sh.cap + '</figcaption></figure>';
+    }).join('');
+    detailBox.innerHTML =
+      '<div class="chain-detail">' +
+        '<div class="cd-head">' +
+          '<span class="cd-stage">ЭТАП ' + pad(sel) + '</span>' +
+          '<span class="cd-ru">' + n.ru + '</span>' +
+          '<span class="cd-en">/ ' + n.en + '</span>' +
+          '<span class="cd-node">' + n.node + '</span>' +
+        '</div>' +
+        '<p class="cd-more">' + n.more + '</p>' +
+        '<p class="cd-more-en">' + n.moreEn + '</p>' +
+        '<div class="cd-shots" style="grid-template-columns:' + n.grid + ';">' + shots + '</div>' +
+      '</div>';
+    bindLightbox(detailBox);
+  }
+
+  renderNodes();
+  renderDetail();
+
+  /* ===== lightbox ===== */
+  var lb = document.getElementById('lightbox');
+  var lbImg = document.getElementById('lb-img');
+  var lbCap = document.getElementById('lb-cap');
+  function openLb(img) {
+    lbImg.src = img.src;
+    lbImg.alt = img.alt || '';
+    lbCap.textContent = img.alt || '';
+    lb.classList.add('open');
+  }
+  function closeLb() { lb.classList.remove('open'); lbImg.src = ''; }
+  window.bindLightbox = bindLightbox;
+  function bindLightbox(root) {
+    (root || document).querySelectorAll('.cd-shots img, .spectrum-shot img').forEach(function (img) {
+      img.style.cursor = 'zoom-in';
+      img.addEventListener('click', function () { openLb(img); });
+    });
+  }
+  bindLightbox(document);
+  lb.addEventListener('click', closeLb);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeLb(); });
 })();
 </script>
-
 </body>
 </html>
