@@ -1,0 +1,88 @@
+/* ============================================================
+   AtomSpectra Gateway — мобильный веб-UI
+   Дизайн-токены и базовые стили (тема «Мягкий прибор»)
+   ------------------------------------------------------------
+   Прототип использует инлайновые стили; этот файл — справочник
+   палитры/типографики и базовый слой (сброс, шрифты, анимации),
+   чтобы переиспользовать тему в реальной вёрстке.
+   ============================================================ */
+
+:root {
+  /* Фон / поверхности */
+  --bg:            #18221e;   /* фон страницы */
+  --bg-grad-1:     #243530;   /* радиальный градиент, верх */
+  --bg-grad-2:     #1a2723;
+  --bg-grad-3:     #151e1b;
+  --screen:        #0b1310;   /* фон «экрана» телефона */
+  --screen-deep:   #05100c;   /* глубокий фон (горизонт) */
+  --panel:         #0a120f;   /* тёмная панель/график */
+  --card:          rgba(255,255,255,.03);   /* карточка */
+  --card-line:     rgba(111,224,190,.12);   /* тонкая рамка */
+  --hairline:      rgba(111,224,190,.06);   /* сетка графика */
+
+  /* Акценты */
+  --mint:          #6fe0be;   /* основной мятный акцент */
+  --mint-bright:   #7fead0;   /* активная заливка кнопок */
+  --amber:         #e8c766;   /* запись / SMA / предупреждение */
+  --red:           #e8776b;   /* стоп / удаление / опасность */
+  --blue:          #6fbce0;   /* ссылки / служебное */
+
+  /* Текст */
+  --text:          #eef6f2;   /* заголовки, крупные цифры */
+  --text-soft:     #d3e0da;   /* основной текст */
+  --text-mono:     #cdddd7;   /* моноширинные значения */
+  --muted:         #8aa39b;   /* подписи */
+  --muted-2:       #6d827b;   /* второстепенные подписи */
+  --muted-3:       #5a7d70;   /* подсказки */
+  --muted-4:       #54655f;   /* оси, деления */
+
+  /* Палитра нуклидов (маркеры энергий) */
+  --nuc-am241:     #b98cff;   /* Am-241 */
+  --nuc-ra226:     #6fbce0;   /* Ra-226 */
+  --nuc-i131:      #7fd0c0;   /* I-131 */
+  --nuc-cs137:     #e8c766;   /* Cs-137 */
+  --nuc-na22:      #f0a35e;   /* Na-22 */
+  --nuc-co60:      #e8776b;   /* Co-60 */
+  --nuc-k40:       #8fe0a0;   /* K-40 */
+  --nuc-tl208:     #d98cae;   /* Tl-208 */
+
+  /* Типографика */
+  --font-sans: 'Space Grotesk', system-ui, sans-serif;   /* интерфейс, заголовки */
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace; /* цифры, значения, лог */
+
+  /* Скругления */
+  --r-card:   18px;
+  --r-hero:   22px;
+  --r-pill:   14px;
+  --r-device: 32px;
+}
+
+/* ---- Базовый слой ---- */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text-soft);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+a       { color: var(--blue); text-decoration: none; }
+a:hover { color: #9fd6f0; }
+
+/* Радиальный фон рабочей области */
+.stage-bg {
+  background: radial-gradient(120% 90% at 50% 0%,
+    var(--bg-grad-1) 0%, var(--bg-grad-2) 55%, var(--bg-grad-3) 100%);
+}
+
+/* ---- Анимации ---- */
+@keyframes blink   { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
+@keyframes recpulse{ 0%,100% { opacity: 1; } 50% { opacity: .4; } }
+@keyframes sheetup { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+/* ---- Утилиты ---- */
+canvas[data-wf]      { image-rendering: pixelated; }              /* спектрограмма */
+.nsb                 { scrollbar-width: none; }                   /* без скроллбара */
+.nsb::-webkit-scrollbar { width: 0; height: 0; }
