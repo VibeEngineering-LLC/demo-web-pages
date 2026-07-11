@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AtomSpectra Waterfall — открытые инструменты для гамма-спектрометрии</title>
+<title>SpectraWaterfall — открытые инструменты для гамма-спектрометрии</title>
 <meta name="description" content="Пять открытых инструментов для гамма-спектрометрии: WiFi-шлюз ESP32-S3, просмотрщик водопада, рекордер записи, прошивальщик плат, USB-диагностика. Автономная работа от павербанка.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -55,7 +55,7 @@
   header{border-bottom:1px solid var(--border-soft);padding:18px 0;}
   .head-row{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;}
   .brand{display:flex;align-items:center;gap:11px;}
-  .brand .logo{width:42px;height:42px;border-radius:10px;background:#fff;padding:2px;flex:none;display:block;}
+  .brand .logo{width:58px;height:58px;border-radius:12px;background:#fff;padding:2px;flex:none;display:block;}
   .brand .logo img{width:100%;height:100%;display:block;}
   .brand h1{font-size:18px;font-weight:700;}
   .brand .sub{font-size:13.5px;color:var(--muted);border-left:1px solid var(--border);padding-left:12px;margin-left:2px;}
@@ -245,7 +245,7 @@
   <div class="wrap head-row">
     <div class="brand">
       <a class="logo" href="https://github.com/VibeEngineering-LLC" target="_blank" rel="noopener"><img src="img/ve-logo.png" alt="Логотип VibeEngineering LLC" width="42" height="42"></a>
-      <h1>AtomSpectra Waterfall</h1>
+      <h1>SpectraWaterfall</h1>
       <span class="sub">открытые инструменты для гамма-спектрометрии</span>
     </div>
     <div class="head-links">
@@ -321,7 +321,7 @@
         </div>
         <div class="card-body">
           <div class="card-top"><h3>atomspectra-waterfall-esp32</h3><span class="role-tag">прошивка · ESP32-S3</span></div>
-          <p class="desc">Сердце комплекта: плата ESP32-S3 подключается к спектрометру по USB (OTG Host) и заменяет телефон или ПК — спектр смотрят в браузере с любого устройства в той же сети. Web UI показывает живой 8192-канальный спектр с маркерами линий и мощностью дозы, водопад накоплений и мониторинг платы; в поле шлюз сам поднимает точку доступа и работает от павербанка. Накопленное хранится на flash (до ~400 спектров) и выгружается прямо из браузера в форматах BecqMoni, InterSpec, N42.42 и ЛСРМ .spe. Для десктопного ПО открыт TCP-мост (порт 8234): BecqMoni или wf-recorder получают поток так, будто прибор подключён напрямую.</p>
+          <p class="desc">Сердце комплекта: плата ESP32-S3 подключается к спектрометру по USB (OTG Host) и заменяет телефон или ПК — спектр смотрят в браузере с любого устройства в той же сети. Web UI показывает живой 8192-канальный спектр с маркерами линий и мощностью дозы, водопад накоплений и мониторинг платы; в поле шлюз сам поднимает точку доступа и работает от павербанка. Накопленное хранится на flash и выгружается прямо из браузера в форматах BecqMoni, InterSpec, N42.42 и ЛСРМ .spe. Для десктопного ПО открыт TCP-мост (порт 8234): BecqMoni или wf-recorder получают поток так, будто прибор подключён напрямую.</p>
           <div class="meta">
             <span><span class="ver">firmware-v1.1.2</span><span class="date">11.07.2026</span></span>
             <span class="links">
@@ -371,7 +371,7 @@
       <div class="card" id="c-flasher">
         <div class="shot contain">
           <img loading="lazy" src="img/flasher.png"
-               alt="Окно AtomSpectra Waterfall Flasher 0.2.2: выбор проекта и COM-порта, загруженная прошивка firmware-v1.1.2, кнопка Установить">
+               alt="Окно флешера v0.2.2: выбор проекта и COM-порта, загруженная прошивка firmware-v1.1.2, кнопка Установить">
         </div>
         <div class="card-body">
           <div class="card-top"><h3>atomspectra-waterfall-esp32-flasher</h3><span class="role-tag">desktop · Windows / Python</span></div>
