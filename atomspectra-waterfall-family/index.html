@@ -214,6 +214,25 @@
   .callout p{margin:0;font-size:13.5px;color:var(--text-dim);}
   .callout strong{color:var(--text);}
 
+  /* слайдер Web UI / водопадов */
+  .slider{margin:22px auto 0;max-width:980px;}
+  .slides{position:relative;border:1px solid var(--border);border-radius:var(--radius);background:var(--panel);overflow:hidden;}
+  .slide{display:none;margin:0;}
+  .slide.active{display:block;}
+  .slide img{width:100%;max-height:620px;object-fit:contain;display:block;cursor:zoom-in;background:var(--panel);}
+  .slide figcaption{font-size:12.5px;color:var(--muted);padding:10px 14px;border-top:1px solid var(--border-soft);text-align:center;}
+  .slider-nav{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:12px;}
+  .s-btn{background:var(--panel);border:1px solid var(--border);color:var(--text-dim);border-radius:100px;width:34px;height:34px;font-size:18px;line-height:1;cursor:pointer;}
+  .s-btn:hover{border-color:var(--accent-border);color:var(--text);}
+  .dots{display:flex;gap:8px;}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--border);border:none;cursor:pointer;padding:0;}
+  .dot.on{background:var(--accent);}
+  /* лайтбокс */
+  .lb{position:fixed;inset:0;background:rgba(4,7,9,.93);display:none;align-items:center;justify-content:center;z-index:100;padding:28px;cursor:zoom-out;}
+  .lb.open{display:flex;}
+  .lb img{max-width:96vw;max-height:90vh;object-fit:contain;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.6);}
+  .lb .lb-cap{position:fixed;bottom:12px;left:0;right:0;text-align:center;color:#9aa5b0;font-size:13px;pointer-events:none;}
+  .shot img{cursor:zoom-in;}
   footer{border-top:1px solid var(--border-soft);padding:22px 0 34px;}
   .foot-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12.5px;color:var(--muted);}
   footer a:hover{color:var(--accent);}
@@ -398,25 +417,34 @@
       <div class="flow-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h12M9 3l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <div class="flow-node"><span class="k">Анализ</span><span class="v">waterfall-viewer</span><span class="d">3D/2D спектрограмма, нуклиды</span></div>
     </div>
-    <div style="margin:22px auto 0;max-width:960px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;">
-      <figure style="margin:0;">
-        <div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--panel);">
-          <img loading="lazy" src="img/web-waterfall.jpg" style="width:100%;display:block;"
-               alt="Вкладка «Водопад» Web UI шлюза: спектрограмма в палитре Turbo с маркерами линий, запись на flash, срез спектра">
-        </div>
-        <figcaption style="font-size:12.5px;color:var(--muted);margin-top:8px;text-align:center;">
-          Вкладка «Водопад»: спектрограмма на плате, экспорт .n42 / .aswf.
-        </figcaption>
-      </figure>
-      <figure style="margin:0;">
-        <div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--panel);">
-          <img loading="lazy" src="img/web-monitor.jpg" style="width:100%;display:block;"
-               alt="Вкладка «Мониторинг» Web UI шлюза: текущий и средний CPS с погрешностями, график по интервалам, таблица отсчётов, выгрузка CSV">
-        </div>
-        <figcaption style="font-size:12.5px;color:var(--muted);margin-top:8px;text-align:center;">
-          Вкладка «Мониторинг»: CPS по интервалам с погрешностями, выгрузка CSV.
-        </figcaption>
-      </figure>
+    <div class="slider" id="webui-slider" aria-roledescription="карусель" aria-label="Вкладки Web UI шлюза">
+      <div class="slides">
+        <figure class="slide active">
+          <img src="img/web-spectrum.jpg" alt="Вкладка «Спектр» Web UI шлюза: живой спектр с маркерами линий Th-232 и K-40, мощность дозы, экспорт XML/CSV/N42/SPE">
+          <figcaption>Вкладка «Спектр»: живой спектр, маркеры линий Th-232 / K-40, мощность дозы, экспорт в 4 формата.</figcaption>
+        </figure>
+        <figure class="slide">
+          <img src="img/web-waterfall.jpg" alt="Вкладка «Водопад» Web UI шлюза: спектрограмма в палитре Turbo с маркерами линий, запись на flash, срез спектра" loading="lazy">
+          <figcaption>Вкладка «Водопад»: спектрограмма на плате, запись во flash, экспорт .n42 / .aswf.</figcaption>
+        </figure>
+        <figure class="slide">
+          <img src="img/web-monitor.jpg" alt="Вкладка «Мониторинг» Web UI шлюза: текущий и средний CPS с погрешностями, график по интервалам, таблица отсчётов, выгрузка CSV" loading="lazy">
+          <figcaption>Вкладка «Мониторинг»: CPS по интервалам с погрешностями, выгрузка CSV.</figcaption>
+        </figure>
+        <figure class="slide">
+          <img src="img/viewer-ui.jpg" alt="waterfall-viewer: 3D-поверхность Время × Энергия × Отсчёты с панелями срезов и сечений" loading="lazy">
+          <figcaption>waterfall-viewer: 3D-водопад суточной записи, панели срезов / сечений / регулировок.</figcaption>
+        </figure>
+        <figure class="slide">
+          <img src="img/viewer-2d.jpg" alt="waterfall-viewer: 2D-карта Время × Энергия с выборкой по энергоокну Cs-137" loading="lazy">
+          <figcaption>waterfall-viewer: 2D-карта Время×Энергия, энергоокно Cs-137 662 кэВ, полоса ROI.</figcaption>
+        </figure>
+      </div>
+      <div class="slider-nav">
+        <button type="button" class="s-btn" data-dir="-1" aria-label="Предыдущий кадр">‹</button>
+        <div class="dots" role="tablist"></div>
+        <button type="button" class="s-btn" data-dir="1" aria-label="Следующий кадр">›</button>
+      </div>
     </div>
   </section>
 
@@ -473,6 +501,58 @@
     <span><a href="https://github.com/VibeEngineering-LLC" target="_blank" rel="noopener">github.com/VibeEngineering-LLC</a></span>
   </div>
 </footer>
+
+<div class="lb" id="lightbox" role="dialog" aria-label="Просмотр изображения">
+  <img id="lb-img" src="" alt="">
+  <div class="lb-cap" id="lb-cap"></div>
+</div>
+
+<script>
+(function(){
+  var slider=document.getElementById('webui-slider');
+  var slides=slider.querySelectorAll('.slide');
+  var dotsBox=slider.querySelector('.dots');
+  var idx=0,timer=null;
+  slides.forEach(function(_,i){
+    var d=document.createElement('button');
+    d.type='button';d.className='dot'+(i===0?' on':'');
+    d.setAttribute('aria-label','Кадр '+(i+1));
+    d.addEventListener('click',function(){go(i);restart();});
+    dotsBox.appendChild(d);
+  });
+  var dots=dotsBox.querySelectorAll('.dot');
+  function go(i){
+    slides[idx].classList.remove('active');dots[idx].classList.remove('on');
+    idx=(i+slides.length)%slides.length;
+    slides[idx].classList.add('active');dots[idx].classList.add('on');
+  }
+  slider.querySelectorAll('.s-btn').forEach(function(b){
+    b.addEventListener('click',function(){go(idx+parseInt(b.dataset.dir,10));restart();});
+  });
+  var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function start(){if(!reduced){timer=setInterval(function(){go(idx+1);},7000);}}
+  function stop(){if(timer){clearInterval(timer);timer=null;}}
+  function restart(){stop();start();}
+  slider.addEventListener('mouseenter',stop);
+  slider.addEventListener('mouseleave',start);
+  start();
+
+  // лайтбокс: клик по кадру слайдера или скрину карточки
+  var lb=document.getElementById('lightbox'),lbImg=document.getElementById('lb-img'),lbCap=document.getElementById('lb-cap');
+  function openLb(img){
+    lbImg.src=img.src;lbImg.alt=img.alt;
+    var fc=img.closest('figure');var c=fc?fc.querySelector('figcaption'):null;
+    lbCap.textContent=c?c.textContent:(img.alt||'');
+    lb.classList.add('open');stop();
+  }
+  function closeLb(){lb.classList.remove('open');lbImg.src='';start();}
+  document.querySelectorAll('.slide img, .shot img').forEach(function(img){
+    img.addEventListener('click',function(){openLb(img);});
+  });
+  lb.addEventListener('click',closeLb);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&lb.classList.contains('open'))closeLb();});
+})();
+</script>
 
 </body>
 </html>
