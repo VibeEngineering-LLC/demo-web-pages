@@ -119,6 +119,39 @@
     color:var(--muted);font-family:var(--mono);font-size:12px;
   }
   .shot .ph svg{width:34px;height:34px;opacity:.6;}
+  /* мокап окна флешера (воспроизведение реального UI v0.2.2) */
+  .flasher-shot{display:flex;align-items:center;justify-content:center;padding:14px;background:var(--panel-2);}
+  .fw{
+    width:100%;max-width:420px;background:#f3f3f3;border-radius:8px;overflow:hidden;
+    border:1px solid #c9ccd1;box-shadow:0 8px 22px rgba(0,0,0,.35);
+    font-family:"Segoe UI",var(--sans);color:#1a1a1a;font-size:11px;line-height:1.35;
+  }
+  .fw-title{display:flex;align-items:center;justify-content:space-between;padding:7px 10px 5px;background:#f3f3f3;}
+  .fw-title .fw-t{font-size:10.5px;color:#1a1a1a;}
+  .fw-btns{display:flex;gap:10px;color:#444;font-style:normal;font-size:10px;}
+  .fw-btns i{font-style:normal;}
+  .fw-body{padding:8px 12px 12px;display:flex;flex-direction:column;gap:7px;}
+  .fw-row{display:flex;align-items:center;gap:8px;}
+  .fw-l{color:#333;flex:none;}
+  .fw-select{
+    flex:1;display:flex;align-items:center;justify-content:space-between;gap:8px;
+    background:#fff;border:1px solid #b8bcc2;border-radius:4px;padding:4px 8px;color:#1a1a1a;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;
+  }
+  .fw-select i{font-style:normal;color:#666;flex:none;}
+  .fw-mini{background:#fdfdfd;border:1px solid #b8bcc2;border-radius:4px;padding:4px 9px;flex:none;}
+  .fw-ok{color:#0a7a3d;}
+  .fw-check{color:#333;}
+  .fw-box{width:11px;height:11px;border:1px solid #8a8f96;border-radius:2px;background:#fff;flex:none;}
+  .fw-install{
+    text-align:center;background:#fdfdfd;border:1px solid #b8bcc2;border-radius:4px;
+    padding:9px;font-size:12px;font-weight:600;color:#1a1a1a;
+  }
+  .fw-status{text-align:right;color:#555;border-top:1px solid #d8dbdf;padding-top:4px;font-size:10px;}
+  .fw-log{
+    background:#fff;border:1px solid #c9ccd1;border-radius:4px;padding:7px 9px;
+    font-family:var(--mono);font-size:10px;color:#222;min-height:44px;
+  }
   .card-body{padding:16px 18px 15px;display:flex;flex-direction:column;gap:9px;flex:1;}
   .card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
   .card-top h3{font-family:var(--mono);font-size:14.5px;font-weight:600;letter-spacing:-.01em;overflow-wrap:anywhere;}
@@ -307,10 +340,18 @@
       </div>
 
       <div class="card" id="c-flasher">
-        <div class="shot">
-          <div class="ph" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M12 17.5h.01M10 5.5h4" stroke-linecap="round"/><path d="M3.5 9v6M20.5 9v6" stroke-linecap="round"/></svg>
-            <span>UI-прошивальщик · COM-порт → плата</span>
+        <div class="shot flasher-shot" role="img" aria-label="Окно AtomSpectra Waterfall Flasher 0.2.2: выбор проекта и COM-порта, кнопка Установить">
+          <div class="fw">
+            <div class="fw-title"><span class="fw-t">AtomSpectra Waterfall Flasher 0.2.2</span><span class="fw-btns"><i>–</i><i>□</i><i>×</i></span></div>
+            <div class="fw-body">
+              <div class="fw-row"><span class="fw-l">Проект:</span><span class="fw-select">AtomSpectra (водопад ESP32-S3)<i>▾</i></span></div>
+              <div class="fw-row fw-ok">Прошивка: firmware-v1.1.2 (загружено)</div>
+              <div class="fw-row"><span class="fw-l">COM-порт:</span><span class="fw-select">COM16 — USB-Enhanced-SERIAL CH343 (COM16)<i>▾</i></span><span class="fw-mini">Обновить</span></div>
+              <div class="fw-row fw-check"><span class="fw-box"></span>Полный сброс перед прошивкой (стереть настройки WiFi, ~30-60с дольше)</div>
+              <div class="fw-install">Установить</div>
+              <div class="fw-status">готов</div>
+              <div class="fw-log">[ports] показано: 2 (всего 2)</div>
+            </div>
           </div>
         </div>
         <div class="card-body">
