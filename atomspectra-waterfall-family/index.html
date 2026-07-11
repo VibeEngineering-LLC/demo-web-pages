@@ -264,7 +264,7 @@
   <div class="intro">
     <figure class="kit" style="margin:0;">
       <img src="https://raw.githubusercontent.com/VibeEngineering-LLC/atomspectra-waterfall-esp32/main/images/assembly.jpg"
-           alt="Комплект в сборе: спектрометр Atom Spectra, плата ESP32-S3 и павербанк; USB-тестер показывает потребление около 1 Вт" fetchpriority="high">
+           alt="Комплект в сборе: гамма-спектрометр, плата ESP32-S3 и павербанк; USB-тестер показывает потребление около 1 Вт" fetchpriority="high">
       <figcaption class="cap">
         <strong>Комплект в сборе:</strong> спектрометр + ESP32-S3 + павербанк.
         Питание больше не привязано к телефону или ПК — весь комплект потребляет
@@ -285,7 +285,7 @@
       </a>
       <a class="eco-item" href="#c-viewer">
         <span class="no">02</span>
-        <span class="body"><span class="name">waterfall-viewer</span><br><span class="role">просмотрщик спектрограмм — 3D/2D, срезы, нуклиды, данные прибора</span></span>
+        <span class="body"><span class="name">waterfall-viewer</span><br><span class="role">просмотрщик спектрограмм — 3D/2D, срезы, нуклиды</span></span>
         <span class="ver">v0.1.10</span>
       </a>
       <a class="eco-item" href="#c-recorder">
@@ -339,7 +339,7 @@
         </div>
         <div class="card-body">
           <div class="card-top"><h3>waterfall-viewer</h3><span class="role-tag">desktop · Windows / Python</span></div>
-          <p class="desc">Анализ длительных записей: суточный лог разворачивается в 3D-поверхность или 2D-карту «время × энергия», где короткий всплеск активности или дрейф фона виден сразу — без перебора сотен спектров вручную. Любой момент записи раскрывается в обычный спектр, любая энергетическая линия — в график её хода во времени; выделенный ROI сверяется с библиотекой 21 нуклида. Читает .aswf (v1–v5), RadiaCode .rcspg и N42.42; многочасовые файлы грузятся потоково, без загрузки целиком в память. Вкладка «Прибор»: графики мощности дозы и температуры детектора, GPS-трек, экспорт CSV; при открытии файла — отчёт целостности с проверкой CRC32. Наложение линии температуры на 2D-карту.</p>
+          <p class="desc">Анализ длительных записей: суточный лог разворачивается в 3D-поверхность или 2D-карту «время × энергия», где короткий всплеск активности или дрейф фона виден сразу — без перебора сотен спектров вручную. Любой момент записи раскрывается в обычный спектр, любая энергетическая линия — в график её хода во времени; выделенный ROI сверяется с библиотекой 21 нуклида. Читает .aswf, RadiaCode .rcspg и N42.42; многочасовые файлы грузятся потоково, без загрузки целиком в память.</p>
           <div class="meta">
             <span><span class="ver">v0.1.10</span><span class="date">12.07.2026</span></span>
             <span class="links">
@@ -410,11 +410,11 @@
   <section id="architecture">
     <div class="section-head"><h2>Как связаны компоненты</h2></div>
     <div class="flow">
-      <div class="flow-node"><span class="k">Прибор</span><span class="v">KB Radar Atom Spectra</span><span class="d">8192 канала, USB (shproto)</span></div>
+      <div class="flow-node"><span class="k">Прибор</span><span class="v">Гамма-спектрометр</span><span class="d">8192 канала, USB (shproto)</span></div>
       <div class="flow-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h12M9 3l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <div class="flow-node hub"><span class="k">Шлюз</span><span class="v">atomspectra-waterfall-esp32</span><span class="d">ESP32-S3, USB OTG Host, WiFi · питание от павербанка</span></div>
       <div class="flow-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h12M9 3l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <div class="flow-node"><span class="k">Приём</span><span class="v">Браузер · TCP:8234 · wf-recorder</span><span class="d">Web UI, BecqMoni/AtomSpectra, pull-клиент</span></div>
+      <div class="flow-node"><span class="k">Приём</span><span class="v">Браузер · TCP:8234 · wf-recorder</span><span class="d">Web UI, BecqMoni, pull-клиент</span></div>
       <div class="flow-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h12M9 3l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <div class="flow-node"><span class="k">Анализ</span><span class="v">waterfall-viewer</span><span class="d">3D/2D спектрограмма, нуклиды</span></div>
     </div>
