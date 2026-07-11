@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AtomSpectra Waterfall — инструменты для гамма-спектрометра KB Radar Atom Spectra</title>
-<meta name="description" content="Четыре открытых инструмента для гамма-спектрометра KB Radar Atom Spectra: WiFi-шлюз ESP32-S3, просмотрщик водопада, рекордер записи, прошивальщик плат. Автономная работа от павербанка.">
+<meta name="description" content="Пять открытых инструментов для гамма-спектрометра KB Radar Atom Spectra: WiFi-шлюз ESP32-S3, просмотрщик водопада, рекордер записи, прошивальщик плат, USB-диагностика. Автономная работа от павербанка.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
@@ -255,7 +255,7 @@
 
     <div class="eco">
       <div class="eco-head">
-        <h2>Экосистема — 4 репозитория</h2>
+        <h2>Экосистема — 5 репозиториев</h2>
         <a href="#toolkit">подробнее ↓</a>
       </div>
       <a class="eco-item" href="#c-esp32">
@@ -277,6 +277,11 @@
         <span class="no">04</span>
         <span class="body"><span class="name">atomspectra-waterfall-esp32-flasher</span><br><span class="role">прошивальщик плат — прошивка с GitHub Releases по USB</span></span>
         <span class="ver">v0.2.2</span>
+      </a>
+      <a class="eco-item" href="#c-diag">
+        <span class="no">05</span>
+        <span class="body"><span class="name">esp32s3-diag</span><br><span class="role">диагностика USB Host — «рентген платы» при проблемах связи</span></span>
+        <span class="ver">v0.2.0</span>
       </a>
     </div>
   </div>
@@ -362,6 +367,24 @@
             <span class="links">
               <a href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32-flasher" target="_blank" rel="noopener">репозиторий</a>
               <a href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32-flasher/releases" target="_blank" rel="noopener">релизы</a>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="c-diag">
+        <div class="shot">
+          <img loading="lazy" src="https://raw.githubusercontent.com/VibeEngineering-LLC/esp32s3-diag/main/docs/screenshots/03-web-diagnostics.png"
+               alt="Web UI esp32s3-diag: шесть этапов диагностики Boot → WiFi → USB Host → Enum → Detect → Handshake со статусами OK/FTDI/FOUND">
+        </div>
+        <div class="card-body">
+          <div class="card-top"><h3>esp32s3-diag</h3><span class="role-tag">прошивка · ESP32-S3 + флешер</span></div>
+          <p class="desc">«Рентген платы» для разбора проблем связи прибор↔шлюз: диагностическая прошивка + one-click флешер. Пошаговая цепочка Boot → WiFi → USB Host → Enum → Detect → Handshake в Web UI, чтение дескрипторов/endpoints, FTDI vendor init, SHPROTO. Перед тестами обязателен backup настроек прибора (см. README); после — возврат штатной прошивки флешером.</p>
+          <div class="meta">
+            <span><span class="ver">v0.2.0</span><span class="date">08.07.2026</span></span>
+            <span class="links">
+              <a href="https://github.com/VibeEngineering-LLC/esp32s3-diag" target="_blank" rel="noopener">репозиторий</a>
+              <a href="https://github.com/VibeEngineering-LLC/esp32s3-diag/releases" target="_blank" rel="noopener">релизы</a>
             </span>
           </div>
         </div>
