@@ -321,7 +321,7 @@
         </div>
         <div class="card-body">
           <div class="card-top"><h3>atomspectra-waterfall-esp32</h3><span class="role-tag">прошивка · ESP32-S3</span></div>
-          <p class="desc">Плата подключается к спектрометру по USB (OTG Host) и отдаёт 8192-канальный спектр в браузер в реальном времени. Экспорт BecqMoni / InterSpec / N42.42 / ЛСРМ, TCP-мост (порт 8234) для десктопного ПО, до ~400 спектров на flash, полевой режим точки доступа.</p>
+          <p class="desc">Сердце комплекта: плата ESP32-S3 подключается к спектрометру по USB (OTG Host) и заменяет телефон или ПК — спектр смотрят в браузере с любого устройства в той же сети. Web UI показывает живой 8192-канальный спектр с маркерами линий и мощностью дозы, водопад накоплений и мониторинг платы; в поле шлюз сам поднимает точку доступа и работает от павербанка. Накопленное хранится на flash (до ~400 спектров) и выгружается прямо из браузера в форматах BecqMoni, InterSpec, N42.42 и ЛСРМ .spe. Для десктопного ПО открыт TCP-мост (порт 8234): BecqMoni или wf-recorder получают поток так, будто прибор подключён напрямую.</p>
           <div class="meta">
             <span><span class="ver">firmware-v1.1.2</span><span class="date">11.07.2026</span></span>
             <span class="links">
@@ -357,7 +357,7 @@
         </div>
         <div class="card-body">
           <div class="card-top"><h3>wf-recorder</h3><span class="role-tag">desktop · Windows / stdlib</span></div>
-          <p class="desc">Pull-клиент непрерывной записи: забирает сегменты водопада со шлюза (на скриншоте — вкладка «Водопад» Web UI) и сшивает в единый .aswf. Сегмент удаляется с платы только после fsync на диск; целостность — CRC32 + порядковые номера; лог температуры в CSV.</p>
+          <p class="desc">Страховка длинных сессий: клиент на ПК периодически забирает сегменты водопада со шлюза и сшивает их в единый .aswf — суточная запись не зависит от открытой вкладки браузера и переживает обрывы WiFi. Сегмент удаляется с платы только после подтверждённой записи на диск (fsync); целостность контролируют CRC32 и порядковые номера, поэтому пропуск в записи виден сразу, а не при разборе данных. Параллельно ведёт лог температуры платы в CSV; на странице релизов — готовый .exe без зависимостей.</p>
           <div class="meta">
             <span><span class="ver">v0.2.1</span><span class="date">11.07.2026</span></span>
             <span class="links">
@@ -375,7 +375,7 @@
         </div>
         <div class="card-body">
           <div class="card-top"><h3>atomspectra-waterfall-esp32-flasher</h3><span class="role-tag">desktop · Windows / Python</span></div>
-          <p class="desc">Прошивальщик плат ESP32 без командной строки: выбор проекта и COM-порта из списка, актуальная прошивка автоматически загружается с GitHub Releases и заливается по USB. Поддерживает 4 проекта: AtomSpectra, AtomFast, Radex, RadonEye.</p>
+          <p class="desc">Убирает главный барьер — прошивку платы: вместо esptool и командной строки — окно с двумя списками. Флешер сам находит COM-порт, скачивает актуальный релиз прошивки с GitHub и заливает его по USB в несколько кликов; обновление на новую версию — та же процедура. Один инструмент обслуживает четыре проекта: AtomSpectra, AtomFast, Radex, RadonEye.</p>
           <div class="meta">
             <span><span class="ver">v0.2.2</span><span class="date">10.07.2026</span></span>
             <span class="links">
@@ -393,7 +393,7 @@
         </div>
         <div class="card-body">
           <div class="card-top"><h3>esp32s3-diag</h3><span class="role-tag">прошивка · ESP32-S3 + флешер</span></div>
-          <p class="desc">«Рентген платы» для разбора проблем связи прибор↔шлюз: диагностическая прошивка + one-click флешер. Пошаговая цепочка Boot → WiFi → USB Host → Enum → Detect → Handshake в Web UI, чтение дескрипторов/endpoints, FTDI vendor init, SHPROTO. Перед тестами обязателен backup настроек прибора (см. README); после — возврат штатной прошивки флешером.</p>
+          <p class="desc">«Рентген платы» на случай, когда прибор и шлюз не видят друг друга: диагностическая прошивка прогоняет цепочку Boot → WiFi → USB Host → Enum → Detect → Handshake и показывает в Web UI, на каком именно звене обрывается связь. Читает USB-дескрипторы и endpoints, выполняет FTDI vendor init и пробует SHPROTO-рукопожатие — вместо гадания по симптомам получается точный диагноз. Ставится one-click флешером; перед тестами обязателен backup настроек прибора (см. README), после — возврат штатной прошивки тем же флешером.</p>
           <div class="meta">
             <span><span class="ver">v0.2.0</span><span class="date">08.07.2026</span></span>
             <span class="links">
