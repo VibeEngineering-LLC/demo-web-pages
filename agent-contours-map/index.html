@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contour Interaction Map — роли контуров и их взаимодействие</title>
+<style>
+  :root{
+    --bg:#eef1f7; --surface:#ffffff; --surface-2:#f7f9fd; --ink:#16202e; --muted:#5a6b82;
+    --line:#d6dded; --line-strong:#c0cadd;
+    --cyan:#0d7d94; --cyan-soft:#0d7d941a; --amber:#b06f0c; --amber-soft:#b06f0c1a;
+    --green:#2c7d4e; --green-soft:#2c7d4e1a; --violet:#6a4bbd; --violet-soft:#6a4bbd1a;
+    --slate:#4a5a72; --slate-soft:#4a5a721a;
+    --shadow:0 1px 2px #16202e0d, 0 8px 24px -12px #16202e1f;
+    --mono:ui-monospace,"Cascadia Code","SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0c121c; --surface:#131c2a; --surface-2:#0f1826; --ink:#e7edf7; --muted:#90a1ba;
+      --line:#233247; --line-strong:#31445f;
+      --cyan:#48c9dd; --cyan-soft:#48c9dd1f; --amber:#f0b445; --amber-soft:#f0b4451f;
+      --green:#4ac281; --green-soft:#4ac2811f; --violet:#a98bf0; --violet-soft:#a98bf01f;
+      --slate:#8ea3c0; --slate-soft:#8ea3c01f;
+      --shadow:0 1px 2px #0006, 0 14px 34px -14px #0009;
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#eef1f7; --surface:#ffffff; --surface-2:#f7f9fd; --ink:#16202e; --muted:#5a6b82;
+    --line:#d6dded; --line-strong:#c0cadd;
+    --cyan:#0d7d94; --cyan-soft:#0d7d941a; --amber:#b06f0c; --amber-soft:#b06f0c1a;
+    --green:#2c7d4e; --green-soft:#2c7d4e1a; --violet:#6a4bbd; --violet-soft:#6a4bbd1a;
+    --slate:#4a5a72; --slate-soft:#4a5a721a;
+    --shadow:0 1px 2px #16202e0d, 0 8px 24px -12px #16202e1f;
+  }
+  :root[data-theme="dark"]{
+    --bg:#0c121c; --surface:#131c2a; --surface-2:#0f1826; --ink:#e7edf7; --muted:#90a1ba;
+    --line:#233247; --line-strong:#31445f;
+    --cyan:#48c9dd; --cyan-soft:#48c9dd1f; --amber:#f0b445; --amber-soft:#f0b4451f;
+    --green:#4ac281; --green-soft:#4ac2811f; --violet:#a98bf0; --violet-soft:#a98bf01f;
+    --slate:#8ea3c0; --slate-soft:#8ea3c01f;
+    --shadow:0 1px 2px #0006, 0 14px 34px -14px #0009;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:44px 44px;background-position:center top}
+  body::before{content:"";position:fixed;inset:0;background:
+    radial-gradient(120% 80% at 50% -10%, transparent 40%, var(--bg) 100%);pointer-events:none;z-index:0}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 22px;position:relative;z-index:1}
+
+  header.top{padding:38px 0 10px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--cyan);display:flex;align-items:center;gap:10px;margin:0 0 18px}
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--cyan);display:inline-block}
+  h1{font-size:clamp(30px,5vw,50px);line-height:1.04;margin:0 0 16px;letter-spacing:-.02em;
+    font-weight:800;text-wrap:balance;max-width:17ch}
+  h1 .hl{color:var(--cyan)}
+  .lede{font-size:clamp(15px,2vw,18px);color:var(--muted);max-width:66ch;margin:0}
+  .note{margin:18px 0 0;font-family:var(--mono);font-size:11.5px;color:var(--muted);
+    border-left:2px solid var(--amber);padding:6px 0 6px 12px;max-width:74ch;letter-spacing:.01em}
+  .crumbs{margin:14px 0 0;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+
+  h2.sec{font-size:13px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.16em;
+    color:var(--muted);margin:38px 0 16px;display:flex;align-items:center;gap:10px}
+  h2.sec::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  /* Diagram */
+  .diagram{border:1px solid var(--line);border-radius:14px;background:var(--surface);
+    box-shadow:var(--shadow);padding:10px;overflow-x:auto}
+  .diagram svg{display:block;min-width:720px;width:100%;height:auto}
+  svg .box{fill:var(--surface);stroke:var(--line-strong);stroke-width:1.5}
+  svg .op{stroke:var(--cyan);stroke-width:2}
+  svg .rev{stroke:var(--violet);stroke-width:2}
+  svg .bus{fill:var(--slate-soft);stroke:var(--slate);stroke-width:1.5}
+  svg .exec{stroke:var(--amber)}
+  svg .dev{stroke:var(--green)}
+  svg .srv{stroke:var(--cyan)}
+  svg .edge{stroke:var(--line-strong);stroke-width:1.5;fill:none}
+  svg .edge.dash{stroke-dasharray:5 5}
+  svg .flow{stroke:var(--cyan);stroke-width:1.6;fill:none;stroke-dasharray:5 5}
+  svg text{font-family:var(--mono)}
+  svg .cap{fill:var(--ink);font-size:13px;font-weight:700}
+  svg .sub{fill:var(--muted);font-size:10px}
+  svg .elbl{fill:var(--muted);font-size:9.5px}
+  .dlegend{display:flex;flex-wrap:wrap;gap:14px 20px;margin:14px 2px 0;font-family:var(--mono);
+    font-size:11.5px;color:var(--muted)}
+  .dlegend span{display:inline-flex;align-items:center;gap:7px}
+  .dlegend .sw{width:22px;height:0;border-top:2px solid;flex:none}
+  .dlegend .dot{width:11px;height:11px;border-radius:3px;flex:none}
+
+  /* Roster */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:600px){.grid{grid-template-columns:1fr}}
+  .card{border:1px solid var(--line);border-radius:13px;background:var(--surface);box-shadow:var(--shadow);
+    padding:16px 17px;display:flex;flex-direction:column;gap:10px;transition:.18s border-color;position:relative}
+  .card:hover{border-color:var(--c,var(--cyan))}
+  .card .ch{display:flex;align-items:center;gap:11px}
+  .card .mk{width:38px;height:38px;border-radius:10px;flex:none;display:grid;place-items:center;
+    font-family:var(--mono);font-weight:700;font-size:13px;background:var(--c-soft,var(--cyan-soft));color:var(--c,var(--cyan))}
+  .card h3{margin:0;font-size:15px;letter-spacing:-.01em;flex:1 1 auto}
+  .card .kind{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;
+    padding:3px 8px;border-radius:5px;font-weight:600;background:var(--c-soft,var(--cyan-soft));color:var(--c,var(--cyan))}
+  .card .lab{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.13em;color:var(--muted);
+    margin:2px 0 2px}
+  .card ul{margin:0;padding-left:16px;font-size:12.7px;color:var(--ink);line-height:1.5}
+  .card ul li{margin:2px 0}
+  .card .zone{font-size:12.5px;color:var(--muted)}
+  .card .io{border-top:1px solid var(--line);padding-top:9px;margin-top:2px;font-size:12.3px;color:var(--muted)}
+  .card .io b{color:var(--ink);font-weight:600}
+
+  /* Rules */
+  .rules{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  @media(max-width:720px){.rules{grid-template-columns:1fr}}
+  .rule{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:15px 17px;box-shadow:var(--shadow)}
+  .rule .rn{font-family:var(--mono);font-size:11px;color:var(--cyan);letter-spacing:.1em}
+  .rule b{display:block;font-size:14.5px;margin:7px 0 6px}
+  .rule p{margin:0;font-size:12.7px;color:var(--muted);line-height:1.5}
+
+  footer{border-top:1px solid var(--line);margin-top:36px;padding:22px 0 46px;font-family:var(--mono);
+    font-size:11.5px;color:var(--muted);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+  footer .san{color:var(--amber)}
+  a{color:var(--cyan);text-decoration:none} a:hover{text-decoration:underline}
+  .tbtn{font-family:var(--mono);font-size:12px;border:1px solid var(--line-strong);background:var(--surface);
+    color:var(--muted);border-radius:999px;padding:7px 12px;cursor:pointer;transition:.16s;position:fixed;
+    top:16px;right:16px;z-index:9}
+  .tbtn:hover{border-color:var(--cyan);color:var(--ink)}
+  :focus-visible{outline:2px solid var(--cyan);outline-offset:2px;border-radius:6px}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<button class="tbtn" id="theme" aria-label="Переключить тему">◐ тема</button>
+<div class="wrap">
+
+  <header class="top">
+    <p class="eyebrow">Multi-Agent Configuration · Contour Interaction</p>
+    <h1>Роли контуров и <span class="hl">как они взаимодействуют</span></h1>
+    <p class="lede">Каждый агент — отдельная сессия Claude Code с одной зоной ответственности.
+      Контуры не пишут в чужие зоны: пересечение решается передачей задания владельцу, а необратимые
+      действия проходят через независимого reviewer'а и оператора. Ниже — обезличенная модель ролей
+      и потоков между ними.</p>
+    <p class="note">SANITIZED VIEW · роли функциональные, без реальных имён контуров, сетевых адресов,
+      персональных данных, деталей канала координации и периметра безопасности. Показан паттерн, не карта инфраструктуры.</p>
+    <p class="crumbs">Связано: <a href="../multi-agent-config/">инвентарь навыков →</a></p>
+  </header>
+
+  <h2 class="sec">Модель взаимодействия</h2>
+  <div class="diagram">
+    <svg viewBox="0 0 980 600" role="img" aria-label="Диаграмма взаимодействия контуров">
+      <!-- edges first -->
+      <line class="edge" x1="490" y1="92" x2="490" y2="150"/>
+      <text class="elbl" x="500" y="126">gate</text>
+      <line class="edge" x1="490" y1="212" x2="490" y2="268"/>
+      <text class="elbl" x="500" y="244">coordinate</text>
+      <line class="edge dash" x1="640" y1="66" x2="880" y2="66"/>
+      <line class="edge dash" x1="880" y1="66" x2="880" y2="268"/>
+      <text class="elbl" x="700" y="58">direct tasking</text>
+      <!-- bus to contours -->
+      <line class="edge" x1="140" y1="330" x2="140" y2="392"/>
+      <line class="edge" x1="308" y1="330" x2="308" y2="392"/>
+      <line class="edge" x1="476" y1="330" x2="476" y2="392"/>
+      <line class="edge" x1="644" y1="330" x2="644" y2="392"/>
+      <line class="edge" x1="812" y1="330" x2="812" y2="392"/>
+      <line class="edge" x1="900" y1="330" x2="900" y2="392"/>
+      <!-- report arrows up (small) -->
+      <text class="elbl" x="150" y="360">report ↑</text>
+      <!-- cross-zone handoff curve between two contours -->
+      <path class="flow" d="M140 392 C140 470 644 470 644 392"/>
+      <text class="elbl" x="360" y="486">cross-zone handoff = промпт владельцу зоны</text>
+
+      <!-- Operator -->
+      <rect class="box op" x="390" y="30" width="200" height="62" rx="12"/>
+      <text class="cap" x="490" y="58" text-anchor="middle">Operator</text>
+      <text class="sub" x="490" y="76" text-anchor="middle">решения · финальный вердикт</text>
+
+      <!-- Reviewer -->
+      <rect class="box rev" x="360" y="150" width="260" height="62" rx="12"/>
+      <text class="cap" x="490" y="178" text-anchor="middle">Reviewer / Orchestrator</text>
+      <text class="sub" x="490" y="196" text-anchor="middle">надзор · адъюдикация необратимого · actor≠verifier</text>
+
+      <!-- Bus -->
+      <rect class="box bus" x="60" y="268" width="860" height="62" rx="14"/>
+      <text class="cap" x="490" y="296" text-anchor="middle">Канал координации</text>
+      <text class="sub" x="490" y="314" text-anchor="middle">структурированные сообщения между контурами · только системные сбои эскалируются вверх</text>
+
+      <!-- Contours -->
+      <rect class="box dev"  x="80"  y="392" width="120" height="64" rx="11"/>
+      <text class="cap" x="140" y="420" text-anchor="middle" style="font-size:11px">Firmware</text>
+      <text class="sub" x="140" y="437" text-anchor="middle">прошивки/BLE</text>
+
+      <rect class="box exec" x="248" y="392" width="120" height="64" rx="11"/>
+      <text class="cap" x="308" y="420" text-anchor="middle" style="font-size:11px">Hardware-test</text>
+      <text class="sub" x="308" y="437" text-anchor="middle">стенд</text>
+
+      <rect class="box srv"  x="416" y="392" width="120" height="64" rx="11"/>
+      <text class="cap" x="476" y="420" text-anchor="middle" style="font-size:11px">Home-auto</text>
+      <text class="sub" x="476" y="437" text-anchor="middle">телеметрия</text>
+
+      <rect class="box srv"  x="584" y="392" width="120" height="64" rx="11"/>
+      <text class="cap" x="644" y="420" text-anchor="middle" style="font-size:11px">Network</text>
+      <text class="sub" x="644" y="437" text-anchor="middle">шлюз</text>
+
+      <rect class="box dev"  x="752" y="392" width="120" height="64" rx="11"/>
+      <text class="cap" x="812" y="420" text-anchor="middle" style="font-size:11px">Instrument-dev</text>
+      <text class="sub" x="812" y="437" text-anchor="middle">анализ</text>
+
+      <rect class="box srv"  x="840" y="470" width="120" height="64" rx="11"/>
+      <text class="cap" x="900" y="498" text-anchor="middle" style="font-size:11px">Assistant</text>
+      <text class="sub" x="900" y="515" text-anchor="middle">сервис-бот</text>
+      <line class="edge" x1="900" y1="330" x2="900" y2="470"/>
+    </svg>
+    <div class="dlegend">
+      <span><i class="sw" style="border-color:var(--line-strong)"></i>прямая связь (задача / данные)</span>
+      <span><i class="sw" style="border-color:var(--cyan);border-top-style:dashed"></i>передача / handoff</span>
+      <span><i class="dot" style="background:var(--cyan)"></i>оператор + reviewer</span>
+      <span><i class="dot" style="background:var(--slate)"></i>канал координации</span>
+      <span><i class="dot" style="background:var(--amber)"></i>исполнитель</span>
+      <span><i class="dot" style="background:var(--green)"></i>dev-контур</span>
+    </div>
+  </div>
+
+  <h2 class="sec">Роли контуров</h2>
+  <div class="grid" id="grid"></div>
+
+  <h2 class="sec">Правила взаимодействия</h2>
+  <div class="rules">
+    <div class="rule"><div class="rn">R1</div><b>Одна зона — один владелец</b>
+      <p>Контур правит только свою папку/домен. Смежные проекты не трогает даже при сходстве кода
+        (например, два независимых firmware-проекта — взаимные правки запрещены).</p></div>
+    <div class="rule"><div class="rn">R2</div><b>Пересечение → задание владельцу</b>
+      <p>Задача, затрагивающая чужую зону, не выполняется своими руками — даже read-only. Вместо этого
+        формируется промпт-задание для контура-владельца. Никто не выходит за свою колонку.</p></div>
+    <div class="rule"><div class="rn">R3</div><b>Reviewer судит, не исполняет</b>
+      <p>Независимый reviewer проверяет чужие артефакты по факту (actor≠verifier). Необратимое —
+        push / merge / deploy / tag — только по явному «да» оператора. Вердикт ≠ исполнение.</p></div>
+    <div class="rule"><div class="rn">R4</div><b>Вверх — только сбои</b>
+      <p>Контуры шлют reviewer'у по каналу координации лишь системные события (краш делегации, порча
+        реестра, утечка, блокер). Рутинные шаги и статусы не эскалируются — экономия внимания.</p></div>
+    <div class="rule"><div class="rn">R5</div><b>Делегирование вниз</b>
+      <p>Bulk-разбор, шаблонная генерация и суммаризация уходят на локальную модель и фоновых
+        субагентов; контекст оператора и frontier-модель — для решений и синтеза.</p></div>
+    <div class="rule"><div class="rn">R6</div><b>Тройная избыточность</b>
+      <p>Навыки и незаменимые артефакты дублируются в облачном бэкапе, локальном git и на GitHub —
+        восстановление любого контура после сбоя гарантировано.</p></div>
+  </div>
+
+  <footer>
+    <span>Contour Interaction Map · обезличенная модель ролей</span>
+    <span class="san">SANITIZED · без имён, IP, PII и деталей периметра</span>
+  </footer>
+</div>
+
+<script>
+const ROLES=[
+ {mk:"RV",kind:"supervisor",c:"var(--violet)",cs:"var(--violet-soft)",name:"Reviewer / Orchestrator",
+  tasks:["Надзор за артефактами других контуров","Адъюдикация необратимого (push/merge/deploy)","Координация делегирования задач"],
+  zone:"Control-space (методология, не разработка фич)",
+  io:"Принимает <b>отчёты о сбоях</b> от всех контуров; выносит гейтованный вердикт; конструктор и скептик — разные агенты."},
+ {mk:"FW",kind:"dev",c:"var(--green)",cs:"var(--green-soft)",name:"Firmware / BLE",
+  tasks:["Прошивки ESP32-мостов бытовых приборов","Реверс и реализация BLE-протоколов","Сборка, OTA, Web UI устройства"],
+  zone:"Firmware-проекты (open-source)",
+  io:"Отдаёт потоки данных в <b>Home-auto</b> и публичные агрегаторы; передаёт сценарии в <b>Hardware-test</b>."},
+ {mk:"HT",kind:"executor",c:"var(--amber)",cs:"var(--amber-soft)",name:"Hardware-test",
+  tasks:["Исполнение аппаратных тестов на стенде","Прогон сценариев PC↔устройство","Сбор и оформление результатов"],
+  zone:"Тестовый риг",
+  io:"Принимает прошивки от <b>Firmware</b>; репортит системные сбои <b>Reviewer'у</b> по каналу."},
+ {mk:"HA",kind:"service",c:"var(--cyan)",cs:"var(--cyan-soft)",name:"Home-automation",
+  tasks:["Умный дом, сбор телеметрии","Дашборды и автоматизации","Мосты устройств в единый хаб"],
+  zone:"Домашний хаб (адреса исключены)",
+  io:"Принимает потоки от <b>Firmware</b>-мостов; отдаёт показания в публичные агрегаторы."},
+ {mk:"NW",kind:"service",c:"var(--cyan)",cs:"var(--cyan-soft)",name:"Network / Gateway",
+  tasks:["Сетевой шлюз и маршрутизация","Firewall и политики доступа","Связность прочих контуров"],
+  zone:"Сетевой периметр (модель/адреса исключены)",
+  io:"Для остальных — <b>чужая зона</b>: правки только по промпту-заданию, не своими руками."},
+ {mk:"ID",kind:"dev",c:"var(--green)",cs:"var(--green-soft)",name:"Instrument dev",
+  tasks:["Десктоп-инструменты анализа данных приборов","UI, интернационализация","Порт и проверка алгоритмов"],
+  zone:"Dev-проект инструмента",
+  io:"Берёт <b>дизайн-слой</b>; отдаёт результат на независимый <b>аудит</b> перед релизом."},
+ {mk:"AC",kind:"applied",c:"var(--slate)",cs:"var(--slate-soft)",name:"Applied-calc / Risk",
+  tasks:["Прикладные расчёты по готовым показаниям","Оценка риска и нормирование","Генерация отчётов"],
+  zone:"Расчётный проект",
+  io:"Получает числа от сервисных контуров; <b>не трогает</b> firmware и инфраструктуру — только считает."},
+ {mk:"AB",kind:"service",c:"var(--cyan)",cs:"var(--cyan-soft)",name:"Assistant bot",
+  tasks:["Персональный ассистент-бот","Напоминания и задачи","Автономный сервис"],
+  zone:"Bot-проект (PII исключён из витрины)",
+  io:"Работает автономно; о системных сбоях сообщает <b>Reviewer'у</b>."},
+ {mk:"WC",kind:"applied",c:"var(--slate)",cs:"var(--slate-soft)",name:"Web-content",
+  tasks:["Контент-пайплайн сайта","Факт-чек по нормам","Публикация и разметка"],
+  zone:"Веб-проект (домен исключён)",
+  io:"Берёт <b>дизайн/бренд-слой</b>; проходит <b>аудит</b> перед публикацией."},
+];
+const grid=document.getElementById('grid');
+ROLES.forEach(r=>{
+  const el=document.createElement('div');
+  el.className='card'; el.style.setProperty('--c',r.c); el.style.setProperty('--c-soft',r.cs);
+  el.innerHTML=`
+    <div class="ch">
+      <div class="mk">${r.mk}</div>
+      <h3>${r.name}</h3>
+      <span class="kind">${r.kind}</span>
+    </div>
+    <div>
+      <div class="lab">Задачи</div>
+      <ul>${r.tasks.map(t=>`<li>${t}</li>`).join('')}</ul>
+    </div>
+    <div><div class="lab">Зона</div><div class="zone">${r.zone}</div></div>
+    <div class="io"><div class="lab">Взаимодействие</div>${r.io}</div>`;
+  grid.appendChild(el);
+});
+const root=document.documentElement;
+document.getElementById('theme').addEventListener('click',()=>{
+  const cur=root.getAttribute('data-theme')
+    || (matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+  root.setAttribute('data-theme',cur==='dark'?'light':'dark');
+});
+</script>
+</body>
+</html>
