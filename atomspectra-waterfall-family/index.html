@@ -55,7 +55,8 @@
   header{border-bottom:1px solid var(--border-soft);padding:18px 0;}
   .head-row{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;}
   .brand{display:flex;align-items:center;gap:11px;}
-  .brand .mark{width:10px;height:10px;border-radius:2px;background:var(--accent);transform:rotate(45deg);flex:none;}
+  .brand .logo{width:42px;height:42px;border-radius:10px;background:#fff;padding:2px;flex:none;display:block;}
+  .brand .logo img{width:100%;height:100%;display:block;}
   .brand h1{font-size:18px;font-weight:700;}
   .brand .sub{font-size:13.5px;color:var(--muted);border-left:1px solid var(--border);padding-left:12px;margin-left:2px;}
   @media (max-width:700px){.brand .sub{display:none;}}
@@ -243,7 +244,7 @@
 <header>
   <div class="wrap head-row">
     <div class="brand">
-      <span class="mark"></span>
+      <a class="logo" href="https://github.com/VibeEngineering-LLC" target="_blank" rel="noopener"><img src="img/ve-logo.png" alt="Логотип VibeEngineering LLC" width="42" height="42"></a>
       <h1>AtomSpectra Waterfall</h1>
       <span class="sub">открытые инструменты для гамма-спектрометра KB Radar Atom Spectra</span>
     </div>
@@ -458,7 +459,7 @@
           <tr><td class="mono">N42.42-2011</td><td class="yes">экспорт</td><td class="yes">читает</td><td>индустриальный обменный формат</td></tr>
           <tr><td class="mono">BecqMoni XML</td><td class="yes">экспорт</td><td>—</td><td>анализ в BecqMoni</td></tr>
           <tr><td class="mono">InterSpec CSV</td><td class="yes">экспорт</td><td>—</td><td>анализ в InterSpec (Sandia)</td></tr>
-          <tr><td class="mono">ЛСРМ .spe</td><td class="yes">экспорт</td><td>—</td><td>гамма-анализ SpectraVibe</td></tr>
+          <tr><td class="mono">ЛСРМ .spe</td><td class="yes">экспорт</td><td>—</td><td>гамма-анализ SpectraLine</td></tr>
           <tr><td class="mono">RadiaCode .rcspg</td><td>—</td><td class="yes">читает</td><td>кросс-совместимость с RadiaCode-110</td></tr>
         </tbody>
       </table>
