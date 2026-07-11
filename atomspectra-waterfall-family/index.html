@@ -25,8 +25,12 @@
   .nav { display: flex; align-items: center; justify-content: space-between; gap: 16px;
          padding: 18px 40px; border-bottom: 1px solid #1b2127; background: rgba(10,12,15,.85); }
   .nav-brand { display: flex; align-items: center; gap: 13px; }
-  .nav-logo { width: 44px; height: 44px; border-radius: 8px; background: #fff; padding: 2px; flex: none; display: block; }
-  .nav-logo img { width: 100%; height: 100%; display: block; }
+  .nav-logo { width: 26px; height: 26px; border: 1px solid #37c79c; position: relative; flex: none; display: block; }
+  .nav-logo .rail { position: absolute; left: 3px; right: 3px; top: 50%; height: 0; border-top: 1px solid #37c79c; }
+  .nav-logo b { position: absolute; bottom: 5px; background: #37c79c; }
+  .nav-logo b.b1 { left: 6px; width: 3px; height: 9px; }
+  .nav-logo b.b2 { left: 12px; width: 3px; height: 14px; }
+  .nav-logo b.b3 { left: 18px; width: 2px; height: 6px; }
   .nav-title { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 16px; letter-spacing: .01em; color: #e8ecef; }
   .nav-title .sep { color: #5c6773; }
   .nav-links { display: flex; align-items: center; gap: 28px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
@@ -253,7 +257,7 @@
   <!-- nav -->
   <header class="nav">
     <div class="nav-brand">
-      <a class="nav-logo" href="https://github.com/VibeEngineering-LLC" target="_blank" rel="noopener"><img src="img/ve-logo.png" alt="Логотип VibeEngineering LLC" width="44" height="44"></a>
+      <a class="nav-logo" href="https://github.com/VibeEngineering-LLC" target="_blank" rel="noopener" aria-label="VibeEngineering LLC"><span class="rail"></span><b class="b1"></b><b class="b2"></b><b class="b3"></b></a>
       <span class="nav-title">Spectra<span class="sep"> // </span>Waterfall</span>
     </div>
     <nav class="nav-links">
