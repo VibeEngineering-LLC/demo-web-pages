@@ -3,13 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Multi-Agent Contour Map — конфигурация ИИ-контуров</title>
+<title>Multi-Agent Contour Map — подгружённые и разработанные навыки</title>
 <style>
   :root{
     --bg:#eef1f7; --surface:#ffffff; --surface-2:#f7f9fd; --ink:#16202e; --muted:#5a6b82;
     --line:#d6dded; --line-strong:#c0cadd;
     --cyan:#0d7d94; --cyan-soft:#0d7d941a; --amber:#b06f0c; --amber-soft:#b06f0c1a;
     --green:#2c7d4e; --green-soft:#2c7d4e1a; --violet:#6a4bbd; --violet-soft:#6a4bbd1a;
+    --slate:#4a5a72; --slate-soft:#4a5a721a;
     --shadow:0 1px 2px #16202e0d, 0 8px 24px -12px #16202e1f;
     --mono:ui-monospace,"Cascadia Code","SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
     --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,system-ui,sans-serif;
@@ -20,6 +21,7 @@
       --line:#233247; --line-strong:#31445f;
       --cyan:#48c9dd; --cyan-soft:#48c9dd1f; --amber:#f0b445; --amber-soft:#f0b4451f;
       --green:#4ac281; --green-soft:#4ac2811f; --violet:#a98bf0; --violet-soft:#a98bf01f;
+      --slate:#8ea3c0; --slate-soft:#8ea3c01f;
       --shadow:0 1px 2px #0006, 0 14px 34px -14px #0009;
     }
   }
@@ -28,6 +30,7 @@
     --line:#d6dded; --line-strong:#c0cadd;
     --cyan:#0d7d94; --cyan-soft:#0d7d941a; --amber:#b06f0c; --amber-soft:#b06f0c1a;
     --green:#2c7d4e; --green-soft:#2c7d4e1a; --violet:#6a4bbd; --violet-soft:#6a4bbd1a;
+    --slate:#4a5a72; --slate-soft:#4a5a721a;
     --shadow:0 1px 2px #16202e0d, 0 8px 24px -12px #16202e1f;
   }
   :root[data-theme="dark"]{
@@ -35,6 +38,7 @@
     --line:#233247; --line-strong:#31445f;
     --cyan:#48c9dd; --cyan-soft:#48c9dd1f; --amber:#f0b445; --amber-soft:#f0b4451f;
     --green:#4ac281; --green-soft:#4ac2811f; --violet:#a98bf0; --violet-soft:#a98bf01f;
+    --slate:#8ea3c0; --slate-soft:#8ea3c01f;
     --shadow:0 1px 2px #0006, 0 14px 34px -14px #0009;
   }
   *{box-sizing:border-box}
@@ -52,19 +56,17 @@
     pointer-events:none;z-index:0}
   .wrap{max-width:1120px;margin:0 auto;padding:0 22px;position:relative;z-index:1}
 
-  /* Header */
   header.top{padding:38px 0 10px}
   .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;
     color:var(--cyan);display:flex;align-items:center;gap:10px;margin:0 0 18px}
   .eyebrow::before{content:"";width:26px;height:1px;background:var(--cyan);display:inline-block}
   h1{font-size:clamp(30px,5vw,50px);line-height:1.04;margin:0 0 16px;letter-spacing:-.02em;
-    font-weight:800;text-wrap:balance;max-width:16ch}
+    font-weight:800;text-wrap:balance;max-width:17ch}
   h1 .hl{color:var(--cyan)}
-  .lede{font-size:clamp(15px,2vw,18px);color:var(--muted);max-width:64ch;margin:0}
+  .lede{font-size:clamp(15px,2vw,18px);color:var(--muted);max-width:66ch;margin:0}
   .note{margin:18px 0 0;font-family:var(--mono);font-size:11.5px;color:var(--muted);
-    border-left:2px solid var(--amber);padding:6px 0 6px 12px;max-width:70ch;letter-spacing:.01em}
+    border-left:2px solid var(--amber);padding:6px 0 6px 12px;max-width:74ch;letter-spacing:.01em}
 
-  /* Stat row */
   .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin:30px 0 8px;
     background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
   .stat{background:var(--surface);padding:16px 18px}
@@ -74,7 +76,6 @@
     color:var(--muted);margin-top:3px}
   @media(max-width:680px){.stats{grid-template-columns:repeat(2,1fr)}}
 
-  /* Toolbar */
   .toolbar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:12px;align-items:center;
     padding:14px 0;margin:14px 0 6px;
     background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(8px)}
@@ -84,10 +85,9 @@
     display:inline-flex;align-items:center;gap:7px;transition:.16s;user-select:none}
   .chip:hover{border-color:var(--cyan);color:var(--ink)}
   .chip .dot{width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.85}
-  .chip[data-k=method]{--c:var(--cyan)} .chip[data-k=firmware]{--c:var(--amber)}
-  .chip[data-k=tooling]{--c:var(--green)} .chip[data-k=all]{--c:var(--ink)}
+  .chip[data-f=all]{--c:var(--ink)} .chip[data-f=pre]{--c:var(--slate)}
+  .chip[data-f=dev]{--c:var(--cyan)} .chip[data-f=fw]{--c:var(--amber)}
   .chip.active{color:#fff;border-color:transparent;background:var(--c)}
-  :root[data-theme="dark"] .chip.active,@media(prefers-color-scheme:dark){}
   .chip.active .dot{background:#fff}
   .spacer{flex:1 1 auto}
   .search{display:flex;align-items:center;gap:8px;border:1px solid var(--line-strong);
@@ -99,12 +99,20 @@
     color:var(--muted);border-radius:999px;padding:7px 12px;cursor:pointer;transition:.16s}
   .tbtn:hover{border-color:var(--cyan);color:var(--ink)}
 
-  /* Tree */
-  .tree{margin:8px 0 40px;position:relative}
+  .sectlabel{display:flex;align-items:baseline;gap:12px;margin:26px 0 10px;flex-wrap:wrap}
+  .sectlabel .tag{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    font-weight:700;padding:4px 10px;border-radius:6px}
+  .sectlabel .tag.pre{background:var(--slate-soft);color:var(--slate)}
+  .sectlabel .tag.dev{background:var(--cyan-soft);color:var(--cyan)}
+  .sectlabel p{margin:0;font-size:13px;color:var(--muted);max-width:60ch}
+
+  .tree{margin:2px 0 8px;position:relative}
   .rootnode{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--line);
     border-radius:12px;background:var(--surface);box-shadow:var(--shadow);margin-bottom:6px;position:relative}
   .rootnode .glyph{width:34px;height:34px;border-radius:9px;flex:none;display:grid;place-items:center;
-    background:var(--cyan-soft);color:var(--cyan);font-family:var(--mono);font-weight:700}
+    font-family:var(--mono);font-weight:700;font-size:12px}
+  .rootnode.pre .glyph{background:var(--slate-soft);color:var(--slate)}
+  .rootnode.dev .glyph{background:var(--cyan-soft);color:var(--cyan)}
   .rootnode b{font-size:15px}
   .rootnode span{font-family:var(--mono);font-size:11.5px;color:var(--muted);text-transform:uppercase;
     letter-spacing:.12em}
@@ -118,7 +126,7 @@
   .contour:hover{border-color:var(--c,var(--cyan))}
   .chead{display:flex;align-items:center;gap:14px;padding:15px 18px;cursor:pointer;user-select:none}
   .chead .mark{width:38px;height:38px;border-radius:10px;flex:none;display:grid;place-items:center;
-    font-family:var(--mono);font-weight:700;font-size:15px;background:var(--c-soft,var(--cyan-soft));
+    font-family:var(--mono);font-weight:700;font-size:14px;background:var(--c-soft,var(--cyan-soft));
     color:var(--c,var(--cyan))}
   .chead .ttl{flex:1 1 auto;min-width:0}
   .chead .ttl h3{margin:0;font-size:16px;letter-spacing:-.01em;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
@@ -131,25 +139,26 @@
   .caret{width:20px;height:20px;flex:none;color:var(--muted);transition:transform .22s}
   .contour.open .caret{transform:rotate(90deg)}
   .skills{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);
-    max-height:0;overflow:hidden;transition:max-height .28s ease;border-top:0 solid var(--line)}
-  .contour.open .skills{max-height:1400px;border-top:1px solid var(--line)}
+    max-height:0;overflow:hidden;transition:max-height .3s ease;border-top:0 solid var(--line)}
+  .contour.open .skills{max-height:1800px;border-top:1px solid var(--line)}
   @media(max-width:640px){.skills{grid-template-columns:1fr}}
   .skill{background:var(--surface);padding:13px 18px;display:flex;gap:11px;align-items:flex-start}
   .skill .sname{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink);
-    display:flex;align-items:center;gap:7px}
-  .skill .badge{font-family:var(--mono);font-size:9px;letter-spacing:.08em;padding:2px 6px;border-radius:4px;
+    display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+  .skill .badge{font-family:var(--mono);font-size:9px;letter-spacing:.06em;padding:2px 6px;border-radius:4px;
     text-transform:uppercase;font-weight:600}
   .b-mit{background:var(--green-soft);color:var(--green)}
   .b-pub{background:var(--cyan-soft);color:var(--cyan)}
   .b-up{background:var(--violet-soft);color:var(--violet)}
+  .b-core{background:var(--slate-soft);color:var(--slate)}
+  .b-plug{background:var(--amber-soft);color:var(--amber)}
   .skill .sdesc{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.45}
   .skill .num{font-family:var(--mono);font-size:11px;color:var(--muted);flex:none;width:20px;
     text-align:right;padding-top:2px;font-variant-numeric:tabular-nums}
   .contour.hide{display:none}
   .skill.hide{display:none}
 
-  /* Principles */
-  .principles{margin:34px 0 20px}
+  .principles{margin:36px 0 20px}
   .principles h2,.legend h2{font-size:13px;font-family:var(--mono);text-transform:uppercase;
     letter-spacing:.16em;color:var(--muted);margin:0 0 16px;display:flex;align-items:center;gap:10px}
   .principles h2::after,.legend h2::after{content:"";flex:1;height:1px;background:var(--line)}
@@ -163,9 +172,9 @@
   .pcard p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.5}
 
   .legend{margin:26px 0}
-  .legend .row{display:flex;flex-wrap:wrap;gap:18px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .legend .row{display:flex;flex-wrap:wrap;gap:16px 22px;font-family:var(--mono);font-size:12px;color:var(--muted)}
   .legend .row span{display:inline-flex;align-items:center;gap:8px}
-  .legend .sw{width:11px;height:11px;border-radius:3px}
+  .legend .sw{width:11px;height:11px;border-radius:3px;flex:none}
 
   footer{border-top:1px solid var(--line);margin-top:22px;padding:22px 0 46px;
     font-family:var(--mono);font-size:11.5px;color:var(--muted);display:flex;
@@ -174,7 +183,7 @@
   a{color:var(--cyan);text-decoration:none}
   a:hover{text-decoration:underline}
   .empty{display:none;padding:34px;text-align:center;font-family:var(--mono);color:var(--muted);
-    border:1px dashed var(--line-strong);border-radius:12px}
+    border:1px dashed var(--line-strong);border-radius:12px;margin:12px 0}
   :focus-visible{outline:2px solid var(--cyan);outline-offset:2px;border-radius:6px}
   @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -183,30 +192,30 @@
 <div class="wrap">
 
   <header class="top">
-    <p class="eyebrow">Multi-Agent Configuration · Pattern Map</p>
-    <h1>Один оператор, <span class="hl">много независимых</span> ИИ-контуров</h1>
-    <p class="lede">Обзор паттерна: каждый контур — отдельная сессия Claude Code со своей зоной
-      ответственности и набором навыков (skills). Контуры не пишут в чужие зоны; координация,
-      аудит и делегирование вынесены в отдельные методологии. Ниже — обезличенная карта публичных
-      компонентов.</p>
-    <p class="note">SANITIZED VIEW · показаны только опубликованные методологии и open-source
-      компоненты. Приватные контуры (инфраструктура, персональные данные, финансы, безопасность
-      периметра) и операционные детали исключены намеренно.</p>
+    <p class="eyebrow">Multi-Agent Configuration · Skill Inventory</p>
+    <h1>Навыки контуров: <span class="hl">что подгружено</span>, что разработано</h1>
+    <p class="lede">Каждый ИИ-контур — отдельная сессия Claude Code со своей зоной и набором навыков
+      (skills). Часть навыков — общедоступные: подгружаются из платформы, плагинов и внешних
+      open-source пакетов. Другая часть — разработана под задачи оператора. Ниже обе группы
+      в виде раскрываемого дерева.</p>
+    <p class="note">SANITIZED VIEW · показаны только общедоступные компоненты и опубликованные
+      методологии. Приватные контуры (инфраструктура, персональные данные, финансы, безопасность
+      периметра) и нишевые проектные скиллы исключены намеренно.</p>
   </header>
 
   <div class="stats">
-    <div class="stat"><div class="n" data-count="5">5</div><div class="k">Категорий контуров</div></div>
-    <div class="stat"><div class="n" data-count="26">26</div><div class="k">Публичных навыков</div></div>
-    <div class="stat"><div class="n" data-count="4">4</div><div class="k">MIT-прошивки</div></div>
-    <div class="stat"><div class="n">local-first</div><div class="k">Делегирование</div></div>
+    <div class="stat"><div class="n">10</div><div class="k">Категорий навыков</div></div>
+    <div class="stat"><div class="n">50</div><div class="k">Навыков в карте</div></div>
+    <div class="stat"><div class="n">23</div><div class="k">Разработано</div></div>
+    <div class="stat"><div class="n">4</div><div class="k">Open-source прошивки</div></div>
   </div>
 
   <div class="toolbar">
     <div class="chips" id="chips">
-      <button class="chip active" data-k="all"><i class="dot"></i>Все</button>
-      <button class="chip" data-k="method"><i class="dot"></i>Методология</button>
-      <button class="chip" data-k="firmware"><i class="dot"></i>Прошивки / BLE</button>
-      <button class="chip" data-k="tooling"><i class="dot"></i>Инструменты</button>
+      <button class="chip active" data-f="all"><i class="dot"></i>Все</button>
+      <button class="chip" data-f="pre"><i class="dot"></i>Подгружено</button>
+      <button class="chip" data-f="dev"><i class="dot"></i>Разработано</button>
+      <button class="chip" data-f="fw"><i class="dot"></i>Прошивки / BLE</button>
     </div>
     <div class="spacer"></div>
     <label class="search">
@@ -217,17 +226,33 @@
     <button class="tbtn" id="theme" aria-label="Переключить тему">◐ тема</button>
   </div>
 
-  <div class="tree" id="tree">
-    <div class="rootnode">
-      <div class="glyph">OP</div>
-      <div>
-        <b>Operator</b><br>
-        <span>coordination · adjudication · irreversible-action gate</span>
-      </div>
-    </div>
-    <div class="branches" id="branches"></div>
-    <div class="empty" id="empty">Ничего не найдено — сбрось фильтр или поиск.</div>
+  <div class="sectlabel">
+    <span class="tag pre">Подгружено</span>
+    <p>Общедоступные навыки: платформенные (Anthropic), плагины и внешние open-source пакеты.
+      Ставятся один раз, доступны всем контурам, оператором не разрабатывались.</p>
   </div>
+  <div class="tree">
+    <div class="rootnode pre">
+      <div class="glyph">PRE</div>
+      <div><b>Общедоступные навыки</b><br><span>platform · plugins · vendored upstream</span></div>
+    </div>
+    <div class="branches" id="branches-pre"></div>
+  </div>
+
+  <div class="sectlabel">
+    <span class="tag dev">Разработано</span>
+    <p>Навыки под задачи оператора: методологии аудита и оркестрации, open-source прошивки-мосты,
+      инструменты извлечения документов, дизайн-слой. Показан только публикуемый (несекретный) срез.</p>
+  </div>
+  <div class="tree">
+    <div class="rootnode dev">
+      <div class="glyph">DEV</div>
+      <div><b>Разработанные навыки</b><br><span>authored · published subset</span></div>
+    </div>
+    <div class="branches" id="branches-dev"></div>
+  </div>
+
+  <div class="empty" id="empty">Ничего не найдено — сбрось фильтр или поиск.</div>
 
   <section class="principles">
     <h2>Сквозные принципы</h2>
@@ -246,20 +271,76 @@
   <section class="legend">
     <h2>Легенда бейджей</h2>
     <div class="row">
-      <span><i class="sw b-mit" style="background:var(--green)"></i>MIT — открытая лицензия, свой репозиторий</span>
-      <span><i class="sw b-pub" style="background:var(--cyan)"></i>PUBLISHED — методология без секретов</span>
-      <span><i class="sw b-up" style="background:var(--violet)"></i>UPSTREAM — реверс/анализ публичного проекта</span>
+      <span><i class="sw" style="background:var(--slate)"></i>CORE — платформенный навык / плагин</span>
+      <span><i class="sw" style="background:var(--amber)"></i>PLUGIN — сторонний плагин</span>
+      <span><i class="sw" style="background:var(--violet)"></i>UPSTREAM — внешний open-source / реверс публичного</span>
+      <span><i class="sw" style="background:var(--green)"></i>MIT — своя прошивка, открытая лицензия</span>
+      <span><i class="sw" style="background:var(--cyan)"></i>PUBLISHED — своя методология без секретов</span>
     </div>
   </section>
 
   <footer>
-    <span>Multi-Agent Contour Map · обезличенная витрина паттерна</span>
+    <span>Multi-Agent Contour Map · инвентарь навыков (обезличено)</span>
     <span class="san">SANITIZED · без опсека, PII и сетевых деталей</span>
   </footer>
 </div>
 
 <script>
-const DATA=[
+const PRE=[
+ {id:"office",mark:"DOC",kind:"документы",k:"tooling",c:"var(--slate)",cs:"var(--slate-soft)",
+  title:"Документы и офис",desc:"Создание и чтение офисных форматов, конвертация в Markdown.",
+  skills:[
+   {n:"docx",b:"core",d:"Создание и правка Word-документов: стили, оглавления, таблицы, колонтитулы."},
+   {n:"pptx",b:"core",d:"Генерация и редактирование PowerPoint-презентаций."},
+   {n:"xlsx",b:"core",d:"Excel-книги: формулы, графики, условное форматирование."},
+   {n:"pdf",b:"core",d:"PDF: чтение, слияние/разбиение, формы, OCR сканов, извлечение таблиц."},
+   {n:"markitdown",b:"up",d:"Документ (PDF/docx/pptx/xlsx/HTML) → Markdown; обёртка над MS open-source."},
+  ]},
+ {id:"data",mark:"VIZ",kind:"данные",k:"tooling",c:"var(--slate)",cs:"var(--slate-soft)",
+  title:"Данные и визуализация",desc:"Анализ таблиц, SQL, дашборды и корректные графики.",
+  skills:[
+   {n:"dataviz",b:"core",d:"Дизайн-система графиков: палитры, типы диаграмм, доступность, light/dark."},
+   {n:"data:analyze",b:"core",d:"Разведочный анализ данных: профилирование, статистика, выводы."},
+   {n:"data:build-dashboard",b:"core",d:"Сборка интерактивных дашбордов из набора данных."},
+   {n:"data:sql-queries",b:"core",d:"Написание и отладка SQL-запросов под задачу."},
+  ]},
+ {id:"design-pre",mark:"UI",kind:"дизайн",k:"tooling",c:"var(--slate)",cs:"var(--slate-soft)",
+  title:"Дизайн и UI (внешние)",desc:"База знаний по UI/UX и правила оформления артефактов.",
+  skills:[
+   {n:"ui-ux-pro-max",b:"up",d:"UI/UX-интеллект: 50+ стилей, палитры, шрифтовые пары, гайды доступности, типы графиков."},
+   {n:"ui-styling",b:"core",d:"shadcn/ui + Tailwind: доступные компоненты, темы, тёмный режим, адаптив."},
+   {n:"artifact-design",b:"core",d:"Фундамент дизайна артефактов: типографика, палитры, обе темы, интерактив."},
+  ]},
+ {id:"review",mark:"REV",kind:"код-ревью",k:"tooling",c:"var(--slate)",cs:"var(--slate-soft)",
+  title:"Код-ревью и статанализ",desc:"Проверка изменений, поиск багов и статический анализ безопасности.",
+  skills:[
+   {n:"code-review",b:"core",d:"Ревью текущего diff на баги и упрощения; уровни усилия low→ultra."},
+   {n:"simplify",b:"core",d:"Упрощение изменённого кода без охоты на баги — только чистка."},
+   {n:"verify",b:"core",d:"Прогон изменения end-to-end и наблюдение поведения до коммита."},
+   {n:"pr-review-toolkit",b:"plug",d:"Набор ревью-агентов PR: типы, тесты, тихие сбои, комментарии."},
+   {n:"static-analysis:semgrep",b:"plug",d:"Semgrep-скан по языкам с выводом SARIF."},
+   {n:"static-analysis:codeql",b:"plug",d:"CodeQL-анализ кодовой базы на уязвимости."},
+  ]},
+ {id:"research",mark:"RES",kind:"исследование",k:"tooling",c:"var(--slate)",cs:"var(--slate-soft)",
+  title:"Исследование и код-граф",desc:"Веб-ресёрч с проверкой фактов, граф кодовой базы, справка по API.",
+  skills:[
+   {n:"deep-research",b:"core",d:"Многоисточниковый веб-ресёрч: fan-out поиск, адверсариальная сверка, отчёт со ссылками."},
+   {n:"graphify",b:"up",d:"Любой вход (код/доки/статьи) → граф знаний: god-nodes, сообщества, query/path/explain."},
+   {n:"claude-api",b:"core",d:"Справка по Claude API / SDK: модели, цены, стриминг, tool-use, кэширование."},
+  ]},
+ {id:"modes",mark:"SYS",kind:"платформа",k:"tooling",c:"var(--slate)",cs:"var(--slate-soft)",
+  title:"Режимы и продуктивность",desc:"Рабочие процессы, режимы вывода, память сессий, настройка харнесса.",
+  skills:[
+   {n:"superpowers",b:"plug",d:"Процессные навыки: брейншторм, TDD, систематическая отладка, планы, воркфлоу."},
+   {n:"caveman",b:"plug",d:"Сжатый режим общения: минус вода, технический смысл цел; уровни lite→ultra."},
+   {n:"claude-mem",b:"plug",d:"Память кодовой базы между сессиями: авто-инъекция контекста прошлой работы."},
+   {n:"skill-creator",b:"core",d:"Создание/правка/замер навыков: eval, бенчмарк, оптимизация description."},
+   {n:"update-config",b:"core",d:"Настройка харнесса через settings.json: хуки, права, env-переменные."},
+   {n:"schedule",b:"core",d:"Плановые облачные агенты по cron: создание, обновление, разовые запуски."},
+  ]},
+];
+
+const DEV=[
  {id:"orchestration",mark:"OR",kind:"методология",k:"method",c:"var(--cyan)",cs:"var(--cyan-soft)",
   title:"Оркестрация и аудит",desc:"Надзор за артефактами контуров, независимый аудит, координация задач.",
   skills:[
@@ -275,63 +356,59 @@ const DATA=[
   title:"Встраиваемые прошивки и BLE",desc:"ESP32-мосты бытовых дозиметров и инструменты BLE-разведки. Открытый код.",
   skills:[
    {n:"atomfast-esp32",b:"mit",d:"ESPHome BLE-шлюз ESP32 → дозиметр: парсер on-air payload, Web UI, вывод без приложения изготовителя."},
-   {n:"radex-esp32",b:"mit",d:"Реверс протокола Radex по BLE + ESPHome-шлюз для ESP32-S3."},
-   {n:"radoneye-esp32",b:"mit",d:"Радон-монитор по BLE: шлюз в домашнюю автоматизацию, whitelist опкодов."},
+   {n:"radex-esp32",b:"mit",d:"Реверс протокола Radex по BLE + ESPHome-шлюз для ESP32-S3, poll-режим."},
+   {n:"radoneye-esp32",b:"mit",d:"Радон-монитор по BLE: шлюз в домашнюю автоматизацию, whitelist опкодов, защита от DFU."},
    {n:"atomtex-esp32",b:"mit",d:"Дозиметр → ESP32-S3 WiFi-мост: Modbus-RTU over USB-CDC, LittleFS CSV-лог, Web UI."},
    {n:"ble-explorer",b:"pub",d:"ESP32-прошивка для разведки BLE: скан эфира, дамп GATT, hex-viewer notify-пакетов."},
    {n:"radiacode-ble",b:"pub",d:"Чтение спектра и мощности дозы с детектора по BLE; read-only, мутации — за авторизацией."},
-   {n:"device-protocol-re",b:"pub",d:"Методология RE устройств/протоколов по 4 поверхностям: static→dynamic→corroborate."},
-   {n:"narodmon-iot",b:"pub",d:"Выгрузка показаний в публичный агрегатор: протокол пакета, интервалы, коды ошибок."},
-   {n:"atomswift-ble-chip",b:"pub",d:"Анализ поведения BLE-чипа: PHY, стабильность на низком RSSI, тайминг/ток."},
+   {n:"device-protocol-re",b:"pub",d:"Методология RE устройств/протоколов по 4 поверхностям: static→dynamic→corroborate + legal-gate."},
+   {n:"narodmon-iot",b:"pub",d:"Выгрузка показаний в публичный агрегатор: формат пакета, интервалы, коды ошибок."},
+   {n:"atomswift-ble-chip",b:"pub",d:"Анализ поведения BLE-чипа: PHY-возможности, стабильность на низком RSSI, тайминг/ток."},
   ]},
- {id:"spectro",mark:"γ",kind:"спектроскопия",k:"tooling",c:"var(--violet)",cs:"var(--violet-soft)",
-  title:"Гамма-спектроскопия",desc:"Анализ гамма-спектров и реверс публичных спектрометрических приложений.",
+ {id:"docs-dev",mark:"EXT",kind:"инструменты",k:"tooling",c:"var(--green)",cs:"var(--green-soft)",
+  title:"Извлечение документов и OCR",desc:"Свои примитивы извлечения текста и распознавания трудных сканов.",
   skills:[
-   {n:"gamma-spectrum-analysis",b:"pub",d:"Двухпроходный анализ спектра: калибровка, идентификация нуклидов по линиям и цепочкам распада, MDA."},
-   {n:"atomspectra-app",b:"up",d:"Реверс-инжиниринг спецификации Android-спектрометра: USB-протокол, DSP-цепочка, форматы файлов."},
-   {n:"atomspectra-waterfall-viewer-dev",b:"pub",d:"Десктоп-вьюер водопада спектрограмм: пики, нуклиды, FWHM(E), фон/MDA."},
-  ]},
- {id:"docs",mark:"DX",kind:"инструменты",k:"tooling",c:"var(--green)",cs:"var(--green-soft)",
-  title:"Документы и OCR",desc:"Извлечение текста, конвертация и распознавание — общий инструментарий контуров.",
-  skills:[
-   {n:"markitdown",b:"pub",d:"Документ (PDF/docx/pptx/xlsx/HTML) → Markdown для чтения и подачи в контекст."},
-   {n:"doc-extract",b:"pub",d:"Примитивы извлечения текста: PDF text-layer + скан-OCR (Tesseract rus+eng), legacy Office."},
+   {n:"doc-extract",b:"pub",d:"Примитивы извлечения текста: PDF text-layer + скан-OCR (Tesseract rus+eng), legacy Office, таблицы."},
    {n:"unlimited-ocr",b:"pub",d:"VLM-OCR трудных сканов с таблицами и формулами: сохранённый layout в HTML/LaTeX."},
    {n:"drawings-spec",b:"pub",d:"Извлечение спецификации оборудования из PDF-чертежей в Excel по нормам оформления."},
   ]},
- {id:"design",mark:"UI",kind:"инструменты",k:"tooling",c:"var(--cyan)",cs:"var(--cyan-soft)",
-  title:"Дизайн и UI",desc:"База знаний по дизайну и генерация фронтенда — общий слой для витрин и интерфейсов.",
+ {id:"design-dev",mark:"DS",kind:"инструменты",k:"tooling",c:"var(--cyan)",cs:"var(--cyan-soft)",
+  title:"Дизайн-слой",desc:"Свои дизайн-навыки поверх внешней базы знаний: токены, баннеры, слайды, бренд.",
   skills:[
-   {n:"ui-ux-pro-max",b:"up",d:"UI/UX-интеллект: стили, палитры, шрифтовые пары, гайды доступности, типы графиков."},
    {n:"design-system",b:"pub",d:"Токен-архитектура (primitive→semantic→component), спецификации компонентов, слайды."},
    {n:"banner-design",b:"pub",d:"Баннеры для соцсетей, рекламы и веб-героев: несколько арт-дирекций на выбор."},
+   {n:"brand",b:"pub",d:"Голос бренда, визуальная айдентика, месседж-фреймворки, консистентность ассетов."},
+   {n:"slides",b:"pub",d:"Стратегические HTML-презентации: Chart.js, дизайн-токены, адаптивные раскладки."},
   ]},
 ];
 
-const branches=document.getElementById('branches');
-const tmplBadge={mit:'b-mit" >MIT',pub:'b-pub">PUB',up:'b-up">UP'};
-DATA.forEach(ct=>{
-  const el=document.createElement('div');
-  el.className='contour'; el.dataset.k=ct.k; el.style.setProperty('--c',ct.c);
-  el.style.setProperty('--c-soft',ct.cs);
-  const skills=ct.skills.map((s,i)=>`
-    <div class="skill" data-name="${s.n} ${s.d.toLowerCase()}">
-      <span class="num">${String(i+1).padStart(2,'0')}</span>
-      <div>
-        <div class="sname">${s.n}<span class="badge ${tmplBadge[s.b]}</span></div>
-        <div class="sdesc">${s.d}</div>
+function render(list,container){
+  const tmplBadge={mit:'b-mit">MIT',pub:'b-pub">PUB',up:'b-up">UP',core:'b-core">CORE',plug:'b-plug">PLUG'};
+  list.forEach(ct=>{
+    const el=document.createElement('div');
+    el.className='contour'; el.dataset.k=ct.k; el.dataset.origin=(container.id==='branches-pre'?'pre':'dev');
+    el.style.setProperty('--c',ct.c); el.style.setProperty('--c-soft',ct.cs);
+    const skills=ct.skills.map((s,i)=>`
+      <div class="skill" data-name="${s.n} ${s.d.toLowerCase()}">
+        <span class="num">${String(i+1).padStart(2,'0')}</span>
+        <div>
+          <div class="sname">${s.n}<span class="badge ${tmplBadge[s.b]}</span></div>
+          <div class="sdesc">${s.d}</div>
+        </div>
+      </div>`).join('');
+    el.innerHTML=`
+      <div class="chead" role="button" tabindex="0" aria-expanded="false">
+        <div class="mark">${ct.mark}</div>
+        <div class="ttl"><h3>${ct.title}<span class="kind">${ct.kind}</span></h3><p>${ct.desc}</p></div>
+        <span class="cnt">${ct.skills.length} skills</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m9 6 6 6-6 6"/></svg>
       </div>
-    </div>`).join('');
-  el.innerHTML=`
-    <div class="chead" role="button" tabindex="0" aria-expanded="false">
-      <div class="mark">${ct.mark}</div>
-      <div class="ttl"><h3>${ct.title}<span class="kind">${ct.kind}</span></h3><p>${ct.desc}</p></div>
-      <span class="cnt">${ct.skills.length} skills</span>
-      <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m9 6 6 6-6 6"/></svg>
-    </div>
-    <div class="skills">${skills}</div>`;
-  branches.appendChild(el);
-});
+      <div class="skills">${skills}</div>`;
+    container.appendChild(el);
+  });
+}
+render(PRE,document.getElementById('branches-pre'));
+render(DEV,document.getElementById('branches-dev'));
 
 function toggle(c,force){const open=force!==undefined?force:!c.classList.contains('open');
   c.classList.toggle('open',open);c.querySelector('.chead').setAttribute('aria-expanded',open);}
@@ -340,43 +417,47 @@ document.querySelectorAll('.contour').forEach(c=>{
   h.addEventListener('click',()=>toggle(c));
   h.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle(c);}});
 });
-// open first by default
-toggle(document.querySelector('.contour'),true);
+// open first of each tree by default
+toggle(document.querySelector('#branches-pre .contour'),true);
+toggle(document.querySelector('#branches-dev .contour'),true);
 
-// filter chips
-let curK='all';
+let curF='all';
 document.getElementById('chips').addEventListener('click',e=>{
   const b=e.target.closest('.chip'); if(!b)return;
   document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
-  b.classList.add('active'); curK=b.dataset.k; apply();
+  b.classList.add('active'); curF=b.dataset.f; apply();
 });
-// search
 const q=document.getElementById('q');
 q.addEventListener('input',apply);
+function matchFilter(c){
+  if(curF==='all')return true;
+  if(curF==='pre')return c.dataset.origin==='pre';
+  if(curF==='dev')return c.dataset.origin==='dev';
+  if(curF==='fw')return c.dataset.k==='firmware';
+  return true;
+}
 function apply(){
   const term=q.value.trim().toLowerCase();
   let shown=0;
   document.querySelectorAll('.contour').forEach(c=>{
-    const kindOk=curK==='all'||c.dataset.k===curK;
+    const fOk=matchFilter(c);
     let anySkill=false;
     c.querySelectorAll('.skill').forEach(s=>{
       const hit=!term||s.dataset.name.includes(term);
       s.classList.toggle('hide',!hit); if(hit)anySkill=true;
     });
-    const vis=kindOk&&anySkill;
+    const vis=fOk&&anySkill;
     c.classList.toggle('hide',!vis);
     if(vis){shown++; if(term)toggle(c,true);}
   });
   document.getElementById('empty').style.display=shown?'none':'block';
 }
-// expand all
 let allOpen=false;
 document.getElementById('expand').addEventListener('click',e=>{
   allOpen=!allOpen;
   document.querySelectorAll('.contour:not(.hide)').forEach(c=>toggle(c,allOpen));
   e.target.textContent=allOpen?'Свернуть все':'Развернуть все';
 });
-// theme
 const root=document.documentElement;
 document.getElementById('theme').addEventListener('click',()=>{
   const cur=root.getAttribute('data-theme')
