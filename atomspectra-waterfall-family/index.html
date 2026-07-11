@@ -4,35 +4,41 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AtomSpectra Waterfall — инструменты для гамма-спектрометра KB Radar Atom Spectra</title>
-<meta name="description" content="Четыре открытых инструмента для гамма-спектрометра KB Radar Atom Spectra: WiFi-шлюз ESP32, просмотрщик водопада, рекордер записи, прошивальщик плат.">
+<meta name="description" content="Четыре открытых инструмента для гамма-спектрометра KB Radar Atom Spectra: WiFi-шлюз ESP32-S3, просмотрщик водопада, рекордер записи, прошивальщик плат. Автономная работа от павербанка.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0d1116; --panel:#141a21; --panel-2:#1a222b;
-    --border:#232c36; --border-soft:#1a2129;
+    --bg:#0c1014; --panel:#12181f; --panel-2:#182028;
+    --border:#222c36; --border-soft:#1a222b;
     --text:#e9edf0; --text-dim:#9aa5b0; --muted:#6d7883;
-    --accent:#2fd4c0; --accent-text:#06211d; --accent-soft:rgba(47,212,192,.11); --accent-border:rgba(47,212,192,.32);
+    --accent:#2fd4c0; --accent-text:#06211d; --accent-soft:rgba(47,212,192,.1); --accent-border:rgba(47,212,192,.3);
+    --violet:#7c62c9; --violet-soft:rgba(124,98,201,.12);
     --amber:#e0a03e; --amber-soft:rgba(224,160,62,.1);
-    --radius:10px; --radius-sm:7px;
+    --radius:12px; --radius-sm:8px;
+    --shadow:0 10px 34px rgba(0,0,0,.4);
     --sans:"Fira Sans",-apple-system,"Segoe UI",sans-serif;
     --mono:"Fira Code","Cascadia Code",ui-monospace,monospace;
   }
   :root[data-theme="light"]{
-    --bg:#f6f7f8; --panel:#ffffff; --panel-2:#f1f3f4;
-    --border:#dde1e4; --border-soft:#e7eaec;
+    --bg:#f4f6f7; --panel:#ffffff; --panel-2:#eef1f3;
+    --border:#d9dee2; --border-soft:#e5e9ec;
     --text:#12161a; --text-dim:#454e57; --muted:#6b747c;
-    --accent:#0c9384; --accent-text:#ffffff; --accent-soft:rgba(12,147,132,.08); --accent-border:rgba(12,147,132,.28);
-    --amber:#9c6a10; --amber-soft:rgba(156,106,16,.09);
+    --accent:#0b8d7e; --accent-text:#ffffff; --accent-soft:rgba(11,141,126,.08); --accent-border:rgba(11,141,126,.28);
+    --violet:#6a52b8; --violet-soft:rgba(106,82,184,.1);
+    --amber:#996810; --amber-soft:rgba(153,104,16,.09);
+    --shadow:0 10px 30px rgba(15,23,32,.12);
   }
   @media (prefers-color-scheme: light){
     :root:not([data-theme="dark"]){
-      --bg:#f6f7f8; --panel:#ffffff; --panel-2:#f1f3f4;
-      --border:#dde1e4; --border-soft:#e7eaec;
+      --bg:#f4f6f7; --panel:#ffffff; --panel-2:#eef1f3;
+      --border:#d9dee2; --border-soft:#e5e9ec;
       --text:#12161a; --text-dim:#454e57; --muted:#6b747c;
-      --accent:#0c9384; --accent-text:#ffffff; --accent-soft:rgba(12,147,132,.08); --accent-border:rgba(12,147,132,.28);
-      --amber:#9c6a10; --amber-soft:rgba(156,106,16,.09);
+      --accent:#0b8d7e; --accent-text:#ffffff; --accent-soft:rgba(11,141,126,.08); --accent-border:rgba(11,141,126,.28);
+      --violet:#6a52b8; --violet-soft:rgba(106,82,184,.1);
+      --amber:#996810; --amber-soft:rgba(153,104,16,.09);
+      --shadow:0 10px 30px rgba(15,23,32,.12);
     }
   }
   *{box-sizing:border-box;}
@@ -40,43 +46,87 @@
   body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15.5px;line-height:1.55;-webkit-font-smoothing:antialiased;}
   a{color:inherit;text-decoration:none;}
   a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px;}
-  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
   code,.mono{font-family:var(--mono);}
-  h1,h2{font-family:var(--sans);margin:0;letter-spacing:-.01em;}
+  h1,h2,h3{margin:0;letter-spacing:-.01em;}
+  img{max-width:100%;display:block;}
 
-  /* header — компактный, без hero */
-  header{border-bottom:1px solid var(--border-soft);padding:20px 0;}
-  .head-row{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
-  .brand{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
-  .brand h1{font-size:19px;font-weight:700;}
-  .brand .sub{font-size:14px;color:var(--text-dim);}
-  .head-links{display:flex;gap:10px;flex-wrap:wrap;}
-  .pill-link{
-    font-size:13px;color:var(--text-dim);border:1px solid var(--border);
-    padding:7px 12px;border-radius:100px;display:inline-flex;align-items:center;gap:6px;
-  }
+  /* header */
+  header{border-bottom:1px solid var(--border-soft);padding:18px 0;}
+  .head-row{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:11px;}
+  .brand .mark{width:10px;height:10px;border-radius:2px;background:var(--accent);transform:rotate(45deg);flex:none;}
+  .brand h1{font-size:18px;font-weight:700;}
+  .brand .sub{font-size:13.5px;color:var(--muted);border-left:1px solid var(--border);padding-left:12px;margin-left:2px;}
+  @media (max-width:700px){.brand .sub{display:none;}}
+  .head-links{display:flex;gap:9px;flex-wrap:wrap;}
+  .pill-link{font-size:13px;color:var(--text-dim);border:1px solid var(--border);padding:7px 13px;border-radius:100px;display:inline-flex;align-items:center;gap:7px;}
   .pill-link:hover{color:var(--text);border-color:var(--accent-border);}
   .pill-link svg{width:13px;height:13px;}
 
-  main{padding:28px 0 0;}
-  .section-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:14px;flex-wrap:wrap;}
-  .section-head h2{font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);}
-  .section-head .count{font-family:var(--mono);font-size:12.5px;color:var(--muted);}
+  /* intro: фото комплекта + реестр экосистемы, всё на первом экране */
+  .intro{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:22px;padding:26px 0 8px;align-items:stretch;}
+  @media (max-width:900px){.intro{grid-template-columns:1fr;}}
+  .kit{
+    position:relative;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);
+    background:var(--panel);box-shadow:var(--shadow);min-height:320px;
+  }
+  .kit img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+  .kit .cap{
+    position:absolute;left:0;right:0;bottom:0;padding:36px 22px 16px;
+    background:linear-gradient(180deg, rgba(7,10,13,0) 0%, rgba(7,10,13,.82) 55%);
+    color:#e9edf0;font-size:13.5px;line-height:1.5;
+  }
+  .kit .cap strong{color:#fff;}
+  .kit .cap .m{font-family:var(--mono);color:#2fd4c0;}
+  .eco{display:flex;flex-direction:column;gap:10px;}
+  .eco-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:2px 2px 0;}
+  .eco-head h2{font-size:12.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);}
+  .eco-head a{font-size:12.5px;color:var(--accent);}
+  .eco-head a:hover{text-decoration:underline;}
+  .eco-item{
+    display:flex;align-items:center;gap:14px;background:var(--panel);
+    border:1px solid var(--border);border-radius:var(--radius-sm);padding:13px 16px;flex:1;
+  }
+  .eco-item:hover{border-color:var(--accent-border);}
+  .eco-item .no{font-family:var(--mono);font-size:11px;color:var(--muted);width:18px;flex:none;}
+  .eco-item .body{min-width:0;flex:1;}
+  .eco-item .name{font-family:var(--mono);font-size:13.5px;font-weight:600;letter-spacing:-.01em;overflow-wrap:anywhere;}
+  .eco-item .role{font-size:12px;color:var(--text-dim);}
+  .eco-item .ver{font-family:var(--mono);font-size:11.5px;color:var(--accent);white-space:nowrap;flex:none;}
 
-  /* экосистема — вся сразу, плотная сетка */
-  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:40px;}
-  @media (max-width:820px){.grid{grid-template-columns:1fr;}}
+  main{padding-top:8px;}
+  section{padding:34px 0;}
+  section + section{border-top:1px solid var(--border-soft);}
+  .section-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
+  .section-head h2{font-size:12.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);}
+
+  /* карточки с картинками */
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+  @media (max-width:860px){.grid{grid-template-columns:1fr;}}
   .card{
     background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
-    padding:18px 20px;display:flex;flex-direction:column;gap:10px;
+    overflow:hidden;display:flex;flex-direction:column;
   }
+  .shot{
+    aspect-ratio:16/9;background:var(--panel-2);border-bottom:1px solid var(--border-soft);
+    overflow:hidden;position:relative;
+  }
+  .shot img{width:100%;height:100%;object-fit:cover;object-position:top center;}
+  .shot.contain img{object-fit:contain;padding:8px;}
+  .shot .ph{
+    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+    color:var(--muted);font-family:var(--mono);font-size:12px;
+  }
+  .shot .ph svg{width:34px;height:34px;opacity:.6;}
+  .card-body{padding:16px 18px 15px;display:flex;flex-direction:column;gap:9px;flex:1;}
   .card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
-  .card-top h3{font-size:15.5px;font-weight:700;margin:0;font-family:var(--mono);letter-spacing:-.01em;}
-  .role{font-size:11px;color:var(--muted);white-space:nowrap;padding-top:2px;}
-  .card p.desc{margin:0;font-size:13.8px;color:var(--text-dim);line-height:1.5;}
+  .card-top h3{font-family:var(--mono);font-size:14.5px;font-weight:600;letter-spacing:-.01em;overflow-wrap:anywhere;}
+  .role-tag{font-size:11px;color:var(--muted);white-space:nowrap;padding-top:2px;}
+  .card p.desc{margin:0;font-size:13.6px;color:var(--text-dim);line-height:1.55;}
   .card .meta{
-    display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
-    padding-top:10px;border-top:1px solid var(--border-soft);font-size:12.5px;
+    margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    padding-top:11px;border-top:1px solid var(--border-soft);font-size:12.5px;
   }
   .meta .ver{font-family:var(--mono);color:var(--accent);}
   .meta .date{color:var(--muted);margin-left:6px;}
@@ -84,9 +134,7 @@
   .meta .links a{color:var(--text-dim);}
   .meta .links a:hover{color:var(--accent);}
 
-  section{padding:26px 0;border-top:1px solid var(--border-soft);}
-
-  /* архитектура */
+  /* flow */
   .flow{display:flex;flex-wrap:wrap;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--panel);}
   .flow-node{flex:1 1 150px;padding:16px 18px;border-right:1px solid var(--border-soft);min-width:150px;}
   .flow-node:last-child{border-right:none;}
@@ -104,6 +152,7 @@
     .flow-arrow{padding:6px 0;transform:rotate(90deg);}
   }
 
+  /* таблица */
   .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--panel);}
   table{width:100%;border-collapse:collapse;font-size:13.5px;}
   th,td{padding:10px 16px;border-bottom:1px solid var(--border-soft);text-align:left;white-space:nowrap;}
@@ -112,12 +161,27 @@
   td.mono{font-family:var(--mono);color:var(--text-dim);}
   .yes{color:var(--accent);font-weight:700;}
 
+  /* roadmap */
+  .road{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  @media (max-width:860px){.road{grid-template-columns:1fr;}}
+  .road-item{
+    border:1px dashed var(--border);border-radius:var(--radius);padding:17px 19px;
+    background:var(--violet-soft);display:flex;flex-direction:column;gap:7px;
+  }
+  .road-item .tag{
+    align-self:flex-start;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--violet);border:1px solid color-mix(in srgb, var(--violet) 45%, transparent);
+    padding:2px 8px;border-radius:100px;
+  }
+  .road-item h3{font-size:14.5px;font-weight:700;}
+  .road-item p{margin:0;font-size:13.3px;color:var(--text-dim);line-height:1.5;}
+
   .callout{display:flex;gap:13px;padding:16px 18px;border-radius:var(--radius);border:1px solid color-mix(in srgb, var(--amber) 35%, var(--border));background:var(--amber-soft);}
   .callout svg{flex:none;width:17px;height:17px;color:var(--amber);margin-top:2px;}
   .callout p{margin:0;font-size:13.5px;color:var(--text-dim);}
   .callout strong{color:var(--text);}
 
-  footer{padding:22px 0 34px;}
+  footer{border-top:1px solid var(--border-soft);padding:22px 0 34px;}
   .foot-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12.5px;color:var(--muted);}
   footer a:hover{color:var(--accent);}
 </style>
@@ -127,8 +191,9 @@
 <header>
   <div class="wrap head-row">
     <div class="brand">
+      <span class="mark"></span>
       <h1>AtomSpectra Waterfall</h1>
-      <span class="sub">4 репозитория для гамма-спектрометра KB Radar Atom Spectra — прошивка ESP32-S3, десктопные Windows-инструменты</span>
+      <span class="sub">открытые инструменты для гамма-спектрометра KB Radar Atom Spectra</span>
     </div>
     <div class="head-links">
       <a class="pill-link" href="https://github.com/VibeEngineering-LLC" target="_blank" rel="noopener">
@@ -142,69 +207,134 @@
 
 <main class="wrap">
 
-  <div class="section-head">
-    <h2>Состав экосистемы</h2>
-    <span class="count">4 репозитория</span>
+  <!-- первый экран: фото комплекта + вся экосистема -->
+  <div class="intro">
+    <figure class="kit" style="margin:0;">
+      <img src="https://raw.githubusercontent.com/VibeEngineering-LLC/atomspectra-waterfall-esp32/main/images/assembly.jpg"
+           alt="Комплект в сборе: спектрометр Atom Spectra, плата ESP32-S3 и павербанк; USB-тестер показывает потребление около 1 Вт" fetchpriority="high">
+      <figcaption class="cap">
+        <strong>Комплект в сборе:</strong> спектрометр + ESP32-S3 + павербанк.
+        Питание больше не привязано к телефону или ПК — весь комплект потребляет
+        <span class="m">≈1&nbsp;Вт</span> (на фото — замер USB-тестером) и работает
+        в поле от обычного павербанка, раздавая спектр по WiFi.
+      </figcaption>
+    </figure>
+
+    <div class="eco">
+      <div class="eco-head">
+        <h2>Экосистема — 4 репозитория</h2>
+        <a href="#toolkit">подробнее ↓</a>
+      </div>
+      <a class="eco-item" href="#c-esp32">
+        <span class="no">01</span>
+        <span class="body"><span class="name">atomspectra-waterfall-esp32</span><br><span class="role">WiFi-шлюз — прошивка ESP32-S3, спектр в браузере</span></span>
+        <span class="ver">firmware-v1.1.2</span>
+      </a>
+      <a class="eco-item" href="#c-viewer">
+        <span class="no">02</span>
+        <span class="body"><span class="name">waterfall-viewer</span><br><span class="role">просмотрщик спектрограмм — 3D/2D, срезы, нуклиды</span></span>
+        <span class="ver">v0.1.9</span>
+      </a>
+      <a class="eco-item" href="#c-recorder">
+        <span class="no">03</span>
+        <span class="body"><span class="name">wf-recorder</span><br><span class="role">непрерывная запись водопада на диск ПК</span></span>
+        <span class="ver">v0.2.1</span>
+      </a>
+      <a class="eco-item" href="#c-flasher">
+        <span class="no">04</span>
+        <span class="body"><span class="name">atomspectra-waterfall-esp32-flasher</span><br><span class="role">прошивальщик плат — прошивка с GitHub Releases по USB</span></span>
+        <span class="ver">v0.2.2</span>
+      </a>
+    </div>
   </div>
 
-  <div class="grid">
+  <section id="toolkit" style="border-top:none;">
+    <div class="section-head"><h2>Компоненты</h2></div>
+    <div class="grid">
 
-    <div class="card">
-      <div class="card-top"><h3>atomspectra-waterfall-esp32</h3><span class="role">прошивка · ESP32-S3</span></div>
-      <p class="desc">WiFi-шлюз между прибором и сетью: подключается к спектрометру по USB, отдаёт спектр (8192 канала) в браузер в реальном времени, экспорт в BecqMoni / InterSpec / N42.42 / ЛСРМ, TCP-мост порт 8234, хранение до ~400 спектров на flash.</p>
-      <div class="meta">
-        <span><span class="ver">firmware-v1.1.2</span><span class="date">11.07.2026</span></span>
-        <span class="links">
-          <a href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32" target="_blank" rel="noopener">репозиторий</a>
-          <a href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32/releases" target="_blank" rel="noopener">релизы</a>
-        </span>
+      <div class="card" id="c-esp32">
+        <div class="shot">
+          <img loading="lazy" src="https://raw.githubusercontent.com/VibeEngineering-LLC/atomspectra-waterfall-esp32/main/images/web-ui-spectrum.png"
+               alt="Web UI шлюза: живой спектр 8192 канала, лог-шкала, экспорт XML/CSV/N42/SPE">
+        </div>
+        <div class="card-body">
+          <div class="card-top"><h3>atomspectra-waterfall-esp32</h3><span class="role-tag">прошивка · ESP32-S3</span></div>
+          <p class="desc">Плата подключается к спектрометру по USB (OTG Host) и отдаёт 8192-канальный спектр в браузер в реальном времени. Экспорт BecqMoni / InterSpec / N42.42 / ЛСРМ, TCP-мост (порт 8234) для десктопного ПО, до ~400 спектров на flash, полевой режим точки доступа.</p>
+          <div class="meta">
+            <span><span class="ver">firmware-v1.1.2</span><span class="date">11.07.2026</span></span>
+            <span class="links">
+              <a href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32" target="_blank" rel="noopener">репозиторий</a>
+              <a href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32/releases" target="_blank" rel="noopener">релизы</a>
+            </span>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="card">
-      <div class="card-top"><h3>waterfall-viewer</h3><span class="role">desktop · Windows/Python</span></div>
-      <p class="desc">Просмотрщик спектрограмм: 3D-поверхность и 2D-карта Время×Энергия, срезы, сечения, выборки ROI, библиотека 21 нуклида для маркеров энергий. Форматы: .aswf, RadiaCode .rcspg, N42.42. Потоковая загрузка суточных записей.</p>
-      <div class="meta">
-        <span><span class="ver">v0.1.9</span><span class="date">09.07.2026</span></span>
-        <span class="links">
-          <a href="https://github.com/VibeEngineering-LLC/waterfall-viewer" target="_blank" rel="noopener">репозиторий</a>
-          <a href="https://github.com/VibeEngineering-LLC/waterfall-viewer/releases" target="_blank" rel="noopener">релизы</a>
-        </span>
+      <div class="card" id="c-viewer">
+        <div class="shot">
+          <img loading="lazy" src="https://raw.githubusercontent.com/VibeEngineering-LLC/atomspectra-waterfall-esp32/main/images/waterfall-viewer.png"
+               alt="waterfall-viewer: 3D-поверхность Время × Энергия × Отсчёты">
+        </div>
+        <div class="card-body">
+          <div class="card-top"><h3>waterfall-viewer</h3><span class="role-tag">desktop · Windows / Python</span></div>
+          <p class="desc">Просмотрщик спектрограмм: 3D-поверхность и 2D-карта Время×Энергия, срезы по времени, сечения по полосе энергий, выборки ROI, библиотека 21 нуклида. Читает .aswf, RadiaCode .rcspg и N42.42; суточные записи грузятся потоково.</p>
+          <div class="meta">
+            <span><span class="ver">v0.1.9</span><span class="date">09.07.2026</span></span>
+            <span class="links">
+              <a href="https://github.com/VibeEngineering-LLC/waterfall-viewer" target="_blank" rel="noopener">репозиторий</a>
+              <a href="https://github.com/VibeEngineering-LLC/waterfall-viewer/releases" target="_blank" rel="noopener">релизы</a>
+            </span>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="card">
-      <div class="card-top"><h3>wf-recorder</h3><span class="role">desktop · Windows/stdlib</span></div>
-      <p class="desc">Pull-клиент для непрерывной записи: забирает сегменты водопада со шлюза, сшивает в файл .aswf, удаляет на плате только после fsync на диск, проверка целостности CRC32 + порядковые номера, лог температуры.</p>
-      <div class="meta">
-        <span><span class="ver">v0.2.1</span><span class="date">11.07.2026</span></span>
-        <span class="links">
-          <a href="https://github.com/VibeEngineering-LLC/wf-recorder" target="_blank" rel="noopener">репозиторий</a>
-          <a href="https://github.com/VibeEngineering-LLC/wf-recorder/releases" target="_blank" rel="noopener">релизы</a>
-        </span>
+      <div class="card" id="c-recorder">
+        <div class="shot">
+          <img loading="lazy" src="https://raw.githubusercontent.com/VibeEngineering-LLC/atomspectra-waterfall-esp32/main/images/web-ui-waterfall.png"
+               alt="Вкладка «Водопад» Web UI шлюза: спектрограмма в палитре Viridis, срез спектра под курсором">
+        </div>
+        <div class="card-body">
+          <div class="card-top"><h3>wf-recorder</h3><span class="role-tag">desktop · Windows / stdlib</span></div>
+          <p class="desc">Pull-клиент непрерывной записи: забирает сегменты водопада со шлюза (на скриншоте — вкладка «Водопад» Web UI) и сшивает в единый .aswf. Сегмент удаляется с платы только после fsync на диск; целостность — CRC32 + порядковые номера; лог температуры в CSV.</p>
+          <div class="meta">
+            <span><span class="ver">v0.2.1</span><span class="date">11.07.2026</span></span>
+            <span class="links">
+              <a href="https://github.com/VibeEngineering-LLC/wf-recorder" target="_blank" rel="noopener">репозиторий</a>
+              <a href="https://github.com/VibeEngineering-LLC/wf-recorder/releases" target="_blank" rel="noopener">релизы</a>
+            </span>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="card">
-      <div class="card-top"><h3>atomspectra-waterfall-esp32-flasher</h3><span class="role">desktop · Windows/Python</span></div>
-      <p class="desc">Прошивальщик плат ESP32: тянет актуальную прошивку с GitHub Releases, заливает по USB, автоопределение COM-порта. Также прошивает шлюзы AtomFast, Radex, RadonEye — 4 проекта в одном инструменте.</p>
-      <div class="meta">
-        <span><span class="ver">v0.2.2</span><span class="date">10.07.2026</span></span>
-        <span class="links">
-          <a href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32-flasher" target="_blank" rel="noopener">репозиторий</a>
-          <a href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32-flasher/releases" target="_blank" rel="noopener">релизы</a>
-        </span>
+      <div class="card" id="c-flasher">
+        <div class="shot">
+          <div class="ph" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M12 17.5h.01M10 5.5h4" stroke-linecap="round"/><path d="M3.5 9v6M20.5 9v6" stroke-linecap="round"/></svg>
+            <span>UI-прошивальщик · COM-порт → плата</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-top"><h3>atomspectra-waterfall-esp32-flasher</h3><span class="role-tag">desktop · Windows / Python</span></div>
+          <p class="desc">Прошивальщик плат ESP32 без командной строки: выбор проекта и COM-порта из списка, актуальная прошивка автоматически загружается с GitHub Releases и заливается по USB. Поддерживает 4 проекта: AtomSpectra, AtomFast, Radex, RadonEye.</p>
+          <div class="meta">
+            <span><span class="ver">v0.2.2</span><span class="date">10.07.2026</span></span>
+            <span class="links">
+              <a href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32-flasher" target="_blank" rel="noopener">репозиторий</a>
+              <a href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32-flasher/releases" target="_blank" rel="noopener">релизы</a>
+            </span>
+          </div>
+        </div>
       </div>
+
     </div>
+  </section>
 
-  </div>
-
-  <section id="architecture" style="padding-top:0;border-top:none;">
+  <section id="architecture">
     <div class="section-head"><h2>Как связаны компоненты</h2></div>
     <div class="flow">
       <div class="flow-node"><span class="k">Прибор</span><span class="v">KB Radar Atom Spectra</span><span class="d">8192 канала, USB (shproto)</span></div>
       <div class="flow-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h12M9 3l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <div class="flow-node hub"><span class="k">Шлюз</span><span class="v">atomspectra-waterfall-esp32</span><span class="d">ESP32-S3, USB OTG Host, WiFi</span></div>
+      <div class="flow-node hub"><span class="k">Шлюз</span><span class="v">atomspectra-waterfall-esp32</span><span class="d">ESP32-S3, USB OTG Host, WiFi · питание от павербанка</span></div>
       <div class="flow-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h12M9 3l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <div class="flow-node"><span class="k">Приём</span><span class="v">Браузер · TCP:8234 · wf-recorder</span><span class="d">Web UI, BecqMoni/AtomSpectra, pull-клиент</span></div>
       <div class="flow-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h12M9 3l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -229,17 +359,38 @@
     </div>
   </section>
 
+  <section id="roadmap">
+    <div class="section-head"><h2>В разработке</h2></div>
+    <div class="road">
+      <div class="road-item">
+        <span class="tag">скоро</span>
+        <h3>Запись на внешние носители</h3>
+        <p>Сохранение водопада напрямую на SD-карту платы — многосуточные записи без ПК и без ограничения объёмом встроенного flash.</p>
+      </div>
+      <div class="road-item">
+        <span class="tag">скоро</span>
+        <h3>Подключение GPS</h3>
+        <p>Привязка каждого спектра к координатам приёмника — трек измерений вместе с данными в одном файле.</p>
+      </div>
+      <div class="road-item">
+        <span class="tag">скоро</span>
+        <h3>Поиск и картирование загрязнений</h3>
+        <p>GPS + автономное питание + непрерывная запись превращают комплект в инструмент обследования местности: поиск источников и картирование радиоактивных загрязнений.</p>
+      </div>
+    </div>
+  </section>
+
   <section id="safety">
     <div class="callout">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3 2 20h20L12 3Z" stroke-linejoin="round"/><path d="M12 9v5M12 17h.01" stroke-linecap="round"/></svg>
-      <p><strong>Шлюз и флешер взаимодействуют с прибором напрямую.</strong> Опция очистки спектра при старте шлюза стирает накопленные на приборе данные — сохраните их штатным ПО заранее. Флешер перезаписывает flash выбранной платы: проверяйте COM-порт, посторонние USB-устройства прошивать нельзя. Полный текст условий — в README каждого репозитория.</p>
+      <p><strong>Шлюз и флешер взаимодействуют с оборудованием напрямую.</strong> Опция очистки спектра при старте шлюза стирает накопленные на приборе данные — сохраните их штатным ПО заранее. Флешер перезаписывает flash выбранной платы: проверяйте COM-порт, посторонние USB-устройства прошивать нельзя. Полный текст условий — в README каждого репозитория.</p>
     </div>
   </section>
 
 </main>
 
-<footer class="wrap">
-  <div class="foot-row">
+<footer>
+  <div class="wrap foot-row">
     <span>MIT © VibeEngineering LLC</span>
     <span><a href="https://github.com/VibeEngineering-LLC" target="_blank" rel="noopener">github.com/VibeEngineering-LLC</a></span>
   </div>
