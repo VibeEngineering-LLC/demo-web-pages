@@ -67,14 +67,14 @@ ul{margin:8px 0;padding-left:22px}li{margin:4px 0}
 <p><b>Гипотеза H₁:</b> при кратном росте ОА радона МЭД и cps получат малое систематическое положительное приращение за счёт γ-фона дочерних. <b>H₀:</b> приращение неотличимо от нуля в пределах разрешения прибора и статистического шума.</p>
 <h2><span class="n">2</span>Постановка эксперимента</h2>
 <div class="grid2">
-<div class="card"><h3>Стенд</h3><img class="stand" src="stand.jpg" alt="Стенд эксперимента" onclick="lb('stand.jpg')" onerror="this.outerHTML='&lt;div class=\'stand-ph\'&gt;фото стенда появится после загрузки&lt;/div&gt;'"><p class="cap">Слева — БДКГ-05 со шлюзом RADW, справа — RadonEye Plus2. Клик по фото — увеличить.</p></div>
+<div class="card"><h3>Стенд</h3><img class="stand" src="stand.jpg" alt="Стенд эксперимента" onclick="lb('stand.jpg')" onerror="this.outerHTML='&lt;div class=\'stand-ph\'&gt;фото стенда появится после загрузки&lt;/div&gt;'"><p class="cap">Слева — БДКГ-05 (цилиндр) и шлюз RADW (тёмный блок в центре); справа — два RadonEye Plus2; белая шайба — AtomFast (в расчёте не участвует). Клик по фото — увеличить.</p></div>
 <div class="card"><h3>Протокол</h3>
 <p>Подвал жилого дома, приборы рядом (~0.3 м), T≈24 °C, влажность 52–55%. Управляемая переменная — <b>приточно-вытяжная вентиляция</b>.</p>
 <p>11.07 до 19:30 — вентиляция включена, ОА радона 250–400 Бк/м³ (<b>состояние A</b>). В <b>19:30 11.07 вентиляцию выключили</b> → накопление радона от эманации грунта; ОА монотонно растёт ~16 ч до плато 1150–1300 Бк/м³ (<b>состояние B</b>, 12.07).</p>
 <table><tr><th>Прибор</th><th>Величина</th><th>Ед.</th></tr>
 <tr><td><span class="tag t-med">БДКГ-05</span> детектор МЭД</td><td>МЭД H*(10)</td><td>мкЗв/ч</td></tr>
 <tr><td><span class="tag t-cps">БДКГ-05</span> счётный канал</td><td>cps (сред. 2 мин)</td><td>имп/с</td></tr>
-<tr><td>Шлюз RADW → Home Assistant</td><td>телеметрия</td><td>—</td></tr>
+<tr><td>Шлюз RADW (ESP32, <a href="https://github.com/VibeEngineering-LLC/atomtex-esp32" style="color:var(--radon)">atomtex-esp32</a>) → Home Assistant</td><td>телеметрия</td><td>—</td></tr>
 <tr><td><span class="tag t-radon">RadonEye Plus2</span></td><td>ОА радона</td><td>Бк/м³</td></tr></table></div></div>
 <h3>2.1 Характеристики приборов (паспортные)</h3>
 <table>
@@ -94,7 +94,7 @@ ul{margin:8px 0;padding-left:22px}li{margin:4px 0}
 <li><b>Стабильные состояния для контраста:</b> <b>A</b> = вентилируемая база 00:00–19:30 11.07; <b>B</b> = плато окна 2.</li>
 <li><b>SMA</b> (скользящее среднее): радон/cps окно 30 мин, МЭД 45 мин — визуализация тренда; корреляции — по сырым ресэмплированным точкам.</li>
 <li><b>МЭД:</b> исключены переходные значения &lt;0.05 мкЗв/ч (артефакт фильтра после «Сброс замера»).</li>
-<li><b>Погрешности:</b> для БДКГ — приборные колонки <code>погрешность_ЦПС</code>/<code>погрешность_МЭД</code> (%), для радона — паспортные ±10 %.</li></ul>
+<li><b>Погрешности:</b> для БДКГ — приборные колонки <code>погрешность_ЦПС</code>/<code>погрешность_МЭД</code> (%), для радона — паспортные ±10 %.</li><li><b>Шлюз БДКГ-05:</b> собственный ESP32-мост RADW (проект <a href="https://github.com/VibeEngineering-LLC/atomtex-esp32" style="color:var(--radon)">VibeEngineering-LLC/atomtex-esp32</a>) — читает БДКГ-05 и публикует cps/МЭД/погрешности в Home Assistant.</li></ul>
 <div class="eq">σ<sub>Δ</sub> = √(σ²<sub>A</sub>/n<sub>A</sub> + σ²<sub>B</sub>/n<sub>B</sub>) &nbsp;·&nbsp; коэфф. = 100·Δ/Δ(ОА) &nbsp;·&nbsp; N<sub>эфф</sub> = N·(1−ρ₁ᵡρ₁ʸ)/(1+ρ₁ᵡρ₁ʸ) — поправка на автокорреляцию (лаг 1)</div>
 <h2><span class="n">4</span>Графики</h2>
 <div class="hint">🖱 Колесо — зум, перетаскивание — панорама, «Сброс зума». Наведение — значения.</div>
