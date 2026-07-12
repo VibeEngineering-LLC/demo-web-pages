@@ -168,8 +168,8 @@ function dsCps(){return [{label:'cps (2-мин)',data:S.cps,borderColor:'rgba(25
 mk('c2a',dsCps(),{x:xsc(MK.seg1[0],MK.seg1[1],2),y:{title:{display:true,text:'имп/с'},grid:{color:'#1a2540'}}},ventAnn(MK.seg1[0],MK.seg1[1]));
 mk('c2b',dsCps(),{x:xsc(MK.seg2[0],MK.seg2[1],2),y:{title:{display:true,text:'имп/с'},grid:{color:'#1a2540'}}},{});
 function dsMed(){return [{label:'МЭД, мкЗв/ч',data:S.med,borderColor:'rgba(129,199,132,.55)',borderWidth:1,pointRadius:1.5,tension:.2},{label:'SMA 45 мин',data:S.med_sma,borderColor:cM,borderWidth:2,pointRadius:0,tension:.3}];}
-mk('c3a',dsMed(),{x:xsc(MK.seg1[0],MK.seg1[1],2),y:{title:{display:true,text:'мкЗв/ч'},grid:{color:'#1a2540'}}},ventAnn(MK.seg1[0],MK.seg1[1]));
-mk('c3b',dsMed(),{x:xsc(MK.seg2[0],MK.seg2[1],2),y:{title:{display:true,text:'мкЗв/ч'},grid:{color:'#1a2540'}}},{});
+mk('c3a',dsMed(),{x:xsc(MK.seg1[0],MK.seg1[1],2),y:{min:0.05,max:0.10,title:{display:true,text:'мкЗв/ч'},grid:{color:'#1a2540'}}},ventAnn(MK.seg1[0],MK.seg1[1]));
+mk('c3b',dsMed(),{x:xsc(MK.seg2[0],MK.seg2[1],2),y:{min:0.05,max:0.10,title:{display:true,text:'мкЗв/ч'},grid:{color:'#1a2540'}}},{});
 function dsOv(){return [{label:'ОА радона',data:S.radon_sma,borderColor:cR,borderWidth:2,pointRadius:0,tension:.3,yAxisID:'y'},{label:'cps (SMA)',data:S.cps_sma,borderColor:cC,borderWidth:2,pointRadius:0,tension:.3,yAxisID:'y1'}];}
 const ovY={y:{position:'left',title:{display:true,text:'радон, Бк/м³'},grid:{color:'#1a2540'}},y1:{position:'right',title:{display:true,text:'cps'},grid:{drawOnChartArea:false}}};
 mk('c4a',dsOv(),Object.assign({x:xsc(MK.seg1[0],MK.seg1[1],2)},ovY),ventAnn(MK.seg1[0],MK.seg1[1]));
