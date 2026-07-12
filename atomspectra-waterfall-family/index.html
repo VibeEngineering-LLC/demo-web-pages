@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SpectraWaterfall — открытые инструменты для гамма-спектрометрии</title>
-<meta name="description" content="Пять открытых инструментов для гамма-спектрометрии: WiFi-шлюз ESP32-S3, просмотрщик водопада, рекордер записи, прошивальщик плат, USB-диагностика. Автономная работа от павербанка, ≈1 Вт.">
+<meta name="description" content="Пять открытых инструментов для гамма-спектрометрии: WiFi-шлюз ESP32-S3, просмотр водопада, рекордер записи, прошивальщик плат, USB-диагностика. Автономная работа от павербанка, ≈1 Вт.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -16,6 +16,10 @@
   a:hover { color: #37c79c; }
   .mono { font-family: 'IBM Plex Mono', monospace; }
   .sg { font-family: 'Space Grotesk', sans-serif; }
+
+  /* i18n toggle: hide the inactive language */
+  [data-lang="ru"] [data-l="en"] { display: none !important; }
+  [data-lang="en"] [data-l="ru"] { display: none !important; }
 
   .page-pad { display: flex; justify-content: center; padding: 48px 24px; }
   .frame { width: 1240px; max-width: 100%; background: #0a0c0f; color: #e8ecef;
@@ -39,16 +43,21 @@
   .nav-links a.gh { color: #0a0c0f; background: #37c79c; padding: 7px 13px; font-weight: 600; }
   .nav-links a.gh:hover { color: #0a0c0f; background: #4fe0b4; }
 
+  .lang-switch { display: inline-flex; border: 1px solid #2c343d; }
+  .lang-switch button { font-family: 'IBM Plex Mono', monospace; font-size: 12px; padding: 6px 11px;
+                        background: transparent; color: #8a95a1; border: 0; cursor: pointer; letter-spacing: .04em; }
+  .lang-switch button + button { border-left: 1px solid #2c343d; }
+  .lang-switch button.on { background: #37c79c; color: #0a0c0f; font-weight: 600; }
+
   /* hero */
   .hero { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #1b2127; }
   .hero-left { padding: 56px 40px 48px; }
   .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .16em; color: #37c79c; margin-bottom: 22px; }
   .hero h1 { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 46px; line-height: 1.05;
              margin: 0 0 10px; letter-spacing: -0.01em; color: #e8ecef; }
-  .hero-sub-en { font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #8a95a1; margin-bottom: 24px; }
-  .hero-p-ru { font-size: 16px; line-height: 1.6; color: #b9c1c9; max-width: 44ch; margin: 0 0 14px; }
-  .hero-p-ru strong { color: #e8ecef; font-weight: 600; }
-  .hero-p-en { font-size: 13px; line-height: 1.55; color: #6f7a86; max-width: 46ch; margin: 0 0 30px; }
+  .hero-sub { font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #8a95a1; margin-bottom: 24px; }
+  .hero-p { font-size: 16px; line-height: 1.6; color: #b9c1c9; max-width: 46ch; margin: 0 0 30px; }
+  .hero-p strong { color: #e8ecef; font-weight: 600; }
   .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
   .btn-primary { display: inline-flex; align-items: center; gap: 8px; color: #0a0c0f; background: #37c79c;
                  padding: 13px 20px; font-weight: 600; font-size: 14px; }
@@ -87,15 +96,13 @@
   .prop:last-child { border-right: 0; }
   .prop-num { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #37c79c; margin-bottom: 12px; }
   .prop h3 { font-family: 'Space Grotesk', sans-serif; font-size: 19px; margin: 0 0 8px; font-weight: 600; }
-  .prop-ru { font-size: 14px; line-height: 1.55; color: #9aa4ae; margin: 0 0 6px; }
-  .prop-en { font-size: 12px; line-height: 1.5; color: #6f7a86; margin: 0; }
+  .prop p { font-size: 14px; line-height: 1.55; color: #9aa4ae; margin: 0; }
 
   /* section headers */
-  .sect-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
+  .sect-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; gap: 16px; }
   .sect-head h2 { font-family: 'Space Grotesk', sans-serif; font-size: 28px; margin: 0; font-weight: 600; }
   .sect-meta { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #6f7a86; }
   .sect-lead { font-size: 13px; color: #8a95a1; margin: 0 0 26px; }
-  .sect-lead .en { color: #6f7a86; }
 
   /* ecosystem rows */
   .repo-row { display: grid; grid-template-columns: 64px 1fr 320px; border-bottom: 1px solid #1b2127; }
@@ -107,8 +114,7 @@
               color: #0a0c0f; background: #4675ed; padding: 3px 7px; }
   .repo-platform { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #6f7a86; }
   .repo-role { font-family: 'Space Grotesk', sans-serif; font-size: 15px; color: #c6cdd4; margin-bottom: 10px; }
-  .repo-role .en { color: #6f7a86; }
-  .repo-desc { font-size: 13.5px; line-height: 1.6; color: #9aa4ae; margin: 0; max-width: 60ch; }
+  .repo-desc { font-size: 13.5px; line-height: 1.6; color: #9aa4ae; margin: 0; max-width: 62ch; }
   .repo-side { padding: 28px 40px 28px 24px; border-left: 1px solid #1b2127;
                display: flex; flex-direction: column; gap: 12px; justify-content: center; }
   .repo-ver-row { display: flex; align-items: center; gap: 8px; }
@@ -135,8 +141,7 @@
   .chain-node .bar { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: #37c79c; display: none; }
   .chain-node.lit .glow, .chain-node.lit .bar { display: block; }
   .cn-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #37c79c; margin-bottom: 10px; }
-  .cn-ru { font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 600; margin-bottom: 2px; }
-  .cn-en { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #6f7a86; margin-bottom: 12px; }
+  .cn-ru { font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 600; margin-bottom: 12px; }
   .cn-node { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #c6cdd4; line-height: 1.4; }
 
   .chain-detail { margin-top: 18px; border: 1px solid #232a32; border-left: 3px solid #37c79c;
@@ -145,11 +150,8 @@
   .cd-stage { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #0a0c0f; background: #37c79c;
               padding: 3px 8px; font-weight: 600; }
   .cd-ru { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 600; color: #e8ecef; }
-  .cd-en { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #6f7a86; }
   .cd-node { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #c6cdd4; margin-left: auto; }
-  .cd-more { font-size: 15px; line-height: 1.6; color: #c6cdd4; margin: 0 0 6px; max-width: 82ch; }
-  .cd-more-en { font-size: 12.5px; line-height: 1.5; color: #6f7a86; font-family: 'IBM Plex Mono', monospace;
-                margin: 0 0 22px; max-width: 88ch; }
+  .cd-more { font-size: 15px; line-height: 1.6; color: #c6cdd4; margin: 0 0 22px; max-width: 88ch; }
   .cd-shots { display: grid; gap: 14px; }
   .cd-shots figure { margin: 0; }
   .cd-shots .imgbox { border: 1px solid #232a32; background: #070809; overflow: hidden; cursor: zoom-in; }
@@ -190,8 +192,7 @@
   .rm-card { border: 1px dashed #2c343d; padding: 22px; background: #0d1014; }
   .rm-badge { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .1em; color: #f9c229;
               border: 1px solid rgba(249,194,41,.4); padding: 3px 8px; }
-  .rm-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 16px; margin: 16px 0 6px; font-weight: 600; }
-  .rm-en { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #6f7a86; margin-bottom: 10px; }
+  .rm-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 16px; margin: 16px 0 8px; font-weight: 600; }
   .rm-card p { font-size: 13px; line-height: 1.55; color: #9aa4ae; margin: 0; }
 
   /* caution */
@@ -249,7 +250,7 @@
   }
 </style>
 </head>
-<body>
+<body data-lang="ru">
 
 <div class="page-pad">
 <section class="frame">
@@ -261,10 +262,14 @@
       <span class="nav-title">Spectra<span class="sep"> // </span>Waterfall</span>
     </div>
     <nav class="nav-links">
-      <a href="#a-eco">экосистема</a>
-      <a href="#a-demo">демо</a>
-      <a href="#a-chain">схема</a>
-      <a href="#a-fmt">форматы</a>
+      <a href="#a-eco"><span data-l="ru">экосистема</span><span data-l="en">ecosystem</span></a>
+      <a href="#a-demo"><span data-l="ru">демо</span><span data-l="en">demo</span></a>
+      <a href="#a-chain"><span data-l="ru">схема</span><span data-l="en">chain</span></a>
+      <a href="#a-fmt"><span data-l="ru">форматы</span><span data-l="en">formats</span></a>
+      <span class="lang-switch" role="group" aria-label="Язык / Language">
+        <button type="button" id="lang-ru" class="on" onclick="setLang('ru')">RU</button>
+        <button type="button" id="lang-en" onclick="setLang('en')">EN</button>
+      </span>
       <a class="gh" href="https://github.com/VibeEngineering-LLC" target="_blank" rel="noopener">GitHub ↗</a>
     </nav>
   </header>
@@ -273,13 +278,12 @@
   <div class="hero">
     <div class="hero-left">
       <div class="eyebrow">OPEN&nbsp;SOURCE&nbsp;TOOLKIT · MIT · ESP32-S3</div>
-      <h1>Гамма-спектрометрия без привязки к ПК или телефону</h1>
-      <div class="hero-sub-en">Portable gamma spectrometry, streamed over WiFi — no PC or phone required.</div>
-      <p class="hero-p-ru">Пять открытых инструментов для <strong>гамма-спектрометрии</strong>. ESP32-S3 подключается к спектрометру по USB и раздаёт спектр по WiFi — весь комплект работает в поле от обычного павербанка.</p>
-      <p class="hero-p-en">Five open tools for gamma spectrometry. An ESP32-S3 bridges the spectrometer over USB and streams the spectrum over WiFi — the whole kit runs in the field from an ordinary power bank.</p>
+      <h1><span data-l="ru">Гамма-спектрометрия без привязки к ПК или телефону</span><span data-l="en">Portable gamma spectrometry, no PC or phone attached</span></h1>
+      <div class="hero-sub"><span data-l="ru">Портативная гамма-спектрометрия, поток по WiFi — без ПК и телефона.</span><span data-l="en">Portable gamma spectrometry, streamed over WiFi — no PC or phone required.</span></div>
+      <p class="hero-p"><span data-l="ru">Пять открытых инструментов для <strong>гамма-спектрометрии</strong>. ESP32-S3 подключается к спектрометру по USB и раздаёт спектр по WiFi — весь комплект работает в поле от обычного павербанка.</span><span data-l="en">Five open tools for <strong>gamma spectrometry</strong>. An ESP32-S3 bridges the spectrometer over USB and streams the spectrum over WiFi — the whole kit runs in the field from an ordinary power bank.</span></p>
       <div class="hero-cta">
-        <a class="btn-primary" href="https://github.com/search?q=topic%3Aatomspectra-waterfall-esp32+org%3AVibeEngineering-LLC&type=Repositories" target="_blank" rel="noopener">Все репозитории →</a>
-        <a class="btn-ghost" href="#a-chain">как это работает ↓</a>
+        <a class="btn-primary" href="https://github.com/search?q=topic%3Aatomspectra-waterfall-esp32+org%3AVibeEngineering-LLC&type=Repositories" target="_blank" rel="noopener"><span data-l="ru">Все репозитории →</span><span data-l="en">All repositories →</span></a>
+        <a class="btn-ghost" href="#a-chain"><span data-l="ru">как это работает ↓</span><span data-l="en">how it works ↓</span></a>
       </div>
     </div>
 
@@ -294,48 +298,45 @@
       </div>
       <div class="spectrum-shot">
         <img src="img/real-spectrum.png" alt="Реальный гамма-спектр: CPS × keV, лог-шкала, пик K-40 ~1461 кэВ">
-        <div class="spectrum-cap">реальный спектр · CPS × keV · лог-шкала</div>
+        <div class="spectrum-cap"><span data-l="ru">реальный спектр · CPS × keV · лог-шкала</span><span data-l="en">real spectrum · CPS × keV · log scale</span></div>
       </div>
     </div>
   </div>
 
   <!-- stat strip -->
   <div class="stats">
-    <div class="stat"><div class="stat-v acc">≈1 Вт</div><div class="stat-l">ПОТРЕБЛЕНИЕ · POWER DRAW</div></div>
-    <div class="stat"><div class="stat-v">8192</div><div class="stat-l">КАНАЛА · CHANNELS</div></div>
-    <div class="stat"><div class="stat-v">5</div><div class="stat-l">ИНСТРУМЕНТОВ · TOOLS</div></div>
-    <div class="stat"><div class="stat-v">6</div><div class="stat-l">ФОРМАТОВ · FORMATS</div></div>
+    <div class="stat"><div class="stat-v acc">≈1 Вт</div><div class="stat-l"><span data-l="ru">ПОТРЕБЛЕНИЕ</span><span data-l="en">POWER DRAW</span></div></div>
+    <div class="stat"><div class="stat-v">8192</div><div class="stat-l"><span data-l="ru">КАНАЛА</span><span data-l="en">CHANNELS</span></div></div>
+    <div class="stat"><div class="stat-v">5</div><div class="stat-l"><span data-l="ru">ИНСТРУМЕНТОВ</span><span data-l="en">TOOLS</span></div></div>
+    <div class="stat"><div class="stat-v">6</div><div class="stat-l"><span data-l="ru">ФОРМАТОВ</span><span data-l="en">FORMATS</span></div></div>
   </div>
 
   <!-- value props -->
   <div class="props">
     <div class="prop">
-      <div class="prop-num">01 · АВТОНОМНОСТЬ</div>
-      <h3>Работа в поле от павербанка</h3>
-      <p class="prop-ru">Питание не привязано к телефону или ПК. Комплект потребляет ≈1 Вт и раздаёт спектр по WiFi.</p>
-      <p class="prop-en">Untethered field operation from a power bank.</p>
+      <div class="prop-num">01 · <span data-l="ru">АВТОНОМНОСТЬ</span><span data-l="en">AUTONOMY</span></div>
+      <h3><span data-l="ru">Работа в поле от павербанка</span><span data-l="en">Field operation from a power bank</span></h3>
+      <p><span data-l="ru">Питание не привязано к телефону или ПК. Комплект потребляет ≈1 Вт и раздаёт спектр по WiFi.</span><span data-l="en">Power is not tied to a phone or PC. The kit draws ≈1 W and streams the spectrum over WiFi.</span></p>
     </div>
     <div class="prop">
-      <div class="prop-num">02 · БЕЗ КОДА</div>
-      <h3>Программировать не нужно</h3>
-      <p class="prop-ru">Готовые .exe на страницах релизов, прошивка платы заливается флешером в несколько кликов.</p>
-      <p class="prop-en">Prebuilt .exe releases, flashing in a few clicks.</p>
+      <div class="prop-num">02 · <span data-l="ru">БЕЗ КОДА</span><span data-l="en">NO CODE</span></div>
+      <h3><span data-l="ru">Программировать не нужно</span><span data-l="en">No programming needed</span></h3>
+      <p><span data-l="ru">Готовые .exe на страницах релизов, прошивка платы заливается флешером в несколько кликов.</span><span data-l="en">Prebuilt .exe files on the releases pages; the board is flashed in a few clicks.</span></p>
     </div>
     <div class="prop">
-      <div class="prop-num">03 · СОВМЕСТИМОСТЬ</div>
-      <h3>Индустриальные форматы</h3>
-      <p class="prop-ru">N42.42, BecqMoni, InterSpec, ЛСРМ и RadiaCode — данные открываются в привычном ПО.</p>
-      <p class="prop-en">Opens in the analysis software you already use.</p>
+      <div class="prop-num">03 · <span data-l="ru">СОВМЕСТИМОСТЬ</span><span data-l="en">COMPATIBILITY</span></div>
+      <h3><span data-l="ru">Индустриальные форматы</span><span data-l="en">Industrial formats</span></h3>
+      <p><span data-l="ru">N42.42, BecqMoni, InterSpec, ЛСРМ и RadiaCode — данные открываются в привычном ПО.</span><span data-l="en">N42.42, BecqMoni, InterSpec, ЛСРМ and RadiaCode — data opens in the software you already use.</span></p>
     </div>
   </div>
 
   <!-- ecosystem -->
   <div id="a-eco" style="padding:48px 40px 20px;">
     <div class="sect-head">
-      <h2>Экосистема</h2>
+      <h2><span data-l="ru">Экосистема</span><span data-l="en">Ecosystem</span></h2>
       <span class="sect-meta">5 REPOSITORIES</span>
     </div>
-    <p class="sect-lead">Пять репозиториев, закрывающих полный путь сигнала: прибор → шлюз → приём → анализ.</p>
+    <p class="sect-lead"><span data-l="ru">Пять репозиториев, закрывающих полный путь сигнала: прибор → шлюз → приём → анализ.</span><span data-l="en">Five repositories covering the full signal path: device → gateway → capture → analysis.</span></p>
   </div>
 
   <div id="a-comp" style="border-top:1px solid #1b2127;">
@@ -345,17 +346,17 @@
       <div class="repo-main">
         <div class="repo-title-row">
           <h3 class="repo-name">waterfall-esp32</h3>
-          <span class="repo-tag">прошивка</span>
+          <span class="repo-tag"><span data-l="ru">прошивка</span><span data-l="en">firmware</span></span>
           <span class="repo-platform">ESP32-S3</span>
         </div>
-        <div class="repo-role">WiFi-шлюз <span class="en">· WiFi gateway</span></div>
-        <p class="repo-desc">Сердце комплекта: плата ESP32-S3 подключается к спектрометру по USB (OTG Host) и заменяет телефон или ПК — спектр смотрят в браузере с любого устройства в той же сети. Web UI показывает живой 8192-канальный спектр с маркерами линий и мощностью дозы, водопад накоплений и мониторинг платы; в поле шлюз сам поднимает точку доступа и работает от павербанка. Накопленное хранится на flash и выгружается прямо из браузера в форматах BecqMoni, InterSpec, N42.42 и ЛСРМ .spe. Для десктопного ПО открыт TCP-мост (порт 8234): BecqMoni или wf-recorder получают поток так, будто прибор подключён напрямую.</p>
+        <div class="repo-role"><span data-l="ru">WiFi-шлюз</span><span data-l="en">WiFi gateway</span></div>
+        <p class="repo-desc"><span data-l="ru">Сердце комплекта: плата ESP32-S3 подключается к спектрометру по USB (OTG Host) и заменяет телефон или ПК — спектр смотрят в браузере с любого устройства в той же сети. Web UI показывает живой 8192-канальный спектр с маркерами линий и мощностью дозы, водопад накоплений и мониторинг платы; в поле шлюз сам поднимает точку доступа и работает от павербанка. Накопленное хранится на flash и выгружается прямо из браузера в форматах BecqMoni, InterSpec, N42.42 и ЛСРМ .spe. Для десктопного ПО открыт TCP-мост (порт 8234): BecqMoni или wf-recorder получают поток так, будто прибор подключён напрямую.</span><span data-l="en">The heart of the kit: an ESP32-S3 board connects to the spectrometer over USB (OTG Host) and replaces the phone or PC — the spectrum is viewed in a browser from any device on the same network. The Web UI shows the live 8192-channel spectrum with line markers and dose rate, an accumulation waterfall and board monitoring; in the field the gateway raises its own access point and runs from a power bank. Data is stored on flash and exported straight from the browser as BecqMoni, InterSpec, N42.42 and ЛСРМ .spe. A TCP bridge (port 8234) lets desktop software — BecqMoni or wf-recorder — receive the stream as if the device were wired directly.</span></p>
       </div>
       <div class="repo-side">
         <div class="repo-ver-row"><span class="repo-ver">firmware-v1.1.2</span><span class="repo-date">11.07.2026</span></div>
         <div class="repo-links">
-          <a class="rep" href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32" target="_blank" rel="noopener">репозиторий ↗</a>
-          <a class="rel" href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32/releases" target="_blank" rel="noopener">релизы ↗</a>
+          <a class="rep" href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32" target="_blank" rel="noopener"><span data-l="ru">репозиторий ↗</span><span data-l="en">repo ↗</span></a>
+          <a class="rel" href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32/releases" target="_blank" rel="noopener"><span data-l="ru">релизы ↗</span><span data-l="en">releases ↗</span></a>
         </div>
       </div>
     </div>
@@ -368,14 +369,14 @@
           <span class="repo-tag">desktop</span>
           <span class="repo-platform">Windows / Python</span>
         </div>
-        <div class="repo-role">Просмотр спектрограмм <span class="en">· Spectrogram viewing</span></div>
-        <p class="repo-desc">Анализ длительных записей: суточный лог разворачивается в 3D-поверхность или 2D-карту «время × энергия», где короткий всплеск активности или дрейф фона виден сразу — без перебора сотен спектров вручную. Любой момент записи раскрывается в обычный спектр, любая энергетическая линия — в график её хода во времени; выделенный ROI сверяется с библиотекой 21 нуклида. Читает .aswf, RadiaCode .rcspg и N42.42; многочасовые файлы грузятся потоково, без загрузки целиком в память.</p>
+        <div class="repo-role"><span data-l="ru">Просмотр спектрограмм</span><span data-l="en">Spectrogram viewing</span></div>
+        <p class="repo-desc"><span data-l="ru">Анализ длительных записей: суточный лог разворачивается в 3D-поверхность или 2D-карту «время × энергия», где короткий всплеск активности или дрейф фона виден сразу — без перебора сотен спектров вручную. Любой момент записи раскрывается в обычный спектр, любая энергетическая линия — в график её хода во времени; выделенный ROI сверяется с библиотекой 21 нуклида. Читает .aswf, RadiaCode .rcspg и N42.42; многочасовые файлы грузятся потоково, без загрузки целиком в память.</span><span data-l="en">Analysis of long recordings: a day-long log unfolds into a 3D surface or a 2D time × energy map, where a short activity burst or a background drift is seen at once — without scrolling through hundreds of spectra by hand. Any moment of the record opens as an ordinary spectrum, any energy line as a graph of its behaviour over time; a selected ROI is checked against a 21-nuclide library. Reads .aswf, RadiaCode .rcspg and N42.42; multi-hour files stream in without loading fully into memory.</span></p>
       </div>
       <div class="repo-side">
         <div class="repo-ver-row"><span class="repo-ver">v0.1.10</span><span class="repo-date">12.07.2026</span></div>
         <div class="repo-links">
-          <a class="rep" href="https://github.com/VibeEngineering-LLC/waterfall-viewer" target="_blank" rel="noopener">репозиторий ↗</a>
-          <a class="rel" href="https://github.com/VibeEngineering-LLC/waterfall-viewer/releases" target="_blank" rel="noopener">релизы ↗</a>
+          <a class="rep" href="https://github.com/VibeEngineering-LLC/waterfall-viewer" target="_blank" rel="noopener"><span data-l="ru">репозиторий ↗</span><span data-l="en">repo ↗</span></a>
+          <a class="rel" href="https://github.com/VibeEngineering-LLC/waterfall-viewer/releases" target="_blank" rel="noopener"><span data-l="ru">релизы ↗</span><span data-l="en">releases ↗</span></a>
         </div>
       </div>
     </div>
@@ -388,14 +389,14 @@
           <span class="repo-tag">desktop</span>
           <span class="repo-platform">Windows / stdlib</span>
         </div>
-        <div class="repo-role">Непрерывная запись <span class="en">· Continuous recorder</span></div>
-        <p class="repo-desc">Страховка длинных сессий: клиент на ПК периодически забирает сегменты водопада со шлюза и сшивает их в единый .aswf — суточная запись не зависит от открытой вкладки браузера и переживает обрывы WiFi. Сегмент удаляется с платы только после подтверждённой записи на диск (fsync); целостность контролируют CRC32 и порядковые номера, поэтому пропуск в записи виден сразу, а не при разборе данных. Параллельно ведёт лог температуры платы в CSV; на странице релизов — готовый .exe без зависимостей.</p>
+        <div class="repo-role"><span data-l="ru">Непрерывная запись</span><span data-l="en">Continuous recorder</span></div>
+        <p class="repo-desc"><span data-l="ru">Страховка длинных сессий: клиент на ПК периодически забирает сегменты водопада со шлюза и сшивает их в единый .aswf — суточная запись не зависит от открытой вкладки браузера и переживает обрывы WiFi. Сегмент удаляется с платы только после подтверждённой записи на диск (fsync); целостность контролируют CRC32 и порядковые номера, поэтому пропуск в записи виден сразу, а не при разборе данных. Параллельно ведёт лог температуры платы в CSV; на странице релизов — готовый .exe без зависимостей.</span><span data-l="en">Insurance for long sessions: a PC client periodically pulls waterfall segments from the gateway and stitches them into a single .aswf — a day-long recording no longer depends on an open browser tab and survives WiFi drops. A segment is deleted from the board only after a confirmed disk write (fsync); integrity is guarded by CRC32 and sequence numbers, so a gap in the recording shows up at once rather than at analysis time. It also logs board temperature to CSV; the releases page has a ready-made, dependency-free .exe.</span></p>
       </div>
       <div class="repo-side">
         <div class="repo-ver-row"><span class="repo-ver">v0.2.1</span><span class="repo-date">11.07.2026</span></div>
         <div class="repo-links">
-          <a class="rep" href="https://github.com/VibeEngineering-LLC/wf-recorder" target="_blank" rel="noopener">репозиторий ↗</a>
-          <a class="rel" href="https://github.com/VibeEngineering-LLC/wf-recorder/releases" target="_blank" rel="noopener">релизы ↗</a>
+          <a class="rep" href="https://github.com/VibeEngineering-LLC/wf-recorder" target="_blank" rel="noopener"><span data-l="ru">репозиторий ↗</span><span data-l="en">repo ↗</span></a>
+          <a class="rel" href="https://github.com/VibeEngineering-LLC/wf-recorder/releases" target="_blank" rel="noopener"><span data-l="ru">релизы ↗</span><span data-l="en">releases ↗</span></a>
         </div>
       </div>
     </div>
@@ -408,14 +409,14 @@
           <span class="repo-tag">desktop</span>
           <span class="repo-platform">Windows / Python</span>
         </div>
-        <div class="repo-role">Прошивальщик плат <span class="en">· Board flasher</span></div>
-        <p class="repo-desc">Убирает главный барьер — прошивку платы: вместо esptool и командной строки — окно с двумя списками. Флешер сам находит COM-порт, скачивает актуальный релиз прошивки с GitHub и заливает его по USB в несколько кликов; обновление на новую версию — та же процедура. Один инструмент обслуживает четыре проекта: AtomSpectra, AtomFast, Radex, RadonEye.</p>
+        <div class="repo-role"><span data-l="ru">Прошивальщик плат</span><span data-l="en">Board flasher</span></div>
+        <p class="repo-desc"><span data-l="ru">Убирает главный барьер — прошивку платы: вместо esptool и командной строки — окно с двумя списками. Флешер сам находит COM-порт, скачивает актуальный релиз прошивки с GitHub и заливает его по USB в несколько кликов; обновление на новую версию — та же процедура. Один инструмент обслуживает четыре проекта: AtomSpectra, AtomFast, Radex, RadonEye.</span><span data-l="en">Removes the main barrier — flashing the board: instead of esptool and the command line, a window with two drop-downs. The flasher finds the COM port itself, downloads the current firmware release from GitHub and writes it over USB in a few clicks; updating to a new version is the same procedure. One tool serves four projects: AtomSpectra, AtomFast, Radex, RadonEye.</span></p>
       </div>
       <div class="repo-side">
         <div class="repo-ver-row"><span class="repo-ver">v0.2.2</span><span class="repo-date">10.07.2026</span></div>
         <div class="repo-links">
-          <a class="rep" href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32-flasher" target="_blank" rel="noopener">репозиторий ↗</a>
-          <a class="rel" href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32-flasher/releases" target="_blank" rel="noopener">релизы ↗</a>
+          <a class="rep" href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32-flasher" target="_blank" rel="noopener"><span data-l="ru">репозиторий ↗</span><span data-l="en">repo ↗</span></a>
+          <a class="rel" href="https://github.com/VibeEngineering-LLC/atomspectra-waterfall-esp32-flasher/releases" target="_blank" rel="noopener"><span data-l="ru">релизы ↗</span><span data-l="en">releases ↗</span></a>
         </div>
       </div>
     </div>
@@ -425,17 +426,17 @@
       <div class="repo-main">
         <div class="repo-title-row">
           <h3 class="repo-name">esp32s3-diag</h3>
-          <span class="repo-tag">прошивка</span>
-          <span class="repo-platform">ESP32-S3 + флешер</span>
+          <span class="repo-tag"><span data-l="ru">прошивка</span><span data-l="en">firmware</span></span>
+          <span class="repo-platform"><span data-l="ru">ESP32-S3 + флешер</span><span data-l="en">ESP32-S3 + flasher</span></span>
         </div>
-        <div class="repo-role">Диагностика USB Host <span class="en">· USB Host diagnostics</span></div>
-        <p class="repo-desc">«Рентген платы» на случай, когда прибор и шлюз не видят друг друга: диагностическая прошивка прогоняет цепочку Boot → WiFi → USB Host → Enum → Detect → Handshake и показывает в Web UI, на каком именно звене обрывается связь. Читает USB-дескрипторы и endpoints, выполняет FTDI vendor init и пробует SHPROTO-рукопожатие — вместо гадания по симптомам получается точный диагноз. Ставится one-click флешером; перед тестами обязателен backup настроек прибора (см. README), после — возврат штатной прошивки тем же флешером.</p>
+        <div class="repo-role"><span data-l="ru">Диагностика USB Host</span><span data-l="en">USB Host diagnostics</span></div>
+        <p class="repo-desc"><span data-l="ru">«Рентген платы» на случай, когда прибор и шлюз не видят друг друга: диагностическая прошивка прогоняет цепочку Boot → WiFi → USB Host → Enum → Detect → Handshake и показывает в Web UI, на каком именно звене обрывается связь. Читает USB-дескрипторы и endpoints, выполняет FTDI vendor init и пробует SHPROTO-рукопожатие — вместо гадания по симптомам получается точный диагноз. Ставится one-click флешером; перед тестами обязателен backup настроек прибора (см. README), после — возврат штатной прошивки тем же флешером.</span><span data-l="en">An “X-ray of the board” for when the device and the gateway don't see each other: the diagnostic firmware runs the Boot → WiFi → USB Host → Enum → Detect → Handshake chain and shows in the Web UI exactly which link the connection breaks at. It reads USB descriptors and endpoints, performs FTDI vendor init and attempts a SHPROTO handshake — a precise diagnosis instead of guessing from symptoms. Installed with the one-click flasher; a backup of the device settings is mandatory before tests (see README), and the stock firmware is restored with the same flasher afterwards.</span></p>
       </div>
       <div class="repo-side">
         <div class="repo-ver-row"><span class="repo-ver">v0.2.0</span><span class="repo-date">08.07.2026</span></div>
         <div class="repo-links">
-          <a class="rep" href="https://github.com/VibeEngineering-LLC/esp32s3-diag" target="_blank" rel="noopener">репозиторий ↗</a>
-          <a class="rel" href="https://github.com/VibeEngineering-LLC/esp32s3-diag/releases" target="_blank" rel="noopener">релизы ↗</a>
+          <a class="rep" href="https://github.com/VibeEngineering-LLC/esp32s3-diag" target="_blank" rel="noopener"><span data-l="ru">репозиторий ↗</span><span data-l="en">repo ↗</span></a>
+          <a class="rel" href="https://github.com/VibeEngineering-LLC/esp32s3-diag/releases" target="_blank" rel="noopener"><span data-l="ru">релизы ↗</span><span data-l="en">releases ↗</span></a>
         </div>
       </div>
     </div>
@@ -445,10 +446,10 @@
   <!-- connection chain -->
   <div id="a-chain" style="padding:48px 40px;">
     <div class="sect-head">
-      <h2>Как связаны компоненты</h2>
-      <span class="sect-meta">SIGNAL PATH · КЛИКНИТЕ УЗЕЛ</span>
+      <h2><span data-l="ru">Как связаны компоненты</span><span data-l="en">How components connect</span></h2>
+      <span class="sect-meta"><span data-l="ru">SIGNAL PATH · КЛИКНИТЕ УЗЕЛ</span><span data-l="en">SIGNAL PATH · CLICK A NODE</span></span>
     </div>
-    <p class="sect-lead">Кликните по узлу — раскроется подробное описание этапа и скриншоты. <span class="en">Click a node for a detailed description and screenshots.</span></p>
+    <p class="sect-lead"><span data-l="ru">Кликните по узлу — раскроется подробное описание этапа и скриншоты.</span><span data-l="en">Click a node — a detailed stage description and screenshots will open.</span></p>
 
     <div class="chain-row" id="chain-nodes"></div>
     <div id="chain-detail"></div>
@@ -457,84 +458,98 @@
   <!-- formats -->
   <div id="a-fmt" style="padding:8px 40px 48px;">
     <div class="sect-head" style="margin-bottom:20px;">
-      <h2>Форматы</h2>
+      <h2><span data-l="ru">Форматы</span><span data-l="en">Formats</span></h2>
       <span class="sect-meta">INTERCHANGE FORMATS</span>
     </div>
     <div class="fmt-table">
       <div class="fmt-head">
-        <div>ФОРМАТ</div><div>ШЛЮЗ</div><div>ВЬЮЕР</div><div>НАЗНАЧЕНИЕ</div>
+        <div><span data-l="ru">ФОРМАТ</span><span data-l="en">FORMAT</span></div>
+        <div><span data-l="ru">ШЛЮЗ</span><span data-l="en">GATEWAY</span></div>
+        <div><span data-l="ru">ВЬЮЕР</span><span data-l="en">VIEWER</span></div>
+        <div><span data-l="ru">НАЗНАЧЕНИЕ</span><span data-l="en">PURPOSE</span></div>
       </div>
-      <div class="fmt-row"><div>.aswf</div><div>пишет</div><div>читает</div><div>нативный водопад · native waterfall</div></div>
-      <div class="fmt-row"><div>N42.42-2011</div><div>экспорт</div><div>читает</div><div>индустриальный обмен · interchange</div></div>
-      <div class="fmt-row"><div>BecqMoni XML</div><div>экспорт</div><div>—</div><div>анализ в BecqMoni</div></div>
-      <div class="fmt-row"><div>InterSpec CSV</div><div>экспорт</div><div>—</div><div>анализ в InterSpec (Sandia)</div></div>
-      <div class="fmt-row"><div>ЛСРМ .spe</div><div>экспорт</div><div>—</div><div>гамма-анализ SpectraLine</div></div>
-      <div class="fmt-row"><div>RadiaCode .rcspg</div><div>—</div><div>читает</div><div>кросс-совместимость RadiaCode-110</div></div>
+      <div class="fmt-row"><div>.aswf</div><div><span data-l="ru">пишет</span><span data-l="en">writes</span></div><div><span data-l="ru">читает</span><span data-l="en">reads</span></div><div><span data-l="ru">нативный водопад</span><span data-l="en">native waterfall</span></div></div>
+      <div class="fmt-row"><div>N42.42-2011</div><div><span data-l="ru">экспорт</span><span data-l="en">export</span></div><div><span data-l="ru">читает</span><span data-l="en">reads</span></div><div><span data-l="ru">индустриальный обмен</span><span data-l="en">interchange</span></div></div>
+      <div class="fmt-row"><div>BecqMoni XML</div><div><span data-l="ru">экспорт</span><span data-l="en">export</span></div><div>—</div><div><span data-l="ru">анализ в BecqMoni</span><span data-l="en">analysis in BecqMoni</span></div></div>
+      <div class="fmt-row"><div>InterSpec CSV</div><div><span data-l="ru">экспорт</span><span data-l="en">export</span></div><div>—</div><div><span data-l="ru">анализ в InterSpec (Sandia)</span><span data-l="en">analysis in InterSpec (Sandia)</span></div></div>
+      <div class="fmt-row"><div>ЛСРМ .spe</div><div><span data-l="ru">экспорт</span><span data-l="en">export</span></div><div>—</div><div><span data-l="ru">гамма-анализ SpectraLine</span><span data-l="en">gamma analysis in SpectraLine</span></div></div>
+      <div class="fmt-row"><div>RadiaCode .rcspg</div><div>—</div><div><span data-l="ru">читает</span><span data-l="en">reads</span></div><div><span data-l="ru">кросс-совместимость RadiaCode-110</span><span data-l="en">RadiaCode-110 cross-compatibility</span></div></div>
     </div>
   </div>
 
   <!-- live demo -->
   <div id="a-demo" style="padding:48px 40px; border-bottom:1px solid #1b2127;">
     <div class="sect-head">
-      <h2>Живое демо шлюза</h2>
-      <span class="sect-meta">LIVE WEB UI · В БРАУЗЕРЕ</span>
+      <h2><span data-l="ru">Живое демо шлюза</span><span data-l="en">Live gateway demo</span></h2>
+      <span class="sect-meta"><span data-l="ru">LIVE WEB UI · В БРАУЗЕРЕ</span><span data-l="en">LIVE WEB UI · IN THE BROWSER</span></span>
     </div>
-    <p class="sect-lead" style="max-width:80ch;">Тот же интерфейс, что открывается в браузере при подключении к шлюзу — вкладки «Спектр», «Водопад», «Мониторинг». Можно покликать прямо здесь. <span class="en">The actual gateway Web UI — interact with it right here.</span></p>
+    <p class="sect-lead" style="max-width:80ch;"><span data-l="ru">Тот же интерфейс, что открывается в браузере при подключении к шлюзу — вкладки «Спектр», «Водопад», «Мониторинг». Можно покликать прямо здесь.</span><span data-l="en">The actual gateway Web UI that opens in the browser when you connect — Spectrum, Waterfall and Monitoring tabs. Interact with it right here.</span></p>
 
     <div class="demo-frame">
       <div class="demo-bar">
         <div class="demo-dots"><span></span><span></span><span></span></div>
         <div class="demo-addr">waterfall-esp32 · demo</div>
-        <a class="demo-full" href="https://vibeengineering-llc.github.io/atomspectra-waterfall-esp32/demo/index.html" target="_blank" rel="noopener">во весь экран ↗</a>
+        <a class="demo-full" href="https://vibeengineering-llc.github.io/atomspectra-waterfall-esp32/demo/index.html" target="_blank" rel="noopener"><span data-l="ru">во весь экран ↗</span><span data-l="en">fullscreen ↗</span></a>
       </div>
       <div class="demo-view">
         <iframe src="https://vibeengineering-llc.github.io/atomspectra-waterfall-esp32/demo/index.html" title="SpectraWaterfall — живое демо Web UI" loading="lazy"></iframe>
       </div>
     </div>
-    <p class="demo-note">демо-режим без подключённого прибора · данные симулированы</p>
+    <p class="demo-note"><span data-l="ru">демо-режим без подключённого прибора · данные симулированы</span><span data-l="en">demo mode, no device connected · data simulated</span></p>
   </div>
 
   <!-- roadmap -->
   <div style="padding:48px 40px;">
     <div class="sect-head" style="margin-bottom:20px;">
-      <h2>В разработке</h2>
+      <h2><span data-l="ru">В разработке</span><span data-l="en">Roadmap</span></h2>
       <span class="sect-meta">ROADMAP</span>
     </div>
     <div class="roadmap">
       <div class="rm-card">
         <span class="rm-badge">СКОРО · SOON</span>
-        <h3>Запись на внешние носители</h3>
-        <div class="rm-en">External storage</div>
-        <p>Сохранение водопада напрямую на SD-карту платы — многосуточные записи без ПК и без ограничения объёмом flash.</p>
+        <h3><span data-l="ru">Запись на внешние носители</span><span data-l="en">External storage</span></h3>
+        <p><span data-l="ru">Сохранение водопада напрямую на SD-карту платы — многосуточные записи без ПК и без ограничения объёмом flash.</span><span data-l="en">Recording the waterfall straight to the board's SD card — multi-day records with no PC and no flash-size limit.</span></p>
       </div>
       <div class="rm-card">
         <span class="rm-badge">СКОРО · SOON</span>
-        <h3>Подключение GPS</h3>
-        <div class="rm-en">GPS support</div>
-        <p>Привязка каждого спектра к координатам приёмника — трек измерений вместе с данными в одном файле.</p>
+        <h3><span data-l="ru">Подключение GPS</span><span data-l="en">GPS support</span></h3>
+        <p><span data-l="ru">Привязка каждого спектра к координатам приёмника — трек измерений вместе с данными в одном файле.</span><span data-l="en">Tagging every spectrum with the receiver's coordinates — a measurement track together with the data in one file.</span></p>
       </div>
       <div class="rm-card">
         <span class="rm-badge">СКОРО · SOON</span>
-        <h3>Поиск и картирование</h3>
-        <div class="rm-en">Contamination mapping</div>
-        <p>GPS + автономное питание + непрерывная запись: поиск источников и картирование радиоактивных загрязнений.</p>
+        <h3><span data-l="ru">Поиск и картирование</span><span data-l="en">Contamination mapping</span></h3>
+        <p><span data-l="ru">GPS + автономное питание + непрерывная запись: поиск источников и картирование радиоактивных загрязнений.</span><span data-l="en">GPS + autonomous power + continuous recording: locating sources and mapping radioactive contamination.</span></p>
       </div>
     </div>
   </div>
 
   <!-- caution -->
   <div class="caution">
-    <div class="caution-title">⚠ ВНИМАНИЕ · CAUTION</div>
-    <p><strong>Все эксперименты со спектрометрами и подключённым оборудованием вы проводите на свой страх и риск.</strong> Проекты предоставляются «как есть» (as is), без каких-либо гарантий. Авторы и участники не несут ответственности за любой вред, прямой или косвенный: повреждение спектрометра, детектора, ФЭУ, ESP32-платы, компьютера или иного оборудования, потерю данных или настроек прибора.</p>
-    <p>В частности:</p>
-    <ul>
-      <li>Команды настройки прибора (<code>-ris</code>, <code>-fall</code>, <code>-nos</code>, <code>-max</code>, <code>-hyst</code>, <code>-U</code>, <code>-V</code>, <code>-step</code> и др.) изменяют внутреннюю конфигурацию обработки сигнала и аппаратные параметры HV/усиления (POT / POT2). Неверные значения могут сбить заводскую настройку детектора или повредить прибор. Параметры индивидуальны для каждого экземпляра — не записывайте их «вслепую» и не копируйте чужие значения.</li>
-      <li>Высокое напряжение (HV) детектора — потенциально опасно для прибора при неверной настройке.</li>
-      <li>Восстановление сбитой настройки детектора выполняет производитель прибора, а не шлюз. При сбое заводского профиля детектора обращайтесь к производителю, не пытайтесь восстановить параметры самостоятельно.</li>
-      <li>Опция очистки спектра при старте шлюза стирает накопленные на приборе данные — сохраните их штатным ПО заранее.</li>
-      <li>Флешер перезаписывает flash выбранной платы: проверяйте COM-порт, посторонние USB-устройства прошивать нельзя.</li>
-    </ul>
-    <p>Используя эти проекты, вы соглашаетесь, что понимаете риски и принимаете полную ответственность за свои действия с оборудованием. Полный текст условий — в README каждого репозитория.</p>
+    <div class="caution-title">⚠ <span data-l="ru">ВНИМАНИЕ</span><span data-l="en">CAUTION</span></div>
+    <div data-l="ru">
+      <p><strong>Все эксперименты со спектрометрами и подключённым оборудованием вы проводите на свой страх и риск.</strong> Проекты предоставляются «как есть» (as is), без каких-либо гарантий. Авторы и участники не несут ответственности за любой вред, прямой или косвенный: повреждение спектрометра, детектора, ФЭУ, ESP32-платы, компьютера или иного оборудования, потерю данных или настроек прибора.</p>
+      <p>В частности:</p>
+      <ul>
+        <li>Команды настройки прибора (<code>-ris</code>, <code>-fall</code>, <code>-nos</code>, <code>-max</code>, <code>-hyst</code>, <code>-U</code>, <code>-V</code>, <code>-step</code> и др.) изменяют внутреннюю конфигурацию обработки сигнала и аппаратные параметры HV/усиления (POT / POT2). Неверные значения могут сбить заводскую настройку детектора или повредить прибор. Параметры индивидуальны для каждого экземпляра — не записывайте их «вслепую» и не копируйте чужие значения.</li>
+        <li>Высокое напряжение (HV) детектора — потенциально опасно для прибора при неверной настройке.</li>
+        <li>Восстановление сбитой настройки детектора выполняет производитель прибора, а не шлюз. При сбое заводского профиля детектора обращайтесь к производителю, не пытайтесь восстановить параметры самостоятельно.</li>
+        <li>Опция очистки спектра при старте шлюза стирает накопленные на приборе данные — сохраните их штатным ПО заранее.</li>
+        <li>Флешер перезаписывает flash выбранной платы: проверяйте COM-порт, посторонние USB-устройства прошивать нельзя.</li>
+      </ul>
+      <p>Используя эти проекты, вы соглашаетесь, что понимаете риски и принимаете полную ответственность за свои действия с оборудованием. Полный текст условий — в README каждого репозитория.</p>
+    </div>
+    <div data-l="en">
+      <p><strong>All experiments with spectrometers and connected equipment are carried out at your own risk.</strong> The projects are provided “as is”, without any warranty. The authors and contributors are not liable for any damage, direct or indirect: damage to the spectrometer, detector, PMT, ESP32 board, computer or other equipment, or loss of data or device settings.</p>
+      <p>In particular:</p>
+      <ul>
+        <li>Device configuration commands (<code>-ris</code>, <code>-fall</code>, <code>-nos</code>, <code>-max</code>, <code>-hyst</code>, <code>-U</code>, <code>-V</code>, <code>-step</code>, etc.) change the internal signal-processing configuration and hardware HV/gain parameters (POT / POT2). Wrong values can disturb the detector's factory calibration or damage the device. These parameters are unique to each unit — do not write them “blindly” and do not copy someone else's values.</li>
+        <li>The detector's high voltage (HV) is potentially dangerous to the device if set incorrectly.</li>
+        <li>Restoring a disturbed detector calibration is done by the device manufacturer, not by this gateway. If the factory detector profile is corrupted, contact the manufacturer; do not try to restore the parameters yourself.</li>
+        <li>The gateway's “clear spectrum on start” option wipes the data accumulated on the device — save it with the stock software beforehand.</li>
+        <li>The flasher overwrites the selected board's flash: check the COM port; do not flash unrelated USB devices.</li>
+      </ul>
+      <p>By using these projects you agree that you understand the risks and accept full responsibility for your actions with the equipment. The full terms are in each repository's README.</p>
+    </div>
   </div>
 
   <!-- footer -->
@@ -553,6 +568,21 @@
 </div>
 
 <script>
+/* ===== language toggle ===== */
+function setLang(l) {
+  document.body.setAttribute('data-lang', l);
+  document.documentElement.setAttribute('lang', l);
+  var ru = document.getElementById('lang-ru'), en = document.getElementById('lang-en');
+  if (ru) ru.classList.toggle('on', l === 'ru');
+  if (en) en.classList.toggle('on', l === 'en');
+  try { localStorage.setItem('swf-lang', l); } catch (e) {}
+}
+(function () {
+  var saved = 'ru';
+  try { saved = localStorage.getItem('swf-lang') || 'ru'; } catch (e) {}
+  setLang(saved);
+})();
+
 /* ===== waterfall canvas (Turbo, falling dots) ===== */
 (function () {
   function turbo(t) {
@@ -602,7 +632,7 @@
   }
   resize();
   window.addEventListener('resize', resize);
-  if (reduced) return; /* статичный кадр при reduced-motion */
+  if (reduced) return;
   var last = performance.now();
   function render(ts) {
     offset += speed * (Math.min(50, ts - last) / 1000); last = ts;
@@ -617,39 +647,50 @@
 /* ===== connection chain ===== */
 (function () {
   var IMG = 'img/';
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function bi(ru, en) { return '<span data-l="ru">' + ru + '</span><span data-l="en">' + en + '</span>'; }
+
   var chainData = [
-    { ru: 'Прибор', en: 'Device', node: 'Гамма-спектрометр',
+    { ru: 'Прибор', en: 'Device', node: 'Гамма-спектрометр', nodeEn: 'Gamma spectrometer',
       more: 'Сцинтилляционный гамма-спектрометр отдаёт 8192-канальный спектр по USB (протокол shproto). Весь измерительный комплект — прибор + плата ESP32-S3 + павербанк — потребляет ≈1 Вт и работает автономно в поле, без привязки к телефону или ПК.',
-      moreEn: 'A scintillation gamma spectrometer streams an 8192-channel spectrum over USB (shproto). The whole kit draws ≈1 W and runs untethered in the field.',
+      moreEn: 'A scintillation gamma spectrometer streams an 8192-channel spectrum over USB (shproto). The whole kit — device + ESP32-S3 board + power bank — draws ≈1 W and runs untethered in the field, with no phone or PC.',
       grid: '1fr',
       shots: [
         { img: 'https://raw.githubusercontent.com/VibeEngineering-LLC/atomspectra-waterfall-esp32/main/images/assembly.jpg',
-          cap: 'Комплект в сборе: гамма-спектрометр + ESP32-S3 + павербанк; USB-тестер показывает потребление ≈1 Вт.' }
+          cap: 'Комплект в сборе: гамма-спектрометр + ESP32-S3 + павербанк; USB-тестер показывает потребление ≈1 Вт.',
+          capEn: 'Assembled kit: gamma spectrometer + ESP32-S3 + power bank; the USB tester shows ≈1 W draw.' }
       ] },
-    { ru: 'Шлюз', en: 'Gateway', node: 'waterfall-esp32',
+    { ru: 'Шлюз', en: 'Gateway', node: 'waterfall-esp32', nodeEn: 'waterfall-esp32',
       more: 'waterfall-esp32 — прошивка ESP32-S3. Плата подключается к прибору по USB (OTG Host) и отдаёт спектр в браузер в реальном времени: вкладки «Спектр», «Водопад» и «Мониторинг». Экспорт BecqMoni / InterSpec / N42.42 / ЛСРМ, TCP-мост (порт 8234) для десктопного ПО, запись на flash, полевой режим точки доступа.',
-      moreEn: 'ESP32-S3 firmware. USB OTG Host to the device, live spectrum in the browser — Spectrum, Waterfall and Monitoring tabs. Exports to 4 formats, TCP bridge on port 8234, flash recording, AP field mode.',
+      moreEn: 'waterfall-esp32 — ESP32-S3 firmware. The board connects to the device over USB (OTG Host) and serves the spectrum to the browser in real time: Spectrum, Waterfall and Monitoring tabs. Exports to BecqMoni / InterSpec / N42.42 / ЛСРМ, a TCP bridge (port 8234) for desktop software, flash recording, access-point field mode.',
       grid: '1fr 1fr 1fr',
       shots: [
-        { img: IMG + 'web-spectrum.jpg', cap: 'Спектр: живой спектр, маркеры линий Th-232 / K-40, мощность дозы, экспорт XML/CSV/N42/SPE.' },
-        { img: IMG + 'web-waterfall.jpg', cap: 'Водопад: спектрограмма в палитре Turbo, запись во flash, экспорт .n42 / .aswf.' },
-        { img: IMG + 'web-monitor.jpg', cap: 'Мониторинг: CPS по интервалам с погрешностями, график, таблица, выгрузка CSV.' }
+        { img: IMG + 'web-spectrum.jpg', cap: 'Спектр: живой спектр, маркеры линий Th-232 / K-40, мощность дозы, экспорт XML/CSV/N42/SPE.',
+          capEn: 'Spectrum: live spectrum, Th-232 / K-40 line markers, dose rate, export to XML/CSV/N42/SPE.' },
+        { img: IMG + 'web-waterfall.jpg', cap: 'Водопад: спектрограмма в палитре Turbo, запись во flash, экспорт .n42 / .aswf.',
+          capEn: 'Waterfall: Turbo-palette spectrogram, flash recording, .n42 / .aswf export.' },
+        { img: IMG + 'web-monitor.jpg', cap: 'Мониторинг: CPS по интервалам с погрешностями, график, таблица, выгрузка CSV.',
+          capEn: 'Monitoring: CPS per interval with uncertainties, chart, table, CSV export.' }
       ] },
-    { ru: 'Приём', en: 'Capture', node: 'Браузер · TCP:8234 · wf-recorder',
+    { ru: 'Приём', en: 'Capture', node: 'Браузер · TCP:8234 · wf-recorder', nodeEn: 'Browser · TCP:8234 · wf-recorder',
       more: 'Спектр принимается в браузере или десктопным ПО (BecqMoni) через TCP:8234. wf-recorder — pull-клиент непрерывной записи: забирает сегменты водопада со шлюза и сшивает их в единый .aswf. Сегмент удаляется с платы только после fsync на диск; целостность гарантируют CRC32 и порядковые номера, температура пишется в CSV.',
-      moreEn: 'Received in the browser or desktop software via TCP:8234. wf-recorder is a pull client: it fetches waterfall segments and stitches a single .aswf; segments are dropped only after fsync, with CRC32 + sequence-number integrity.',
+      moreEn: 'The spectrum is received in the browser or by desktop software (BecqMoni) over TCP:8234. wf-recorder is a continuous pull client: it fetches waterfall segments from the gateway and stitches them into a single .aswf. A segment is deleted from the board only after a disk fsync; integrity is guaranteed by CRC32 and sequence numbers, and temperature is logged to CSV.',
       grid: '1fr 1fr',
       shots: [
-        { img: IMG + 'recorder.png', cap: 'wf-recorder: идёт запись, журнал сегментов с проверкой CRC32, сегмент стирается на плате после подтверждения.' },
-        { img: IMG + 'web-waterfall.jpg', cap: 'Источник данных — вкладка «Водопад» Web UI шлюза.' }
+        { img: IMG + 'recorder.png', cap: 'wf-recorder: идёт запись, журнал сегментов с проверкой CRC32, сегмент стирается на плате после подтверждения.',
+          capEn: 'wf-recorder: recording in progress, a segment log with CRC32 checks; a segment is erased on the board after confirmation.' },
+        { img: IMG + 'web-waterfall.jpg', cap: 'Источник данных — вкладка «Водопад» Web UI шлюза.',
+          capEn: 'Data source — the Waterfall tab of the gateway Web UI.' }
       ] },
-    { ru: 'Анализ', en: 'Analysis', node: 'waterfall-viewer',
+    { ru: 'Анализ', en: 'Analysis', node: 'waterfall-viewer', nodeEn: 'waterfall-viewer',
       more: 'waterfall-viewer — просмотр спектрограмм. 3D-поверхность и 2D-карта Время × Энергия, срезы по времени, сечения по полосе энергий, выборки ROI, библиотека 21 нуклида. Читает .aswf, RadiaCode .rcspg и N42.42; суточные записи грузятся потоково.',
-      moreEn: 'Spectrogram viewing: 3D surface and 2D Time×Energy map, time slices, energy-band cross-sections, ROI selections, 21-nuclide library. Reads .aswf, RadiaCode .rcspg and N42.42; day-long records stream in.',
+      moreEn: 'waterfall-viewer — spectrogram viewing. A 3D surface and a 2D Time × Energy map, time slices, energy-band cross-sections, ROI selections, a 21-nuclide library. Reads .aswf, RadiaCode .rcspg and N42.42; day-long records stream in.',
       grid: '1fr 1fr',
       shots: [
-        { img: IMG + 'viewer-ui.jpg', cap: '3D-поверхность Время × Энергия × Отсчёты с панелями срезов, сечений и регулировок.' },
-        { img: IMG + 'viewer-2d.jpg', cap: '2D-карта Время × Энергия, энергоокно Cs-137 662 кэВ, полоса ROI.' }
+        { img: IMG + 'viewer-ui.jpg', cap: '3D-поверхность Время × Энергия × Отсчёты с панелями срезов, сечений и регулировок.',
+          capEn: '3D Time × Energy × Counts surface with slice, cross-section and adjustment panels.' },
+        { img: IMG + 'viewer-2d.jpg', cap: '2D-карта Время × Энергия, энергоокно Cs-137 662 кэВ, полоса ROI.',
+          capEn: '2D Time × Energy map, Cs-137 662 keV energy window, ROI band.' }
       ] }
   ];
 
@@ -674,9 +715,8 @@
       el.setAttribute('tabindex', '0');
       el.innerHTML = '<div class="glow"></div><div class="bar"></div>' +
         '<div class="cn-num">' + pad(i) + '</div>' +
-        '<div class="cn-ru">' + n.ru + '</div>' +
-        '<div class="cn-en">' + n.en + '</div>' +
-        '<div class="cn-node">' + n.node + '</div>';
+        '<div class="cn-ru">' + bi(esc(n.ru), esc(n.en)) + '</div>' +
+        '<div class="cn-node">' + bi(esc(n.node), esc(n.nodeEn)) + '</div>';
       el.addEventListener('click', function () { sel = i; renderNodes(); renderDetail(); });
       el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sel = i; renderNodes(); renderDetail(); } });
       nodesBox.appendChild(el);
@@ -686,19 +726,17 @@
   function renderDetail() {
     var n = chainData[sel];
     var shots = n.shots.map(function (sh) {
-      return '<figure><div class="imgbox"><img loading="lazy" src="' + sh.img + '" alt="' + sh.cap + '"></div>' +
-             '<figcaption>' + sh.cap + '</figcaption></figure>';
+      return '<figure><div class="imgbox"><img loading="lazy" src="' + sh.img + '" alt="' + esc(sh.cap) + '"></div>' +
+             '<figcaption>' + bi(esc(sh.cap), esc(sh.capEn)) + '</figcaption></figure>';
     }).join('');
     detailBox.innerHTML =
       '<div class="chain-detail">' +
         '<div class="cd-head">' +
-          '<span class="cd-stage">ЭТАП ' + pad(sel) + '</span>' +
-          '<span class="cd-ru">' + n.ru + '</span>' +
-          '<span class="cd-en">/ ' + n.en + '</span>' +
-          '<span class="cd-node">' + n.node + '</span>' +
+          '<span class="cd-stage">' + bi('ЭТАП ' + pad(sel), 'STAGE ' + pad(sel)) + '</span>' +
+          '<span class="cd-ru">' + bi(esc(n.ru), esc(n.en)) + '</span>' +
+          '<span class="cd-node">' + bi(esc(n.node), esc(n.nodeEn)) + '</span>' +
         '</div>' +
-        '<p class="cd-more">' + n.more + '</p>' +
-        '<p class="cd-more-en">' + n.moreEn + '</p>' +
+        '<p class="cd-more">' + bi(esc(n.more), esc(n.moreEn)) + '</p>' +
         '<div class="cd-shots" style="grid-template-columns:' + n.grid + ';">' + shots + '</div>' +
       '</div>';
     bindLightbox(detailBox);
@@ -718,7 +756,6 @@
     lb.classList.add('open');
   }
   function closeLb() { lb.classList.remove('open'); lbImg.src = ''; }
-  window.bindLightbox = bindLightbox;
   function bindLightbox(root) {
     (root || document).querySelectorAll('.cd-shots img, .spectrum-shot img').forEach(function (img) {
       img.style.cursor = 'zoom-in';
