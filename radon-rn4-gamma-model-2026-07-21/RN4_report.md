@@ -203,7 +203,7 @@ Gоб(E) = ∫_V e^(−μr)/(4πr²) dV, Gпов(E) = ∫_S e^(−μr)/(4πr²) 
 
 ### 5.1. Целевые величины и их погрешности
 
-Эксперимент #RN3 (выключение вентиляции, рост ОА радона 318 → 1193 Бк/м³) дал коэффициент связи МЭД с ОА **+1.09 нЗв/ч на 100 Бк/м³** — по сравнению разных суток: день с выключенной вентиляцией против дня с включённой (95 % ДИ 1.03–1.16)[15]. Оценки в пределах одних суток — наклон по ходу роста радона в течение одного дня, свободный от примеси суточного хода температуры — ниже: 0.94 ± 0.34 (p = 0.013) и 0.69 ± 0.47 (незначимо), то есть реалистичный диапазон 0.7–1.1.
+Эксперимент #RN3 (выключение вентиляции, рост ОА радона 318 → 1193 Бк/м³) дал коэффициент связи МЭД с ОА **+1.09 нЗв/ч на 100 Бк/м³** — по сравнению разных суток: день с выключенной вентиляцией против дня с включённой (95 % ДИ 1.03–1.16)[15]. Оценки в пределах одних суток — наклон регрессии МЭД по ОА, вычисленный по данным одних суток и потому свободный от примеси суточного хода температуры — ниже: 0.94 ± 0.34 (p = 0.013) и 0.69 ± 0.47 (незначимо), то есть реалистичный диапазон 0.7–1.1.
 
 Доверительный интервал 1.03–1.16 отражает только статистический разброс точек. Сверх него у замера есть погрешность самого прибора: по паспорту **основная относительная погрешность БДКГ-05 — ±20 %** (калибровка по эталону Cs-137). Она смещает все показания МЭД одним общим множителем, поэтому и коэффициент — наклон зависимости дозы от ОА — масштабируется целиком на те же ±20 %, независимо от статистики. С учётом ±20 % оценка по разным суткам расширяется до полосы **0.87–1.31**, оценки в пределах одних суток — до **0.55–1.13** нЗв/ч на 100 Бк/м³.
 
@@ -488,7 +488,7 @@ Higher aerosol loading shifts activity from the surfaces into the air: the aeros
 
 ### 5.1. Target values and their uncertainties
 
-Experiment #RN3 (ventilation switched off, radon rising 318 → 1193 Bq/m³) gave a dose-rate-to-concentration coefficient of **+1.09 nSv/h per 100 Bq/m³** (day-to-day contrast of states, 95 % CI 1.03–1.16)[15]. The within-day estimates — free of the diurnal temperature admixture — are lower: 0.94 ± 0.34 (p = 0.013) and 0.69 ± 0.47 (not significant), i.e. a realistic range of 0.7–1.1.
+Experiment #RN3 (ventilation switched off, radon rising 318 → 1193 Bq/m³) gave a dose-rate-to-concentration coefficient of **+1.09 nSv/h per 100 Bq/m³** (day-to-day contrast of states, 95 % CI 1.03–1.16)[15]. The within-day estimates — the slope of the dose-rate-to-concentration regression computed from a single day's data and therefore free of the diurnal temperature admixture — are lower: 0.94 ± 0.34 (p = 0.013) and 0.69 ± 0.47 (not significant), i.e. a realistic range of 0.7–1.1.
 
 The confidence interval 1.03–1.16 reflects only the statistical scatter of the points. On top of it the measurement carries the instrument's own error: per the passport, **the BDKG-05 basic relative error is ±20 %** (Cs-137 calibration). It shifts all dose-rate readings by one common multiplier, so the coefficient — the slope of dose vs concentration — is scaled in full by the same ±20 %, independently of the statistics. With ±20 % included, the day-to-day contrast widens to a band of **0.87–1.31** and the within-day estimates to **0.55–1.13** nSv/h per 100 Bq/m³.
 
