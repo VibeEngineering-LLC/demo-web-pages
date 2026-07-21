@@ -10,28 +10,31 @@ Markdown-эквивалент веб-отчёта [RN4_report.html](RN4_report.h
 
 ## Реферат
 
-Построена стационарная камерная модель поведения короткоживущих дочерних продуктов распада
-(ДПР) радона в жилом помещении 11×5×2.3 м, связывающая объёмную активность (ОА) ²²²Rn и
-коэффициент равновесия F с приращением мощности амбиентного эквивалента дозы Ḣ\*(10)
-гамма-излучения ²¹⁴Pb и ²¹⁴Bi в точке размещения сцинтилляционного детектора NaI(Tl)
-Ø40×40 мм. В отличие от одногруппового приближения, скорости осаждения заданы раздельно для
-каждого нуклида и каждой поверхности по камерным измерениям Leonard (1994); коэффициент
-равновесия — сценарный вход (0.3 и 0.4), кратность воздухообмена восстанавливается из него
-обратной задачей. Поверхностная активность гамма-эмиттеров учитывает прямое осаждение и
-внутриповерхностное подрастание от осаждённого ²¹⁸Po с recoil-ресуспензией; корректность
-баланса контролируется тестом секулярного равновесия. Перенос рассчитан прямым
-интегрированием ядра точечного источника по полному набору гамма-линий LNHB/DDEP (110 линий
+**Задача:** связать объёмную активность ²²²Rn и коэффициент равновесия F с приращением
+мощности амбиентного эквивалента дозы Ḣ\*(10) гамма-излучения короткоживущих ДПР (²¹⁴Pb,
+²¹⁴Bi) в точке детектора; независимо проверить коэффициент эксперимента #RN3 —
++1.09 нЗв/ч на 100 Бк/м³ (95 % ДИ 1.03–1.16).
+
+**Приборы:** сцинтилляционный блок детектирования БДКГ-05 (кристалл NaI(Tl) Ø40×40 мм) на
+металлической подставке 370×420 мм, в 50 см от стены, высота ~1 м; монитор радона RadonEye
+Plus2 на том же уровне; помещение 11×5×2.3 м с бетонным перекрытием пола 30 см.
+
+**Методы:** стационарная камерная модель Jacobi с нуклид-специфичным осаждением по камерным
+измерениям Leonard (1994); коэффициент равновесия — сценарный вход (0.3 и 0.4), кратность
+воздухообмена восстанавливается обратной задачей; поверхностная активность — с
+recoil-ресуспензией и контролем тестом секулярного равновесия; перенос — прямое
+интегрирование ядра точечного источника по полному набору гамма-линий LNHB/DDEP (110 линий
 E ≥ 0.2 МэВ, ≥ 99 % гамма-энергии ДПР) с усреднением поля по объёму кристалла; комптоновское
-рассеяние учтено моделью полости с дозовым альбедо бетона, выведенным из формулы
-Чилтона–Хаддлстона. Получено приращение 0.43 (F = 0.3) и 0.57 (F = 0.4) нЗв/ч на 100 Бк/м³
-при структуре вкладов: воздух 36–43 %, поверхности помещения ~30 %, подставка прибора до
-30 %. Модель систематически ниже натурного замера (+1.09 нЗв/ч на 100 Бк/м³, ДИ 1.03–1.16)
-в 1.9–2.5 раза. Показано, что расхождение не объясняется ни одной из проверенных
-неопределённостей: вариация фактора отскока согласованной парой (R, v_d(Pb|R)) меняет итог
-лишь на ±0.5 %, материал подставки — на −15 %, рассеяние добавляет +6…+10 %, а рост скоростей
-осаждения гамма-эмиттеров ограничен сверху связкой с балансом воздуха при заданном F.
-Кандидаты остатка — осаждение на корпус детектора, энергетический отклик прибора по спектру
-ДПР, вклад торона и статус входных величин.
+рассеяние — модель полости с дозовым альбедо бетона по формуле Чилтона–Хаддлстона.
+
+**Вывод:** расчётное приращение — 0.43 (F = 0.3) и 0.57 (F = 0.4) нЗв/ч на 100 Бк/м³ при
+структуре вкладов «воздух 36–43 %, поверхности ~30 %, подставка до 30 %»; модель
+систематически ниже натурного замера в 1.9–2.5 раза, и расхождение не объясняется ни одной
+из проверенных неопределённостей (фактор отскока согласованной парой (R, v_d(Pb|R)) ±0.5 %,
+материал подставки −15 %, рассеяние +6…+10 %, рост скоростей осаждения гамма-эмиттеров
+ограничен балансом воздуха при заданном F). Кандидаты остатка — осаждение на корпус
+детектора, энергетический отклик прибора по спектру ДПР, вклад торона и статус входных
+величин.
 
 **Ключевые слова:** радон, дочерние продукты распада, ²¹⁴Pb, ²¹⁴Bi, коэффициент равновесия,
 осаждение аэрозолей, камерная модель Якоби, амбиентный эквивалент дозы H\*(10), гамма-фон
@@ -39,29 +42,33 @@ E ≥ 0.2 МэВ, ≥ 99 % гамма-энергии ДПР) с усреднен
 
 ## Abstract
 
-A steady-state chamber model of short-lived radon progeny behaviour in an 11×5×2.3 m
-dwelling room is developed, relating the ²²²Rn activity concentration and the equilibrium
-factor F to the increment of the ambient dose equivalent rate Ḣ\*(10) of ²¹⁴Pb and ²¹⁴Bi
-gamma radiation at the location of a Ø40×40 mm NaI(Tl) scintillation detector. Unlike the
-single-group approximation, deposition velocities are assigned separately for each nuclide
-and each surface based on the chamber measurements of Leonard (1994); the equilibrium factor
-is a scenario input (0.3 and 0.4), with the air-exchange rate recovered from it by inversion.
-The surface activity of the gamma emitters accounts for direct deposition and in-situ
-ingrowth from deposited ²¹⁸Po with recoil resuspension; the balance is verified by a secular
-equilibrium test. Photon transport is computed by direct point-kernel integration over the
-complete LNHB/DDEP gamma-line set (110 lines with E ≥ 0.2 MeV, ≥ 99 % of the progeny gamma
-energy), with field averaging over the crystal volume; Compton scattering is included via
-a cavity model with the concrete dose albedo derived from the Chilton–Huddleston formula.
-The resulting increment is 0.43 (F = 0.3) and 0.57 (F = 0.4) nSv/h per 100 Bq/m³, with
-contributions of 36–43 % from room air, ~30 % from room surfaces, and up to 30 % from the
-instrument stand. The model is systematically below the field measurement (+1.09 nSv/h per
-100 Bq/m³, CI 1.03–1.16) by a factor of 1.9–2.5. None of the examined uncertainties explains
-the gap: varying the recoil factor as a consistent pair (R, v_d(Pb|R)) shifts the result by
-only ±0.5 %, the stand material by −15 %, scattering adds +6…+10 %, and an increase of the
-gamma-emitter deposition velocities is bounded from above by the air-balance constraint at
-a fixed F. The remaining candidates are progeny deposition on the detector housing, the
-instrument energy response over the progeny spectrum, the thoron contribution, and the status
-of the input quantities.
+**Objective:** to relate the ²²²Rn activity concentration and the equilibrium factor F to
+the increment of the ambient dose equivalent rate Ḣ\*(10) of short-lived progeny gamma
+radiation (²¹⁴Pb, ²¹⁴Bi) at the detector location, and to independently check the coefficient
+of experiment #RN3 — +1.09 nSv/h per 100 Bq/m³ (95 % CI 1.03–1.16).
+
+**Instruments:** a BDKG-05 scintillation detector unit (NaI(Tl) crystal Ø40×40 mm) on a
+370×420 mm metal stand, 50 cm from the wall, at a height of ~1 m; a RadonEye Plus2 radon
+monitor at the same level; an 11×5×2.3 m room with a 30-cm concrete floor slab.
+
+**Methods:** a steady-state Jacobi room model with nuclide-specific deposition from the
+chamber measurements of Leonard (1994); the equilibrium factor is a scenario input (0.3 and
+0.4), the air-exchange rate is recovered by inversion; surface activity includes recoil
+resuspension and is controlled by a secular-equilibrium test; transport is direct
+point-kernel integration over the complete LNHB/DDEP gamma-line set (110 lines with
+E ≥ 0.2 MeV, ≥ 99 % of the progeny gamma energy) with field averaging over the crystal
+volume; Compton scattering is a cavity model with the concrete dose albedo from the
+Chilton–Huddleston formula.
+
+**Conclusion:** the calculated increment is 0.43 (F = 0.3) and 0.57 (F = 0.4) nSv/h per
+100 Bq/m³ with the contribution structure "air 36–43 %, surfaces ~30 %, stand up to 30 %";
+the model is systematically below the field measurement by a factor of 1.9–2.5, and the gap
+is not explained by any of the examined uncertainties (recoil factor varied as a consistent
+pair (R, v_d(Pb|R)) ±0.5 %, stand material −15 %, scattering +6…+10 %, growth of the
+gamma-emitter deposition velocities is bounded by the air balance at a given F). The
+remaining candidates are progeny deposition on the detector housing, the instrument energy
+response over the progeny spectrum, the thoron contribution and the status of the input
+quantities.
 
 **Keywords:** radon, radon progeny, ²¹⁴Pb, ²¹⁴Bi, equilibrium factor, aerosol deposition,
 Jacobi room model, ambient dose equivalent H\*(10), indoor gamma background, dose albedo.
