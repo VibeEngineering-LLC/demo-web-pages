@@ -79,6 +79,13 @@
   .foot{margin-top:56px; padding-top:20px; border-top:1px solid var(--line);
     font-size:13px; color:var(--muted)}
   .two{color:var(--accent)}
+  .lang-toggle{float:right; margin:0 0 8px 14px}
+  .lang-btn{border:1px solid var(--line); background:var(--code); color:var(--muted);
+    font:600 11px/1 system-ui,sans-serif; letter-spacing:.08em; padding:7px 13px; cursor:pointer}
+  .lang-btn:first-child{border-radius:4px 0 0 4px}
+  .lang-btn:last-child{border-radius:0 4px 4px 0; border-left:none}
+  .lang-btn.active{background:var(--accent); border-color:var(--accent); color:#fff}
+  .kw{font-size:14px; color:var(--muted)}
 </style>
 </head>
 <body>
@@ -89,6 +96,29 @@
   <h1>Гамма-поле короткоживущих ДПР радона в помещении: нуклид-специфичная камерная модель и сверка с натурным замером</h1>
   <p class="lede">Расчёт приращения <b>H*(10)</b> от <sup>214</sup>Pb и <sup>214</sup>Bi при заданной ОА радона и коэффициенте равновесия, с раздельным по поверхностям и нуклидам осаждением ДПР. Сравнение двух режимов равновесия <b>F = 0.3</b> и <b>F = 0.4</b> с экспериментом #RN3 (БДКГ-05).</p>
 </header>
+
+<div class="abstract" id="referat">
+  <div class="lang-toggle" role="group" aria-label="Язык реферата">
+    <button class="lang-btn active" id="btn-ru" onclick="setRefLang('ru')">РУС</button>
+    <button class="lang-btn" id="btn-en" onclick="setRefLang('en')">ENG</button>
+  </div>
+  <div id="ref-ru">
+    <p><strong>Реферат.</strong> Построена стационарная камерная модель поведения короткоживущих дочерних продуктов распада (ДПР) радона в жилом помещении 11×5×2.3 м, связывающая объёмную активность (ОА) <sup>222</sup>Rn и коэффициент равновесия F с приращением мощности амбиентного эквивалента дозы Ḣ*(10) гамма-излучения <sup>214</sup>Pb и <sup>214</sup>Bi в точке размещения сцинтилляционного детектора NaI(Tl) Ø40×40 мм. В отличие от одногруппового приближения, скорости осаждения заданы раздельно для каждого нуклида и каждой поверхности по камерным измерениям Leonard (1994); коэффициент равновесия — сценарный вход (0.3 и 0.4), кратность воздухообмена восстанавливается из него обратной задачей. Поверхностная активность гамма-эмиттеров учитывает прямое осаждение и внутриповерхностное подрастание от осаждённого <sup>218</sup>Po с recoil-ресуспензией; корректность баланса контролируется тестом секулярного равновесия. Перенос рассчитан прямым интегрированием ядра точечного источника по полному набору гамма-линий LNHB/DDEP (110 линий E ≥ 0.2 МэВ, ≥ 99 % гамма-энергии ДПР) с усреднением поля по объёму кристалла; комптоновское рассеяние учтено моделью полости с дозовым альбедо бетона, выведенным из формулы Чилтона–Хаддлстона. Получено приращение 0.43 (F = 0.3) и 0.57 (F = 0.4) нЗв/ч на 100 Бк/м³ при структуре вкладов: воздух 36–43 %, поверхности помещения ~30 %, подставка прибора до 30 %. Модель систематически ниже натурного замера (+1.09 нЗв/ч на 100 Бк/м³, ДИ 1.03–1.16) в 1.9–2.5 раза. Показано, что расхождение не объясняется ни одной из проверенных неопределённостей: вариация фактора отскока согласованной парой (R, v<sub>d</sub>(Pb|R)) меняет итог лишь на ±0.5 %, материал подставки — на −15 %, рассеяние добавляет +6…+10 %, а рост скоростей осаждения гамма-эмиттеров ограничен сверху связкой с балансом воздуха при заданном F. Кандидаты остатка — осаждение на корпус детектора, энергетический отклик прибора по спектру ДПР, вклад торона и статус входных величин.</p>
+    <p class="kw"><b>Ключевые слова:</b> радон, дочерние продукты распада, <sup>214</sup>Pb, <sup>214</sup>Bi, коэффициент равновесия, осаждение аэрозолей, камерная модель Якоби, амбиентный эквивалент дозы H*(10), гамма-фон помещений, дозовое альбедо.</p>
+  </div>
+  <div id="ref-en" style="display:none">
+    <p><strong>Abstract.</strong> A steady-state chamber model of short-lived radon progeny behaviour in an 11×5×2.3 m dwelling room is developed, relating the <sup>222</sup>Rn activity concentration and the equilibrium factor F to the increment of the ambient dose equivalent rate Ḣ*(10) of <sup>214</sup>Pb and <sup>214</sup>Bi gamma radiation at the location of a Ø40×40 mm NaI(Tl) scintillation detector. Unlike the single-group approximation, deposition velocities are assigned separately for each nuclide and each surface based on the chamber measurements of Leonard (1994); the equilibrium factor is a scenario input (0.3 and 0.4), with the air-exchange rate recovered from it by inversion. The surface activity of the gamma emitters accounts for direct deposition and in-situ ingrowth from deposited <sup>218</sup>Po with recoil resuspension; the balance is verified by a secular equilibrium test. Photon transport is computed by direct point-kernel integration over the complete LNHB/DDEP gamma-line set (110 lines with E ≥ 0.2 MeV, ≥ 99 % of the progeny gamma energy), with field averaging over the crystal volume; Compton scattering is included via a cavity model with the concrete dose albedo derived from the Chilton–Huddleston formula. The resulting increment is 0.43 (F = 0.3) and 0.57 (F = 0.4) nSv/h per 100 Bq/m³, with contributions of 36–43 % from room air, ~30 % from room surfaces, and up to 30 % from the instrument stand. The model is systematically below the field measurement (+1.09 nSv/h per 100 Bq/m³, CI 1.03–1.16) by a factor of 1.9–2.5. None of the examined uncertainties explains the gap: varying the recoil factor as a consistent pair (R, v<sub>d</sub>(Pb|R)) shifts the result by only ±0.5 %, the stand material by −15 %, scattering adds +6…+10 %, and an increase of the gamma-emitter deposition velocities is bounded from above by the air-balance constraint at a fixed F. The remaining candidates are progeny deposition on the detector housing, the instrument energy response over the progeny spectrum, the thoron contribution, and the status of the input quantities.</p>
+    <p class="kw"><b>Keywords:</b> radon, radon progeny, <sup>214</sup>Pb, <sup>214</sup>Bi, equilibrium factor, aerosol deposition, Jacobi room model, ambient dose equivalent H*(10), indoor gamma background, dose albedo.</p>
+  </div>
+</div>
+<script>
+function setRefLang(l){
+  document.getElementById('ref-ru').style.display = (l === 'ru') ? '' : 'none';
+  document.getElementById('ref-en').style.display = (l === 'en') ? '' : 'none';
+  document.getElementById('btn-ru').classList.toggle('active', l === 'ru');
+  document.getElementById('btn-en').classList.toggle('active', l === 'en');
+}
+</script>
 
 <div class="abstract">
   <p><strong>Постановка.</strong> Требуется связать объёмную активность <sup>222</sup>Rn и коэффициент равновесия F с мощностью амбиентного эквивалента дозы гамма-излучения ДПР в точке детектора. Мотивация — независимая проверка коэффициента, измеренного в эксперименте #RN3: приращение <strong>+1.09 нЗв/ч на 100 Бк/м³</strong> (95 % ДИ 1.03–1.16) при выключении вентиляции в подвале.</p>
