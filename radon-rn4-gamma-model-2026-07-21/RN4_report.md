@@ -9,7 +9,7 @@ Markdown-эквивалент веб-отчёта [RN4_report.html](RN4_report.h
 
 ## Реферат
 
-**Задача:** связать объёмную активность ²²²Rn с приращением мощности амбиентного эквивалента дозы Ḣ\*(10) гамма-излучения короткоживущих ДПР (²¹⁴Pb, ²¹⁴Bi) в точке детектора; независимо проверить коэффициент эксперимента #RN3 — +1.09 нЗв/ч на 100 Бк/м³ (95 % ДИ 1.03–1.16).
+**Задача:** связать объёмную активность ²²²Rn с приращением мощности амбиентного эквивалента дозы Ḣ\*(10) гамма-излучения короткоживущих ДПР (²¹⁴Pb, ²¹⁴Bi) в точке детектора; независимо проверить коэффициент эксперимента #RN3 — +1.09 нЗв/ч на 100 Бк/м³ (95 % ДИ 1.03–1.16; собственная погрешность детектора ±20 % расширяет полосу до 0.87–1.31).
 
 **Приборы:** сцинтилляционный блок детектирования БДКГ-05 (кристалл NaI(Tl) Ø40×40 мм, основная погрешность ±20 %) на стальной подставке 370×420 мм (лист 1.5 мм), центр кристалла в 1.0 м от стены, высота ~1 м; монитор радона RadonEye Plus2 на том же уровне; помещение 11×5×2.3 м с бетонным перекрытием пола 30 см.
 
@@ -25,7 +25,7 @@ Markdown-эквивалент веб-отчёта [RN4_report.html](RN4_report.h
 
 Убыль ДПР из воздуха идёт двумя каналами с противоположным дозиметрическим следствием: вентиляция *удаляет* активность из помещения, тогда как осаждение *сохраняет* её на ограждающих поверхностях, где она продолжает излучать. Соотношение каналов задаёт коэффициент равновесия F ∈ (0, 1) и распределение дозы между воздушной и поверхностной компонентами.
 
-Мотивация работы — независимая проверка коэффициента, измеренного в эксперименте #RN3: приращение мощности амбиентного эквивалента дозы **+1.09 нЗв/ч на 100 Бк/м³** (95 % ДИ 1.03–1.16) при выключении вентиляции в подвале[15]. Построена расчётная модель «от первых принципов»: баланс ДПР в воздухе и на поверхностях → активности источников → перенос гамма-излучения к детектору → H\*(10). Входные величины по возможности восстановлены из данных самого эксперимента: кратность воздухообмена измерена по динамике набора радона, геометрия стенда взята по фотографии, материал подставки — по факту (сталь 1.5 мм); коэффициент равновесия при этом становится выходом модели, а не предположением.
+Мотивация работы — независимая проверка коэффициента, измеренного в эксперименте #RN3: приращение мощности амбиентного эквивалента дозы **+1.09 нЗв/ч на 100 Бк/м³** (95 % ДИ 1.03–1.16; сверх статистики — собственная погрешность детектора ±20 %, полоса 0.87–1.31, §5.1) при выключении вентиляции в подвале[15]. Построена расчётная модель «от первых принципов»: баланс ДПР в воздухе и на поверхностях → активности источников → перенос гамма-излучения к детектору → H\*(10). Входные величины по возможности восстановлены из данных самого эксперимента: кратность воздухообмена измерена по динамике набора радона, геометрия стенда взята по фотографии, материал подставки — по факту (сталь 1.5 мм); коэффициент равновесия при этом становится выходом модели, а не предположением.
 
 ## 2. Исходные данные
 
@@ -294,7 +294,7 @@ Calculation of the **H\*(10)** increment from ²¹⁴Pb and ²¹⁴Bi per unit r
 
 ## Abstract
 
-**Objective:** to relate the ²²²Rn activity concentration to the increment of the ambient dose equivalent rate Ḣ\*(10) of short-lived progeny gamma radiation (²¹⁴Pb, ²¹⁴Bi) at the detector location, and to independently check the coefficient of experiment #RN3 — +1.09 nSv/h per 100 Bq/m³ (95 % CI 1.03–1.16).
+**Objective:** to relate the ²²²Rn activity concentration to the increment of the ambient dose equivalent rate Ḣ\*(10) of short-lived progeny gamma radiation (²¹⁴Pb, ²¹⁴Bi) at the detector location, and to independently check the coefficient of experiment #RN3 — +1.09 nSv/h per 100 Bq/m³ (95 % CI 1.03–1.16; the detector's own ±20 % error widens the band to 0.87–1.31).
 
 **Instruments:** a BDKG-05 scintillation detector unit (NaI(Tl) crystal Ø40×40 mm, basic error ±20 %) on a 370×420 mm steel stand (1.5 mm sheet), crystal centre 1.0 m from the wall, at a height of ~1 m; a RadonEye Plus2 radon monitor at the same level; an 11×5×2.3 m room with a 30-cm concrete floor slab.
 
@@ -310,7 +310,7 @@ The radon-related gamma background is produced not by ²²²Rn itself (a noble g
 
 Progeny removal from air proceeds through two channels with opposite dosimetric consequences: ventilation *removes* activity from the room, whereas deposition *preserves* it on the enclosing surfaces, where it keeps radiating. The balance of the two channels sets the equilibrium factor F ∈ (0, 1) and the split of the dose between the airborne and surface components.
 
-The motivation of this work is an independent check of the coefficient measured in experiment #RN3: an increment of the ambient dose equivalent rate of **+1.09 nSv/h per 100 Bq/m³** (95 % CI 1.03–1.16) after the basement ventilation was switched off[15]. A first-principles computational model is built: the progeny balance in air and on surfaces → source activities → gamma transport to the detector → H\*(10). The input quantities are, wherever possible, recovered from the experiment's own data: the air-exchange rate is measured from the radon build-up dynamics, the stand geometry is taken from a photograph, the stand material is as-built (1.5 mm steel); the equilibrium factor thereby becomes a model output rather than an assumption.
+The motivation of this work is an independent check of the coefficient measured in experiment #RN3: an increment of the ambient dose equivalent rate of **+1.09 nSv/h per 100 Bq/m³** (95 % CI 1.03–1.16; on top of the statistics — the detector's own ±20 % error, band 0.87–1.31, §5.1) after the basement ventilation was switched off[15]. A first-principles computational model is built: the progeny balance in air and on surfaces → source activities → gamma transport to the detector → H\*(10). The input quantities are, wherever possible, recovered from the experiment's own data: the air-exchange rate is measured from the radon build-up dynamics, the stand geometry is taken from a photograph, the stand material is as-built (1.5 mm steel); the equilibrium factor thereby becomes a model output rather than an assumption.
 
 ## 2. Input data
 
