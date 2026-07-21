@@ -79,17 +79,27 @@
   .foot{margin-top:56px; padding-top:20px; border-top:1px solid var(--line);
     font-size:13px; color:var(--muted)}
   .two{color:var(--accent)}
-  .lang-toggle{float:right; margin:0 0 8px 14px}
+  .lang-bar{position:sticky; top:10px; z-index:20; height:0; display:flex;
+    justify-content:flex-end}
   .lang-btn{border:1px solid var(--line); background:var(--code); color:var(--muted);
-    font:600 11px/1 system-ui,sans-serif; letter-spacing:.08em; padding:7px 13px; cursor:pointer}
+    font:600 11px/1 system-ui,sans-serif; letter-spacing:.08em; padding:7px 13px;
+    cursor:pointer; box-shadow:var(--shadow)}
   .lang-btn:first-child{border-radius:4px 0 0 4px}
   .lang-btn:last-child{border-radius:0 4px 4px 0; border-left:none}
   .lang-btn.active{background:var(--accent); border-color:var(--accent); color:#fff}
   .kw{font-size:14px; color:var(--muted)}
+  #lang-en{display:none}
 </style>
 </head>
 <body>
 <div class="wrap">
+
+<div class="lang-bar" role="group" aria-label="Язык страницы / Page language">
+  <button class="lang-btn active" id="btn-ru" onclick="setLang('ru')">РУС</button>
+  <button class="lang-btn" id="btn-en" onclick="setLang('en')">ENG</button>
+</div>
+
+<div id="lang-ru">
 
 <header>
   <p class="kicker">Контур «Радоновый риск» · линия #RN4 · v5 · 21.07.2026</p>
@@ -98,27 +108,12 @@
 </header>
 
 <div class="abstract" id="referat">
-  <div class="lang-toggle" role="group" aria-label="Язык реферата">
-    <button class="lang-btn active" id="btn-ru" onclick="setRefLang('ru')">РУС</button>
-    <button class="lang-btn" id="btn-en" onclick="setRefLang('en')">ENG</button>
-  </div>
-  <div id="ref-ru">
-    <p><strong>Реферат.</strong> Построена стационарная камерная модель поведения короткоживущих дочерних продуктов распада (ДПР) радона в жилом помещении 11×5×2.3 м, связывающая объёмную активность (ОА) <sup>222</sup>Rn и коэффициент равновесия F с приращением мощности амбиентного эквивалента дозы Ḣ*(10) гамма-излучения <sup>214</sup>Pb и <sup>214</sup>Bi в точке размещения сцинтилляционного детектора NaI(Tl) Ø40×40 мм. В отличие от одногруппового приближения, скорости осаждения заданы раздельно для каждого нуклида и каждой поверхности по камерным измерениям Leonard (1994); коэффициент равновесия — сценарный вход (0.3 и 0.4), кратность воздухообмена восстанавливается из него обратной задачей. Поверхностная активность гамма-эмиттеров учитывает прямое осаждение и внутриповерхностное подрастание от осаждённого <sup>218</sup>Po с recoil-ресуспензией; корректность баланса контролируется тестом секулярного равновесия. Перенос рассчитан прямым интегрированием ядра точечного источника по полному набору гамма-линий LNHB/DDEP (110 линий E ≥ 0.2 МэВ, ≥ 99 % гамма-энергии ДПР) с усреднением поля по объёму кристалла; комптоновское рассеяние учтено моделью полости с дозовым альбедо бетона, выведенным из формулы Чилтона–Хаддлстона. Получено приращение 0.43 (F = 0.3) и 0.57 (F = 0.4) нЗв/ч на 100 Бк/м³ при структуре вкладов: воздух 36–43 %, поверхности помещения ~30 %, подставка прибора до 30 %. Модель систематически ниже натурного замера (+1.09 нЗв/ч на 100 Бк/м³, ДИ 1.03–1.16) в 1.9–2.5 раза. Показано, что расхождение не объясняется ни одной из проверенных неопределённостей: вариация фактора отскока согласованной парой (R, v<sub>d</sub>(Pb|R)) меняет итог лишь на ±0.5 %, материал подставки — на −15 %, рассеяние добавляет +6…+10 %, а рост скоростей осаждения гамма-эмиттеров ограничен сверху связкой с балансом воздуха при заданном F. Кандидаты остатка — осаждение на корпус детектора, энергетический отклик прибора по спектру ДПР, вклад торона и статус входных величин.</p>
+    <p><strong>Задача:</strong> связать объёмную активность <sup>222</sup>Rn и коэффициент равновесия F с приращением мощности амбиентного эквивалента дозы Ḣ*(10) гамма-излучения короткоживущих ДПР (<sup>214</sup>Pb, <sup>214</sup>Bi) в точке детектора; независимо проверить коэффициент эксперимента #RN3 — +1.09 нЗв/ч на 100 Бк/м³ (95 % ДИ 1.03–1.16).</p>
+    <p><strong>Приборы:</strong> сцинтилляционный блок детектирования БДКГ-05 (кристалл NaI(Tl) Ø40×40 мм) на металлической подставке 370×420 мм, в 50 см от стены, высота ~1 м; монитор радона RadonEye Plus2 на том же уровне; помещение 11×5×2.3 м с бетонным перекрытием пола 30 см.</p>
+    <p><strong>Методы:</strong> стационарная камерная модель Jacobi с нуклид-специфичным осаждением по камерным измерениям Leonard (1994); коэффициент равновесия — сценарный вход (0.3 и 0.4), кратность воздухообмена восстанавливается обратной задачей; поверхностная активность — с recoil-ресуспензией и контролем тестом секулярного равновесия; перенос — прямое интегрирование ядра точечного источника по полному набору гамма-линий LNHB/DDEP (110 линий E ≥ 0.2 МэВ, ≥ 99 % гамма-энергии ДПР) с усреднением поля по объёму кристалла; комптоновское рассеяние — модель полости с дозовым альбедо бетона по формуле Чилтона–Хаддлстона.</p>
+    <p><strong>Вывод:</strong> расчётное приращение — 0.43 (F = 0.3) и 0.57 (F = 0.4) нЗв/ч на 100 Бк/м³ при структуре вкладов «воздух 36–43 %, поверхности ~30 %, подставка до 30 %»; модель систематически ниже натурного замера в 1.9–2.5 раза, и расхождение не объясняется ни одной из проверенных неопределённостей (фактор отскока согласованной парой (R, v<sub>d</sub>(Pb|R)) ±0.5 %, материал подставки −15 %, рассеяние +6…+10 %, рост скоростей осаждения гамма-эмиттеров ограничен балансом воздуха при заданном F). Кандидаты остатка — осаждение на корпус детектора, энергетический отклик прибора по спектру ДПР, вклад торона и статус входных величин.</p>
     <p class="kw"><b>Ключевые слова:</b> радон, дочерние продукты распада, <sup>214</sup>Pb, <sup>214</sup>Bi, коэффициент равновесия, осаждение аэрозолей, камерная модель Якоби, амбиентный эквивалент дозы H*(10), гамма-фон помещений, дозовое альбедо.</p>
-  </div>
-  <div id="ref-en" style="display:none">
-    <p><strong>Abstract.</strong> A steady-state chamber model of short-lived radon progeny behaviour in an 11×5×2.3 m dwelling room is developed, relating the <sup>222</sup>Rn activity concentration and the equilibrium factor F to the increment of the ambient dose equivalent rate Ḣ*(10) of <sup>214</sup>Pb and <sup>214</sup>Bi gamma radiation at the location of a Ø40×40 mm NaI(Tl) scintillation detector. Unlike the single-group approximation, deposition velocities are assigned separately for each nuclide and each surface based on the chamber measurements of Leonard (1994); the equilibrium factor is a scenario input (0.3 and 0.4), with the air-exchange rate recovered from it by inversion. The surface activity of the gamma emitters accounts for direct deposition and in-situ ingrowth from deposited <sup>218</sup>Po with recoil resuspension; the balance is verified by a secular equilibrium test. Photon transport is computed by direct point-kernel integration over the complete LNHB/DDEP gamma-line set (110 lines with E ≥ 0.2 MeV, ≥ 99 % of the progeny gamma energy), with field averaging over the crystal volume; Compton scattering is included via a cavity model with the concrete dose albedo derived from the Chilton–Huddleston formula. The resulting increment is 0.43 (F = 0.3) and 0.57 (F = 0.4) nSv/h per 100 Bq/m³, with contributions of 36–43 % from room air, ~30 % from room surfaces, and up to 30 % from the instrument stand. The model is systematically below the field measurement (+1.09 nSv/h per 100 Bq/m³, CI 1.03–1.16) by a factor of 1.9–2.5. None of the examined uncertainties explains the gap: varying the recoil factor as a consistent pair (R, v<sub>d</sub>(Pb|R)) shifts the result by only ±0.5 %, the stand material by −15 %, scattering adds +6…+10 %, and an increase of the gamma-emitter deposition velocities is bounded from above by the air-balance constraint at a fixed F. The remaining candidates are progeny deposition on the detector housing, the instrument energy response over the progeny spectrum, the thoron contribution, and the status of the input quantities.</p>
-    <p class="kw"><b>Keywords:</b> radon, radon progeny, <sup>214</sup>Pb, <sup>214</sup>Bi, equilibrium factor, aerosol deposition, Jacobi room model, ambient dose equivalent H*(10), indoor gamma background, dose albedo.</p>
-  </div>
 </div>
-<script>
-function setRefLang(l){
-  document.getElementById('ref-ru').style.display = (l === 'ru') ? '' : 'none';
-  document.getElementById('ref-en').style.display = (l === 'en') ? '' : 'none';
-  document.getElementById('btn-ru').classList.toggle('active', l === 'ru');
-  document.getElementById('btn-en').classList.toggle('active', l === 'en');
-}
-</script>
 
 <div class="abstract">
   <p><strong>Постановка.</strong> Требуется связать объёмную активность <sup>222</sup>Rn и коэффициент равновесия F с мощностью амбиентного эквивалента дозы гамма-излучения ДПР в точке детектора. Мотивация — независимая проверка коэффициента, измеренного в эксперименте #RN3: приращение <strong>+1.09 нЗв/ч на 100 Бк/м³</strong> (95 % ДИ 1.03–1.16) при выключении вентиляции в подвале.</p>
@@ -398,6 +393,314 @@ function setRefLang(l){
   <p>Код и воспроизведение: <code>scripts/analysis/rn_room_model.py</code> (Python 3.12 + numpy). Постоянные распада: <sup>218</sup>Po 13.42 ч⁻¹, <sup>214</sup>Pb 1.552 ч⁻¹, <sup>214</sup>Bi 2.111 ч⁻¹. Air-removal осаждением: 7.85 / 0.835 / 0.051 ч⁻¹. Скорости осаждения — <code>references/deposition-velocities-materials.md</code>.</p>
   <p>Контур «Радоновый риск» · линия #RN4 · версия 5 (полный набор гамма-линий, согласованная вариация R) · 21 июля 2026 г.</p>
 </div>
+
+</div><!-- /lang-ru -->
+
+<div id="lang-en">
+
+<header>
+  <p class="kicker">Radon Risk contour · line #RN4 · v5 · 21 Jul 2026</p>
+  <h1>Indoor gamma field of short-lived radon progeny: a nuclide-specific room model checked against a field measurement</h1>
+  <p class="lede">Calculation of the <b>H*(10)</b> increment from <sup>214</sup>Pb and <sup>214</sup>Bi for a given radon activity concentration and equilibrium factor, with progeny deposition resolved by surface and by nuclide. Two equilibrium regimes <b>F = 0.3</b> and <b>F = 0.4</b> are compared with experiment #RN3 (BDKG-05).</p>
+</header>
+
+<div class="abstract">
+    <p><strong>Objective:</strong> to relate the <sup>222</sup>Rn activity concentration and the equilibrium factor F to the increment of the ambient dose equivalent rate Ḣ*(10) of short-lived progeny gamma radiation (<sup>214</sup>Pb, <sup>214</sup>Bi) at the detector location, and to independently check the coefficient of experiment #RN3 — +1.09 nSv/h per 100 Bq/m³ (95 % CI 1.03–1.16).</p>
+    <p><strong>Instruments:</strong> BDKG-05 scintillation detector unit (NaI(Tl) crystal Ø40×40 mm) on a 370×420 mm metal stand, 50 cm from the wall, at a height of ~1 m; a RadonEye Plus2 radon monitor at the same level; an 11×5×2.3 m room with a 30-cm concrete floor slab.</p>
+    <p><strong>Methods:</strong> a steady-state Jacobi room model with nuclide-specific deposition from the chamber measurements of Leonard (1994); the equilibrium factor is a scenario input (0.3 and 0.4), the air-exchange rate is recovered by inversion; surface activity includes recoil resuspension and is controlled by a secular-equilibrium test; transport is direct point-kernel integration over the complete LNHB/DDEP gamma-line set (110 lines with E ≥ 0.2 MeV, ≥ 99 % of the progeny gamma energy) with field averaging over the crystal volume; Compton scattering is a cavity model with the concrete dose albedo from the Chilton–Huddleston formula.</p>
+    <p><strong>Conclusion:</strong> the calculated increment is 0.43 (F = 0.3) and 0.57 (F = 0.4) nSv/h per 100 Bq/m³ with the contribution structure "air 36–43 %, surfaces ~30 %, stand up to 30 %"; the model is systematically below the field measurement by a factor of 1.9–2.5, and the gap is not explained by any of the examined uncertainties (recoil factor varied as a consistent pair (R, v<sub>d</sub>(Pb|R)) ±0.5 %, stand material −15 %, scattering +6…+10 %, growth of the gamma-emitter deposition velocities is bounded by the air balance at a given F). The remaining candidates are progeny deposition on the detector housing, the instrument energy response over the progeny spectrum, the thoron contribution and the status of the input quantities.</p>
+    <p class="kw"><b>Keywords:</b> radon, radon progeny, <sup>214</sup>Pb, <sup>214</sup>Bi, equilibrium factor, aerosol deposition, Jacobi room model, ambient dose equivalent H*(10), indoor gamma background, dose albedo.</p>
+</div>
+
+<div class="abstract">
+  <p><strong>Problem.</strong> The task is to relate the <sup>222</sup>Rn activity concentration and the equilibrium factor F to the ambient dose equivalent rate of progeny gamma radiation at the detector location. The motivation is an independent check of the coefficient measured in experiment #RN3: an increment of <strong>+1.09 nSv/h per 100 Bq/m³</strong> (95 % CI 1.03–1.16) after the basement ventilation was switched off.</p>
+  <p><strong>Method.</strong> A steady-state room model (Jacobi) with <em>nuclide-specific</em> deposition velocities from the measurements of Leonard (1994); the equilibrium factor is a scenario input, the air-exchange rate is recovered from F. The surface activity of the gamma emitters is formed in comparable shares by direct deposition of <sup>214</sup>Pb and by in-situ decay of deposited <sup>218</sup>Po (recoil resuspension included). Transport — uncollided photons without a buildup factor, the complete LNHB/DDEP gamma-line set (110 lines with E ≥ 0.2 MeV, ≥ 99 % of the progeny gamma energy), kerma→H*(10) via h*<sub>K</sub>(E); the Compton contribution is added through a cavity model with albedo derived from primary sources.</p>
+  <p><strong>Result.</strong> For the 11×5×2.3 m room the best estimate (data-driven deposition + Compton) is <strong>0.43 nSv/h per 100 Bq/m³</strong> at F = 0.3 and <strong>0.57 nSv/h</strong> at F = 0.4 (uncollided photons — 0.39 and 0.52). Contribution structure: air 36–43 %, room surfaces ~30–34 %, instrument stand ~27–30 %. The model is <em>below</em> the #RN3 measurement (1.09 nSv/h per 100 Bq/m³) by a factor of 1.9–2.5; the gap is not closed by any of the examined uncertainties individually (stand material −15 %, Compton +6…+10 %, recoil factor varied consistently ±0.5 %). An increase of the gamma-emitter deposition velocities has been examined and dismissed as a candidate: at a given F, deposition is bounded from above by the air balance. The main candidates for the remainder are unaccounted nearby sources (the instrument housing), thoron progeny and the detector energy response, as well as the status of the input quantities: F is a scenario input, and the target value of the measurement lies in the range 0.69–1.09 (within-day versus day-to-day estimates). Sub-floor gamma and the natural background only add a constant term and do not enter the #RN3 coefficient.</p>
+</div>
+
+<h2><span class="num">1</span>Physical background</h2>
+<p>The gamma background is produced not by radon itself (a noble gas, practically a pure alpha emitter at its own link) but by two links of the decay chain — <sup>214</sup>Pb (T<sub>½</sub> = 26.8 min) and <sup>214</sup>Bi (T<sub>½</sub> = 19.7 min), with lines from 0.24 to 2.7 MeV. The intermediate <sup>218</sup>Po (T<sub>½</sub> = 3.1 min) emits no gamma but, being deposited most intensively of the three, serves as the main "supplier" of the surface activity of the gamma emitters through in-situ decay.</p>
+<p>The equilibrium factor F ∈ (0, 1) fixes the degree of progeny disequilibrium with radon. Importantly, progeny removal from air proceeds through two channels with opposite dosimetric consequences: ventilation <em>removes</em> activity from the room, whereas deposition <em>preserves</em> it on the enclosing surfaces, where it keeps radiating. At low F the surface component dominates.</p>
+
+<h2><span class="num">2</span>Room model with nuclide-specific deposition</h2>
+<p>The room is treated as a single well-mixed chamber (the Jacobi model<a class="cit" href="#ref-en-1">&#91;1&#93;</a>; the modern formulation with fractions — Porstendörfer<a class="cit" href="#ref-en-2">&#91;2&#93;</a>). The steady-state balance for each link:</p>
+<div class="eq"><span class="tag">(1)</span>0 = λ<sub>i</sub>·<var>C</var><sub>i−1</sub> − (λ<sub>i</sub> + λ<sub>v</sub> + λ<sub>dep,i</sub>)·<var>C</var><sub>i</sub></div>
+<p class="where">The production term contains the decay constant of the <em>daughter</em> nuclide λ<sub>i</sub>: C<sub>i−1</sub> — the parent activity — equals the birth rate of daughter <em>atoms</em>, and multiplying by λ<sub>i</sub> converts the atom balance into an activity balance. Equation (2) follows from this form.</p>
+<div class="tablewrap">
+<table>
+  <caption>Symbols of equation (1). Physical meaning: production from parent decay = total removal (decay + ventilation + deposition).</caption>
+  <thead><tr><th>Symbol</th><th>Quantity</th><th>Unit</th><th>Value / relation</th></tr></thead>
+  <tbody>
+    <tr><td><var>i</var></td><td>decay-chain link index</td><td>—</td><td>1 → <sup>218</sup>Po, 2 → <sup>214</sup>Pb, 3 → <sup>214</sup>Bi; parent i−1 = 0 → <sup>222</sup>Rn</td></tr>
+    <tr><td><var>C</var><sub>i</sub></td><td>airborne activity concentration of the i-th progeny</td><td>Bq/m³</td><td>sought</td></tr>
+    <tr><td><var>C</var><sub>i−1</sub></td><td>parent activity concentration</td><td>Bq/m³</td><td>at i = 1: C<sub>0</sub> = radon concentration (input)</td></tr>
+    <tr><td>λ<sub>i</sub></td><td>decay constant of the i-th nuclide</td><td>h⁻¹</td><td>= ln2/T<sub>½</sub>; Po 13.42, Pb 1.552, Bi 2.111</td></tr>
+    <tr><td>λ<sub>i</sub>·C<sub>i−1</sub></td><td>production term: activity birth of the i-th progeny from parent decays</td><td>Bq·m⁻³·h⁻¹</td><td>daughter λ × parent activity</td></tr>
+    <tr><td>λ<sub>v</sub></td><td>air-exchange rate</td><td>h⁻¹</td><td>from F: 0.77 (F=0.3) / 0.13 (F=0.4)</td></tr>
+    <tr><td>λ<sub>dep,i</sub></td><td>effective deposition rate of the i-th nuclide</td><td>h⁻¹</td><td>= Σ<sub>s</sub> v<sub>d,i,s</sub>·A<sub>s</sub>/V; Po 7.85, Pb 0.835, Bi 0.051</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Radon (i = 0) is not removed by deposition (a noble gas) — it has no λ<sub>dep</sub> term. Equation (1) is the steady-state limit of the progeny balance equations<a class="cit" href="#ref-en-3">&#91;3&#93;</a> (eqs. 1–4) without separating the unattached and attached fractions (λ<sub>dep</sub> is effective). Hence the progeny activity fractions relative to the radon concentration:</p>
+<div class="eq"><span class="tag">(2)</span><var>f</var><sub>1</sub> = λ<sub>1</sub>/(λ<sub>1</sub>+λ<sub>v</sub>+λ<sub>dep,1</sub>),&nbsp;&nbsp; <var>f</var><sub>i</sub> = <var>f</var><sub>i−1</sub>·λ<sub>i</sub>/(λ<sub>i</sub>+λ<sub>v</sub>+λ<sub>dep,i</sub>)</div>
+<p class="where">where <b>f<sub>i</sub></b> = C<sub>i</sub>/C<sub>0</sub> — the activity fraction of the i-th progeny relative to the radon concentration C<sub>0</sub> (dimensionless); λ<sub>i</sub>, λ<sub>v</sub>, λ<sub>dep,i</sub> — as in (1).</p>
+<p>and the equilibrium factor with EEC weights (checked against the primary source: C<sub>eq</sub> = 0.105 C₁ + 0.515 C₂ + 0.380 C₃<a class="cit" href="#ref-en-8">&#91;8&#93;</a>, p. 103, § 122):</p>
+<div class="eq"><span class="tag">(3)</span>F = 0.105·<var>f</var><sub>1</sub> + 0.515·<var>f</var><sub>2</sub> + 0.380·<var>f</var><sub>3</sub></div>
+<p class="where">where <b>F</b> — the equilibrium factor, the degree of progeny disequilibrium with radon (0 … 1; here 0.3–0.4); <b>f<sub>1</sub>, f<sub>2</sub>, f<sub>3</sub></b> — the fractions of <sup>218</sup>Po, <sup>214</sup>Pb, <sup>214</sup>Bi per (2); <b>0.105, 0.515, 0.380</b> — the EEC weight factors, the shares of potential alpha energy carried by <sup>218</sup>Po, <sup>214</sup>Pb, <sup>214</sup>Bi respectively (dimensionless; verified against UNSCEAR 2000 Annex B, p. 103, § 122).</p>
+<p>The principal difference from the single-group approximation is that λ<sub>dep,i</sub> is assigned <em>separately for each nuclide</em>. The measurements (§3) show that <sup>218</sup>Po deposits almost an order of magnitude faster than <sup>214</sup>Pb, which in turn is an order faster than <sup>214</sup>Bi; a single λ<sub>dep</sub> is physically incorrect and distorts the activity split between air and surfaces.</p>
+<p>Since the basement air-exchange rate is unknown and the equilibrium factor is a scenario input (#RN3 measured the radon concentration and the dose rate, but not the EEC; F = 0.3 and 0.4 are two computational scenarios), we invert the problem: deposition is fixed from data, and λ<sub>v</sub> is recovered from condition (3). For our geometry the deposition air-removal is λ<sub>dep</sub> = 7.85 / 0.835 / 0.051 h⁻¹ for Po/Pb/Bi respectively; hence λ<sub>v</sub> = 0.77 h⁻¹ at F = 0.3 and λ<sub>v</sub> = 0.13 h⁻¹ at F = 0.4. Both values are physical: the higher F corresponds to a nearly airtight regime.</p>
+
+<h3>Surface activity</h3>
+<p>The activity of each link on a given surface follows from the steady-state balance "deposition from air + in-surface ingrowth from the parent = decay". The key mechanism is the decay of deposited <sup>218</sup>Po directly on the surface producing <sup>214</sup>Pb; a fraction of the newborn <sup>214</sup>Pb is lost to recoil resuspension (factor R = 0.5<a class="cit" href="#ref-en-4">&#91;4&#93;</a>; the escape probability at alpha decay — Mercer<a class="cit" href="#ref-en-7">&#91;7&#93;</a>):</p>
+<div class="eq"><span class="tag">(4)</span><var>A</var><sub>Po</sub> = <var>v</var><sub>Po</sub><var>C</var><sub>Po</sub>/λ<sub>Po</sub>;&nbsp;&nbsp; <var>A</var><sub>Pb</sub> = <var>v</var><sub>Pb</sub><var>C</var><sub>Pb</sub>/λ<sub>Pb</sub> + (1−R)·<var>A</var><sub>Po</sub>;&nbsp;&nbsp; <var>A</var><sub>Bi</sub> = <var>v</var><sub>Bi</sub><var>C</var><sub>Bi</sub>/λ<sub>Bi</sub> + <var>A</var><sub>Pb</sub></div>
+<p class="where"><b>Derivation.</b> Steady state of atoms on the surface: λ<sub>dau</sub>·N<sub>dau</sub> = v<sub>d</sub>·n<sub>air</sub> + (1−R)·λ<sub>par</sub>·N<sub>par</sub>, where n<sub>air</sub> = C/λ<sub>dau</sub> is the atom concentration in air and λ<sub>par</sub>·N<sub>par</sub> = A<sub>par</sub> (each parent decay births one daughter atom). The left-hand side is A<sub>dau</sub> itself, whence (4). Control: at R = 0 and v<sub>Pb</sub> = v<sub>Bi</sub> = 0 the formula must yield secular equilibrium A<sub>Po</sub> = A<sub>Pb</sub> = A<sub>Bi</sub> — the test is included in the script output (PASS).</p>
+<p class="where">where <b>A<sub>Po</sub>, A<sub>Pb</sub>, A<sub>Bi</sub></b> — the surface activities of <sup>218</sup>Po, <sup>214</sup>Pb, <sup>214</sup>Bi on the given surface, Bq/m²; <b>v<sub>Po</sub>, v<sub>Pb</sub>, v<sub>Bi</sub></b> — the deposition velocities of these nuclides onto the given surface, m/h (Table 1); <b>C<sub>Po</sub>, C<sub>Pb</sub>, C<sub>Bi</sub></b> — their airborne concentrations, Bq/m³ (= f<sub>i</sub>·C<sub>0</sub> per (2)); <b>λ<sub>Po</sub>, λ<sub>Pb</sub>, λ<sub>Bi</sub></b> — the decay constants, h⁻¹ (per (1)); <b>R</b> = 0.5 — the recoil-resuspension factor (the share of <sup>214</sup>Pb knocked off the surface at the alpha decay of deposited <sup>218</sup>Po, dimensionless).</p>
+<p>The two channels contribute comparably: for the walls at F = 0.3 direct deposition gives v<sub>Pb</sub>C<sub>Pb</sub>/λ<sub>Pb</sub> ≈ 12.9 Bq/m², ingrowth (1−R)·A<sub>Po</sub> ≈ 14.0 Bq/m² — roughly 50/50. Surface activities depend moderately on the material through both channels.</p>
+
+<h2><span class="num">3</span>Deposition velocities by material</h2>
+<p>Direct chamber measurements of seven residential materials, normalized to a standard room, are used<a class="cit" href="#ref-en-4">&#91;4&#93;</a>. Deposition velocity <var>v</var><sub>d</sub> = λ<sub>dep</sub>·V/S (m/h):</p>
+<div class="tablewrap">
+<table>
+  <caption>Table 1. Progeny deposition velocities and equilibrium factor by material (Leonard 1994).</caption>
+  <thead><tr><th>Material</th><th><var>v</var>(<sup>218</sup>Po)</th><th><var>v</var>(<sup>214</sup>Pb)</th><th><var>v</var>(<sup>214</sup>Bi)</th><th>F</th></tr></thead>
+  <tbody class="num-col">
+    <tr><td>Concrete</td><td>4.6</td><td>0.43</td><td>0.04</td><td>0.50</td></tr>
+    <tr><td>Wood (lacquered)</td><td>5.2</td><td>0.60</td><td>0.04</td><td>0.47</td></tr>
+    <tr><td>Glass</td><td>5.7</td><td>1.24</td><td>0.08</td><td>0.41</td></tr>
+    <tr><td>Wallboard</td><td>6.2</td><td>0.67</td><td>0.03</td><td>0.43</td></tr>
+    <tr><td>Ceiling tile (rough)</td><td>8.9</td><td>0.58</td><td>0.05</td><td>0.32</td></tr>
+    <tr><td>Carpet</td><td>9.2</td><td>2.04</td><td>0.10</td><td>0.33</td></tr>
+    <tr><td>Drape</td><td>17.0</td><td>3.59</td><td>0.16</td><td>0.22</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Smooth flat materials (concrete, wood, wallboard, glass) cluster at <var>v</var>(<sup>218</sup>Po) = 4.6–6.2 m/h; only textiles and the rough tile stand out sharply. Mapping to our geometry: ceiling — painted concrete, walls — non-woven wallpaper (≈ wallboard), floor — lacquered parquet (≈ wood), instrument stand — metal (≈ glass in deposition behaviour). Metal, being a conductor, holds no static charge, so the electrostatic deposition component is absent on the stand — only the diffusive and gravitational ones remain.</p>
+
+<h2><span class="num">4</span>Transport and dosimetry</h2>
+<p>The fluence at the detector location is computed by direct integration of the point isotropic source kernel with exponential attenuation in air<a class="cit" href="#ref-en-13">&#91;13&#93;</a> — separately for three sources (the air volume, the room faces, the instrument stand; detailed below), each with its own activity:</p>
+<div class="eq"><span class="tag">(5)</span><var>G</var><sub>vol</sub>(E) = ∫<sub>V</sub> e<sup>−μr</sup>/(4π<var>r</var>²) d<var>V</var>,&nbsp;&nbsp; <var>G</var><sub>surf</sub>(E) = ∫<sub>S</sub> e<sup>−μr</sup>/(4π<var>r</var>²) d<var>A</var></div>
+<p class="where">where <b>G<sub>vol</sub>(E)</b>, <b>G<sub>surf</sub>(E)</b> — the geometric factors of the volumetric and surface sources (dimension m and dimensionless respectively); <b>E</b> — the gamma-line energy, MeV; <b>μ</b> = μ(E) — the linear attenuation coefficient of air, m⁻¹; <b>r</b> — the distance from a source element to the calculation point, m; integration over the air volume <b>V</b> and over the surface area <b>S</b> of the room.</p>
+<p>Conversion to the ambient dose equivalent:</p>
+<div class="eq"><span class="tag">(6)</span>ΔḢ*(10) = Σ<sub>nucl</sub> Σ<sub>lines</sub> <var>A</var>·<var>y</var>·<var>G</var>(E)·E·(μ<sub>en</sub>/ρ)(E)·h*<sub>K</sub>(E)</div>
+<p class="where">where <b>ΔḢ*(10)</b> — the increment of the ambient dose equivalent rate, nSv/h (summation over the gamma emitters <sup>214</sup>Pb, <sup>214</sup>Bi and their lines); <b>A</b> — the volumetric (C<sub>i</sub>, Bq/m³) or surface (A<sub>i</sub>, Bq/m²) source activity; <b>y</b> — the line yield, photons/decay<a class="cit" href="#ref-en-11">&#91;11&#93;</a>; <b>G(E)</b> — the geometric factor per (5); <b>E</b> — the line energy, MeV; <b>(μ<sub>en</sub>/ρ)</b> — the mass energy-absorption coefficient of air, m²/kg<a class="cit" href="#ref-en-10">&#91;10&#93;</a>; <b>h*<sub>K</sub>(E)</b> — the air kerma → H*(10) conversion coefficient, Sv/Gy<a class="cit" href="#ref-en-9">&#91;9&#93;</a><a class="cit" href="#ref-en-12">&#91;12&#93;</a>. Dimensional factors (E: MeV → J; s⁻¹ → h⁻¹; Sv → nSv) are omitted for brevity.</p>
+<h3>Source model</h3>
+<p>Three spatially distinct gamma sources are included, each with its own activity of the γ-emitters <sup>214</sup>Pb and <sup>214</sup>Bi obtained in §2–3. None of the sources is treated as a point — all are modelled as distributions of isotropic point emitters over which the integration is carried out.</p>
+<ol>
+  <li><b>Volumetric (room air).</b> The <sup>214</sup>Pb and <sup>214</sup>Bi activities are distributed uniformly over the whole volume V = 11 × 5 × 2.3 m with the concentrations C<sub>i</sub> from (2). The detector is located <em>inside</em> this volume.</li>
+  <li><b>Surface (six room faces).</b> Deposited <sup>214</sup>Pb/<sup>214</sup>Bi on the interior surfaces with the densities A<sub>i</sub> from (4). The ceiling (concrete), the floor (parquet) and the four walls (wallpaper) have <em>different</em> surface activities — different material and orientation — so each face is integrated separately and the contributions are summed into the groups "ceiling / floor / walls".</li>
+  <li><b>Local (instrument stand).</b> The 370 × 420 mm stand top under the detector with the surface activity A<sub>i</sub> (material — metal, deposition approximated by glass). The source is centimetres from the crystal — hence the special integration treatment (below).</li>
+</ol>
+<p>The only transport medium is air; furniture, equipment and the instrument housing do not shield. Scattered-radiation buildup is deliberately not included in the base calculation — a conservative underestimate (the Compton correction is introduced separately, §6). The calculation point is the room centre lengthwise, 50 cm from the near wall, at a height of ≈ 1 m.</p>
+
+<h3>Numerical integration</h3>
+<p>Each geometric factor G(E) in (5) is computed by direct summation of the kernel over a regular grid; the grid step is matched to the source scale.</p>
+<ul>
+  <li><b>Air volume</b> — a 5 cm grid, summed layer by layer over height (horizontal slices, to save memory). The kernel e<sup>−μr</sup>/4π<var>r</var>² diverges as <var>r</var> → 0, and the detector lies inside the volume; the neighbourhood of radius R = 15 cm around the detector is therefore excluded from the grid and integrated <em>analytically</em>: for a uniform sphere ∫<sub>0</sub><sup>R</sup> e<sup>−μr</sup>/(4π<var>r</var>²)·4π<var>r</var>² d<var>r</var> = (1 − e<sup>−μR</sup>)/μ. The rest of the volume is a sum over voxels with <var>r</var> ≥ R.</li>
+  <li><b>Room faces</b> — a 5 cm grid over each of the six faces (a two-dimensional area integral); faces with the same material and activity are summed (ceiling, floor, four walls). The detector position enters the distance to a face element as r = √(u² + v² + d²), where u, v are the element offsets in the face plane from the detector projection and <b>d is the perpendicular distance from the detector to that plane</b>: 0.50 m to the near wall, 4.50 m to the far one, 5.50 m to each end wall, 1.00 m to the floor, 1.30 m to the ceiling. The minimum r = 0.50 m — the kernel has no singularity on the faces. No angular (cosine) factors are introduced: the deposited activity is an isotropic emitter per unit area. The per-face geometric factors at 0.609 MeV: near wall 0.707, floor 0.524, ceiling 0.436, far wall 0.067, end walls 0.024 each — the near wall gives ~86 % of the four-wall contribution. The total factor of an extended face grows slower than 1/r² on approach: only a small part of the area becomes close, and in the limit of an infinite uniform plane the distance dependence is only logarithmic — the integral reduces to (S<sub>A</sub>/2)·E₁(μd) with the exponential integral E₁, which varies weakly at μd ≪ 1. Hence the weak and non-monotonic sensitivity of the total to the gap: 10 cm → 0.42, 50 cm → 0.39, room centre → 0.40 nSv/h per 100 Bq/m³ — near the wall its contribution grows, at the centre the air term grows.</li>
+  <li><b>Stand and crystal</b> — the stand top is integrated with a fine 5 mm grid. The field at the detector is <em>not taken at a single point</em> but <strong>averaged over the crystal volume</strong> NaI(Tl) Ø40 × 40 mm: the crystal is split by a 4 mm grid (~800 points inside the cylinder, axis horizontal, 3 cm above the stand top), a separate integral over the stand top is computed for each point, and the results are averaged. The reason is the near zone: at a couple of centimetres the field changes sharply across the crystal volume, and the point approximation makes a noticeable error. For distant sources (walls, air) crystal averaging changes nothing and is not performed.</li>
+</ul>
+
+<h2><span class="num">5</span>Results</h2>
+<p>Both equilibrium regimes are given below. All values are normalized to 100 Bq/m³ of radon; the dependence on the concentration is linear.</p>
+
+<div class="tablewrap">
+<table>
+  <caption>Table 2. Airborne progeny activity (Bq/m³ per 100 Bq/m³ Rn).</caption>
+  <thead><tr><th>Nuclide</th><th>F = 0.3</th><th>F = 0.4</th></tr></thead>
+  <tbody class="num-col">
+    <tr><td><sup>218</sup>Po</td><td>60.9</td><td>62.7</td></tr>
+    <tr><td><sup>214</sup>Pb</td><td>29.9</td><td>38.6</td></tr>
+    <tr><td><sup>214</sup>Bi</td><td>21.5</td><td>35.6</td></tr>
+    <tr><td>λ<sub>v</sub>, h⁻¹</td><td>0.77</td><td>0.13</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="tablewrap">
+<table>
+  <caption>Table 3. Surface activity of <sup>214</sup>Pb / <sup>214</sup>Bi (Bq/m² per 100 Bq/m³ Rn).</caption>
+  <thead>
+    <tr><th rowspan="2">Surface</th><th colspan="2" class="grp">F = 0.3</th><th colspan="2" class="grp">F = 0.4</th></tr>
+    <tr><th><sup>214</sup>Pb</th><th><sup>214</sup>Bi</th><th><sup>214</sup>Pb</th><th><sup>214</sup>Bi</th></tr>
+  </thead>
+  <tbody class="num-col">
+    <tr><td>Ceiling (concrete)</td><td>18.6</td><td>19.0</td><td>21.3</td><td>22.0</td></tr>
+    <tr><td>Walls (wallpaper)</td><td>27.0</td><td>27.3</td><td>31.1</td><td>31.6</td></tr>
+    <tr><td>Floor (parquet)</td><td>23.4</td><td>23.7</td><td>27.1</td><td>27.7</td></tr>
+    <tr><td>Stand (metal)</td><td>36.8</td><td>37.6</td><td>44.2</td><td>45.5</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="tablewrap">
+<table>
+  <caption>Table 4. Component-wise increment ΔḢ*(10) (nSv/h per 100 Bq/m³ Rn).</caption>
+  <thead><tr><th>Component</th><th>F = 0.3</th><th>F = 0.4</th></tr></thead>
+  <tbody class="num-col">
+    <tr><td>Room air</td><td>0.142</td><td>0.224</td></tr>
+    <tr><td>Ceiling (concrete)</td><td>0.025</td><td>0.029</td></tr>
+    <tr><td>Walls (wallpaper)</td><td>0.068</td><td>0.079</td></tr>
+    <tr><td>Floor (parquet)</td><td>0.038</td><td>0.044</td></tr>
+    <tr><td>Stand (metal)</td><td>0.117</td><td>0.142</td></tr>
+    <tr class="total"><td>TOTAL</td><td>0.391</td><td>0.518</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="tablewrap">
+<table>
+  <caption>Table 5. Best estimate of ΔḢ*(10) for the given radon concentrations (nSv/h): data-driven deposition + Compton (isotropic albedo from the primary source). In parentheses — uncollided photons (the sum of Table 4).</caption>
+  <thead><tr><th>Radon, Bq/m³</th><th>F = 0.3</th><th>F = 0.4</th></tr></thead>
+  <tbody class="num-col">
+    <tr><td>100</td><td>0.43 (0.39)</td><td>0.57 (0.52)</td></tr>
+    <tr><td>300</td><td>1.29 (1.17)</td><td>1.71 (1.55)</td></tr>
+    <tr><td>1200</td><td>5.17 (4.69)</td><td>6.84 (6.22)</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>The main change in the transition F = 0.3 → 0.4 comes from the air component (0.142 → 0.224 nSv/h): at higher equilibrium the air holds noticeably more <sup>214</sup>Bi (35.6 vs 21.5 Bq/m³). Contribution structure: air — 36 % (F = 0.3) and 43 % (F = 0.4), room surfaces — ~34 % and ~29 %, instrument stand — ~30 % and ~27 %. The stand remains the largest single surface source — a consequence of the large solid angle of a source right next to the crystal.</p>
+<p>The stand share is an <strong>upper bound</strong>. It assumes uniform deposition over the entire stand top and glass-like deposition (no direct data exist for the stand's metal — the closest material was taken); in reality the deposit peak lies under the instrument body, where there is no deposition and shielding is maximal (housing self-absorption is not modelled, see §7), and switching the approximating material "glass → concrete" lowers the stand contribution from 0.117 to 0.059 nSv/h (total −15 %).</p>
+
+<h3>Verification with the full Jacobi model (v3)</h3>
+<p>To check the single-group approximation, the full Jacobi model is implemented<a class="cit" href="#ref-en-1">&#91;1&#93;</a><a class="cit" href="#ref-en-2">&#91;2&#93;</a>: separate unattached and attached fractions, attachment to the aerosol at a rate X (solved from F at fixed ventilation), <sup>214</sup>Pb detachment at the alpha decay of attached <sup>218</sup>Po (p = 0.83<a class="cit" href="#ref-en-7">&#91;7&#93;</a>), nuclide- and material-specific deposition velocities for the unattached fraction<a class="cit" href="#ref-en-4">&#91;4&#93;</a>, diffusive deposition of the attached one (0.1 m/h<a class="cit" href="#ref-en-2">&#91;2&#93;</a>) and an explicit vertical gravitational settling term ±v<sub>s</sub> (floor/stand +v<sub>s</sub>, ceiling −v<sub>s</sub>, walls 0; v<sub>s</sub> = 0.012 m/h for AMD ≈ 200 nm), plus surface detachment R<sub>s</sub> = 0.29–0.36 by material<a class="cit" href="#ref-en-4">&#91;4&#93;</a>.</p>
+<p>Result: <strong>0.413 (F = 0.3) and 0.527 (F = 0.4)</strong> nSv/h per 100 Bq/m³ against 0.391 and 0.518 in the single-group version — a difference of +6 % and +2 %. The attachment rate X ≈ 9–10 h⁻¹ recovered from F corresponds to clean basement air (the lower edge of the 5–500 h⁻¹ range); the unattached <sup>218</sup>Po fraction is ≈ 0.6. Varying v<sub>s</sub> from 0 to 0.05 m/h changes the ceiling and floor contributions by no more than 0.002 nSv/h — the gravitational deposition vector is negligible. A run with the convection orientation modifiers<a class="cit" href="#ref-en-5">&#91;5&#93;</a> (walls ×1.38, horizontals ×0.76) changes the total by −4…+3 % depending on the protocol: −4 % when the modifier extends to the stand, +3 % when only the room envelope is modified (in both cases F = 0.3 is fixed and λ<sub>v</sub> is recomputed). The sign of the effect is unstable; its magnitude is a few per cent in any protocol.</p>
+<div class="callout"><b>Jacobi deposition ≠ gravitational settling.</b> In the model, "deposition" (λ<sub>dep</sub>) is the progeny flux to surfaces through the near-surface boundary layer, driven by <em>diffusion</em> (Brownian + turbulent), not by gravity. It is <em>isotropic</em>: it drives atoms to any surface equally, and it is governed by the fast unattached fraction (~1 nm, v<sub>d</sub> ≈ 5–20 m/h). Gravitational settling is a separate <em>vertical</em> mechanism: aerosol sedimentation at the Stokes velocity v<sub>s</sub> ≈ 0.01 m/h, acting only on the attached fraction (~200 nm) and only on horizontal surfaces (floor +, ceiling −). Diffusion of the unattached fraction is roughly 10³ times faster than aerosol sedimentation, so the ceiling and the floor shine almost equally and the gravity vector creates no asymmetry. The real orientational asymmetry is set not by gravity but by <em>natural convection</em>: the flow along the walls thins the boundary layer, and vertical walls deposit ≈ 1.8 times more strongly than horizontals<a class="cit" href="#ref-en-5">&#91;5&#93;</a> — an effect directed even <em>against</em> the gravitational logic of "the floor above all".</div>
+
+<h2><span class="num">6</span>Comparison with experiment #RN3</h2>
+<p>Structural factors and input uncertainties were checked in the course of model construction. The key ranking result: with the complete gamma-line set included, none of the remaining uncertainties exceeds ~15 % — the several-fold gap with the measurement (see Table 7) is not explained by them and requires sources beyond the current model. Constant background sources (sub-floor, natural background) do not enter the #RN3 coefficient at all.</p>
+<div class="tablewrap">
+<table>
+  <caption>Table 6. Factors and uncertainties ranked by leverage (F = 0.3, per 100 Bq/m³), largest to smallest.</caption>
+  <thead><tr><th>Factor</th><th>Effect on the total</th><th>Status</th></tr></thead>
+  <tbody>
+    <tr><td>Nuclide-specific deposition (Leonard)</td><td class="num-col">base model, 0.39</td><td>adopted</td></tr>
+    <tr><td>Completeness of the gamma-line set (110 lines, ≥ 99 % of energy)</td><td class="num-col">×1.35 vs 11 main lines</td><td>complete LNHB/DDEP set included<a class="cit" href="#ref-en-11">&#91;11&#93;</a></td></tr>
+    <tr class="total"><td>Deposition on the stand (metal — no data)</td><td class="num-col">−15 % (glass → concrete)</td><td><b>largest uncertainty</b></td></tr>
+    <tr><td>Compton scattering (cavity)</td><td class="num-col">+6…+10 %</td><td>included; albedo from the primary source<a class="cit" href="#ref-en-16">&#91;16&#93;</a><a class="cit" href="#ref-en-18">&#91;18&#93;</a></td></tr>
+    <tr><td>Full Jacobi model, fractions (v3)</td><td class="num-col">+2…+6 %</td><td>verified, cosmetic</td></tr>
+    <tr><td>Surface orientation (convection)<a class="cit" href="#ref-en-5">&#91;5&#93;</a></td><td class="num-col">−4…+3 % (protocol-dependent)</td><td>verified, unstable sign</td></tr>
+    <tr><td>Recoil factor R (0.29–0.55, consistent with v<sub>d</sub>(Pb|R))</td><td class="num-col">±0.5 % (0.390–0.393)</td><td>weak lever (Table 8)</td></tr>
+    <tr><td>Gravitational aerosol settling</td><td class="num-col">&lt; 0.5 %</td><td>negligible</td></tr>
+    <tr><td>Sub-floor gamma (30 cm of concrete)</td><td class="num-col">+0.06–0.16 (const., abs.)</td><td>constant background, not in the coefficient</td></tr>
+  </tbody>
+</table>
+</div>
+<div class="tablewrap">
+<table>
+  <caption>Table 7. Model versus the field measurement (nSv/h per 100 Bq/m³).</caption>
+  <thead><tr><th>Source</th><th>Value</th><th>Ratio to #RN3</th></tr></thead>
+  <tbody class="num-col">
+    <tr><td>Uncollided photons, F = 0.3 (R = 0.5)</td><td>0.39</td><td>×2.8</td></tr>
+    <tr><td>Uncollided photons, F = 0.4 (R = 0.5)</td><td>0.52</td><td>×2.1</td></tr>
+    <tr class="total"><td>Best estimate (+ Compton), F = 0.3, R = 0.5</td><td>0.43</td><td>×2.5</td></tr>
+    <tr class="total"><td>Best estimate (+ Compton), F = 0.4, R = 0.5</td><td>0.57</td><td>×1.9</td></tr>
+    <tr><td>#RN3 measurement, day-to-day contrast</td><td>1.09 (CI 1.03–1.16)</td><td>1.00</td></tr>
+    <tr><td>#RN3 measurement, within-day estimates</td><td>0.69–0.94</td><td>×1.2–2.2 vs model</td></tr>
+  </tbody>
+</table>
+</div>
+<p>The value 1.09 itself should be considered <em>soft</em>. It comes from comparing two daily radon plateaus — 11 vs 12 July — but those days differed not only in radon: the temperature and the diurnal pattern changed too, and their influence mixes into the result. Measuring the dose increment per 100 Bq/m³ within a single day, free of that admixture, gives lower values: 11 July — 0.94 ± 0.34 (significant, p = 0.013), 12 July — 0.69 ± 0.47 (not statistically significant, p = 0.17)<a class="cit" href="#ref-en-15">&#91;15&#93;</a>. This softens the target value (a realistic experimental range is 0.7–1.1 rather than exactly 1.09) but does not close the gap: even the lower within-day estimate 0.69 exceeds the model best estimate (0.43–0.57) by a factor of 1.2–1.6.</p>
+
+<h3>Uncertainty budget: the recoil factor R</h3>
+<p>The surface term enters (4) through the ingrowth channel with the multiplier (1−R), where R is the recoil-resuspension factor. The calculation adopts R = 0.5; however, that is a <em>computational column</em> of the source's Table 1<a class="cit" href="#ref-en-4">&#91;4&#93;</a> (and the theoretical maximum for a plane), not the centre of the measurements: the measured values for our room materials are <b>0.29–0.36</b> (wallboard 0.29, wood 0.31, glass 0.36; concrete was not measured — extrapolation between wallboard and wood gives ~0.30).</p>
+<p>Importantly, the v<sub>d</sub>(<sup>214</sup>Pb) of Table 1 were computed by the authors <em>assuming R = 0.5</em>: the quantity P₃ is linearly tied to R at fixed measured activities. Hence R can only be varied in the model as a <strong>consistent pair</strong> (R, v<sub>d</sub>(Pb|R)): with the observed surface activity and the chamber concentration ratio fixed, v<sub>Pb</sub>(R) = v<sub>Pb</sub>(0.5) − (0.5−R)·(v<sub>Po</sub>/λ<sub>Po</sub>)·(λ<sub>Pb</sub> + v<sub>Pb</sub>(0.5)/0.6818); control point — concrete: R = 0.3 → v<sub>d</sub>(Pb) = 0.28 m/h (instead of 0.426 at R = 0.5). The effects of the two channels are then opposed: a lower R strengthens ingrowth but weakens direct deposition — and they compensate almost completely:</p>
+<div class="tablewrap">
+<table>
+  <caption>Table 8. Sensitivity of the total to the consistent pair (R, v<sub>d</sub>(Pb|R)) (F = 0.3, per 100 Bq/m³; λ<sub>v</sub> is recomputed, since v<sub>d</sub>(Pb) also changes the air removal).</caption>
+  <thead><tr><th>R</th><th>v<sub>d</sub>(Pb): ceiling / walls / floor / stand, m/h</th><th>λ<sub>v</sub>, h⁻¹</th><th>Uncollided</th><th>+ Compton (iso)</th></tr></thead>
+  <tbody class="num-col">
+    <tr><td>0.29 (wallboard)</td><td>0.27 / 0.43 / 0.40 / 0.95</td><td>0.96</td><td>0.393</td><td>0.433</td></tr>
+    <tr><td>0.40</td><td>0.35 / 0.55 / 0.50 / 1.10</td><td>0.86</td><td>0.392</td><td>0.432</td></tr>
+    <tr><td>0.50 (adopted)</td><td>0.43 / 0.67 / 0.60 / 1.24</td><td>0.77</td><td>0.391</td><td>0.430</td></tr>
+    <tr><td>0.55 (carpet, upper edge)</td><td>0.46 / 0.73 / 0.65 / 1.31</td><td>0.72</td><td>0.390</td><td>0.429</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Over the whole Leonard range the total changes by only <strong>±0.5 %</strong> — under consistent variation the recoil factor turns out to be a weak lever. The largest input uncertainty of the model is the stand material: replacing "glass → concrete" moves the total 0.39 → 0.33 (−15 %).</p>
+
+<h3>Compton scattering treatment</h3>
+<p><b>Physical picture.</b> Some photons reach the detector not directly but after Compton reflection from the concrete envelope. The surface's ability to reflect dose is described by the <em>dose albedo</em>: the fraction of dose returned by the surface back into the room. The rigorous quantity here is the <em>differential</em> dose albedo α(E₀, θ₀, θ, φ), depending on the energy and three angles; its semi-empirical formula for concrete was built by Chilton and Huddleston<a class="cit" href="#ref-en-16">&#91;16&#93;</a> from Monte Carlo data (Raso) and is reproduced in the review<a class="cit" href="#ref-en-17">&#91;17&#93;</a>. The integral albedo a<sub>D</sub>(E) is <strong>derived from the primary source</strong>: the Chilton–Huddleston formula with the C, C′ parameters from the MC fit for a thick concrete slab (Table I<a class="cit" href="#ref-en-18">&#91;18&#93;</a>, 30,000 histories per energy) is numerically integrated over the reflection hemisphere (script <code>albedo_ch.py</code>) — separately for normal incidence and for isotropic wall irradiation (cosine-weighted averaging over the incidence angle). Control: a<sub>D</sub>(0.662 MeV, θ₀=0) = 0.063 — within the literature range 0.06–0.08 for Cs-137 on concrete. For the progeny lines: normal incidence 0.125 (0.24 MeV) … 0.025 (2.45 MeV); isotropic 0.183 … 0.047 (low-energy photons reflect better; grazing angles raise the albedo). The albedo table is built on a dense 0.2–2.5 MeV grid; for the single line above it (2.69 MeV, 0.033 % yield) the edge value of the grid is taken.</p>
+<p><b>Cavity model.</b> The room is a closed volume: a photon not absorbed in air (air is nearly transparent — the mean free path is ~80 m) necessarily hits the envelope. A fraction a<sub>D</sub> is reflected and irradiates the room again; of the reflected radiation a fraction a<sub>D</sub> is reflected again at the next hit, and so on. The geometric series 1 + a + a² + … gives the cavity factor:</p>
+<div class="eq">B(E) = 1/(1 − a<sub>D</sub>(E))</div>
+<p class="where">where <b>B(E)</b> — the ratio of the total (with scattering) dose to the direct one, ≥ 1 (dimensionless); <b>a<sub>D</sub>(E)</b> — the integral dose albedo of concrete (dimensionless): the lower estimate — at normal incidence, the central one — at isotropic wall irradiation (both derived from the primary source, no free parameters); <b>E</b> — the line energy, MeV. The analogous reflection sum is known from photometry (the integrating sphere); it is applied to room gamma transport here as a <em>heuristic</em>, not a derived formula.</p>
+<p><b>How the contribution enters the calculation.</b> B(E) is a scalar multiplier per line energy: in (6) the dose of each gamma line of each source is multiplied by B(E). The multiplier depends on the energy only and applies equally to the air, the faces and the stand. An important consequence: <em>the detector position relative to the walls and the floor is accounted for only in the direct component</em> — through the distances r in the integrals (5), where the near wall (50 cm) subtends a large solid angle, the far one (4.5 m) a small one, the floor (1 m) and the ceiling (1.3 m) intermediate ones. The scattered addition in the cavity model is position-independent: it averages the real distribution of reflected radiation over the room into a single coefficient. This is a deliberate simplification; a rigorous treatment would require integrating the angular albedo α(E₀, θ₀, θ, φ) over all "source–reflection point–detector" pairs, or a Monte Carlo calculation (as in<a class="cit" href="#ref-en-3">&#91;3&#93;</a>).</p>
+<p>The outcome is more modest than intuition suggests: Compton adds <strong>+6 % (normal incidence) … +10 % (isotropic)</strong> to the total dose. Transport buildup factors (1.2–1.4), typical of sources <em>inside</em> concrete, do not apply to our geometry (a source in the room, backscattering) — the dose albedo is small, and this is a deliberate correction of the early "+20–40 %" estimate.</p>
+<p class="where"><b>Status of the correction.</b> The albedo values are derived from the primary sources<a class="cit" href="#ref-en-16">&#91;16&#93;</a><a class="cit" href="#ref-en-18">&#91;18&#93;</a> (the isotropy free parameter is eliminated by integration); two approximations remain: the cavity model itself (a position-independent reflection sum) is a heuristic, and the Chilton–Huddleston formula was fitted for a broad parallel beam on a thick slab, whereas the wall irradiation in a room is non-uniform.</p>
+<p>With Compton included, the model gives 0.41–0.43 (F = 0.3) and 0.55–0.57 (F = 0.4) nSv/h per 100 Bq/m³ — a factor of 1.9–2.5 below the day-to-day #RN3 measurement and 1.2–1.6 below the lower within-day estimate.</p>
+<h3>Sub-floor gamma (30 cm of concrete) — estimate and exclusion</h3>
+<p>The contribution of radon progeny in the sub-floor soil through the 30-cm concrete slab is computed separately (a soil half-space, uncollided photons with a buildup factor along the concrete path<a class="cit" href="#ref-en-14">&#91;14&#93;</a>; the slab amounts to 3.3–6.9 mean free paths). For realistic soil radon of 20–50 kBq/m³ the contribution is only <strong>0.06–0.16 nSv/h</strong>; producing 0.3 nSv/h would require ≈ 95 kBq/m³. The decisive objection, however, is not the magnitude: the #RN3 coefficient shows <em>how much the dose rate changes per change of the room radon concentration</em> (nSv/h per 100 Bq/m³), whereas the sub-floor radon concentration is set by the soil and does not change when the ventilation is switched off. Sub-floor gamma adds a <strong>constant background term</strong>, identical at any room concentration, so it does not enter the #RN3 coefficient (the regression subtracts the constant component). Moreover, the reduced under-pressure with the exhaust off decreases soil-gas entry — the link with the room concentration, if any, has the opposite sign. As a contribution dependent on the room concentration, sub-floor radon is excluded.</p>
+<h3>Candidates to explain the ×1.9–2.5 gap</h3>
+<p>The gap with the measurement is not closed by any of the checked uncertainties (Table 6) and requires sources beyond the current model. Candidates in order of plausibility:</p>
+<ol>
+  <li><b>Unaccounted nearby sources:</b> progeny deposition on the instrument housing right next to the crystal (BDKG-05 and the RadonEye monitor sit at the same level — the monitor correctly reports the local concentration, but the film on the housing is not modelled). By analogy with the stand (30 % of the total from a source centimetres away), the housing can contribute at the same order.</li>
+  <li><b>Thoron progeny</b> (<sup>212</sup>Pb, <sup>208</sup>Tl 2.61 MeV) and <b>the BDKG-05 energy response</b>. The instrument's angular response has been checked against passport Table G.6 and excluded as a candidate: convolution over an isotropic field gives +3.5 % (Co-60) … +5.9 % (Cs-137) — the instrument slightly <em>overestimates</em> an isotropic field (the rear dip down to −60 % occupies only 15 % of the solid angle), i.e. the effect is a few per cent and "in the wrong direction". The energy response over the progeny spectrum (the quality of energy compensation) remains unchecked — the passport energy-sensitivity curve is needed.</li>
+  <li><b>Status of the input quantities.</b> F is a scenario input, not a measurement (the EEC was not measured in #RN3): an actual F above 0.4 would shift the model up. The target value of the measurement is also soft: the day-to-day contrast 1.09 mixes in the diurnal pattern; the within-day estimates 0.69–0.94 (the second not significant) shift the target down — a realistic range is 0.7–1.1.</li>
+</ol>
+<p><b>An examined and dismissed candidate — higher deposition velocities of the gamma emitters.</b> The literature spread of v<sub>d</sub> for the attached fraction is wide (2.0–3.5 m/h in Morawska–Jamriska against the adopted 0.43–0.67 m/h<a class="cit" href="#ref-en-4">&#91;4&#93;</a>; effective values 0.13–0.72 m/h at different turbulence<a class="cit" href="#ref-en-6">&#91;6&#93;</a>), but the model's own runs show that this lever is bounded from above by the <em>coupling of deposition to the air balance</em>: enhanced deposition depletes airborne <sup>214</sup>Pb/<sup>214</sup>Bi and lowers the equilibrium factor. At a given F = 0.3, a 3–5-fold increase of v<sub>d</sub>(Pb/Bi) is unreachable at all (even at zero ventilation F does not rise above 0.21–0.28); at fixed ventilation the total grows only to ~0.52–0.57 with Compton — while F drops to 0.18–0.22, and the 0.69–1.09 target is not reached in any regime. In the full v3 model, raising the attached-fraction deposition to 1 m/h and above <em>lowers</em> the total and makes F = 0.3 unreachable.</p>
+<div class="callout"><b>Comparison status.</b> The model is systematically below the experiment: by a factor of 1.9–2.5 against the day-to-day contrast 1.09 and by 1.2–1.6 against the lower within-day estimate 0.69. The physical mechanism (radon progeny gamma) is confirmed in order of magnitude; quantitative agreement is the subject of the next iteration: check first the instrument housing (a nearby source) and the BDKG-05 energy response over the progeny spectrum.</div>
+
+<h2><span class="num">7</span>Limitations</h2>
+<ul>
+  <li>Well-mixed air, steady state (the 3–4 h transients after ventilation changes are not modelled).</li>
+  <li>Compton is treated approximately — a cavity model with a dose albedo (no angular or spectral resolution of the scattered component); the a<sub>D</sub>(E) values are derived from the primary sources<a class="cit" href="#ref-en-16">&#91;16&#93;</a><a class="cit" href="#ref-en-18">&#91;18&#93;</a>.</li>
+  <li>Radiation with E &lt; 0.2 MeV is not included (the lower boundary of the model's attenuation and conversion tables): the <sup>214</sup>Pb gamma lines at 53–196 keV and the bismuth K X-rays at 75–90 keV (a total yield of 21.4 photons per 100 <sup>214</sup>Pb decays). The kerma-weighted estimate of their contribution is ≈ 2 % of the total; weak lines with yields &lt; 0.03 % (≈ 1 % of the energy) are also excluded.</li>
+  <li>Thoron (<sup>220</sup>Rn) and its progeny are not included.</li>
+  <li>Deposition velocities are mapped by surface type rather than measured for the specific painted concrete, wallpaper and parquet. Aerosol gravitational settling is treated explicitly (v3) and is negligible; convective differences between surfaces (warm/cold, thermophoresis) are not modelled.</li>
+  <li>The detector response is taken as ideal in H*(10); self-absorption in the instrument housing is not modelled.</li>
+  <li>Only the increment from radon progeny is estimated; the natural background (cosmic radiation, <sup>40</sup>K, the U/Th series in the structures, gamma from the sub-floor soil) adds a constant term and does not enter the #RN3 coefficient (§6).</li>
+</ul>
+
+<h2><span class="num">8</span>Conclusions</h2>
+<ol>
+  <li>The calculation rests on the complete LNHB/DDEP gamma-line set<a class="cit" href="#ref-en-11">&#91;11&#93;</a>: 110 lines with E ≥ 0.2 MeV (16 lines of <sup>214</sup>Pb + 94 lines of <sup>214</sup>Bi), covering ≥ 99 % of the gamma energy of both nuclides (Σ E·y = 0.2217 of 0.2228 and 1.4532 of 1.4678 MeV/decay); the excluded E &lt; 0.2 MeV range contributes ≈ 2 % (§7). Truncating the set to the 11 main lines would underestimate the total by a factor of 1.35 — spectrum completeness matters more than any other uncertainty of the model.</li>
+  <li>The best estimate of the ambient dose equivalent rate increment from progeny gamma for the 11×5×2.3 m room (data-driven deposition + Compton, R = 0.5) is <strong>0.43 nSv/h per 100 Bq/m³ at F = 0.3</strong> and <strong>0.57 nSv/h at F = 0.4</strong> (uncollided photons 0.39 and 0.52); the dependence on the concentration is linear, as confirmed experimentally (v<sub>d</sub> ⊥ concentration<a class="cit" href="#ref-en-6">&#91;6&#93;</a>).</li>
+  <li>Contribution structure: air 36–43 %, room surfaces ~29–34 %, instrument stand ~27–30 % (an upper bound; housing shielding is not included). Direct <sup>214</sup>Pb deposition and ingrowth from deposited <sup>218</sup>Po contribute comparable shares of the surface activity (~50/50 at R = 0.5).</li>
+  <li>The examined uncertainties are small relative to the gap: stand material −15 %, the recoil factor varied as a consistent pair (R, v<sub>d</sub>(Pb|R)) ±0.5 %, Compton +6…+10 % (albedo from the primary sources<a class="cit" href="#ref-en-16">&#91;16&#93;</a><a class="cit" href="#ref-en-18">&#91;18&#93;</a>), model structure +2…+6 %, surface orientation −4…+3 %. Gamma from the sub-floor soil and the natural background add only a constant term and do not enter the #RN3 coefficient.</li>
+  <li>The model is <strong>systematically below</strong> the #RN3 measurement: ×1.9–2.5 against the day-to-day contrast 1.09 and ×1.2–1.6 against the lower within-day estimate 0.69. The physical mechanism (radon progeny gamma) is confirmed in order of magnitude; quantitative agreement is not reached. An increase of the gamma-emitter deposition velocities as an explanation has been examined and dismissed: at a given F, deposition is bounded from above by the air balance (§6).</li>
+  <li>Next-iteration priorities: (1) deposition on the instrument housing — a nearby source at the crystal capable, by analogy with the stand, of contributing tens of per cent; (2) the BDKG-05 energy response over the progeny spectrum (the passport energy-sensitivity curve is needed; the angular response is already checked via Table G.6 and excluded: +3.5…+5.9 % for an isotropic field, opposite sign) and thoron progeny; (3) the status of the input quantities — the actual F (the EEC was not measured) and the target value of the measurement (the day-to-day 1.09 versus the within-day 0.69–0.94).</li>
+</ol>
+
+<h2><span class="num">9</span>References</h2>
+<ol class="refs">
+  <li id="ref-en-1">Jacobi W. Activity and potential alpha-energy of <sup>222</sup>radon and <sup>220</sup>radon daughters in different air atmospheres // Health Physics. — 1972. — Vol. 22, No. 5. — P. 441–450. <span style="color:var(--muted)">(room model, eqs. 1–3)</span></li>
+  <li id="ref-en-2">Porstendörfer J. Properties and behaviour of radon and thoron and their decay products in the air // Journal of Aerosol Science. — 1994. — Vol. 25, No. 2. — P. 219–263. <span style="color:var(--muted)">(fraction separation, deposition)</span></li>
+  <li id="ref-en-3">Doses from radon progeny as a source of external beta and gamma radiation / V. M. Markovic, D. Krstic, D. Nikezic, N. Stevanovic // Radiation and Environmental Biophysics. — 2012. — Vol. 51. — P. 391–397. <span style="color:var(--muted)">(room-model eqs. 1–4; verified against the PDF)</span></li>
+  <li id="ref-en-4">Radon progeny surface deposition and resuspension — residential materials / B. E. Leonard [et al.] // Proceedings of the 1994 International Radon Symposium. — Atlantic City, 1994. — P. III-3. <span style="color:var(--muted)">(deposition velocities by material, EEC weights, recoil factor; verified against the PDF)</span></li>
+  <li id="ref-en-5">Nazaroff W. W., Kong D., Gadgil A. J. Numerical investigations of the deposition of unattached <sup>218</sup>Po and <sup>212</sup>Pb from natural convection enclosure flow : preprint LBL-30249. — Berkeley : Lawrence Berkeley Laboratory, 1992. — 39 p. — (published in Journal of Aerosol Science). <span style="color:var(--muted)">(orientation dependence of v<sub>d</sub>; verified against the PDF)</span></li>
+  <li id="ref-en-6">Experimental investigation of deposition velocity of <sup>222</sup>Rn progeny in a walk-in-type calibration chamber at different <sup>222</sup>Rn concentrations / A. P. Vijith, R. Mishra, B. K. Sapra, Y. S. Mayya, N. Karunakara : preprint. — SSRN, 2025. — No. 5610572. — (not peer-reviewed). <span style="color:var(--muted)">(v<sub>d</sub> ⊥ concentration, turbulence; verified against the PDF)</span></li>
+  <li id="ref-en-7">Mercer T. J. The effect of particle size on the escape of recoiling RaB atoms from particulate surfaces // Health Physics. — 1976. — Vol. 31, No. 2. — P. 173–174. <span style="color:var(--muted)">(escape factor at alpha decay; the value 0.83 is cited via [4], p. 7)</span></li>
+  <li id="ref-en-8">Sources and Effects of Ionizing Radiation : UNSCEAR 2000 Report to the General Assembly. Vol. I: Sources. Annex B: Exposures from natural radiation sources. — New York : United Nations, 2000. <span style="color:var(--muted)">(EEC weights, reference quantities)</span></li>
+  <li id="ref-en-9">ISO 4037-3:2019. Radiological protection — X and gamma reference radiation … Part 3: Calibration of area and personal dosemeters and the measurement of their response as a function of energy and angle of incidence. — 2019. <span style="color:var(--muted)">(h*<sub>K</sub>(E): kerma → H*(10))</span></li>
+  <li id="ref-en-10">Hubbell J. H., Seltzer S. M. Tables of X-ray mass attenuation coefficients and mass energy-absorption coefficients : NIST Standard Reference Database 126. — Gaithersburg : NIST, 1995. <span style="color:var(--muted)">(μ/ρ, μ<sub>en</sub>/ρ of air)</span></li>
+  <li id="ref-en-11">Chisté V., Bé M.-M. <sup>214</sup>Pb, <sup>214</sup>Bi — Table de Radionucléides / LNE–LNHB/CEA (Decay Data Evaluation Project). — Saclay, 2007–2010. <span style="color:var(--muted)">(energies and yields of all gamma lines and X-rays; tables verified against the PDF, the Σ E·y checksums matched)</span></li>
+  <li id="ref-en-12">Conversion coefficients for use in radiological protection against external radiation : ICRP Publication 74 // Annals of the ICRP. — 1996. — Vol. 26, No. 3–4. <span style="color:var(--muted)">(conversion coefficients to H*(10))</span></li>
+  <li id="ref-en-13">Cember H., Johnson T. E. Introduction to Health Physics. — 4th ed. — New York : McGraw-Hill, 2009. — Ch. "Point-source gamma dose". <span style="color:var(--muted)">(the point-source kernel exp(−μr)/4πr²)</span></li>
+  <li id="ref-en-14">Trubey D. K. New gamma-ray buildup factor data for point kernel calculations : ANS-6.4.3 : ORNL/RSIC-49. — Oak Ridge : Oak Ridge National Laboratory, 1988. <span style="color:var(--muted)">(concrete buildup factors; the values are an estimate and require verification)</span></li>
+  <li id="ref-en-15">Report on experiment #RN3 "BDKG-05 ↔ RadonEye", Radon Risk contour. — 12 Jul 2026.</li>
+  <li id="ref-en-16">Chilton A. B., Huddleston C. M. A semiempirical formula for differential dose albedo for gamma rays on concrete // Nuclear Science and Engineering. — 1963. — Vol. 17, No. 3. — P. 419–424. — (also: NCEL Technical Report R-228, 1962). <span style="color:var(--muted)">(differential dose albedo of concrete; bibliography verified)</span></li>
+  <li id="ref-en-17">Huddleston C. M., Wilcoxson W. L. Gamma-ray streaming through ducts : Technical Report DASA 11.026 / U.S. Naval Civil Engineering Laboratory. — Port Hueneme, 1964. — (DTIC AD 430603, open access). <span style="color:var(--muted)">(albedo review; the Chilton–Huddleston formula reproduced; PDF verified)</span></li>
+  <li id="ref-en-18">Huddleston C. M., Shoemaker N. F. Monte Carlo calculations of gamma-ray albedo : Technical Note N-764 (DASA 11.058) / U.S. Naval Civil Engineering Laboratory. — Port Hueneme, 1965. — (DTIC AD 0621441, open access). <span style="color:var(--muted)">(the C, C′ parameters of the Chilton–Huddleston formula, Table I, 30,000 MC histories per energy; PDF verified — the source of our a<sub>D</sub>(E))</span></li>
+</ol>
+
+<p class="note">Input data status (checked 21 Jul 2026): <b>gamma lines and yields</b> — the complete set of the recommended LNHB/DDEP tables &#91;11&#93;: all lines with E ≥ 0.2 MeV and yields ≥ 0.03 % are included (16 lines of Pb-214 + 94 lines of Bi-214); the Σ E·y checksums of the included set are 99.52 % and 99.01 % of the full tabulated values (0.2228 and 1.4678 MeV/decay); the excluded E &lt; 0.2 MeV range is declared in §7 (≈ 2 % of the total). <b>EEC weights</b> — verified against UNSCEAR 2000 Annex B, p. 103, § 122 (0.105/0.515/0.380). <b>Half-lives</b> — ENSDF/DDEP (Po-218 3.098 min, Pb-214 26.8 min, Bi-214 19.7 min). <b>μ/ρ and μ<sub>en</sub>/ρ of air</b> — the exact NIST (Hubbell–Seltzer) table values. <b>h*<sub>K</sub></b> — the nodes are anchored to two externally verified ISO 4037-3 reference points (0.662 MeV → 1.21; 1.25 MeV → 1.16 Sv/Gy); the full Table A.21 of ICRP 74 — to be re-checked when the publication is accessible. <b>Concrete albedo</b> — derived from the primary sources &#91;16, 18&#93; on a 0.2–2.5 MeV grid. <b>Formulas:</b> equations (1)–(6) are checked by independent first-principles derivation; the script includes a mandatory secular-equilibrium test for equation (4) (PASS), and the λ<sub>v</sub>(F) and X(F) solvers check the residual after bisection.</p>
+
+<div class="foot">
+  <p>Code and reproduction: <code>scripts/analysis/rn_room_model.py</code> (Python 3.12 + numpy). Decay constants: <sup>218</sup>Po 13.42 h⁻¹, <sup>214</sup>Pb 1.552 h⁻¹, <sup>214</sup>Bi 2.111 h⁻¹. Air removal by deposition: 7.85 / 0.835 / 0.051 h⁻¹. Deposition velocities — <code>references/deposition-velocities-materials.md</code>.</p>
+  <p>Radon Risk contour · line #RN4 · version 5 (complete gamma-line set, consistent R variation) · 21 July 2026.</p>
+</div>
+
+</div><!-- /lang-en -->
+
+<script>
+function setLang(l){
+  document.getElementById('lang-ru').style.display = (l === 'ru') ? '' : 'none';
+  document.getElementById('lang-en').style.display = (l === 'en') ? 'block' : 'none';
+  document.getElementById('btn-ru').classList.toggle('active', l === 'ru');
+  document.getElementById('btn-en').classList.toggle('active', l === 'en');
+  document.documentElement.lang = l;
+}
+</script>
 
 </div>
 </body>
