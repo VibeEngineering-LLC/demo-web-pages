@@ -227,7 +227,7 @@ Gоб(E) = ∫_V e^(−μr)/(4πr²) dV, Gпов(E) = ∫_S e^(−μr)/(4πr²) 
 - **Нулевое осаждение** исключено: удержание наблюдаемого неравновесия одной вентиляцией потребовало бы λв ≈ 2.6 ч⁻¹ (полный воздухообмен каждые 23 минуты), что противоречит измеренной динамике; доза при этом упала бы в разы.
 - **Гамма из-под пола** (ДПР в грунте сквозь 30 см бетона, 3.3–6.9 длин пробега, с фактором накопления[14]): при реалистичных 20–50 кБк/м³ в грунте — лишь 0.06–0.16 нЗв/ч, и главное — это *постоянный фон*, не зависящий от комнатной ОА: в коэффициент #RN3 не входит (регрессия вычитает константу).
 - **Угловой отклик БДКГ-05** проверен по паспортной Табл. Г.6: свёртка по изотропному полю даёт +3.5 % (Co-60) … +5.9 % (Cs-137) — единицы процентов и в сторону завышения показаний, кандидатом не является.
-- **ДПР торона** (²¹²Pb, ²⁰⁸Tl 2.61 МэВ) — исключены замерами: значимого торона в помещении не обнаружено.
+- **ДПР торона** (²¹²Pb, ²⁰⁸Tl 2.61 МэВ) — исключены прямым измерением: аэрозольный радиометр АльфаАэро значимой ЭРОА ДПР торона в помещении не выявил.
 
 ### 5.4. Кандидаты остатка
 
@@ -252,7 +252,7 @@ Gоб(E) = ∫_V e^(−μr)/(4πr²) dV, Gпов(E) = ∫_S e^(−μr)/(4πr²) 
 2. **Базовая оценка приращения: 0.67–0.71 нЗв/ч на 100 Бк/м³ (центральное значение ≈ 0.69)**; зависимость от ОА линейна. Доминирует воздушная компонента (64–74 %); подставка — крупнейший единичный поверхностный источник. Граничные сценарии с фиксированным F = 0.3/0.4 дают нижние границы 0.43/0.58.
 3. Бюджет неопределённостей узок: крупнейший фактор — материал подставки в осаждении (−15 %); запылённость, вентиляция, фактор отскока, поправка столешницы — по ±0.5–2 %; вариант альбедо −4 %; ориентация поверхностей −7…0 %.
 4. Целевая величина замера с учётом калибровочной погрешности БДКГ-05 (±20 %) образует полосы 0.87–1.31 (по разным суткам) и 0.55–1.13 (в пределах одних суток). Базовая оценка модели **совместима с оценкой в пределах одних суток** (×1.00 к центру 0.69) и отстоит от нижнего края полосы сравнения суток в ×1.26. Физический механизм — гамма ²¹⁴Pb/²¹⁴Bi — подтверждён количественно.
-5. Проверены и исключены: рост скоростей осаждения гамма-эмиттеров (связка с балансом воздуха), нулевое осаждение, подпольная гамма (постоянный фон), угловой отклик прибора, ДПР торона (замерами). Кандидаты умеренного остатка к центру оценки по разным суткам: осаждение на корпус прибора, энергетический отклик БДКГ-05 по спектру ДПР.
+5. Проверены и исключены: рост скоростей осаждения гамма-эмиттеров (связка с балансом воздуха), нулевое осаждение, подпольная гамма (постоянный фон), угловой отклик прибора, ДПР торона (замер АльфаАэро). Кандидаты умеренного остатка к центру оценки по разным суткам: осаждение на корпус прибора, энергетический отклик БДКГ-05 по спектру ДПР.
 
 ## 8. Список литературы
 
@@ -512,7 +512,7 @@ The base estimate of the model **overlaps the within-day measurement band**: the
 - **Zero deposition** is excluded: sustaining the observed disequilibrium by ventilation alone would require λᵥ ≈ 2.6 h⁻¹ (a full air change every 23 minutes), contradicting the measured dynamics; the dose would drop severalfold.
 - **Sub-floor gamma** (progeny in the soil through 30 cm of concrete, 3.3–6.9 mean free paths, with buildup[14]): at a realistic 20–50 kBq/m³ in the soil — only 0.06–0.16 nSv/h, and crucially it is a *constant background* independent of the room concentration: it does not enter the #RN3 coefficient (the regression subtracts the constant).
 - **The BDKG-05 angular response** is checked against passport Table G.6: convolution over an isotropic field gives +3.5 % (Co-60) … +5.9 % (Cs-137) — a few per cent, and towards overestimation; not a candidate.
-- **Thoron progeny** (²¹²Pb, ²⁰⁸Tl 2.61 MeV) — excluded by measurements: no significant thoron was found in the room.
+- **Thoron progeny** (²¹²Pb, ²⁰⁸Tl 2.61 MeV) — excluded by direct measurement: an AlfaAero aerosol radiometer found no significant thoron progeny EEC in the room.
 
 ### 5.4. Candidates for the remainder
 
@@ -537,7 +537,7 @@ The base estimate of the model **overlaps the within-day measurement band**: the
 2. **The base estimate of the increment: 0.67–0.71 nSv/h per 100 Bq/m³ (central value ≈ 0.69)**; the dependence on concentration is linear. The air component dominates (64–74 %); the stand is the largest single surface source. Bracketing fixed-F scenarios (0.3/0.4) give the lower bounds 0.43/0.58.
 3. The uncertainty budget is narrow: the largest factor is the stand material in deposition (−15 %); aerosol loading, ventilation, recoil factor and the tabletop correction contribute ±0.5–2 % each; the albedo variant −4 %; surface orientation −7…0 %.
 4. The measurement target with the BDKG-05 calibration error (±20 %) forms the bands 0.87–1.31 (day-to-day) and 0.55–1.13 (within-day). The base estimate of the model is **consistent with the within-day measurement** (×1.00 to the centre 0.69) and lies ×1.26 from the lower edge of the day-to-day band. The physical mechanism — ²¹⁴Pb/²¹⁴Bi gamma — is confirmed quantitatively.
-5. Examined and excluded: higher gamma-emitter deposition velocities (coupled to the air balance), zero deposition, sub-floor gamma (constant background), the instrument's angular response, thoron progeny (by measurements). Candidates for the moderate remainder to the day-to-day centre: deposition on the instrument housing, the BDKG-05 energy response over the progeny spectrum.
+5. Examined and excluded: higher gamma-emitter deposition velocities (coupled to the air balance), zero deposition, sub-floor gamma (constant background), the instrument's angular response, thoron progeny (AlfaAero measurement). Candidates for the moderate remainder to the day-to-day centre: deposition on the instrument housing, the BDKG-05 energy response over the progeny spectrum.
 
 ## 8. References
 
