@@ -88,6 +88,9 @@ details dt{color:var(--tx);font-weight:600;margin-top:7px;} details dd{margin:1p
 .viz select{background:var(--card);border:1px solid var(--line);color:var(--tx);border-radius:6px;padding:5px 7px;font:12px system-ui;flex:1;}
 .viz .rl{font-size:12px;color:var(--mut);min-width:96px;}
 .viz b{color:var(--tx);font-family:var(--mono);font-size:12px;}
+.resetbtn{margin-top:11px;width:100%;background:#232a33;border:1px solid var(--line);color:var(--tx);
+  border-radius:8px;font:600 11px/1 system-ui;letter-spacing:.08em;text-transform:uppercase;padding:9px;cursor:pointer;}
+.resetbtn:hover{border-color:var(--acc);color:var(--acc);}
 
 @media(max-width:920px){
   html,body{overflow:auto;} #app{height:auto;} .main{grid-template-columns:1fr;}
@@ -156,8 +159,8 @@ details dt{color:var(--tx);font-weight:600;margin-top:7px;} details dd{margin:1p
         <input type="range" id="sZ" min="0" max="11" value="5"> <b id="vZ"></b></div>
       <div class="row"><label class="tgl"><input type="checkbox" id="cY"> <span data-i18n="slY"></span></label></div>
       <div class="row"><label class="tgl"><input type="checkbox" id="cX"> <span data-i18n="slX"></span></label></div>
-      <div class="row"><label class="tgl"><input type="checkbox" id="cVol"> <span data-i18n="cloud"></span></label>
-        <input type="range" id="sT" min="5" max="90" value="32"></div>
+      <div class="row"><label class="tgl"><input type="checkbox" id="cVol"> <span data-i18n="cloud"></span></label></div>
+      <div class="row"><span class="rl" data-i18n="thrMD"></span><input type="range" id="sT" min="0" max="90" value="0"> <b id="vT"></b></div>
       <div class="row"><span class="rl" data-i18n="colorInt"></span><input type="range" id="sInt" min="45" max="220" value="100"> <b id="vInt"></b></div>
       <div class="row"><span class="rl" data-i18n="palette"></span>
         <select id="selPal">
@@ -165,6 +168,7 @@ details dt{color:var(--tx);font-weight:600;margin-top:7px;} details dd{margin:1p
           <option value="turbo">Turbo</option><option value="thermal">Thermal</option><option value="gray">Gray</option>
         </select></div>
       <div class="row"><label class="tgl"><input type="checkbox" id="cIso"> <span data-i18n="isolines"></span></label></div>
+      <button class="resetbtn" id="bResetAll" data-i18n="reset"></button>
     </div>
   </aside>
 </div>
@@ -1307,6 +1311,7 @@ ru:{
   ['Показание / поле','Показание — что покажет БДКГ-05 (с осаждением на корпус и откликом кристалла). Поле — истинный H*(10) там же без прибора.'],
  ],
  vizT:'Визуализация', height:'высота', colorInt:'интенсивность цвета', palette:'цветовая гамма', isolines:'изолинии поля',
+ thrMD:'порог по МД', reset:'Сброс параметров',
  readT:'Показание БДКГ-05 / поле H*(10)', uRead:'нЗв/ч показание', uField:'нЗв/ч поле H*(10)', uInfl:'инфляция',
  bandMeas:'коэф. замера #RN3 (±20 %)', model:'модель', meas:'1.09',
  bandNote:'Полоса — единственный коэффициент #RN3, измеренный между двумя стабильными плато радона (вентиляция выкл./вкл.): 1.09 (95 % ДИ 1.03–1.16), с ±20 % → 0.87–1.31 нЗв/ч на 100 Бк/м³. Показание модели ниже полосы.',
@@ -1333,6 +1338,7 @@ en:{
   ['Reading / field','Reading — what the BDKG-05 shows (housing deposition + crystal response). Field — true H*(10) at the same point without the instrument.'],
  ],
  vizT:'Visualization', height:'height', colorInt:'colour intensity', palette:'colour map', isolines:'field isolines',
+ thrMD:'dose-rate cut', reset:'Reset parameters',
  readT:'BDKG-05 reading / H*(10) field', uRead:'nSv/h reading', uField:'nSv/h H*(10) field', uInfl:'inflation',
  bandMeas:'#RN3 coefficient (±20 %)', model:'model', meas:'1.09',
  bandNote:'The band is the single #RN3 coefficient, measured between two stable radon plateaus (ventilation off/on): 1.09 (95 % CI 1.03–1.16), with ±20 % → 0.87–1.31 nSv/h per 100 Bq/m³. The model reading is below the band.',
@@ -1431,7 +1437,9 @@ function buildCloud(){
   cloud=new THREE.Points(gm,new THREE.PointsMaterial({size:.11,vertexColors:true,transparent:true,opacity:.42,depthWrite:false}));scene.add(cloud);
 }
 const SS=6;
-function mkSlice(){const c=document.createElement('canvas');const tx=new THREE.CanvasTexture(c);tx.minFilter=THREE.LinearFilter;tx.magFilter=THREE.LinearFilter;
+function mkSlice(){const c=document.createElement('canvas');const tx=new THREE.CanvasTexture(c);
+  tx.minFilter=THREE.LinearFilter;tx.magFilter=THREE.LinearFilter;tx.generateMipmaps=false;
+  tx.wrapS=THREE.ClampToEdgeWrapping;tx.wrapT=THREE.ClampToEdgeWrapping;
   return{c,tx,mat:new THREE.MeshBasicMaterial({map:tx,transparent:true,opacity:.96,side:THREE.DoubleSide,depthWrite:false})};}
 const slZ=mkSlice(),slY=mkSlice(),slX=mkSlice();
 const mZ=new THREE.Mesh(new THREE.PlaneGeometry(NX*CELL,NY*CELL),slZ.mat);mZ.position.set(NX*CELL/2,NY*CELL/2,0);scene.add(mZ);
@@ -1440,7 +1448,7 @@ const mX=new THREE.Mesh(new THREE.PlaneGeometry(NY*CELL,NZ*CELL),slX.mat);mX.rot
 function paint(sl,wc,hc,val){
   const W=wc*SS,H=hc*SS;if(sl.c.width!==W){sl.c.width=W;sl.c.height=H;}
   const ctx=sl.c.getContext('2d'),im=ctx.createImageData(W,H),d=im.data,vmax=state.vmax,inv=1/intensity();
-  const iso=g('cIso').checked,NL=8;
+  const iso=g('cIso').checked,NL=8,thr=vmax*(+g('sT').value/100);
   for(let py=0;py<H;py++){const fy=(py+.5)/SS-.5;
     for(let px=0;px<W;px++){const fx=(px+.5)/SS-.5,o=(py*W+px)*4;
       const ix=Math.min(wc-1,Math.max(0,Math.round(fx))),iy=Math.min(hc-1,Math.max(0,Math.round(fy)));
@@ -1450,6 +1458,7 @@ function paint(sl,wc,hc,val){
       let s00=val(x0,y0),s10=val(x0+1,y0),s01=val(x0,y0+1),s11=val(x0+1,y0+1);
       if(s00<=0)s00=cv;if(s10<=0)s10=cv;if(s01<=0)s01=cv;if(s11<=0)s11=cv;
       const vv=(s00*(1-tx)+s10*tx)*(1-ty)+(s01*(1-tx)+s11*tx)*ty;
+      if(vv<thr){d[o+3]=0;continue;}
       const t=Math.pow(Math.min(1,vv/vmax),inv),c=colorAt(t);let r=c[0],gg=c[1],b=c[2];
       if(iso){const fr=(t*NL)%1;if(fr<0.055||fr>0.945){r*=.38;gg*=.38;b*=.38;}}
       d[o]=r;d[o+1]=gg;d[o+2]=b;d[o+3]=235;}}
@@ -1465,6 +1474,7 @@ function updateSlices(){
   if(mX.visible)paint(slX,NY,NZ,(i,j)=>mapVal(ix,i,j));
   probe.visible=mZ.visible;probe.position.set((ix+.5)*CELL,(iy+.5)*CELL,(iz+.5)*CELL);
   g('vZ').textContent=((iz+.5)*CELL).toFixed(1)+' '+T().um;
+  g('vT').textContent=(state.vmax*(+g('sT').value/100)).toFixed(2);
   const v=mapVal(ix,iy,iz);
   g('probe').innerHTML=`${T().probe} h=${((iz+.5)*CELL).toFixed(1)} ${T().um}: <b>${v.toFixed(3)}</b> ${T().uc[2]}`;
 }
@@ -1519,9 +1529,17 @@ window.addEventListener('resize',resize);
 (function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);})();
 for(const id of['sRn','sX','sL','sH'])g(id).addEventListener('input',refresh);
 for(const id of['cZ','cY','cX','sZ','cIso','sInt'])g(id).addEventListener('input',()=>{if(id==='sInt'){g('vInt').textContent='×'+intensity().toFixed(2);drawCbar();buildCloud();}updateSlices();});
-g('sT').addEventListener('input',buildCloud);
+g('sT').addEventListener('input',()=>{buildCloud();updateSlices();});
 g('cVol').addEventListener('input',buildCloud);
 g('selPal').addEventListener('change',()=>{curPal=g('selPal').value;drawCbar();buildCloud();updateSlices();});
+function resetAll(){
+  const set=(id,v)=>{g(id).value=v;}; const chk=(id,v)=>{g(id).checked=v;};
+  set('sRn',87);set('sL',56);set('sX',60);set('sH',100);set('sZ',5);set('sY',26);set('sXs',15);
+  set('sT',0);set('sInt',100); chk('cZ',true);chk('cY',false);chk('cX',false);chk('cVol',false);chk('cIso',false);
+  g('selPal').value='inferno';curPal='inferno';
+  homeView(); refresh();
+}
+g('bResetAll').onclick=resetAll;
 applyLang();resize();refresh();
 new ResizeObserver(resize).observe(holder);
 </script>
