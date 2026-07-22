@@ -8,12 +8,9 @@
 :root{--bg:#0f1216;--panel:#171b21;--card:#1b2027;--line:#2a313a;--tx:#e2e7ee;--mut:#8b95a2;
   --acc:#4db6e5;--amber:#e0a860;--mono:"Cascadia Mono","SF Mono",Consolas,monospace;}
 *{box-sizing:border-box;}
-html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);
-  font:14px/1.45 system-ui,"Segoe UI",sans-serif;overflow:hidden;}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,"Segoe UI",sans-serif;overflow:hidden;}
 a{color:var(--acc);text-decoration:none;} a:hover{text-decoration:underline;}
 #app{display:flex;flex-direction:column;height:100%;}
-
-/* header */
 header{display:flex;align-items:baseline;gap:14px;padding:10px 18px 9px;border-bottom:1px solid var(--line);flex:none;}
 header h1{font-size:17px;margin:0;font-weight:650;}
 header .sub{color:var(--mut);font-size:11.5px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -21,81 +18,80 @@ header .sub{color:var(--mut);font-size:11.5px;flex:1;min-width:0;overflow:hidden
 .seg button{background:none;border:none;color:var(--mut);font:600 11px/1 system-ui;letter-spacing:.06em;padding:7px 11px;cursor:pointer;}
 .seg button.on{background:var(--acc);color:#08121a;}
 
-/* layout */
 .main{flex:1;display:grid;grid-template-columns:1fr 372px;min-height:0;}
 .leftcol{display:flex;flex-direction:column;min-width:0;min-height:0;}
 .stage{position:relative;flex:1;min-width:0;min-height:0;background:radial-gradient(ellipse at 50% 38%,#151b22 0%,#0d1013 78%);}
-.compbar{flex:none;display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;padding:9px 16px 11px;border-top:1px solid var(--line);background:var(--panel);}
-.compbar .ctable{flex:1 1 340px;min-width:0;} .compbar .ctable h2{margin-bottom:5px;}
-.compbar .sens{flex:1 1 320px;margin-top:0;padding-top:0;border-top:none;}
-.compbar .sens .chips{margin-bottom:2px;}
 #view{position:absolute;inset:0;}
 #view canvas{display:block;width:100%!important;height:100%!important;cursor:grab;touch-action:none;}
-.hint{position:absolute;top:12px;left:14px;font-size:11px;color:var(--mut);pointer-events:none;
-  background:rgba(13,16,19,.6);padding:5px 9px;border-radius:6px;}
+.hint{position:absolute;top:12px;left:14px;font-size:11px;color:var(--mut);pointer-events:none;background:rgba(13,16,19,.6);padding:5px 9px;border-radius:6px;}
 .cbar{position:absolute;top:12px;right:14px;text-align:right;background:rgba(13,16,19,.55);padding:7px 9px;border-radius:7px;}
 .cbar .lb{font:10.5px var(--mono);color:var(--mut);margin-bottom:4px;}
 .cbar .grad{width:150px;height:9px;border-radius:5px;}
 .cbar .tk{display:flex;justify-content:space-between;font:10px var(--mono);color:var(--mut);margin-top:3px;}
-.dock{position:absolute;left:14px;right:14px;bottom:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
-  background:rgba(13,16,19,.72);border:1px solid var(--line);border-radius:9px;padding:8px 10px;backdrop-filter:blur(3px);}
-.tgl{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--mut);cursor:pointer;user-select:none;white-space:nowrap;}
-.tgl input{accent-color:var(--acc);}
-.dock .sp{flex:1;}
-.dock .hslider{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--mut);}
-.dock input[type=range]{width:130px;accent-color:var(--acc);}
-.vbtn{width:32px;height:32px;border-radius:7px;background:#11151a;border:1px solid var(--line);color:var(--tx);font:15px/1 var(--mono);cursor:pointer;}
+.probe{position:absolute;right:14px;bottom:14px;font:12px var(--mono);color:var(--tx);background:rgba(13,16,19,.7);padding:6px 10px;border-radius:7px;}
+.probe b{color:var(--amber);}
+.vbtns{position:absolute;left:14px;bottom:14px;display:flex;gap:7px;}
+.vbtn{width:32px;height:32px;border-radius:7px;background:rgba(13,16,19,.8);border:1px solid var(--line);color:var(--tx);font:15px/1 var(--mono);cursor:pointer;}
 .vbtn:hover{border-color:var(--acc);}
-.probe{position:absolute;right:14px;bottom:64px;font:12px var(--mono);color:var(--tx);background:rgba(13,16,19,.7);
-  padding:6px 10px;border-radius:7px;} .probe b{color:var(--amber);}
 
-/* sidebar */
-aside{background:var(--panel);border-left:1px solid var(--line);padding:12px 14px;display:flex;flex-direction:column;gap:9px;min-height:0;overflow-y:auto;overflow-x:hidden;}
-aside::-webkit-scrollbar{width:8px;} aside::-webkit-scrollbar-thumb{background:#333c46;border-radius:4px;}
-aside::-webkit-scrollbar-track{background:transparent;} aside{scrollbar-width:thin;scrollbar-color:#333c46 transparent;}
-.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;}
-.card h2{font:600 10.5px/1 system-ui;letter-spacing:.11em;text-transform:uppercase;color:var(--acc);margin:0 0 7px;}
-.sl{margin-top:9px;} .sl:first-of-type{margin-top:0;}
-.sl .lr{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--mut);}
-.sl .lr b{color:var(--tx);font:700 13px var(--mono);}
-.sl input[type=range]{width:100%;accent-color:var(--acc);margin:5px 0 0;}
-.sl .hint2{font-size:10.5px;color:#68707b;margin-top:1px;}
-.fnote{font-size:11px;color:var(--mut);margin-top:10px;} .fnote b{color:var(--tx);}
-details{margin-top:8px;font-size:11.5px;color:var(--mut);}
-summary{color:var(--acc);cursor:pointer;font-size:12px;}
-details dt{color:var(--tx);font-weight:600;margin-top:7px;} details dd{margin:1px 0 0;line-height:1.5;}
-.kpi .big{font:700 30px/1.05 var(--mono);color:var(--amber);}
-.kpi .big .u{font:400 12px/1 system-ui;color:var(--mut);}
-.kpi .sub2{font:400 20px/1.1 var(--mono);color:var(--mut);margin-top:2px;}
-.kpi .sub2 .u{font:400 11px/1 system-ui;}
-.kpi .coef{font-size:11.5px;color:var(--mut);margin-top:3px;}
-.bands{position:relative;height:58px;margin-top:10px;}
+/* нижняя полоса: показание + компоненты + чувствительность */
+.bottombar{flex:none;display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;padding:9px 16px 11px;border-top:1px solid var(--line);background:var(--panel);}
+.bpanel{min-width:0;}
+.bpanel h2{font:600 10.5px/1 system-ui;letter-spacing:.11em;text-transform:uppercase;color:var(--acc);margin:0 0 6px;}
+.bp-read{flex:0 0 250px;}
+.bp-comp{flex:1 1 320px;}
+.bp-sens{flex:1 1 280px;}
+
+.big{font:700 27px/1.05 var(--mono);color:var(--amber);}
+.big .u{font:400 12px/1 system-ui;color:var(--mut);}
+.sub2{font:400 18px/1.1 var(--mono);color:var(--mut);margin-top:2px;} .sub2 .u{font:400 11px/1 system-ui;}
+.coef{font-size:11px;color:var(--mut);margin-top:3px;}
+.bands{position:relative;height:56px;margin-top:8px;}
 .axis{position:absolute;left:0;right:0;bottom:13px;height:1px;background:var(--line);}
 .tick{position:absolute;bottom:1px;font:9.5px var(--mono);color:#68707b;transform:translateX(-50%);}
-.band{position:absolute;height:17px;border-radius:4px;font-size:10px;line-height:17px;padding:0 5px;color:#08121a;white-space:nowrap;overflow:hidden;}
+.band{position:absolute;height:16px;border-radius:4px;font-size:10px;line-height:16px;padding:0 5px;color:#08121a;white-space:nowrap;overflow:hidden;}
 .mark{position:absolute;width:3px;top:0;bottom:13px;background:var(--amber);}
 .meas{position:absolute;top:0;bottom:13px;border-left:2px dashed #e05555;}
 .mlab{position:absolute;font-size:10px;color:#e08585;transform:translateX(-50%);}
-.bnote{font-size:10.5px;color:#68707b;margin-top:2px;line-height:1.45;}
+.bnote{font-size:10px;color:#68707b;margin-top:2px;line-height:1.4;}
 table{border-collapse:collapse;width:100%;}
-th,td{padding:2.5px 6px;text-align:right;font-size:12px;border-bottom:1px solid var(--line);}
+th,td{padding:2px 6px;text-align:right;font-size:12px;border-bottom:1px solid var(--line);}
 td{font-family:var(--mono);} td:first-child,th:first-child{text-align:left;} td:first-child{font-family:system-ui;}
 th{color:var(--mut);font-weight:600;font-size:10px;letter-spacing:.05em;text-transform:uppercase;}
 td.pc{color:var(--acc);} tr.tot td{font-weight:700;border-top:2px solid var(--amber);border-bottom:none;color:var(--amber);}
 tr.tot td:first-child{color:var(--tx);}
-.scat{font-size:10.5px;color:var(--mut);margin-top:5px;}
-.sens{margin-top:9px;padding-top:9px;border-top:1px solid var(--line);}
+.scat{font-size:10.5px;color:var(--mut);margin-top:4px;}
 .sens .st{font:600 9.5px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);margin-bottom:5px;}
 .sens .lab{font-size:10.5px;color:var(--mut);margin-top:5px;}
 .chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px;}
 .chipv{background:#12161c;border:1px solid var(--line);border-radius:5px;padding:2px 6px;font:11px var(--mono);}
 .chipv b{color:var(--amber);} .chipv.here{border-color:var(--amber);}
 
+/* правый сайдбар */
+aside{background:var(--panel);border-left:1px solid var(--line);padding:12px 14px;display:flex;flex-direction:column;gap:9px;min-height:0;overflow-y:auto;overflow-x:hidden;}
+aside::-webkit-scrollbar{width:8px;} aside::-webkit-scrollbar-thumb{background:#333c46;border-radius:4px;} aside::-webkit-scrollbar-track{background:transparent;}
+aside{scrollbar-width:thin;scrollbar-color:#333c46 transparent;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;}
+.card h2{font:600 10.5px/1 system-ui;letter-spacing:.11em;text-transform:uppercase;color:var(--acc);margin:0 0 8px;}
+.sl{margin-top:9px;} .sl:first-of-type{margin-top:0;}
+.sl .lr{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--mut);}
+.sl .lr b{color:var(--tx);font:700 13px var(--mono);}
+.sl input[type=range]{width:100%;accent-color:var(--acc);margin:5px 0 0;}
+.fnote{font-size:11px;color:var(--mut);margin-top:10px;} .fnote b{color:var(--tx);}
+details{margin-top:8px;font-size:11.5px;color:var(--mut);}
+summary{color:var(--acc);cursor:pointer;font-size:12px;}
+details dt{color:var(--tx);font-weight:600;margin-top:7px;} details dd{margin:1px 0 0;line-height:1.5;}
+.viz .row{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;}
+.viz .tgl{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--mut);cursor:pointer;user-select:none;}
+.viz .tgl input{accent-color:var(--acc);}
+.viz input[type=range]{flex:1;min-width:80px;accent-color:var(--acc);}
+.viz select{background:var(--card);border:1px solid var(--line);color:var(--tx);border-radius:6px;padding:5px 7px;font:12px system-ui;flex:1;}
+.viz .rl{font-size:12px;color:var(--mut);min-width:96px;}
+.viz b{color:var(--tx);font-family:var(--mono);font-size:12px;}
+
 @media(max-width:920px){
-  html,body{overflow:auto;}
-  #app{height:auto;}
-  .main{grid-template-columns:1fr;}
-  .stage{height:58vh;min-height:340px;}
+  html,body{overflow:auto;} #app{height:auto;} .main{grid-template-columns:1fr;}
+  .stage{height:56vh;min-height:340px;flex:none;}
   aside{overflow:visible;border-left:none;border-top:1px solid var(--line);}
 }
 </style>
@@ -110,35 +106,37 @@ tr.tot td:first-child{color:var(--tx);}
 
 <div class="main">
   <div class="leftcol">
-  <div class="stage">
-    <div id="view"></div>
-    <div class="hint" data-i18n="hint"></div>
-    <div class="cbar">
-      <div class="lb">H*(10), <span id="cbU"></span></div>
-      <div class="grad" id="cbGrad"></div>
-      <div class="tk"><span>0</span><span id="cbMid"></span><span id="cbMax"></span></div>
+    <div class="stage">
+      <div id="view"></div>
+      <div class="hint" data-i18n="hint"></div>
+      <div class="cbar">
+        <div class="lb">H*(10), <span id="cbU"></span></div>
+        <div class="grad" id="cbGrad"></div>
+        <div class="tk"><span>0</span><span id="cbMid"></span><span id="cbMax"></span></div>
+      </div>
+      <div class="probe" id="probe"></div>
+      <div class="vbtns">
+        <button class="vbtn" id="bReset" title="reset">⟲</button>
+        <button class="vbtn" id="bZin">+</button>
+        <button class="vbtn" id="bZout">−</button>
+      </div>
     </div>
-    <div class="probe" id="probe"></div>
-    <div class="dock">
-      <label class="tgl"><input type="checkbox" id="cZ" checked> <span data-i18n="slZ"></span></label>
-      <div class="hslider"><span data-i18n="height"></span> <input type="range" id="sZ" min="0" max="11" value="5"> <b id="vZ" style="color:var(--tx);font-family:var(--mono)"></b></div>
-      <label class="tgl"><input type="checkbox" id="cVol"> <span data-i18n="cloud"></span></label>
-      <label class="tgl"><input type="checkbox" id="cY"> <span data-i18n="slY"></span></label>
-      <label class="tgl"><input type="checkbox" id="cX"> <span data-i18n="slX"></span></label>
-      <span class="sp"></span>
-      <button class="vbtn" id="bReset" title="reset view">⟲</button>
-      <button class="vbtn" id="bZin">+</button>
-      <button class="vbtn" id="bZout">−</button>
+    <div class="bottombar">
+      <div class="bpanel bp-read">
+        <h2 data-i18n="readT"></h2>
+        <div class="big"><span id="totR"></span> <span class="u" data-i18n="uRead"></span></div>
+        <div class="sub2"><span id="totF"></span> <span class="u"><span data-i18n="uField"></span></span></div>
+        <div class="coef"><span id="coef"></span> · <span data-i18n="uInfl"></span> ×<span id="infl"></span></div>
+        <div class="bands" id="bands"></div>
+        <div class="bnote" data-i18n="bandNote"></div>
+      </div>
+      <div class="bpanel bp-comp">
+        <h2 data-i18n="compT"></h2>
+        <table id="tbl"></table>
+        <div class="scat" id="scat"></div>
+      </div>
+      <div class="bpanel bp-sens sens" id="sens"></div>
     </div>
-  </div>
-  <div class="compbar">
-    <div class="ctable">
-      <h2 data-i18n="compT"></h2>
-      <table id="tbl"></table>
-      <div class="scat" id="scat"></div>
-    </div>
-    <div class="sens" id="sens"></div>
-  </div>
   </div>
 
   <aside>
@@ -152,13 +150,21 @@ tr.tot td:first-child{color:var(--tx);}
       <details><summary data-i18n="glosT"></summary><dl id="glossary"></dl></details>
     </div>
 
-    <div class="card kpi">
-      <h2 data-i18n="readT"></h2>
-      <div class="big"><span id="totR"></span> <span class="u" data-i18n="uRead"></span></div>
-      <div class="sub2"><span id="totF"></span> <span class="u"><span data-i18n="uField"></span></span></div>
-      <div class="coef"><span id="coef"></span> · <span data-i18n="uInfl"></span> ×<span id="infl"></span></div>
-      <div class="bands" id="bands"></div>
-      <div class="bnote" data-i18n="bandNote"></div>
+    <div class="card viz">
+      <h2 data-i18n="vizT"></h2>
+      <div class="row"><label class="tgl"><input type="checkbox" id="cZ" checked> <span data-i18n="slZ"></span></label>
+        <input type="range" id="sZ" min="0" max="11" value="5"> <b id="vZ"></b></div>
+      <div class="row"><label class="tgl"><input type="checkbox" id="cY"> <span data-i18n="slY"></span></label></div>
+      <div class="row"><label class="tgl"><input type="checkbox" id="cX"> <span data-i18n="slX"></span></label></div>
+      <div class="row"><label class="tgl"><input type="checkbox" id="cVol"> <span data-i18n="cloud"></span></label>
+        <input type="range" id="sT" min="5" max="90" value="32"></div>
+      <div class="row"><span class="rl" data-i18n="colorInt"></span><input type="range" id="sInt" min="45" max="220" value="100"> <b id="vInt"></b></div>
+      <div class="row"><span class="rl" data-i18n="palette"></span>
+        <select id="selPal">
+          <option value="inferno">Inferno</option><option value="viridis">Viridis</option>
+          <option value="turbo">Turbo</option><option value="thermal">Thermal</option><option value="gray">Gray</option>
+        </select></div>
+      <div class="row"><label class="tgl"><input type="checkbox" id="cIso"> <span data-i18n="isolines"></span></label></div>
     </div>
   </aside>
 </div>
@@ -1287,10 +1293,9 @@ ru:{
  title:'Гамма-поле ДПР радона — 3D-калькулятор',
  subtitle:'Geant4 11.2.1 · L-комната 88.3 м³ · БДКГ-05 · спектр ²¹⁴Pb+²¹⁴Bi (110 линий LNHB) · проект «Радоновый риск»',
  hint:'вращение — мышь · зум — колесо · сдвиг — правая кнопка',
- slZ:'горизонт. срез', height:'высота', cloud:'облако поля', slY:'срез В–З', slX:'срез С–Ю',
+ slZ:'горизонт. срез', slY:'верт. срез В–З', slX:'верт. срез С–Ю', cloud:'облако поля',
  inputs:'Входные параметры',
  pRn:'Радон C(Rn)', pL:'Вентиляция λв', pX:'Запылённость X', pH:'Осаждение на корпус v_d',
- hintL:'измерено #RN3: 0.01–0.07 ч⁻¹', hintX:'25–50 — норматив жилья', hintH:'×0.5/×2 → −7…+14 % итога',
  fNote:'F (коэф. равновесия) — выход модели:', fNote2:'ползунки меняют только веса источников; пределы величин — в справке ниже.',
  glosT:'Справка о величинах и пределах',
  gloss:[
@@ -1301,24 +1306,22 @@ ru:{
   ['F (выход)','Коэффициент равновесия Rn↔ДПР. Вычисляется из X и λв, не задаётся.'],
   ['Показание / поле','Показание — что покажет БДКГ-05 (с осаждением на корпус и откликом кристалла). Поле — истинный H*(10) там же без прибора.'],
  ],
- readT:'Показание БДКГ-05 / поле H*(10)',
- uRead:'нЗв/ч показание', uField:'нЗв/ч поле H*(10)', uInfl:'инфляция',
+ vizT:'Визуализация', height:'высота', colorInt:'интенсивность цвета', palette:'цветовая гамма', isolines:'изолинии поля',
+ readT:'Показание БДКГ-05 / поле H*(10)', uRead:'нЗв/ч показание', uField:'нЗв/ч поле H*(10)', uInfl:'инфляция',
  bandMeas:'коэф. замера #RN3 (±20 %)', model:'модель', meas:'1.09',
  bandNote:'Полоса — единственный коэффициент #RN3, измеренный между двумя стабильными плато радона (вентиляция выкл./вкл.): 1.09 (95 % ДИ 1.03–1.16), с ±20 % → 0.87–1.31 нЗв/ч на 100 Бк/м³. Показание модели ниже полосы.',
  compT:'Компонентный состав, нЗв/ч', thSrc:'источник', thRead:'показ.', thShare:'доля', thField:'поле', tot:'ИТОГО',
  scat:'рассеянная доля поля', src:{air:'воздух',ceiling:'потолок',floor:'пол',walls:'стены',stand:'столешница',housing:'корпус'},
  sensT:'Чувствительность показания, нЗв/ч', sensX:'запылённость X, ч⁻¹', sensH:'осаждение на корпус',
- probe:'зонд', um:'м',
- coef:c=>`${c} нЗв/ч на 100 Бк/м³`, uc:['Бк/м³','ч⁻¹','нЗв/ч'],
+ probe:'зонд', um:'м', coef:c=>`${c} нЗв/ч на 100 Бк/м³`, uc:['Бк/м³','ч⁻¹','нЗв/ч'],
 },
 en:{
  title:'Radon progeny gamma field — 3D calculator',
  subtitle:'Geant4 11.2.1 · L-room 88.3 m³ · BDKG-05 · ²¹⁴Pb+²¹⁴Bi spectrum (110 LNHB lines) · Radon Risk project',
  hint:'rotate — mouse · zoom — wheel · pan — right button',
- slZ:'horiz. slice', height:'height', cloud:'field cloud', slY:'slice E–W', slX:'slice N–S',
+ slZ:'horiz. slice', slY:'vert. slice E–W', slX:'vert. slice N–S', cloud:'field cloud',
  inputs:'Input parameters',
  pRn:'Radon C(Rn)', pL:'Ventilation λv', pX:'Aerosol X', pH:'Deposition on housing v_d',
- hintL:'measured #RN3: 0.01–0.07 h⁻¹', hintX:'25–50 — typical indoor', hintH:'×0.5/×2 → −7…+14 % of total',
  fNote:'F (equilibrium factor) — model output:', fNote2:'sliders only re-weight sources; quantity ranges are in the reference below.',
  glosT:'Quantities and ranges',
  gloss:[
@@ -1329,15 +1332,14 @@ en:{
   ['F (output)','Rn↔progeny equilibrium factor. Computed from X and λv, not assumed.'],
   ['Reading / field','Reading — what the BDKG-05 shows (housing deposition + crystal response). Field — true H*(10) at the same point without the instrument.'],
  ],
- readT:'BDKG-05 reading / H*(10) field',
- uRead:'nSv/h reading', uField:'nSv/h H*(10) field', uInfl:'inflation',
+ vizT:'Visualization', height:'height', colorInt:'colour intensity', palette:'colour map', isolines:'field isolines',
+ readT:'BDKG-05 reading / H*(10) field', uRead:'nSv/h reading', uField:'nSv/h H*(10) field', uInfl:'inflation',
  bandMeas:'#RN3 coefficient (±20 %)', model:'model', meas:'1.09',
  bandNote:'The band is the single #RN3 coefficient, measured between two stable radon plateaus (ventilation off/on): 1.09 (95 % CI 1.03–1.16), with ±20 % → 0.87–1.31 nSv/h per 100 Bq/m³. The model reading is below the band.',
  compT:'Component breakdown, nSv/h', thSrc:'source', thRead:'read.', thShare:'share', thField:'field', tot:'TOTAL',
  scat:'scattered fraction of the field', src:{air:'air',ceiling:'ceiling',floor:'floor',walls:'walls',stand:'stand',housing:'housing'},
  sensT:'Reading sensitivity, nSv/h', sensX:'dust load X, h⁻¹', sensH:'deposition on housing',
- probe:'probe', um:'m',
- coef:c=>`${c} nSv/h per 100 Bq/m³`, uc:['Bq/m³','h⁻¹','nSv/h'],
+ probe:'probe', um:'m', coef:c=>`${c} nSv/h per 100 Bq/m³`, uc:['Bq/m³','h⁻¹','nSv/h'],
 }};
 let LANG=localStorage.getItem('rc_lang')||'ru';
 const T=()=>I18N[LANG];
@@ -1350,39 +1352,39 @@ function applyLang(){
 g('bru').onclick=()=>{LANG='ru';localStorage.setItem('rc_lang',LANG);applyLang();refresh();};
 g('ben').onclick=()=>{LANG='en';localStorage.setItem('rc_lang',LANG);applyLang();refresh();};
 
+// ---------------- палитры ----------------
+const PALETTES={
+ inferno:[[0,0,4],[40,11,84],[101,21,110],[159,42,99],[212,72,66],[245,125,21],[250,193,39],[252,255,164]],
+ viridis:[[68,1,84],[72,40,120],[62,74,137],[49,104,142],[38,130,142],[31,158,137],[53,183,121],[110,206,88],[181,222,43],[253,231,37]],
+ turbo:[[48,18,59],[62,73,196],[38,130,238],[30,196,194],[100,229,110],[181,222,43],[248,181,49],[233,96,20],[165,23,7],[122,4,3]],
+ thermal:[[0,0,8],[64,10,64],[140,20,50],[200,70,20],[240,140,20],[252,210,90],[255,255,220]],
+ gray:[[12,12,15],[70,72,78],[140,145,152],[205,210,216],[245,248,252]],
+};
+let curPal='inferno';
+function colorAt(t){const p=PALETTES[curPal],x=Math.min(Math.max(t,0),1)*(p.length-1),i=Math.floor(x),f=x-i,a=p[i],b=p[Math.min(i+1,p.length-1)];
+  return [a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f,a[2]+(b[2]-a[2])*f];}
+function intensity(){return +g('sInt').value/100;}
+function mapT(v){return Math.pow(Math.min(1,Math.max(0,v/state.vmax)),1/intensity());}
+
 // ---------------- физика ----------------
 function bracket(a,v){let i=0;while(i<a.length-2&&a[i+1]<v)i++;return [i,Math.min(Math.max((v-a[i])/(a[i+1]-a[i]),0),1)];}
-function actsAt(X,lam){
-  const lxs=D.XS.map(Math.log);
-  const [i,tx]=bracket(lxs,Math.log(X)), [j,tl]=bracket(D.LAMS,lam);
+function actsAt(X,lam){const lxs=D.XS.map(Math.log);const [i,tx]=bracket(lxs,Math.log(X)),[j,tl]=bracket(D.LAMS,lam);
   const G=(ii,jj,s,k)=>s?D.GRID[ii][jj][s][k]:D.GRID[ii][jj].F;
   const L=(s,k)=>{const a=G(i,j,s,k)*(1-tx)+G(i+1,j,s,k)*tx,b=G(i,j+1,s,k)*(1-tx)+G(i+1,j+1,s,k)*tx;return a*(1-tl)+b*tl;};
-  const o={F:L(null)}; for(const s of SRC)o[s]=[L(s,0),L(s,1)]; return o;
-}
+  const o={F:L(null)};for(const s of SRC)o[s]=[L(s,0),L(s,1)];return o;}
 let state={rates:null,scale:1,vmax:1};
-function compute(){
-  const Rn=+g('sRn').dataset.val, X=+g('sX').dataset.val, lam=+g('sL').dataset.val, hs=+g('sH').value/100;
-  const A=actsAt(X,lam), scale=Rn/100, res={}, rates={};
-  for(const s of SRC){
-    let [pb,bi]=A[s]; if(s==='housing'){pb*=hs;bi*=hs;}
-    rates[s]={pb:pb*D.AREA[s]*D.SY.pb, bi:bi*D.AREA[s]*D.SY.bi};
-    const r=rates[s], rd=(r.pb*D.READ[s].pb+r.bi*D.READ[s].bi)*D.KAPPA*scale;
-    let ft=0,fd=0;
-    if(D.FIELD[s]){ft=(r.pb*D.FIELD[s].pb[0]+r.bi*D.FIELD[s].bi[0])*3.6e12*scale;fd=(r.pb*D.FIELD[s].pb[1]+r.bi*D.FIELD[s].bi[1])*3.6e12*scale;}
-    res[s]={rd,ft,fd};
-  }
-  state.rates=rates; state.scale=scale; state.F=A.F; return res;
-}
+function compute(){const Rn=+g('sRn').dataset.val,X=+g('sX').dataset.val,lam=+g('sL').dataset.val,hs=+g('sH').value/100;
+  const A=actsAt(X,lam),scale=Rn/100,res={},rates={};
+  for(const s of SRC){let[pb,bi]=A[s];if(s==='housing'){pb*=hs;bi*=hs;}
+    rates[s]={pb:pb*D.AREA[s]*D.SY.pb,bi:bi*D.AREA[s]*D.SY.bi};const r=rates[s],rd=(r.pb*D.READ[s].pb+r.bi*D.READ[s].bi)*D.KAPPA*scale;
+    let ft=0,fd=0;if(D.FIELD[s]){ft=(r.pb*D.FIELD[s].pb[0]+r.bi*D.FIELD[s].bi[0])*3.6e12*scale;fd=(r.pb*D.FIELD[s].pb[1]+r.bi*D.FIELD[s].bi[1])*3.6e12*scale;}
+    res[s]={rd,ft,fd};}
+  state.rates=rates;state.scale=scale;state.F=A.F;return res;}
 function mapVal(ix,iy,iz){const idx=(ix*NY+iy)*NZ+iz;let v=0;
-  for(const s in D.MAPS)v+=D.MAPS[s].pb[idx]*state.rates[s].pb+D.MAPS[s].bi[idx]*state.rates[s].bi;
-  return v*1e-21*3.6e12*state.scale;}
+  for(const s in D.MAPS)v+=D.MAPS[s].pb[idx]*state.rates[s].pb+D.MAPS[s].bi[idx]*state.rates[s].bi;return v*1e-21*3.6e12*state.scale;}
 function foldTotal(X,lam,hs){const A=actsAt(X,lam);let tR=0;
   for(const s of SRC){let[pb,bi]=A[s];if(s==='housing'){pb*=hs;bi*=hs;}
-    tR+=(pb*D.AREA[s]*D.SY.pb*D.READ[s].pb+bi*D.AREA[s]*D.SY.bi*D.READ[s].bi)*D.KAPPA*state.scale;}
-  return tR;}
-const inferno=t=>{const c=[[0,0,4],[40,11,84],[101,21,110],[159,42,99],[212,72,66],[245,125,21],[250,193,39],[252,255,164]];
-  const x=Math.min(Math.max(t,0),1)*(c.length-1),i=Math.floor(x),f=x-i,a=c[i],b=c[Math.min(i+1,7)];
-  return [a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f,a[2]+(b[2]-a[2])*f];};
+    tR+=(pb*D.AREA[s]*D.SY.pb*D.READ[s].pb+bi*D.AREA[s]*D.SY.bi*D.READ[s].bi)*D.KAPPA*state.scale;}return tR;}
 
 // ---------------- three.js ----------------
 const holder=g('view');
@@ -1390,92 +1392,86 @@ const renderer=new THREE.WebGLRenderer({antialias:true});
 renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
 holder.appendChild(renderer.domElement);
 const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(46,1,0.05,200);
-camera.up.set(0,0,1);
-const controls=new THREE.OrbitControls(camera,renderer.domElement);
-controls.enableDamping=true; controls.dampingFactor=0.09;
+const camera=new THREE.PerspectiveCamera(46,1,0.05,200); camera.up.set(0,0,1);
+const controls=new THREE.OrbitControls(camera,renderer.domElement); controls.enableDamping=true; controls.dampingFactor=0.09;
 const CTR=new THREE.Vector3(RW/2,RD/2,RH*0.42);
 const HOME=new THREE.Vector3(RW/2+6.7,RD/2-9.4,RH*0.42+8.9);
 function homeView(){controls.target.copy(CTR);camera.position.copy(HOME);}
 homeView();
 scene.add(new THREE.AmbientLight(0xffffff,0.9));
 const dl=new THREE.DirectionalLight(0xffffff,0.45); dl.position.set(6,-9,12); scene.add(dl);
-
 const POLY=[[2.149,RD],[RW,RD],[RW,0],[0,0],[0,4.28],[2.149,4.28]];
 (function(){
-  // рёбра комнаты
-  const pts=[];
-  for(let k=0;k<POLY.length;k++){const a=POLY[k],b=POLY[(k+1)%POLY.length];
-    pts.push(a[0],a[1],0,b[0],b[1],0, a[0],a[1],RH,b[0],b[1],RH, a[0],a[1],0,a[0],a[1],RH);}
-  const gm=new THREE.BufferGeometry(); gm.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));
+  const pts=[];for(let k=0;k<POLY.length;k++){const a=POLY[k],b=POLY[(k+1)%POLY.length];
+    pts.push(a[0],a[1],0,b[0],b[1],0,a[0],a[1],RH,b[0],b[1],RH,a[0],a[1],0,a[0],a[1],RH);}
+  const gm=new THREE.BufferGeometry();gm.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));
   scene.add(new THREE.LineSegments(gm,new THREE.LineBasicMaterial({color:0xaebccb,transparent:true,opacity:0.9})));
-  // пол
   const sh=new THREE.Shape(POLY.map(p=>new THREE.Vector2(p[0],p[1])));
-  const fl=new THREE.Mesh(new THREE.ShapeGeometry(sh),new THREE.MeshBasicMaterial({color:0x1a2028,side:THREE.DoubleSide}));
-  fl.position.z=-0.01; scene.add(fl);
-  const gr=new THREE.GridHelper(12,12,0x2c3540,0x1f262e); gr.rotation.x=Math.PI/2; gr.position.set(RW/2,RD/2,0); scene.add(gr);
-  // лестничный блок
+  const fl=new THREE.Mesh(new THREE.ShapeGeometry(sh),new THREE.MeshBasicMaterial({color:0x1a2028,side:THREE.DoubleSide}));fl.position.z=-0.01;scene.add(fl);
+  const gr=new THREE.GridHelper(12,12,0x2c3540,0x1f262e);gr.rotation.x=Math.PI/2;gr.position.set(RW/2,RD/2,0);scene.add(gr);
   const st=new THREE.Mesh(new THREE.BoxGeometry(2.149,RD-4.28,RH),new THREE.MeshLambertMaterial({color:0x7d5236,transparent:true,opacity:0.32}));
-  st.position.set(2.149/2,4.28+(RD-4.28)/2,RH/2); scene.add(st);
-  const se=new THREE.LineSegments(new THREE.EdgesGeometry(st.geometry),new THREE.LineBasicMaterial({color:0xb9855a})); se.position.copy(st.position); scene.add(se);
-  // столешница + прибор
-  const pl=new THREE.Mesh(new THREE.BoxGeometry(0.37,0.42,0.02),new THREE.MeshLambertMaterial({color:0x9aa5b0}));
-  pl.position.set(DETP[0],DETP[1],0.95); scene.add(pl);
-  for(const[dx,dy]of[[-.15,-.17],[.15,-.17],[-.15,.17],[.15,.17]]){
-    const lg=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,.95),new THREE.MeshLambertMaterial({color:0x555f6a}));
-    lg.rotation.x=Math.PI/2; lg.position.set(DETP[0]+dx,DETP[1]+dy,.475); scene.add(lg);}
+  st.position.set(2.149/2,4.28+(RD-4.28)/2,RH/2);scene.add(st);
+  const se=new THREE.LineSegments(new THREE.EdgesGeometry(st.geometry),new THREE.LineBasicMaterial({color:0xb9855a}));se.position.copy(st.position);scene.add(se);
+  const pl=new THREE.Mesh(new THREE.BoxGeometry(0.37,0.42,0.02),new THREE.MeshLambertMaterial({color:0x9aa5b0}));pl.position.set(DETP[0],DETP[1],0.95);scene.add(pl);
+  for(const[dx,dy]of[[-.15,-.17],[.15,-.17],[-.15,.17],[.15,.17]]){const lg=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,.95),new THREE.MeshLambertMaterial({color:0x555f6a}));
+    lg.rotation.x=Math.PI/2;lg.position.set(DETP[0]+dx,DETP[1]+dy,.475);scene.add(lg);}
   const det=new THREE.Mesh(new THREE.CylinderGeometry(.0275,.0275,.315,28),new THREE.MeshLambertMaterial({color:0x3fd0e8,emissive:0x114049}));
-  det.rotation.z=Math.PI/2; det.position.set(DETP[0],DETP[1],1.0); scene.add(det);
-  const rg=new THREE.Mesh(new THREE.TorusGeometry(.16,.009,10,44),new THREE.MeshBasicMaterial({color:0x3fd0e8}));
-  rg.position.set(DETP[0],DETP[1],1.0); scene.add(rg);
+  det.rotation.z=Math.PI/2;det.position.set(DETP[0],DETP[1],1.0);scene.add(det);
+  const rg=new THREE.Mesh(new THREE.TorusGeometry(.16,.009,10,44),new THREE.MeshBasicMaterial({color:0x3fd0e8}));rg.position.set(DETP[0],DETP[1],1.0);scene.add(rg);
 })();
 
-// облако
 let cloud=null;
 function buildCloud(){
   if(cloud){scene.remove(cloud);cloud.geometry.dispose();cloud=null;}
   if(!g('cVol').checked)return;
-  const thr=state.vmax*0.32, pos=[],col=[];
+  const thr=state.vmax*(+g('sT').value/100),pos=[],col=[];
   for(let i=0;i<NX;i++)for(let j=0;j<NY;j++)for(let k=0;k<NZ;k++){const v=mapVal(i,j,k);if(v<thr)continue;
-    pos.push((i+.5)*CELL,(j+.5)*CELL,(k+.5)*CELL);const c=inferno(v/state.vmax);col.push(c[0]/255,c[1]/255,c[2]/255);}
-  const gm=new THREE.BufferGeometry();
-  gm.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
-  gm.setAttribute('color',new THREE.Float32BufferAttribute(col,3));
-  cloud=new THREE.Points(gm,new THREE.PointsMaterial({size:.11,vertexColors:true,transparent:true,opacity:.4,depthWrite:false}));
-  scene.add(cloud);
+    pos.push((i+.5)*CELL,(j+.5)*CELL,(k+.5)*CELL);const c=colorAt(mapT(v));col.push(c[0]/255,c[1]/255,c[2]/255);}
+  const gm=new THREE.BufferGeometry();gm.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));gm.setAttribute('color',new THREE.Float32BufferAttribute(col,3));
+  cloud=new THREE.Points(gm,new THREE.PointsMaterial({size:.11,vertexColors:true,transparent:true,opacity:.42,depthWrite:false}));scene.add(cloud);
 }
-// срезы
-function mkSlice(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;
-  const tx=new THREE.CanvasTexture(c);tx.magFilter=THREE.NearestFilter;tx.minFilter=THREE.NearestFilter;
-  return{c,tx,mat:new THREE.MeshBasicMaterial({map:tx,transparent:true,opacity:.95,side:THREE.DoubleSide,depthWrite:false})};}
-const slZ=mkSlice(NX,NY),slY=mkSlice(NX,NZ),slX=mkSlice(NY,NZ);
-const mZ=new THREE.Mesh(new THREE.PlaneGeometry(NX*CELL,NY*CELL),slZ.mat); mZ.position.set(NX*CELL/2,NY*CELL/2,0); scene.add(mZ);
-const mY=new THREE.Mesh(new THREE.PlaneGeometry(NX*CELL,NZ*CELL),slY.mat); mY.rotation.x=Math.PI/2; scene.add(mY);
-const mX=new THREE.Mesh(new THREE.PlaneGeometry(NY*CELL,NZ*CELL),slX.mat); mX.rotation.y=-Math.PI/2; mX.rotation.z=-Math.PI/2; scene.add(mX);
-function paint(sl,w,h,val){const ctx=sl.c.getContext('2d'),im=ctx.createImageData(w,h);
-  for(let j=0;j<h;j++)for(let i=0;i<w;i++){const v=val(i,j),o=((h-1-j)*w+i)*4;
-    if(v<=0){im.data[o+3]=0;continue;}const c=inferno(v/state.vmax);im.data[o]=c[0];im.data[o+1]=c[1];im.data[o+2]=c[2];im.data[o+3]=232;}
-  ctx.putImageData(im,0,0);sl.tx.needsUpdate=true;}
-const probe=new THREE.Mesh(new THREE.SphereGeometry(.07,16,12),new THREE.MeshBasicMaterial({color:0xffffff})); scene.add(probe);
+const SS=6;
+function mkSlice(){const c=document.createElement('canvas');const tx=new THREE.CanvasTexture(c);tx.minFilter=THREE.LinearFilter;tx.magFilter=THREE.LinearFilter;
+  return{c,tx,mat:new THREE.MeshBasicMaterial({map:tx,transparent:true,opacity:.96,side:THREE.DoubleSide,depthWrite:false})};}
+const slZ=mkSlice(),slY=mkSlice(),slX=mkSlice();
+const mZ=new THREE.Mesh(new THREE.PlaneGeometry(NX*CELL,NY*CELL),slZ.mat);mZ.position.set(NX*CELL/2,NY*CELL/2,0);scene.add(mZ);
+const mY=new THREE.Mesh(new THREE.PlaneGeometry(NX*CELL,NZ*CELL),slY.mat);mY.rotation.x=Math.PI/2;scene.add(mY);
+const mX=new THREE.Mesh(new THREE.PlaneGeometry(NY*CELL,NZ*CELL),slX.mat);mX.rotation.y=-Math.PI/2;mX.rotation.z=-Math.PI/2;scene.add(mX);
+function paint(sl,wc,hc,val){
+  const W=wc*SS,H=hc*SS;if(sl.c.width!==W){sl.c.width=W;sl.c.height=H;}
+  const ctx=sl.c.getContext('2d'),im=ctx.createImageData(W,H),d=im.data,vmax=state.vmax,inv=1/intensity();
+  const iso=g('cIso').checked,NL=8;
+  for(let py=0;py<H;py++){const fy=(py+.5)/SS-.5;
+    for(let px=0;px<W;px++){const fx=(px+.5)/SS-.5,o=(py*W+px)*4;
+      const ix=Math.min(wc-1,Math.max(0,Math.round(fx))),iy=Math.min(hc-1,Math.max(0,Math.round(fy)));
+      const cv=val(ix,iy); if(cv<=0){d[o+3]=0;continue;}
+      const x0=Math.min(wc-2,Math.max(0,Math.floor(fx))),y0=Math.min(hc-2,Math.max(0,Math.floor(fy)));
+      const tx=Math.min(1,Math.max(0,fx-x0)),ty=Math.min(1,Math.max(0,fy-y0));
+      let s00=val(x0,y0),s10=val(x0+1,y0),s01=val(x0,y0+1),s11=val(x0+1,y0+1);
+      if(s00<=0)s00=cv;if(s10<=0)s10=cv;if(s01<=0)s01=cv;if(s11<=0)s11=cv;
+      const vv=(s00*(1-tx)+s10*tx)*(1-ty)+(s01*(1-tx)+s11*tx)*ty;
+      const t=Math.pow(Math.min(1,vv/vmax),inv),c=colorAt(t);let r=c[0],gg=c[1],b=c[2];
+      if(iso){const fr=(t*NL)%1;if(fr<0.055||fr>0.945){r*=.38;gg*=.38;b*=.38;}}
+      d[o]=r;d[o+1]=gg;d[o+2]=b;d[o+3]=235;}}
+  ctx.putImageData(im,0,0);sl.tx.needsUpdate=true;
+}
+const probe=new THREE.Mesh(new THREE.SphereGeometry(.07,16,12),new THREE.MeshBasicMaterial({color:0xffffff}));scene.add(probe);
 function updateSlices(){
-  const iz=+g('sZ').value, iy=+g('sY').value, ix=+g('sXs')?+g('sXs').value:15;
-  mZ.visible=g('cZ').checked; mY.visible=g('cY').checked; mX.visible=g('cX').checked;
-  mZ.position.z=(iz+.5)*CELL; mY.position.set(NX*CELL/2,(iy+.5)*CELL,NZ*CELL/2); mX.position.set((ix+.5)*CELL,NY*CELL/2,NZ*CELL/2);
+  const iz=+g('sZ').value,iy=+g('sY').value,ix=+g('sXs').value;
+  mZ.visible=g('cZ').checked;mY.visible=g('cY').checked;mX.visible=g('cX').checked;
+  mZ.position.z=(iz+.5)*CELL;mY.position.set(NX*CELL/2,(iy+.5)*CELL,NZ*CELL/2);mX.position.set((ix+.5)*CELL,NY*CELL/2,NZ*CELL/2);
   if(mZ.visible)paint(slZ,NX,NY,(i,j)=>mapVal(i,j,iz));
   if(mY.visible)paint(slY,NX,NZ,(i,j)=>mapVal(i,iy,j));
   if(mX.visible)paint(slX,NY,NZ,(i,j)=>mapVal(ix,i,j));
-  probe.visible=mZ.visible; probe.position.set((ix+.5)*CELL,(iy+.5)*CELL,(iz+.5)*CELL);
+  probe.visible=mZ.visible;probe.position.set((ix+.5)*CELL,(iy+.5)*CELL,(iz+.5)*CELL);
   g('vZ').textContent=((iz+.5)*CELL).toFixed(1)+' '+T().um;
   const v=mapVal(ix,iy,iz);
   g('probe').innerHTML=`${T().probe} h=${((iz+.5)*CELL).toFixed(1)} ${T().um}: <b>${v.toFixed(3)}</b> ${T().uc[2]}`;
 }
-// скрытый X-срез индекс (нет отдельного слайдера С–Ю позиции — берём через детектор)
-(function(){const inp=document.createElement('input');inp.type='hidden';inp.id='sXs';inp.value='15';document.body.appendChild(inp);})();
-(function(){const inp=document.createElement('input');inp.type='hidden';inp.id='sY';inp.value='26';document.body.appendChild(inp);})();
-
+(function(){for(const[id,val]of[['sXs','15'],['sY','26']]){const inp=document.createElement('input');inp.type='hidden';inp.id=id;inp.value=val;document.body.appendChild(inp);}})();
 g('bReset').onclick=homeView;
-function dolly(f){const d=camera.position.clone().sub(controls.target).multiplyScalar(f);camera.position.copy(controls.target.clone().add(d));}
-g('bZin').onclick=()=>dolly(1/1.18); g('bZout').onclick=()=>dolly(1.18);
+function dolly(f){const dd=camera.position.clone().sub(controls.target).multiplyScalar(f);camera.position.copy(controls.target.clone().add(dd));}
+g('bZin').onclick=()=>dolly(1/1.18);g('bZout').onclick=()=>dolly(1.18);
 
 // ---------------- UI ----------------
 const logv=(el,min,max)=>min*Math.pow(max/min,+el.value/+el.max);
@@ -1484,53 +1480,49 @@ function refresh(){
   g('sX').dataset.val=logv(g('sX'),5,160).toFixed(0);
   g('sL').dataset.val=logv(g('sL'),0.005,0.10).toFixed(3);
   const U=T().uc;
-  g('vRn').textContent=g('sRn').dataset.val+' '+U[0];
-  g('vX').textContent=g('sX').dataset.val+' '+U[1];
-  g('vL').textContent=g('sL').dataset.val+' '+U[1];
-  g('vH').textContent=(+g('sH').value/100).toFixed(2);
-  const res=compute();
-  g('vF').textContent=state.F.toFixed(3);
-  let tR=0,tF=0,tFd=0; for(const s of SRC){tR+=res[s].rd;tF+=res[s].ft;tFd+=res[s].fd;}
+  g('vRn').textContent=g('sRn').dataset.val+' '+U[0];g('vX').textContent=g('sX').dataset.val+' '+U[1];
+  g('vL').textContent=g('sL').dataset.val+' '+U[1];g('vH').textContent=(+g('sH').value/100).toFixed(2);
+  g('vInt').textContent='×'+intensity().toFixed(2);
+  const res=compute();g('vF').textContent=state.F.toFixed(3);
+  let tR=0,tF=0,tFd=0;for(const s of SRC){tR+=res[s].rd;tF+=res[s].ft;tFd+=res[s].fd;}
   let rows=`<tr><th>${T().thSrc}</th><th>${T().thRead}</th><th>${T().thShare}</th><th>${T().thField}</th></tr>`;
-  for(const s of SRC){const r=res[s];
-    rows+=`<tr><td>${T().src[s]}</td><td>${r.rd.toFixed(3)}</td><td class="pc">${(r.rd/tR*100).toFixed(0)} %</td><td>${r.ft?r.ft.toFixed(3):'—'}</td></tr>`;}
+  for(const s of SRC){const r=res[s];rows+=`<tr><td>${T().src[s]}</td><td>${r.rd.toFixed(3)}</td><td class="pc">${(r.rd/tR*100).toFixed(0)} %</td><td>${r.ft?r.ft.toFixed(3):'—'}</td></tr>`;}
   rows+=`<tr class="tot"><td>${T().tot}</td><td>${tR.toFixed(3)}</td><td class="pc">100 %</td><td>${tF.toFixed(3)}</td></tr>`;
-  g('tbl').innerHTML=rows;
-  g('scat').textContent=`${T().scat}: ${((tF-tFd)/tF*100).toFixed(1)} %`;
-  g('totR').textContent=tR.toFixed(2); g('totF').textContent=tF.toFixed(2);
-  g('coef').textContent=T().coef((tR/state.scale).toFixed(2)); g('infl').textContent=(tR/tF).toFixed(2);
-  drawSens(tR); drawBands(tR,state.scale);
-  let m=0; for(let i=0;i<NX;i++)for(let j=0;j<NY;j++)for(let k=0;k<NZ;k++){const v=mapVal(i,j,k);if(v>m)m=v;} state.vmax=m;
-  const stops=[];for(let q=0;q<=10;q++){const c=inferno(q/10);stops.push(`rgb(${c[0]|0},${c[1]|0},${c[2]|0}) ${q*10}%`);}
-  g('cbGrad').style.background=`linear-gradient(90deg,${stops.join(',')})`;
-  g('cbU').textContent=T().uc[2]; g('cbMid').textContent=(m/2).toFixed(2); g('cbMax').textContent=m.toFixed(2);
-  buildCloud(); updateSlices();
+  g('tbl').innerHTML=rows;g('scat').textContent=`${T().scat}: ${((tF-tFd)/tF*100).toFixed(1)} %`;
+  g('totR').textContent=tR.toFixed(2);g('totF').textContent=tF.toFixed(2);
+  g('coef').textContent=T().coef((tR/state.scale).toFixed(2));g('infl').textContent=(tR/tF).toFixed(2);
+  drawSens(tR);drawBands(tR,state.scale);
+  let m=0;for(let i=0;i<NX;i++)for(let j=0;j<NY;j++)for(let k=0;k<NZ;k++){const v=mapVal(i,j,k);if(v>m)m=v;}state.vmax=m;
+  drawCbar();buildCloud();updateSlices();
 }
+function drawCbar(){const stops=[];for(let q=0;q<=20;q++){const c=colorAt(Math.pow(q/20,1/intensity()));stops.push(`rgb(${c[0]|0},${c[1]|0},${c[2]|0}) ${q*5}%`);}
+  g('cbGrad').style.background=`linear-gradient(90deg,${stops.join(',')})`;
+  g('cbU').textContent=T().uc[2];g('cbMid').textContent=(state.vmax/2).toFixed(2);g('cbMax').textContent=state.vmax.toFixed(2);}
 function drawSens(tR){
-  const lam=+g('sL').dataset.val, X0=+g('sX').dataset.val, hs0=+g('sH').value/100;
-  const xchips=[10,25,50,100].map(X=>{const v=foldTotal(X,lam,hs0),here=Math.abs(Math.log(X/X0))<0.12;
-    return `<span class="chipv${here?' here':''}">${X} <b>${v.toFixed(2)}</b></span>`;}).join('');
-  const base=foldTotal(X0,lam,1.0), dq=(foldTotal(X0,lam,0.5)/base-1)*100, dd=(foldTotal(X0,lam,2.0)/base-1)*100;
-  const sg=x=>(x>=0?'+':'')+x.toFixed(0);
+  const lam=+g('sL').dataset.val,X0=+g('sX').dataset.val,hs0=+g('sH').value/100;
+  const xchips=[10,25,50,100].map(X=>{const v=foldTotal(X,lam,hs0),here=Math.abs(Math.log(X/X0))<0.12;return `<span class="chipv${here?' here':''}">${X} <b>${v.toFixed(2)}</b></span>`;}).join('');
+  const base=foldTotal(X0,lam,1.0),dq=(foldTotal(X0,lam,0.5)/base-1)*100,dd=(foldTotal(X0,lam,2.0)/base-1)*100,sg=x=>(x>=0?'+':'')+x.toFixed(0);
   const hchips=`<span class="chipv">×0.5 <b>${sg(dq)} %</b></span><span class="chipv${Math.abs(hs0-1)<.02?' here':''}">×1 <b>0 %</b></span><span class="chipv">×2 <b>${sg(dd)} %</b></span>`;
   g('sens').innerHTML=`<div class="st">${T().sensT}</div><div class="lab">${T().sensX}</div><div class="chips">${xchips}</div><div class="lab">${T().sensH}</div><div class="chips">${hchips}</div>`;
 }
 function drawBands(tR,sc){
-  const el=g('bands'), hi=Math.max(1.31*sc,tR)*1.15, px=v=>(v/hi*100).toFixed(1)+'%';
-  let ticks=''; const step=hi>4?Math.ceil(hi/4):hi>1.5?0.5:0.25;
+  const el=g('bands'),hi=Math.max(1.31*sc,tR)*1.15,px=v=>(v/hi*100).toFixed(1)+'%';
+  let ticks='';const step=hi>4?Math.ceil(hi/4):hi>1.5?0.5:0.25;
   for(let v=0;v<=hi;v+=step)ticks+=`<div class="tick" style="left:${px(v)}">${(+v.toFixed(2))}</div>`;
   el.innerHTML=`<div class="axis"></div>`+ticks+
    `<div class="band" style="left:${px(0.87*sc)};width:calc(${px(1.31*sc)} - ${px(0.87*sc)});top:4px;background:#7fb2dd">${T().bandMeas}: 0.87–1.31</div>`+
-   `<div class="meas" style="left:${px(1.09*sc)}"></div><div class="mlab" style="left:${px(1.09*sc)};top:24px">${T().meas}</div>`+
-   `<div class="mark" style="left:${px(tR)}"></div><div style="position:absolute;left:${px(tR)};top:40px;font-size:10px;color:var(--amber);transform:translateX(-50%)">${T().model} ${tR.toFixed(2)}</div>`;
+   `<div class="meas" style="left:${px(1.09*sc)}"></div><div class="mlab" style="left:${px(1.09*sc)};top:22px">${T().meas}</div>`+
+   `<div class="mark" style="left:${px(tR)}"></div><div style="position:absolute;left:${px(tR)};top:38px;font-size:10px;color:var(--amber);transform:translateX(-50%)">${T().model} ${tR.toFixed(2)}</div>`;
 }
 function resize(){const w=holder.clientWidth,h=holder.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h||1;camera.updateProjectionMatrix();}
 window.addEventListener('resize',resize);
 (function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);})();
 for(const id of['sRn','sX','sL','sH'])g(id).addEventListener('input',refresh);
-for(const id of['cZ','cY','cX','sZ'])g(id).addEventListener('input',updateSlices);
+for(const id of['cZ','cY','cX','sZ','cIso','sInt'])g(id).addEventListener('input',()=>{if(id==='sInt'){g('vInt').textContent='×'+intensity().toFixed(2);drawCbar();buildCloud();}updateSlices();});
+g('sT').addEventListener('input',buildCloud);
 g('cVol').addEventListener('input',buildCloud);
-applyLang(); resize(); refresh();
+g('selPal').addEventListener('change',()=>{curPal=g('selPal').value;drawCbar();buildCloud();updateSlices();});
+applyLang();resize();refresh();
 new ResizeObserver(resize).observe(holder);
 </script>
 </body>
