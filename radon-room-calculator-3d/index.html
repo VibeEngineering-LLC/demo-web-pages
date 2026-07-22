@@ -14,7 +14,7 @@ h1{font-size:18px;margin:2px 0 1px;flex:1;} .sub{color:var(--mut);font-size:11.5
 #lang{background:var(--card);color:var(--acc);border:1px solid #2a323c;border-radius:8px;
   padding:6px 12px;font-size:13px;cursor:pointer;white-space:nowrap;}
 .grid{display:grid;grid-template-columns:300px 1fr;gap:12px;flex:1;min-height:0;}
-.leftcol{display:flex;flex-direction:column;gap:12px;min-height:0;overflow:auto;}
+.leftcol{display:flex;flex-direction:column;gap:12px;min-height:0;}
 .rightcol{display:flex;flex-direction:column;gap:10px;min-height:0;}
 .card{background:var(--card);border-radius:10px;padding:12px 14px;}
 .card h2{font-size:13px;margin:0 0 8px;color:var(--acc);}
@@ -26,7 +26,7 @@ th,td{padding:2.5px 8px;text-align:right;font-size:12.5px;border-bottom:1px soli
 th{color:var(--mut);font-weight:600;} td:first-child,th:first-child{text-align:left;}
 tr.tot td{font-weight:700;border-top:2px solid #3a444f;border-bottom:none;}
 .big{font-size:23px;font-weight:700;} .unit{font-size:11.5px;color:var(--mut);}
-.bands{position:relative;height:84px;margin:10px 0 2px;}
+.bands{position:relative;height:64px;margin:8px 0 2px;}
 .axis{position:absolute;left:0;right:0;bottom:14px;height:1px;background:#3a444f;}
 .tick{position:absolute;bottom:2px;font-size:10px;color:var(--mut);transform:translateX(-50%);}
 .band{position:absolute;height:19px;border-radius:4px;font-size:10.5px;line-height:19px;padding:0 6px;color:#0c0f12;white-space:nowrap;overflow:hidden;}
@@ -36,7 +36,7 @@ tr.tot td{font-weight:700;border-top:2px solid #3a444f;border-bottom:none;}
 .scenecard{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;}
 #view{border-radius:8px;display:block;width:100%;flex:1;min-height:0;cursor:grab;touch-action:none;}
 .viewrow{display:grid;grid-template-columns:1fr 250px;gap:12px;flex:1;min-height:0;}
-.viewrow>div:last-child{overflow:auto;min-height:0;}
+.viewrow>div:last-child{overflow:visible;min-height:0;}
 .note{font-size:11px;color:var(--mut);margin-top:6px;}
 .readout{font-size:12.5px;margin-top:6px;} .readout b{color:var(--warn);font-size:15px;}
 .chk{font-size:12px;color:var(--mut);display:block;margin-top:3px;}
@@ -48,7 +48,16 @@ details dd{margin:2px 0 0 0;}
 .grid>*,.viewrow>*,.card{min-width:0;}
 #view canvas{width:100%!important;height:100%!important;display:block;}
 .bands{overflow:hidden;}
-.compcard{flex:none;max-height:34vh;overflow:auto;}
+.compcard{flex:none;display:flex;flex-direction:column;}
+.sens{margin-top:10px;padding-top:10px;border-top:1px solid #2a323c;}
+.sens .st{font-size:11px;color:var(--acc);letter-spacing:.04em;margin-bottom:6px;text-transform:uppercase;font-weight:600;}
+.sens .srow{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-top:3px;gap:8px;}
+.sens .srow b{color:var(--tx);font-variant-numeric:tabular-nums;}
+.sens .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;}
+.sens .chipv{background:#141920;border-radius:5px;padding:3px 7px;font-size:11.5px;font-variant-numeric:tabular-nums;}
+.sens .chipv b{color:var(--acc);}
+.sens .chipv.here{outline:1px solid var(--acc);}
+td.pc{color:var(--acc);}
 @media(max-width:1000px){
   html,body{height:auto;}
   .wrap{height:auto;}
@@ -119,6 +128,7 @@ details dd{margin:2px 0 0 0;}
   <div class="card compcard">
     <h2 data-i18n="compT"></h2>
     <table id="tbl"></table>
+    <div class="sens" id="sens"></div>
   </div>
 </div>
 </div>
@@ -1255,16 +1265,18 @@ ru:{
  ],
  readT:'Показание БДКГ-05 / истинный H*(10)',
  uRead:'нЗв/ч — показание прибора', uField:'нЗв/ч — H*(10) в точке прибора', uInfl:'инфляция',
- bandDay:'замер: оценка внутри одних суток', bandMulti:'замер: оценка по разным суткам', model:'модель', meas:'центр 1.09',
- bandNote:'Полосы — натурный замер #RN3 (коэффициент нЗв/ч на 100 Бк/м³, масштабирован к C(Rn)), обе уже включают приборную погрешность ±20 %. «По разным суткам» — сопоставление суточных средних разных дней (0.87–1.31, надёжнее статистически). «Внутри одних суток» — по ходу отдельного дня (0.55–1.13, шире). Пунктир — центральное значение 1.09.',
+ bandMeas:'измеренный коэффициент #RN3 (± инстр. 20 %)', model:'модель', meas:'центр 1.09',
+ bandNote:'Полоса — единственный коэффициент замера #RN3, измеренный между двумя стабильными плато радона (вентиляция выкл./вкл.): 1.09 нЗв/ч на 100 Бк/м³ (95 % ДИ 1.03–1.16), с приборной погрешностью ±20 % — 0.87–1.31 (масштабировано к C(Rn)). Пунктир — центральное значение 1.09. Синяя метка — рассчитанное показание модели.',
  compT:'Компонентный состав, нЗв/ч',
- thSrc:'источник', thRead:'показание', thField:'поле', thDir:'прямое', tot:'ИТОГО', scat:'рассеянная доля поля',
+ thSrc:'источник', thRead:'показание', thShare:'доля', thField:'поле', tot:'ИТОГО', scat:'рассеянная доля поля',
  src:{air:'воздух',ceiling:'потолок',floor:'пол',walls:'стены',stand:'столешница',housing:'корпус'},
+ sensT:'Чувствительность показания (нЗв/ч)',
+ sensX:'запылённость X, ч⁻¹', sensH:'осаждение на корпус v_d',
  sceneT:'3D-сцена: вращение — мышь/палец · зум — колесо/щипок · сдвиг — правая кнопка',
  cloud:'объёмное облако поля', thr:'порог облака',
  slZ:'горизонтальный срез', slY:'вертикальный срез (В–З)', slX:'вертикальный срез (С–Ю)',
  probe:'Зонд', fromS:'от юга',
- sceneNote:'Зонд — белая сфера в пересечении срезов (двигается их ползунками). Голубой цилиндр — БДКГ-05 на столешнице. Кирпичный блок — лестничная клетка (стены 335 мм). Сетка 200 мм; поле — без прибора; оценщик сверен со сферным (~1.5 %).',
+ sceneNote:'Зонд (белая сфера) — на пересечении срезов. Голубой цилиндр — БДКГ-05. Сетка 200 мм; поле без прибора.',
  footer:'Пересчёт транспорта Geant4 нужен только при смене геометрии или материалов — одна ночь прогонов даёт новый набор данных для этой же страницы. Код: контур GEANT4 проекта «Радоновый риск».',
 },
 en:{
@@ -1284,16 +1296,18 @@ en:{
  ],
  readT:'BDKG-05 reading / true H*(10)',
  uRead:'nSv/h — instrument reading', uField:'nSv/h — H*(10) at the instrument point', uInfl:'inflation',
- bandDay:'measurement: within-one-day estimate', bandMulti:'measurement: day-to-day estimate', model:'model', meas:'center 1.09',
- bandNote:'Bands are the #RN3 field measurement (coefficient in nSv/h per 100 Bq/m³, scaled to C(Rn)); both already include the ±20 % instrument uncertainty. “Day-to-day” compares daily means of different days (0.87–1.31, statistically stronger). “Within one day” follows a single day (0.55–1.13, wider). Dashed line — central value 1.09.',
+ bandMeas:'measured #RN3 coefficient (± instr. 20 %)', model:'model', meas:'center 1.09',
+ bandNote:'The band is the single #RN3 coefficient, measured between two stable radon plateaus (ventilation off/on): 1.09 nSv/h per 100 Bq/m³ (95 % CI 1.03–1.16), with the ±20 % instrument error → 0.87–1.31 (scaled to C(Rn)). The dashed line is the central value 1.09. The blue tick is the model-computed reading.',
  compT:'Component breakdown, nSv/h',
- thSrc:'source', thRead:'reading', thField:'field', thDir:'direct', tot:'TOTAL', scat:'scattered fraction of the field',
+ thSrc:'source', thRead:'reading', thShare:'share', thField:'field', tot:'TOTAL', scat:'scattered fraction of the field',
  src:{air:'air',ceiling:'ceiling',floor:'floor',walls:'walls',stand:'stand',housing:'housing'},
+ sensT:'Reading sensitivity (nSv/h)',
+ sensX:'dust load X, h⁻¹', sensH:'deposition on housing v_d',
  sceneT:'3D scene: rotate — mouse/finger · zoom — wheel/pinch · pan — right button',
  cloud:'volumetric field cloud', thr:'cloud threshold',
  slZ:'horizontal slice', slY:'vertical slice (E–W)', slX:'vertical slice (N–S)',
  probe:'Probe', fromS:'from south',
- sceneNote:'The probe is the white sphere at the slice intersection (moved by the slice sliders). Cyan cylinder — the BDKG-05 on its stand. Brick block — the staircase (335 mm walls). 200 mm grid; the field excludes the instrument itself; estimator validated against a sphere tally (~1.5 %).',
+ sceneNote:'The probe (white sphere) sits at the slice intersection. Cyan cylinder — the BDKG-05. 200 mm grid; field without the instrument.',
  footer:'Geant4 transport only needs recomputing when geometry or materials change — one night of runs produces a new dataset for this same page. Code: GEANT4 contour of the Radon Risk project.',
 }};
 let LANG=localStorage.getItem('rc_lang')||'ru';
@@ -1468,18 +1482,46 @@ function refresh(){
   const res=compute();
   g('vF').textContent=state.F.toFixed(3);
   let tR=0,tF=0,tFd=0;
-  let rows=`<tr><th>${T().thSrc}</th><th>${T().thRead}</th><th>${T().thField}</th><th>${T().thDir}</th></tr>`;
-  for(const s of SRC){const r=res[s];tR+=r.rd;tF+=r.ft;tFd+=r.fd;
-    rows+=`<tr><td>${T().src[s]}</td><td>${r.rd.toFixed(3)}</td><td>${r.ft?r.ft.toFixed(3):'—'}</td><td>${r.ft?r.fd.toFixed(3):'—'}</td></tr>`;}
-  rows+=`<tr class="tot"><td>${T().tot}</td><td>${tR.toFixed(3)}</td><td>${tF.toFixed(3)}</td><td>${tFd.toFixed(3)}</td></tr>`;
+  for(const s of SRC){tR+=res[s].rd;tF+=res[s].ft;tFd+=res[s].fd;}
+  let rows=`<tr><th>${T().thSrc}</th><th>${T().thRead}</th><th>${T().thShare}</th><th>${T().thField}</th></tr>`;
+  for(const s of SRC){const r=res[s];
+    rows+=`<tr><td>${T().src[s]}</td><td>${r.rd.toFixed(3)}</td><td class="pc">${(r.rd/tR*100).toFixed(0)} %</td><td>${r.ft?r.ft.toFixed(3):'—'}</td></tr>`;}
+  rows+=`<tr class="tot"><td>${T().tot}</td><td>${tR.toFixed(3)}</td><td class="pc">100 %</td><td>${tF.toFixed(3)}</td></tr>`;
   rows+=`<tr><td colspan=4 style="text-align:left;color:var(--mut)">${T().scat}: ${((tF-tFd)/tF*100).toFixed(1)} %</td></tr>`;
   g('tbl').innerHTML=rows;
   g('totR').textContent=tR.toFixed(2); g('totF').textContent=tF.toFixed(2);
   g('infl').textContent='×'+(tR/tF).toFixed(2);
+  drawSens(tR);
   drawBands(tR,state.scale);
   let m=0; for(let i=0;i<NX;i++)for(let j=0;j<NY;j++)for(let k=0;k<NZ;k++){const v=mapVal(i,j,k);if(v>m)m=v;}
   state.vmax=m;
   buildCloud(); updateSlices(); drawCbar();
+}
+function foldTotal(X,lam,hs){
+  const A=actsAt(X,lam); let tR=0;
+  for(const s of SRC){
+    let [pb,bi]=A[s]; if(s==='housing'){pb*=hs;bi*=hs;}
+    const rp=pb*D.AREA[s]*D.SY.pb, rb=bi*D.AREA[s]*D.SY.bi;
+    tR+=(rp*D.READ[s].pb+rb*D.READ[s].bi)*D.KAPPA*state.scale;
+  }
+  return tR;
+}
+function drawSens(tR){
+  const lam=+g('sL').dataset.val, X0=+g('sX').dataset.val, hs0=+g('sH').value/100;
+  const XSET=[10,25,50,100];
+  const xchips=XSET.map(X=>{
+    const v=foldTotal(X,lam,hs0), here=Math.abs(Math.log(X/X0))<0.12;
+    return `<span class="chipv${here?' here':''}">${X} <b>${v.toFixed(2)}</b></span>`;
+  }).join('');
+  const base=foldTotal(X0,lam,1.0);
+  const dq=(foldTotal(X0,lam,0.5)/base-1)*100, dd=(foldTotal(X0,lam,2.0)/base-1)*100;
+  const sg=x=>(x>=0?'+':'')+x.toFixed(0);
+  const hchips=`<span class="chipv">×0.5 <b>${sg(dq)} %</b></span>`+
+               `<span class="chipv${Math.abs(hs0-1)<0.02?' here':''}">×1 <b>0 %</b></span>`+
+               `<span class="chipv">×2 <b>${sg(dd)} %</b></span>`;
+  g('sens').innerHTML=`<div class="st">${T().sensT}</div>`+
+    `<div class="srow"><span>${T().sensX}</span></div><div class="chips">${xchips}</div>`+
+    `<div class="srow" style="margin-top:7px"><span>${T().sensH}</span></div><div class="chips">${hchips}</div>`;
 }
 function drawBands(tR,sc){
   const el=g('bands'), hi=Math.max(1.31*sc,tR)*1.15;
@@ -1489,12 +1531,11 @@ function drawBands(tR,sc){
   for(let v=0;v<=hi;v+=step) ticks+=`<div class="tick" style="left:${px(v)}">${(+v.toFixed(2))}</div>`;
   el.innerHTML=
    `<div class="axis"></div>`+ticks+
-   `<div class="band" style="left:${px(0.87*sc)};width:calc(${px(1.31*sc)} - ${px(0.87*sc)});top:0;background:#8ab6e0">${T().bandMulti}: 0.87–1.31</div>`+
-   `<div class="band" style="left:${px(0.55*sc)};width:calc(${px(1.13*sc)} - ${px(0.55*sc)});top:24px;background:#e0c98a">${T().bandDay}: 0.55–1.13</div>`+
+   `<div class="band" style="left:${px(0.87*sc)};width:calc(${px(1.31*sc)} - ${px(0.87*sc)});top:6px;background:#8ab6e0">${T().bandMeas}: 0.87–1.31</div>`+
    `<div class="meas" style="left:${px(1.09*sc)}"></div>`+
-   `<div class="mlab" style="left:${px(1.09*sc)};top:48px">${T().meas}</div>`+
+   `<div class="mlab" style="left:${px(1.09*sc)};top:30px">${T().meas}</div>`+
    `<div class="mark" style="left:${px(tR)}"></div>`+
-   `<div style="position:absolute;left:${px(tR)};top:62px;font-size:11px;color:var(--acc);transform:translateX(-50%)">${T().model} ${tR.toFixed(2)}</div>`;
+   `<div style="position:absolute;left:${px(tR)};top:46px;font-size:11px;color:var(--acc);transform:translateX(-50%)">${T().model} ${tR.toFixed(2)}</div>`;
 }
 function drawCbar(){
   const cb=g('cbar'),c2=cb.getContext('2d');c2.clearRect(0,0,240,42);
