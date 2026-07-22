@@ -127,6 +127,7 @@
 <p>Убыль ДПР из воздуха идёт двумя каналами с противоположным дозиметрическим следствием: вентиляция <em>удаляет</em> активность из помещения, тогда как осаждение <em>сохраняет</em> её на ограждающих поверхностях, где она продолжает излучать. Соотношение каналов задаёт коэффициент равновесия F ∈ (0, 1) и распределение дозы между воздушной и поверхностной компонентами.</p>
 <p>Мотивация работы — независимая проверка коэффициента, измеренного в эксперименте #RN3: приращение мощности амбиентного эквивалента дозы <strong>+1.09 нЗв/ч на 100 Бк/м³</strong> (95 % ДИ 1.03–1.16; сверх статистики — собственная погрешность детектора ±20 %, полоса 0.87–1.31, §6.1) при выключении вентиляции в подвале<a class="cit" href="#ref-15">&#91;15&#93;</a>. Построена расчётная модель «от первых принципов»: баланс ДПР в воздухе и на поверхностях → активности источников → перенос гамма-излучения к детектору → H*(10). Входные величины по возможности восстановлены из данных самого эксперимента: кратность воздухообмена измерена по динамике набора радона, геометрия помещения — по CAD-плану здания, геометрия стенда — по фотографии, материал подставки — по факту (сталь 1.5 мм); коэффициент равновесия при этом вычисляется моделью, а не задаётся предположением.</p>
 <p>Проверка выполнена двумя независимыми методами: аналитической моделью (камерный баланс + прямое интегрирование ядра точечного источника, §3–§4) и численным расчётом методом Монте-Карло в Geant4<a class="cit" href="#ref-19">&#91;19&#93;</a> с полной геометрией блока детектирования и помещения (§5). Второй метод дополнительно отвечает на вопросы, принципиально недоступные аналитике: вклад осаждения ДПР на корпус самого прибора и искажения его энергетического и углового отклика по спектру ДПР.</p>
+<p>Изложение построено «от физики к числу». Сначала — исходные данные и то, как они получены (§2). Затем методы: как радон рождает короткоживущие ДПР и как они делят себя между воздухом и поверхностями — это деление и решает всю задачу (§3.1–§3.2); как излучение источников доходит до детектора (§3.3); как сама кривая набора радона выдаёт кратность воздухообмена (§3.4). Результаты аналитики собраны в §4, модель прибора и Монте-Карло верификация — в §5, сверка с натурным замером — в §6. Читателю, которому нужен только итог, достаточно реферата и §6.2.</p>
 
 <h2><span class="num">2</span>Исходные данные</h2>
 <p><b>Помещение.</b> Г-образная комната цокольного этажа по обмерам CAD-плана здания (внутренние размеры): охватывающий прямоугольник 5.35 × 9.12 м с лестничным блоком 2.13 × 4.84 м в углу, высота 2.3 м; V = 88.5 м³, площадь пола/потолка по 38.5 м², стен — 66.6 м² (S/V = 1.62 м⁻¹). Конструктив: стена лестничного блока — кирпич 335 мм, остальные стены — бетонные блоки ФБС, все оштукатурены и оклеены флизелиновыми обоями; потолок — бетонное перекрытие; пол — паркетная доска по бетонной плите 30 см. Кирпичная стена лестничного блока (~4.7 длины свободного пробега при 0.6 МэВ) непрозрачна для гамма-излучения: часть комнаты за ней затенена и в переносе исключена.</p>
@@ -154,6 +155,7 @@
 <p>Привязка к геометрии: для осаждения работает поверхность контакта с воздухом, а не конструктив — потолок — бетон, стены — гипсокартон (гладкая бумажная поверхность флизелиновых обоев), пол — дерево (лак), подставка — стекло как ближайший гладкий непористый материал (для стали прямых данных нет; металл как проводник статический заряд не удерживает, электростатической составляющей осаждения нет). Для комптоновского рассеяния, напротив, обои и штукатурка радиационно прозрачны — работает субстрат (кирпич/бетон), поэтому альбедо принято бетонным. Ядерные данные: полный набор гамма-линий LNHB/DDEP<a class="cit" href="#ref-11">&#91;11&#93;</a> — 110 линий с E ≥ 0.2 МэВ и выходом ≥ 0.03 % (16 линий <sup>214</sup>Pb + 94 линии <sup>214</sup>Bi), покрывающих 99.5 % и 99.0 % гамма-энергии нуклидов (Σ E·y = 0.2217 из 0.2228 и 1.4532 из 1.4678 МэВ/распад); μ/ρ и μ<sub>en</sub>/ρ воздуха — NIST<a class="cit" href="#ref-10">&#91;10&#93;</a>; переход керма → H*(10) — h*<sub>K</sub>(E)<a class="cit" href="#ref-9">&#91;9&#93;</a><a class="cit" href="#ref-12">&#91;12&#93;</a>.</p>
 
 <h2><span class="num">3</span>Методы</h2>
+<p>Задача решается в три шага, и каждый шаг — отдельная физика. Первый — баланс: сколько активности каждого ДПР находится в кубометре воздуха и на квадратном метре каждой поверхности. Второй — перенос: какой поток гамма-квантов эти источники создают в точке детектора. Третий — дозиметрия: перевод потока в мощность амбиентного эквивалента дозы H*(10). Ошибка любого шага проходит в итог линейно, поэтому каждый шаг контролируется отдельно (§3.5).</p>
 <h3>3.1. Камерная модель ДПР</h3>
 <p>Помещение рассматривается как единая изотропно перемешанная камера (модель Jacobi<a class="cit" href="#ref-1">&#91;1&#93;</a>, формулировка с фракциями — Porstendörfer<a class="cit" href="#ref-2">&#91;2&#93;</a>). Стационарный баланс каждого звена цепочки:</p>
 <div class="eq"><span class="tag">(1)</span>0 = λ<sub>i</sub>·<var>C</var><sub>i−1</sub> − (λ<sub>i</sub> + λ<sub>в</sub> + λ<sub>ос,i</sub>)·<var>C</var><sub>i</sub></div>
@@ -224,6 +226,7 @@
 <p>В расчётный скрипт встроены обязательные проверки: тест секулярного равновесия для (3) (при R = 0 и нулевом прямом осаждении A<sub>Po</sub> = A<sub>Pb</sub> = A<sub>Bi</sub>; при провале — аварийный останов), контроль невязки |F − F<sub>цель</sub>| после бисекции в решателях. Воздушная компонента дополнительно верифицирована независимой угловой квадратурой (1.28·10⁶ лучей, радиальный интеграл аналитический — сингулярности нет в принципе): совпадение с сеточным методом +0.4 %. Сходимость сеток: измельчение вдвое меняет фактор граней в 5-м знаке, подставки — на 0.04 %. Линейность дозы по ОА радона точна алгебраически и подтверждена экспериментально (v<sub>d</sub> не зависит от ОА<a class="cit" href="#ref-6">&#91;6&#93;</a>).</p>
 
 <h2><span class="num">4</span>Результаты</h2>
+<p>Начнём с величины, которая управляет всей картиной, — коэффициента равновесия F: он говорит, какая доля ДПР ещё в воздухе, а какая уже осела на поверхности. Затем — активности источников (§4.2) и, наконец, сама доза (§4.3) с бюджетом её неопределённостей (§4.4).</p>
 <h3>4.1. Коэффициент равновесия, вычисленный моделью</h3>
 <p>При измеренной вентиляции коэффициент равновесия определяется запылённостью — скоростью присоединения ДПР к аэрозолю X (§3.1):</p>
 <div class="tablewrap">
@@ -244,7 +247,7 @@
 <h3>4.2. Активности в воздухе и на поверхностях</h3>
 <div class="tablewrap">
 <table>
-  <caption>Таблица 3. Объёмная активность ДПР в воздухе (Бк/м³ на 100 Бк/м³ Rn; сумма свободной и присоединённой фракций).</caption>
+  <caption>Таблица 3. Объёмная активность ДПР в воздухе (Бк/м³ на 100 Бк/м³ Rn; сумма свободной и присоединённой фракций). X — скорость присоединения ДПР к аэрозолю, ч⁻¹ (§3.1): 25 — норматив запылённости, 50 — типичное жильё.</caption>
   <thead><tr><th>Нуклид</th><th>X = 25</th><th>X = 50</th></tr></thead>
   <tbody class="num-col">
     <tr><td><sup>218</sup>Po</td><td>80.4</td><td>86.7</td></tr>
@@ -255,7 +258,7 @@
 </div>
 <div class="tablewrap">
 <table>
-  <caption>Таблица 4. Поверхностная активность <sup>214</sup>Pb / <sup>214</sup>Bi (Бк/м² на 100 Бк/м³ Rn).</caption>
+  <caption>Таблица 4. Поверхностная активность <sup>214</sup>Pb / <sup>214</sup>Bi (Бк/м² на 100 Бк/м³ Rn). X — скорость присоединения к аэрозолю, ч⁻¹ (§3.1).</caption>
   <thead>
     <tr><th rowspan="2">Поверхность</th><th colspan="2" class="grp">X = 25</th><th colspan="2" class="grp">X = 50</th></tr>
     <tr><th><sup>214</sup>Pb</th><th><sup>214</sup>Bi</th><th><sup>214</sup>Pb</th><th><sup>214</sup>Bi</th></tr>
@@ -273,7 +276,7 @@
 <h3>4.3. Мощность дозы</h3>
 <div class="tablewrap">
 <table>
-  <caption>Таблица 5. Приращение ΔḢ*(10) по компонентам и базовая оценка (нЗв/ч на 100 Бк/м³ Rn).</caption>
+  <caption>Таблица 5. Приращение ΔḢ*(10) по компонентам и базовая оценка (нЗв/ч на 100 Бк/м³ Rn). X — скорость присоединения к аэрозолю, ч⁻¹ (§3.1).</caption>
   <thead><tr><th>Компонента</th><th>X = 25</th><th>X = 50</th></tr></thead>
   <tbody class="num-col">
     <tr><td>Воздух комнаты</td><td>0.332</td><td>0.405</td></tr>
@@ -342,7 +345,7 @@
 <h3>5.3. Показание и истинное поле</h3>
 <div class="tablewrap">
 <table>
-  <caption>Таблица 7. Показание БДКГ-05 и истинное поле H*(10) по компонентам, Geant4 (нЗв/ч на 100 Бк/м³ Rn). Компоненты округлены до трёх знаков; итоги — по неокруглённым значениям.</caption>
+  <caption>Таблица 7. Показание БДКГ-05 и истинное поле H*(10) по компонентам, Geant4 (нЗв/ч на 100 Бк/м³ Rn). X — скорость присоединения ДПР к аэрозолю, мера запылённости, ч⁻¹ (§3.1); ей отвечает коэффициент равновесия F = 0.567 (X = 25) и 0.677 (X = 50). Компоненты округлены до трёх знаков; итоги — по неокруглённым значениям.</caption>
   <thead>
     <tr><th rowspan="2">Источник</th><th colspan="2" class="grp">X = 25</th><th colspan="2" class="grp">X = 50</th></tr>
     <tr><th>показание</th><th>поле</th><th>показание</th><th>поле</th></tr>
@@ -379,6 +382,7 @@
 <p><b>Управление прогонами.</b> Всё управление — консольное, без GUI. Окружение поднимает один скрипт (<code>vcvars64</code> + CMake/Ninja + переменные <code>G4*DATA</code>); каждая задача — небольшой проект <code>main.cc</code> + <code>CMakeLists</code>, параметры прогона задаются аргументами командной строки (<code>&lt;режим&gt; &lt;источник&gt; &lt;нуклид&gt; &lt;число фотонов&gt;</code>), физический лист — <code>G4EmStandardPhysics_option4</code>, порог 0.3 мм. Тяжёлые прогоны (до 5·10<sup>7</sup> фотонов) шли пакетами фоновых процессов, по одному ядру на процесс; итоговые строки логов — в машинно-читаемом виде, их собирает Python-постобработка (<code>numpy</code>/<code>matplotlib</code>), где транспорт сворачивается с активностями камерной модели. Разделение «транспорт по нуклидам → свёртка с активностями постобработкой» (§5.2) — сознательное проектное решение: оно позволило получить все чувствительности §5.4 из одних и тех же прогонов, без повторного транспорта. Методическая деталь, найденная при отладке карт поля (Рис. 7): трек-длинный оценщик со свободным шагом даёт ложный «горячий слой» на середине высоты (весь пролёт фотона в разреженном воздухе относится к одной ячейке середины шага); лечится ограничением шага 100 мм (<code>G4StepLimiter</code>), после чего значение в точке прибора сходится с независимым сферным оценщиком в пределах ~1.5 %.</p>
 
 <h2><span class="num">6</span>Сравнение с экспериментом #RN3</h2>
+<p>Теперь сведём расчёт и эксперимент лицом к лицу. Для этого сначала уточним, что именно и с какой погрешностью измерено в #RN3 (§6.1), затем выполним само сопоставление (§6.2) и разберём, какие механизмы проверены и исключены (§6.3), а какие могли внести остаток (§6.4).</p>
 <h3>6.1. Целевые величины и их погрешности</h3>
 <p>Эксперимент #RN3 (выключение вентиляции, рост ОА радона 318 → 1193 Бк/м³) измерил коэффициент связи МЭД с ОА <strong>между двумя стабильными плато</strong> — уровнем при работающей вентиляции и верхним плато после набора при выключенной: <strong>+1.09 нЗв/ч на 100 Бк/м³</strong> (95 % ДИ 1.03–1.16)<a class="cit" href="#ref-15">&#91;15&#93;</a>. На стабильных уровнях ДПР находятся в равновесии со своей ОА, поэтому именно эта величина является измерением коэффициента. Вспомогательные оценки — регрессия МЭД по ОА на переходных данных набора внутри одних суток (свободна от примеси суточного хода температуры, но взята на нестационарных данных) — ниже: 0.94 ± 0.34 (p = 0.013) и 0.69 ± 0.47 (незначимо), центральные значения 0.69–0.94.</p>
 <p>Доверительный интервал 1.03–1.16 отражает только статистический разброс точек. Сверх него у замера есть погрешность самого прибора: по паспорту <strong>основная относительная погрешность БДКГ-05 — ±20 %</strong> (калибровка по эталону Cs-137). Она смещает все показания МЭД одним общим множителем, поэтому и коэффициент связи МЭД с ОА масштабируется целиком на те же ±20 %, независимо от статистики. С учётом ±20 % измеренный коэффициент расширяется до полосы <strong>0.87–1.31</strong>, вспомогательные посуточные оценки — до <strong>0.55–1.13</strong> нЗв/ч на 100 Бк/м³.</p>
@@ -514,6 +518,7 @@
 <p>Progeny removal from air proceeds through two channels with opposite dosimetric consequences: ventilation <em>removes</em> activity from the room, whereas deposition <em>preserves</em> it on the enclosing surfaces, where it keeps radiating. The balance of the two channels sets the equilibrium factor F ∈ (0, 1) and the split of the dose between the airborne and surface components.</p>
 <p>The motivation of this work is an independent check of the coefficient measured in experiment #RN3: an increment of the ambient dose equivalent rate of <strong>+1.09 nSv/h per 100 Bq/m³</strong> (95 % CI 1.03–1.16; on top of the statistics — the detector's own ±20 % error, band 0.87–1.31, §6.1) after the basement ventilation was switched off<a class="cit" href="#ref-en-15">&#91;15&#93;</a>. A first-principles computational model is built: the progeny balance in air and on surfaces → source activities → gamma transport to the detector → H*(10). The input quantities are, wherever possible, recovered from the experiment's own data: the air-exchange rate is measured from the radon build-up dynamics, the room geometry is taken from the building CAD plan, the stand geometry from a photograph, the stand material is as-built (1.5 mm steel); the equilibrium factor thereby becomes a model output rather than an assumption.</p>
 <p>The check is performed by two independent methods: the analytical model (room balance + direct point-kernel integration, §3–§4) and a Monte Carlo calculation in Geant4<a class="cit" href="#ref-en-19">&#91;19&#93;</a> with the full geometry of the detector unit and the room (§5). The second method additionally answers questions fundamentally inaccessible to the analytics: the contribution of progeny deposition on the housing of the instrument itself, and possible distortion of its energy and angular response over the progeny spectrum.</p>
+<p>The exposition goes "from physics to number". First — the input data and how they were obtained (§2). Then the methods: how radon begets its short-lived progeny and how the progeny divide themselves between the air and the surfaces — this division is what decides the whole problem (§3.1–§3.2); how the radiation of the sources reaches the detector (§3.3); how the radon build-up curve itself yields the air-exchange rate (§3.4). The analytical results are collected in §4, the instrument model and the Monte Carlo verification in §5, the check against the field measurement in §6. A reader who needs only the outcome may read the abstract and §6.2.</p>
 
 <h2><span class="num">2</span>Input data</h2>
 <p><b>Room.</b> An L-shaped basement room taken from the building CAD plan (internal dimensions): a 5.35 × 9.12 m envelope with a 2.13 × 4.84 m staircase block in the corner, height 2.3 m; V = 88.5 m³, floor/ceiling area 38.5 m² each, walls 66.6 m² (S/V = 1.62 m⁻¹). Construction: the staircase-block wall is 335 mm brick, the other walls are precast concrete blocks, all plastered and covered with non-woven wallpaper; ceiling — concrete slab; floor — parquet board over a 30-cm concrete slab. The brick staircase wall (~4.7 mean free paths at 0.6 MeV) is opaque to gamma radiation: the part of the room behind it is shadowed and excluded from transport.</p>
@@ -541,6 +546,7 @@
 <p>Mapping to the geometry: what matters for deposition is the surface in contact with air, not the structure behind it — ceiling — concrete, walls — wallboard (the smooth paper surface of the non-woven wallpaper), floor — lacquered wood, stand — glass as the closest smooth non-porous material (no direct data exist for steel; metal, being a conductor, holds no static charge, so there is no electrostatic deposition component). For Compton scattering, by contrast, wallpaper and plaster are radiation-transparent — the substrate (brick/concrete) does the scattering, so the concrete albedo is used. Nuclear data: the complete LNHB/DDEP gamma-line set<a class="cit" href="#ref-en-11">&#91;11&#93;</a> — 110 lines with E ≥ 0.2 MeV and yields ≥ 0.03 % (16 lines of <sup>214</sup>Pb + 94 lines of <sup>214</sup>Bi), covering 99.5 % and 99.0 % of the nuclides' gamma energy (Σ E·y = 0.2217 of 0.2228 and 1.4532 of 1.4678 MeV/decay); air μ/ρ and μ<sub>en</sub>/ρ — NIST<a class="cit" href="#ref-en-10">&#91;10&#93;</a>; air kerma → H*(10) conversion — h*<sub>K</sub>(E)<a class="cit" href="#ref-en-9">&#91;9&#93;</a><a class="cit" href="#ref-en-12">&#91;12&#93;</a>.</p>
 
 <h2><span class="num">3</span>Methods</h2>
+<p>The problem is solved in three steps, each being its own physics. First — the balance: how much activity of each progeny nuclide resides in a cubic metre of air and on a square metre of each surface. Second — transport: what photon flux these sources create at the detector location. Third — dosimetry: converting the flux into the ambient dose equivalent rate H*(10). An error at any step propagates into the total linearly, so each step is controlled separately (§3.5).</p>
 <h3>3.1. Room model of the progeny</h3>
 <p>The room is treated as a single well-mixed chamber (the Jacobi model<a class="cit" href="#ref-en-1">&#91;1&#93;</a>; the formulation with fractions — Porstendörfer<a class="cit" href="#ref-en-2">&#91;2&#93;</a>). The steady-state balance of each chain link:</p>
 <div class="eq"><span class="tag">(1)</span>0 = λ<sub>i</sub>·<var>C</var><sub>i−1</sub> − (λ<sub>i</sub> + λ<sub>v</sub> + λ<sub>dep,i</sub>)·<var>C</var><sub>i</sub></div>
@@ -611,6 +617,7 @@
 <p>The computational script includes mandatory checks: the secular-equilibrium test for (3) (at R = 0 and zero direct deposition A<sub>Po</sub> = A<sub>Pb</sub> = A<sub>Bi</sub>; failure aborts the run) and residual control |F − F<sub>target</sub>| after bisection in the solvers. The air component is additionally verified by an independent angular quadrature (1.28·10⁶ rays, the radial integral analytic — no singularity at all): agreement with the grid method +0.4 %. Mesh convergence: halving the step changes the face factors in the 5th digit and the stand factor by 0.04 %. Linearity of the dose in the radon concentration is exact algebraically and confirmed experimentally (v<sub>d</sub> independent of concentration<a class="cit" href="#ref-en-6">&#91;6&#93;</a>).</p>
 
 <h2><span class="num">4</span>Results</h2>
+<p>We begin with the quantity that governs the whole picture — the equilibrium factor F: it tells what share of the progeny is still airborne and what share has already settled on the surfaces. Then come the source activities (§4.2) and, finally, the dose itself (§4.3) with its uncertainty budget (§4.4).</p>
 <h3>4.1. The equilibrium factor as a model output</h3>
 <p>At the measured ventilation the equilibrium factor is set by the aerosol loading — the progeny-to-aerosol attachment rate X (§3.1):</p>
 <div class="tablewrap">
@@ -631,7 +638,7 @@
 <h3>4.2. Activities in air and on surfaces</h3>
 <div class="tablewrap">
 <table>
-  <caption>Table 3. Airborne progeny activity (Bq/m³ per 100 Bq/m³ Rn; sum of the unattached and attached fractions).</caption>
+  <caption>Table 3. Airborne progeny activity (Bq/m³ per 100 Bq/m³ Rn; sum of the unattached and attached fractions). X is the progeny-to-aerosol attachment rate, h⁻¹ (§3.1): 25 — the normative dust level, 50 — a typical dwelling.</caption>
   <thead><tr><th>Nuclide</th><th>X = 25</th><th>X = 50</th></tr></thead>
   <tbody class="num-col">
     <tr><td><sup>218</sup>Po</td><td>80.4</td><td>86.7</td></tr>
@@ -642,7 +649,7 @@
 </div>
 <div class="tablewrap">
 <table>
-  <caption>Table 4. Surface activity of <sup>214</sup>Pb / <sup>214</sup>Bi (Bq/m² per 100 Bq/m³ Rn).</caption>
+  <caption>Table 4. Surface activity of <sup>214</sup>Pb / <sup>214</sup>Bi (Bq/m² per 100 Bq/m³ Rn). X is the aerosol attachment rate, h⁻¹ (§3.1).</caption>
   <thead>
     <tr><th rowspan="2">Surface</th><th colspan="2" class="grp">X = 25</th><th colspan="2" class="grp">X = 50</th></tr>
     <tr><th><sup>214</sup>Pb</th><th><sup>214</sup>Bi</th><th><sup>214</sup>Pb</th><th><sup>214</sup>Bi</th></tr>
@@ -660,7 +667,7 @@
 <h3>4.3. Dose rate</h3>
 <div class="tablewrap">
 <table>
-  <caption>Table 5. Component-wise increment ΔḢ*(10) and the base estimate (nSv/h per 100 Bq/m³ Rn).</caption>
+  <caption>Table 5. Component-wise increment ΔḢ*(10) and the base estimate (nSv/h per 100 Bq/m³ Rn). X is the aerosol attachment rate, h⁻¹ (§3.1).</caption>
   <thead><tr><th>Component</th><th>X = 25</th><th>X = 50</th></tr></thead>
   <tbody class="num-col">
     <tr><td>Room air</td><td>0.332</td><td>0.405</td></tr>
@@ -729,7 +736,7 @@
 <h3>5.3. Reading and true field</h3>
 <div class="tablewrap">
 <table>
-  <caption>Table 7. BDKG-05 reading and the true H*(10) field by components, Geant4 (nSv/h per 100 Bq/m³ Rn). Components are rounded to three digits; totals are from unrounded values.</caption>
+  <caption>Table 7. BDKG-05 reading and the true H*(10) field by components, Geant4 (nSv/h per 100 Bq/m³ Rn). X is the progeny-to-aerosol attachment rate, a measure of the dust level, h⁻¹ (§3.1); the corresponding equilibrium factor is F = 0.567 (X = 25) and 0.677 (X = 50). Components are rounded to three digits; totals are from unrounded values.</caption>
   <thead>
     <tr><th rowspan="2">Source</th><th colspan="2" class="grp">X = 25</th><th colspan="2" class="grp">X = 50</th></tr>
     <tr><th>reading</th><th>field</th><th>reading</th><th>field</th></tr>
@@ -766,6 +773,7 @@
 <p><b>Run management.</b> All control is console-based, without a GUI. A single script sets up the environment (<code>vcvars64</code> + CMake/Ninja + the <code>G4*DATA</code> variables); each task is a small <code>main.cc</code> + <code>CMakeLists</code> project, with run parameters passed as command-line arguments (<code>&lt;mode&gt; &lt;source&gt; &lt;nuclide&gt; &lt;number of photons&gt;</code>) and the physics list <code>G4EmStandardPhysics_option4</code>, cut 0.3 mm. Heavy runs (up to 5·10<sup>7</sup> photons) were executed as packages of background processes, one core per process; the summary log lines are machine-readable and collected by Python post-processing (<code>numpy</code>/<code>matplotlib</code>), where the transport is folded with the room-model activities. The "transport per nuclide → fold with activities in post-processing" split (§5.2) is a deliberate design choice: it allowed all the §5.4 sensitivities to be obtained from the same runs, without repeating the transport. A methodological detail found while debugging the field maps (Fig. 7): a track-length estimator with a free step produces a spurious "hot layer" at mid-height (the whole flight of a photon through the rarefied air is assigned to the single cell at the step midpoint); it is cured by limiting the step to 100 mm (<code>G4StepLimiter</code>), after which the value at the instrument point agrees with an independent spherical estimator to within ~1.5 %.</p>
 
 <h2><span class="num">6</span>Comparison with experiment #RN3</h2>
+<p>Now let us bring the calculation and the experiment face to face. First we specify what exactly was measured in #RN3 and with what uncertainty (§6.1), then perform the comparison itself (§6.2), and finally examine which mechanisms have been checked and excluded (§6.3) and which could contribute to the remainder (§6.4).</p>
 <h3>6.1. Target values and their uncertainties</h3>
 <p>Experiment #RN3 (ventilation switched off, radon rising 318 → 1193 Bq/m³) measured the dose-rate-to-concentration coefficient <strong>between two stable plateaus</strong> — the level with the ventilation running and the upper plateau after the build-up with it off: <strong>+1.09 nSv/h per 100 Bq/m³</strong> (95 % CI 1.03–1.16)<a class="cit" href="#ref-en-15">&#91;15&#93;</a>. On the stable levels the progeny are in equilibrium with their radon concentration, so this value is the measurement of the coefficient. The auxiliary estimates — the slope of the dose-rate regression over the transient build-up data within single days (free of the diurnal temperature admixture but taken on non-steady data) — are lower: 0.94 ± 0.34 (p = 0.013) and 0.69 ± 0.47 (not significant), central values 0.69–0.94.</p>
 <p>The confidence interval 1.03–1.16 reflects only the statistical scatter of the points. On top of it the measurement carries the instrument's own error: per the passport, <strong>the BDKG-05 basic relative error is ±20 %</strong> (Cs-137 calibration). It shifts all dose-rate readings by one common multiplier, so the coefficient — the slope of dose vs concentration — is scaled in full by the same ±20 %, independently of the statistics. With ±20 % included, the measured coefficient widens to a band of <strong>0.87–1.31</strong> and the auxiliary single-day estimates to <strong>0.55–1.13</strong> nSv/h per 100 Bq/m³.</p>
