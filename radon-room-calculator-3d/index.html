@@ -1443,13 +1443,14 @@ function mkSliceMesh(){const geo=new THREE.BufferGeometry();
   const m=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:.9,side:THREE.DoubleSide,depthWrite:false}));
   m.frustumCulled=false;scene.add(m);return m;}
 const mZ=mkSliceMesh(),mY=mkSliceMesh(),mX=mkSliceMesh();
+function mkLine(){const l=new THREE.LineSegments(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({color:0x0c0f12,transparent:true,opacity:0.85}));l.frustumCulled=false;scene.add(l);return l;}
+const lZ=mkLine(),lY=mkLine(),lX=mkLine();
 // fillSlice: wc×hc ячеек, val(a,b) — значение, corner(a,b) → [x,y,z] угла
 function fillSlice(mesh,wc,hc,val,corner){
-  const pos=[],col=[],vmax=state.vmax,inv=1/intensity(),thr=vmax*(+g('sT').value/100),iso=g('cIso').checked,NL=8;
+  const pos=[],col=[],vmax=state.vmax,inv=1/intensity(),thr=vmax*(+g('sT').value/100);
   for(let a=0;a<wc;a++)for(let b=0;b<hc;b++){
     const v=val(a,b); if(v<=0||v<thr)continue;
-    const t=Math.pow(Math.min(1,v/vmax),inv),c=colorAt(t);let r=c[0]/255,gg=c[1]/255,bb=c[2]/255;
-    if(iso){const fr=(t*NL)%1;if(fr<0.06||fr>0.94){r*=.4;gg*=.4;bb*=.4;}}
+    const t=Math.pow(Math.min(1,v/vmax),inv),c=colorAt(t),r=c[0]/255,gg=c[1]/255,bb=c[2]/255;
     const A=corner(a,b),B=corner(a+1,b),C=corner(a+1,b+1),Dd=corner(a,b+1);
     pos.push(A[0],A[1],A[2],B[0],B[1],B[2],C[0],C[1],C[2], A[0],A[1],A[2],C[0],C[1],C[2],Dd[0],Dd[1],Dd[2]);
     for(let n=0;n<6;n++)col.push(r,gg,bb);
@@ -1459,14 +1460,39 @@ function fillSlice(mesh,wc,hc,val,corner){
   geo.setAttribute('color',new THREE.Float32BufferAttribute(col,3));
   geo.attributes.position.needsUpdate=true;geo.attributes.color.needsUpdate=true;
 }
+// изолинии по marching squares: 6 уровней, центры ячеек, чуть выше плиток
+const ISO_LV=[0.15,0.3,0.45,0.6,0.75,0.9];
+function buildIso(line,wc,hc,val,ctr){
+  const pos=[],vmax=state.vmax;
+  const P=(pa,pb,va,vb,L)=>{const tt=(L-va)/(vb-va);return[pa[0]+(pb[0]-pa[0])*tt,pa[1]+(pb[1]-pa[1])*tt,pa[2]+(pb[2]-pa[2])*tt];};
+  for(let a=0;a<wc-1;a++)for(let b=0;b<hc-1;b++){
+    const v00=val(a,b),v10=val(a+1,b),v11=val(a+1,b+1),v01=val(a,b+1);
+    if(v00<=0||v10<=0||v11<=0||v01<=0)continue;
+    const A=ctr(a,b),B=ctr(a+1,b),C=ctr(a+1,b+1),Dd=ctr(a,b+1);
+    for(const f of ISO_LV){const L=f*vmax;
+      const cs=(v00>L?1:0)|(v10>L?2:0)|(v11>L?4:0)|(v01>L?8:0); if(cs===0||cs===15)continue;
+      const e0=()=>P(A,B,v00,v10,L),e1=()=>P(B,C,v10,v11,L),e2=()=>P(C,Dd,v11,v01,L),e3=()=>P(Dd,A,v01,v00,L);
+      const sg=(p,q)=>pos.push(p[0],p[1],p[2],q[0],q[1],q[2]);
+      switch(cs){case 1:case 14:sg(e3(),e0());break;case 2:case 13:sg(e0(),e1());break;case 3:case 12:sg(e3(),e1());break;
+        case 4:case 11:sg(e1(),e2());break;case 6:case 9:sg(e0(),e2());break;case 7:case 8:sg(e2(),e3());break;
+        case 5:sg(e3(),e0());sg(e1(),e2());break;case 10:sg(e0(),e1());sg(e2(),e3());break;}
+    }
+  }
+  line.geometry.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+  line.geometry.attributes.position.needsUpdate=true;
+}
 const probe=new THREE.Mesh(new THREE.SphereGeometry(.07,16,12),new THREE.MeshBasicMaterial({color:0xffffff}));scene.add(probe);
 function updateSlices(){
   const iz=+g('sZ').value,iy=+g('sY').value,ix=+g('sXs').value;
   mZ.visible=g('cZ').checked;mY.visible=g('cY').checked;mX.visible=g('cX').checked;
-  const zL=(iz+.5)*CELL,yL=(iy+.5)*CELL,xL=(ix+.5)*CELL;
+  const zL=(iz+.5)*CELL,yL=(iy+.5)*CELL,xL=(ix+.5)*CELL,iso=g('cIso').checked,O=0.008;
   if(mZ.visible)fillSlice(mZ,NX,NY,(a,b)=>mapVal(a,b,iz),(a,b)=>[a*CELL,b*CELL,zL]);
   if(mY.visible)fillSlice(mY,NX,NZ,(a,b)=>mapVal(a,iy,b),(a,b)=>[a*CELL,yL,b*CELL]);
   if(mX.visible)fillSlice(mX,NY,NZ,(a,b)=>mapVal(ix,a,b),(a,b)=>[xL,a*CELL,b*CELL]);
+  lZ.visible=mZ.visible&&iso;lY.visible=mY.visible&&iso;lX.visible=mX.visible&&iso;
+  if(lZ.visible)buildIso(lZ,NX,NY,(a,b)=>mapVal(a,b,iz),(a,b)=>[(a+.5)*CELL,(b+.5)*CELL,zL+O]);
+  if(lY.visible)buildIso(lY,NX,NZ,(a,b)=>mapVal(a,iy,b),(a,b)=>[(a+.5)*CELL,yL+O,(b+.5)*CELL]);
+  if(lX.visible)buildIso(lX,NY,NZ,(a,b)=>mapVal(ix,a,b),(a,b)=>[xL+O,(a+.5)*CELL,(b+.5)*CELL]);
   probe.visible=mZ.visible;probe.position.set((ix+.5)*CELL,(iy+.5)*CELL,zL);
   g('vZ').textContent=(zL).toFixed(1)+' '+T().um;
   g('vT').textContent=(state.vmax*(+g('sT').value/100)).toFixed(2);
