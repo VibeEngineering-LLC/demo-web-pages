@@ -29,6 +29,8 @@ Markdown-эквивалент веб-отчёта [RN4_report.html](RN4_report.h
 
 Проверка выполнена двумя независимыми методами: аналитической моделью (камерный баланс + прямое интегрирование ядра точечного источника, §3–§4) и численным расчётом методом Монте-Карло в Geant4[19] с полной геометрией блока детектирования и помещения (§5). Второй метод дополнительно отвечает на вопросы, принципиально недоступные аналитике: вклад осаждения ДПР на корпус самого прибора и искажения его энергетического и углового отклика по спектру ДПР.
 
+Изложение построено «от физики к числу». Сначала — исходные данные и то, как они получены (§2). Затем методы: как радон рождает короткоживущие ДПР и как они делят себя между воздухом и поверхностями — это деление и решает всю задачу (§3.1–§3.2); как излучение источников доходит до детектора (§3.3); как сама кривая набора радона выдаёт кратность воздухообмена (§3.4). Результаты аналитики собраны в §4, модель прибора и Монте-Карло верификация — в §5, сверка с натурным замером — в §6. Читателю, которому нужен только итог, достаточно реферата и §6.2.
+
 ## 2. Исходные данные
 
 **Помещение.** Г-образная комната цокольного этажа по обмерам CAD-плана здания (внутренние размеры): охватывающий прямоугольник 5.35 × 9.12 м с лестничным блоком 2.13 × 4.84 м в углу, высота 2.3 м; V = 88.5 м³, площадь пола/потолка по 38.5 м², стен — 66.6 м² (S/V = 1.62 м⁻¹). Конструктив: стена лестничного блока — кирпич 335 мм, остальные стены — бетонные блоки ФБС, все оштукатурены и оклеены флизелиновыми обоями; потолок — бетонное перекрытие; пол — паркетная доска по бетонной плите 30 см. Кирпичная стена лестничного блока (~4.7 длины свободного пробега при 0.6 МэВ) непрозрачна для гамма-излучения: часть комнаты за ней затенена и в переносе исключена.
@@ -56,6 +58,8 @@ Markdown-эквивалент веб-отчёта [RN4_report.html](RN4_report.h
 Привязка к геометрии: для осаждения работает поверхность контакта с воздухом, а не конструктив — потолок — бетон, стены — гипсокартон (гладкая бумажная поверхность флизелиновых обоев), пол — дерево (лак), подставка — стекло как ближайший гладкий непористый материал (для стали прямых данных нет; металл как проводник статический заряд не удерживает, электростатической составляющей осаждения нет). Для комптоновского рассеяния, напротив, обои и штукатурка радиационно прозрачны — работает субстрат (кирпич/бетон), поэтому альбедо принято бетонным. Ядерные данные: полный набор гамма-линий LNHB/DDEP[11] — 110 линий с E ≥ 0.2 МэВ и выходом ≥ 0.03 % (16 линий ²¹⁴Pb + 94 линии ²¹⁴Bi), покрывающих 99.5 % и 99.0 % гамма-энергии нуклидов (Σ E·y = 0.2217 из 0.2228 и 1.4532 из 1.4678 МэВ/распад); μ/ρ и μₑₙ/ρ воздуха — NIST[10]; переход керма → H\*(10) — h\*ₖ(E)[9][12].
 
 ## 3. Методы
+
+Задача решается в три шага, и каждый шаг — отдельная физика. Первый — баланс: сколько активности каждого ДПР находится в кубометре воздуха и на квадратном метре каждой поверхности. Второй — перенос: какой поток гамма-квантов эти источники создают в точке детектора. Третий — дозиметрия: перевод потока в мощность амбиентного эквивалента дозы H\*(10). Ошибка любого шага проходит в итог линейно, поэтому каждый шаг контролируется отдельно (§3.5).
 
 ### 3.1. Камерная модель ДПР
 
@@ -160,6 +164,8 @@ C(t) = C_∞ + (C₀ − C_∞)·e^(−k t), k = λв + λ_Rn, C_∞ = S/(λв +
 
 ## 4. Результаты
 
+Начнём с величины, которая управляет всей картиной, — коэффициента равновесия F: он говорит, какая доля ДПР ещё в воздухе, а какая уже осела на поверхности. Затем — активности источников (§4.2) и, наконец, сама доза (§4.3) с бюджетом её неопределённостей (§4.4).
+
 ### 4.1. Коэффициент равновесия, вычисленный моделью
 
 При измеренной вентиляции коэффициент равновесия определяется запылённостью — скоростью присоединения ДПР к аэрозолю X (§3.1):
@@ -178,7 +184,7 @@ C(t) = C_∞ + (C₀ − C_∞)·e^(−k t), k = λв + λ_Rn, C_∞ = S/(λв +
 
 ### 4.2. Активности в воздухе и на поверхностях
 
-**Таблица 3. Объёмная активность ДПР в воздухе (Бк/м³ на 100 Бк/м³ Rn; сумма свободной и присоединённой фракций).**
+**Таблица 3. Объёмная активность ДПР в воздухе (Бк/м³ на 100 Бк/м³ Rn; сумма свободной и присоединённой фракций). X — скорость присоединения ДПР к аэрозолю, ч⁻¹ (§3.1): 25 — норматив запылённости, 50 — типичное жильё.**
 
 | Нуклид | X = 25 | X = 50 |
 |---|---|---|
@@ -186,7 +192,7 @@ C(t) = C_∞ + (C₀ − C_∞)·e^(−k t), k = λв + λ_Rn, C_∞ = S/(λв +
 | ²¹⁴Pb | 56.2 | 67.9 |
 | ²¹⁴Bi | 51.0 | 62.3 |
 
-**Таблица 4. Поверхностная активность ²¹⁴Pb / ²¹⁴Bi (Бк/м² на 100 Бк/м³ Rn).**
+**Таблица 4. Поверхностная активность ²¹⁴Pb / ²¹⁴Bi (Бк/м² на 100 Бк/м³ Rn). X — скорость присоединения к аэрозолю, ч⁻¹ (§3.1).**
 
 | Поверхность | ²¹⁴Pb (X = 25) | ²¹⁴Bi (X = 25) | ²¹⁴Pb (X = 50) | ²¹⁴Bi (X = 50) |
 |---|---|---|---|---|
@@ -199,7 +205,7 @@ C(t) = C_∞ + (C₀ − C_∞)·e^(−k t), k = λв + λ_Rn, C_∞ = S/(λв +
 
 ### 4.3. Мощность дозы
 
-**Таблица 5. Приращение ΔḢ\*(10) по компонентам и базовая оценка (нЗв/ч на 100 Бк/м³ Rn).**
+**Таблица 5. Приращение ΔḢ\*(10) по компонентам и базовая оценка (нЗв/ч на 100 Бк/м³ Rn). X — скорость присоединения к аэрозолю, ч⁻¹ (§3.1).**
 
 | Компонента | X = 25 | X = 50 |
 |---|---|---|
@@ -271,7 +277,7 @@ C(t) = C_∞ + (C₀ − C_∞)·e^(−k t), k = λв + λ_Rn, C_∞ = S/(λв +
 
 ### 5.3. Показание и истинное поле
 
-**Таблица 7. Показание БДКГ-05 и истинное поле H\*(10) по компонентам, Geant4 (нЗв/ч на 100 Бк/м³ Rn). Компоненты округлены до трёх знаков; итоги — по неокруглённым значениям.**
+**Таблица 7. Показание БДКГ-05 и истинное поле H\*(10) по компонентам, Geant4 (нЗв/ч на 100 Бк/м³ Rn). X — скорость присоединения ДПР к аэрозолю, мера запылённости, ч⁻¹ (§3.1); ей отвечает коэффициент равновесия F = 0.567 (X = 25) и 0.677 (X = 50). Компоненты округлены до трёх знаков; итоги — по неокруглённым значениям.**
 
 | Источник | X = 25 |  | X = 50 |  |
 |---|---|---|---|---|
@@ -311,6 +317,8 @@ C(t) = C_∞ + (C₀ − C_∞)·e^(−k t), k = λв + λ_Rn, C_∞ = S/(λв +
 **Управление прогонами.** Всё управление — консольное, без GUI. Окружение поднимает один скрипт (`vcvars64` + CMake/Ninja + переменные `G4*DATA`); каждая задача — небольшой проект `main.cc` + `CMakeLists`, параметры прогона задаются аргументами командной строки (`<режим> <источник> <нуклид> <число фотонов>`), физический лист — `G4EmStandardPhysics_option4`, порог 0.3 мм. Тяжёлые прогоны (до 5·10⁷ фотонов) шли пакетами фоновых процессов, по одному ядру на процесс; итоговые строки логов — в машинно-читаемом виде, их собирает Python-постобработка (`numpy`/`matplotlib`), где транспорт сворачивается с активностями камерной модели. Разделение «транспорт по нуклидам → свёртка с активностями постобработкой» (§5.2) — сознательное проектное решение: оно позволило получить все чувствительности §5.4 из одних и тех же прогонов, без повторного транспорта. Методическая деталь, найденная при отладке карт поля (Рис. 7): трек-длинный оценщик со свободным шагом даёт ложный «горячий слой» на середине высоты (весь пролёт фотона в разреженном воздухе относится к одной ячейке середины шага); лечится ограничением шага 100 мм (`G4StepLimiter`), после чего значение в точке прибора сходится с независимым сферным оценщиком в пределах ~1.5 %.
 
 ## 6. Сравнение с экспериментом #RN3
+
+Теперь сведём расчёт и эксперимент лицом к лицу. Для этого сначала уточним, что именно и с какой погрешностью измерено в #RN3 (§6.1), затем выполним само сопоставление (§6.2) и разберём, какие механизмы проверены и исключены (§6.3), а какие могли внести остаток (§6.4).
 
 ### 6.1. Целевые величины и их погрешности
 
@@ -452,6 +460,8 @@ The motivation of this work is an independent check of the coefficient measured 
 
 The check is performed by two independent methods: the analytical model (room balance + direct point-kernel integration, §3–§4) and a Monte Carlo calculation in Geant4[19] with the full geometry of the detector unit and the room (§5). The second method additionally answers questions fundamentally inaccessible to the analytics: the contribution of progeny deposition on the housing of the instrument itself, and possible distortion of its energy and angular response over the progeny spectrum.
 
+The exposition goes "from physics to number". First — the input data and how they were obtained (§2). Then the methods: how radon begets its short-lived progeny and how the progeny divide themselves between the air and the surfaces — this division is what decides the whole problem (§3.1–§3.2); how the radiation of the sources reaches the detector (§3.3); how the radon build-up curve itself yields the air-exchange rate (§3.4). The analytical results are collected in §4, the instrument model and the Monte Carlo verification in §5, the check against the field measurement in §6. A reader who needs only the outcome may read the abstract and §6.2.
+
 ## 2. Input data
 
 **Room.** An L-shaped basement room taken from the building CAD plan (internal dimensions): a 5.35 × 9.12 m envelope with a 2.13 × 4.84 m staircase block in the corner, height 2.3 m; V = 88.5 m³, floor/ceiling area 38.5 m² each, walls 66.6 m² (S/V = 1.62 m⁻¹). Construction: the staircase-block wall is 335 mm brick, the other walls are precast concrete blocks, all plastered and covered with non-woven wallpaper; ceiling — concrete slab; floor — parquet board over a 30-cm concrete slab. The brick staircase wall (~4.7 mean free paths at 0.6 MeV) is opaque to gamma radiation: the part of the room behind it is shadowed and excluded from transport.
@@ -479,6 +489,8 @@ The check is performed by two independent methods: the analytical model (room ba
 Mapping to the geometry: what matters for deposition is the surface in contact with air, not the structure behind it — ceiling — concrete, walls — wallboard (the smooth paper surface of the non-woven wallpaper), floor — lacquered wood, stand — glass as the closest smooth non-porous material (no direct data exist for steel; metal, being a conductor, holds no static charge, so there is no electrostatic deposition component). For Compton scattering, by contrast, wallpaper and plaster are radiation-transparent — the substrate (brick/concrete) does the scattering, so the concrete albedo is used. Nuclear data: the complete LNHB/DDEP gamma-line set[11] — 110 lines with E ≥ 0.2 MeV and yields ≥ 0.03 % (16 lines of ²¹⁴Pb + 94 lines of ²¹⁴Bi), covering 99.5 % and 99.0 % of the nuclides' gamma energy (Σ E·y = 0.2217 of 0.2228 and 1.4532 of 1.4678 MeV/decay); air μ/ρ and μₑₙ/ρ — NIST[10]; air kerma → H\*(10) conversion — h\*ₖ(E)[9][12].
 
 ## 3. Methods
+
+The problem is solved in three steps, each being its own physics. First — the balance: how much activity of each progeny nuclide resides in a cubic metre of air and on a square metre of each surface. Second — transport: what photon flux these sources create at the detector location. Third — dosimetry: converting the flux into the ambient dose equivalent rate H\*(10). An error at any step propagates into the total linearly, so each step is controlled separately (§3.5).
 
 ### 3.1. Room model of the progeny
 
@@ -583,6 +595,8 @@ The computational script includes mandatory checks: the secular-equilibrium test
 
 ## 4. Results
 
+We begin with the quantity that governs the whole picture — the equilibrium factor F: it tells what share of the progeny is still airborne and what share has already settled on the surfaces. Then come the source activities (§4.2) and, finally, the dose itself (§4.3) with its uncertainty budget (§4.4).
+
 ### 4.1. The equilibrium factor as a model output
 
 At the measured ventilation the equilibrium factor is set by the aerosol loading — the progeny-to-aerosol attachment rate X (§3.1):
@@ -601,7 +615,7 @@ The base range X = 25–50 gives F = 0.57–0.68 (EEC 57–68 Bq/m³ per 100 Bq/
 
 ### 4.2. Activities in air and on surfaces
 
-**Table 3. Airborne progeny activity (Bq/m³ per 100 Bq/m³ Rn; sum of the unattached and attached fractions).**
+**Table 3. Airborne progeny activity (Bq/m³ per 100 Bq/m³ Rn; sum of the unattached and attached fractions). X is the progeny-to-aerosol attachment rate, h⁻¹ (§3.1): 25 — the normative dust level, 50 — a typical dwelling.**
 
 | Nuclide | X = 25 | X = 50 |
 |---|---|---|
@@ -609,7 +623,7 @@ The base range X = 25–50 gives F = 0.57–0.68 (EEC 57–68 Bq/m³ per 100 Bq/
 | ²¹⁴Pb | 56.2 | 67.9 |
 | ²¹⁴Bi | 51.0 | 62.3 |
 
-**Table 4. Surface activity of ²¹⁴Pb / ²¹⁴Bi (Bq/m² per 100 Bq/m³ Rn).**
+**Table 4. Surface activity of ²¹⁴Pb / ²¹⁴Bi (Bq/m² per 100 Bq/m³ Rn). X is the aerosol attachment rate, h⁻¹ (§3.1).**
 
 | Surface | ²¹⁴Pb (X = 25) | ²¹⁴Bi (X = 25) | ²¹⁴Pb (X = 50) | ²¹⁴Bi (X = 50) |
 |---|---|---|---|---|
@@ -622,7 +636,7 @@ Higher aerosol loading shifts activity from the surfaces into the air: the aeros
 
 ### 4.3. Dose rate
 
-**Table 5. Component-wise increment ΔḢ\*(10) and the base estimate (nSv/h per 100 Bq/m³ Rn).**
+**Table 5. Component-wise increment ΔḢ\*(10) and the base estimate (nSv/h per 100 Bq/m³ Rn). X is the aerosol attachment rate, h⁻¹ (§3.1).**
 
 | Component | X = 25 | X = 50 |
 |---|---|---|
@@ -694,7 +708,7 @@ The scene is the as-built L-room from the CAD plan (Fig. 1): 300 mm concrete env
 
 ### 5.3. Reading and true field
 
-**Table 7. BDKG-05 reading and the true H\*(10) field by components, Geant4 (nSv/h per 100 Bq/m³ Rn). Components are rounded to three digits; totals are from unrounded values.**
+**Table 7. BDKG-05 reading and the true H\*(10) field by components, Geant4 (nSv/h per 100 Bq/m³ Rn). X is the progeny-to-aerosol attachment rate, a measure of the dust level, h⁻¹ (§3.1); the corresponding equilibrium factor is F = 0.567 (X = 25) and 0.677 (X = 50). Components are rounded to three digits; totals are from unrounded values.**
 
 | Source | X = 25 |  | X = 50 |  |
 |---|---|---|---|---|
@@ -734,6 +748,8 @@ The Monte Carlo part of the work (§5) was carried out by a separate computation
 **Run management.** All control is console-based, without a GUI. A single script sets up the environment (`vcvars64` + CMake/Ninja + the `G4*DATA` variables); each task is a small `main.cc` + `CMakeLists` project, with run parameters passed as command-line arguments (`<mode> <source> <nuclide> <number of photons>`) and the physics list `G4EmStandardPhysics_option4`, cut 0.3 mm. Heavy runs (up to 5·10⁷ photons) were executed as packages of background processes, one core per process; the summary log lines are machine-readable and collected by Python post-processing (`numpy`/`matplotlib`), where the transport is folded with the room-model activities. The "transport per nuclide → fold with activities in post-processing" split (§5.2) is a deliberate design choice: it allowed all the §5.4 sensitivities to be obtained from the same runs, without repeating the transport. A methodological detail found while debugging the field maps (Fig. 7): a track-length estimator with a free step produces a spurious "hot layer" at mid-height (the whole flight of a photon through the rarefied air is assigned to the single cell at the step midpoint); it is cured by limiting the step to 100 mm (`G4StepLimiter`), after which the value at the instrument point agrees with an independent spherical estimator to within ~1.5 %.
 
 ## 6. Comparison with experiment #RN3
+
+Now let us bring the calculation and the experiment face to face. First we specify what exactly was measured in #RN3 and with what uncertainty (§6.1), then perform the comparison itself (§6.2), and finally examine which mechanisms have been checked and excluded (§6.3) and which could contribute to the remainder (§6.4).
 
 ### 6.1. Target values and their uncertainties
 
