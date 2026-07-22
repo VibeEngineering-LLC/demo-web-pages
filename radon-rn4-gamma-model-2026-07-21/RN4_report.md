@@ -15,7 +15,7 @@ Markdown-эквивалент веб-отчёта [RN4_report.html](RN4_report.h
 
 **Методы:** стационарная камерная модель Jacobi с раздельными свободной и присоединённой фракциями и нуклид-специфичным осаждением по камерным измерениям Leonard (1994); кратность воздухообмена измерена по динамике набора радона после выключения вентиляции (0.01–0.07 ч⁻¹), скорость присоединения к аэрозолю задана по нормативному уровню запылённости (X = 25–50 ч⁻¹), коэффициент равновесия не задаётся, а вычисляется моделью (F = 0.57–0.68); перенос — прямое интегрирование ядра точечного источника по полному набору гамма-линий LNHB/DDEP (110 линий E ≥ 0.2 МэВ, ≥ 99 % гамма-энергии ДПР) с усреднением поля по объёму кристалла и учётом затенения лестничным блоком; комптоновское рассеяние — модель полости с дозовым альбедо бетона по формуле Чилтона–Хаддлстона; учтены экранирование стальной столешницей и осаждение на её нижнюю плоскость. Независимая верификация — численная модель прибора и помещения в Geant4 (§5): полная геометрия блока детектирования, транспорт по тем же 110 линиям, осаждение на корпус прибора, энергетический и угловой отклик.
 
-**Вывод:** истинное поле — **0.59–0.64 нЗв/ч на 100 Бк/м³** (аналитика 0.59–0.64, Geant4 0.594–0.627 — согласие двух независимых методов); ожидаемое *показание* БДКГ-05 выше поля в ×1.22–1.27 за счёт осаждения ДПР на корпус прибора (11–14 % показания) и близких осаждённых источников: **0.75–0.76 нЗв/ч на 100 Бк/м³**. Сравнение с замером #RN3 — в тех же единицах, нЗв/ч на 100 Бк/м³: измеренный между двумя стабильными плато (вентиляция включена / выключена) коэффициент — 1.09, с приборной погрешностью ±20 % — полоса 0.87–1.31; он выше рассчитанного показания в 1.43–1.45 раза (нижний край полосы — в 1.14–1.15 раза). Вспомогательные оценки коэффициента по переходным данным отдельных суток (0.55–1.13 с той же ±20 %) накрывают рассчитанное показание. Энергетический и угловой отклик прибора по спектру ДПР искажения не вносят (свёртка 1.004); итог слабо чувствителен к запылённости и коэффициенту равновесия (сценарий F = 0.37–0.40 меняет показание на −2 %, поле на −10 %).
+**Вывод:** истинное поле — **0.59–0.64 нЗв/ч на 100 Бк/м³** (аналитика 0.59–0.64, Geant4 0.594–0.627 — согласие двух независимых методов); ожидаемое *показание* БДКГ-05 выше поля в ×1.22–1.27 за счёт осаждения ДПР на корпус прибора (11–14 % показания) и близких осаждённых источников: **0.75–0.76 нЗв/ч на 100 Бк/м³**. Сравнение с замером #RN3 — в тех же единицах, нЗв/ч на 100 Бк/м³: измеренный между двумя стабильными плато (вентиляция включена / выключена) коэффициент — 1.09 (95 % ДИ 1.03–1.16), с приборной погрешностью ±20 % — полоса 0.87–1.31. Рассчитанное показание лежит ниже полосы: в 1.14–1.15 раза ниже её нижнего края и в 1.43–1.45 раза ниже центра; механизм подтверждён по порядку величины, кандидаты остатка — §6.4. Энергетический и угловой отклик прибора по спектру ДПР искажения не вносят (свёртка 1.004); итог слабо чувствителен к запылённости и коэффициенту равновесия (сценарий F = 0.37–0.40 меняет показание на −2 %, поле на −10 %).
 
 **Ключевые слова:** радон, дочерние продукты распада, ²¹⁴Pb, ²¹⁴Bi, коэффициент равновесия, осаждение аэрозолей, камерная модель Якоби, амбиентный эквивалент дозы H\*(10), гамма-фон помещений, дозовое альбедо, Монте-Карло, Geant4.
 
@@ -29,7 +29,7 @@ Markdown-эквивалент веб-отчёта [RN4_report.html](RN4_report.h
 
 Проверка выполнена двумя независимыми методами: аналитической моделью (камерный баланс + прямое интегрирование ядра точечного источника, §3–§4) и численным расчётом методом Монте-Карло в Geant4[19] с полной геометрией блока детектирования и помещения (§5). Второй метод дополнительно отвечает на вопросы, принципиально недоступные аналитике: вклад осаждения ДПР на корпус самого прибора и искажения его энергетического и углового отклика по спектру ДПР.
 
-Изложение построено «от физики к числу». Сначала — исходные данные и то, как они получены (§2). Затем методы: как радон рождает короткоживущие ДПР и как они делят себя между воздухом и поверхностями — это деление и решает всю задачу (§3.1–§3.2); как излучение источников доходит до детектора (§3.3); как сама кривая набора радона выдаёт кратность воздухообмена (§3.4). Результаты аналитики собраны в §4, модель прибора и Монте-Карло верификация — в §5, сверка с натурным замером — в §6. Читателю, которому нужен только итог, достаточно реферата и §6.2.
+Изложение идёт от входных данных (§2) через камерную модель и перенос (§3) к результатам аналитики (§4), Монте-Карло модели прибора (§5) и сверке с натурным замером (§6).
 
 ## 2. Исходные данные
 
@@ -59,7 +59,7 @@ Markdown-эквивалент веб-отчёта [RN4_report.html](RN4_report.h
 
 ## 3. Методы
 
-Задача решается в три шага, и каждый шаг — отдельная физика. Первый — баланс: сколько активности каждого ДПР находится в кубометре воздуха и на квадратном метре каждой поверхности. Второй — перенос: какой поток гамма-квантов эти источники создают в точке детектора. Третий — дозиметрия: перевод потока в мощность амбиентного эквивалента дозы H\*(10). Ошибка любого шага проходит в итог линейно, поэтому каждый шаг контролируется отдельно (§3.5).
+Расчёт разбит на три независимо контролируемых шага: баланс активностей ДПР в воздухе и на поверхностях (§3.1–§3.2), перенос излучения к точке детектора (§3.3) и дозиметрическая свёртка; вклад каждого шага в итог линеен, контроль вычислений — §3.5.
 
 ### 3.1. Камерная модель ДПР
 
@@ -164,8 +164,6 @@ C(t) = C_∞ + (C₀ − C_∞)·e^(−k t), k = λв + λ_Rn, C_∞ = S/(λв +
 
 ## 4. Результаты
 
-Начнём с величины, которая управляет всей картиной, — коэффициента равновесия F: он говорит, какая доля ДПР ещё в воздухе, а какая уже осела на поверхности. Затем — активности источников (§4.2) и, наконец, сама доза (§4.3) с бюджетом её неопределённостей (§4.4).
-
 ### 4.1. Коэффициент равновесия, вычисленный моделью
 
 При измеренной вентиляции коэффициент равновесия определяется запылённостью — скоростью присоединения ДПР к аэрозолю X (§3.1):
@@ -263,6 +261,8 @@ C(t) = C_∞ + (C₀ − C_∞)·e^(−k t), k = λв + λ_Rn, C_∞ = S/(λв +
 
 **Рис. 4.** Энергетическая чувствительность S(E) на единицу H\*(10) (нормировка на 662 кэВ). Красным отмечены главные линии ДПР — они лежат в области, где отклик близок к единице; свёртка по полному спектру ДПР — 1.004.
 
+Кривая S(E) снята при нормальном падении — стандартная реперная геометрия характеристики чувствительности, в которой прибор и калибруется по Cs-137; объёмность (почти изотропность) реального поля учтена отдельно — угловой свёрткой ниже, а окончательно — полной сценой §5.2–5.3, где показание 0.754 получается прямым транспортом фотонов из их реальных положений и уже содержит истинный энергетический и угловой отклик прибора (кривая S(E) на итог не умножается). Пик при 100–150 кэВ не влияет на вывод потому, что линии ДПР лежат выше 240 кэВ, где отклик плоский; форма пика при других углах падения роли не играет — в жёстком спектре он не заселён.
+
 **Угловой отклик.** R(θ)/R(0°) на линиях ДПР 295–1764 кэВ: фронт–бок ±9 %, тыл 0.60–0.63 (экранировка ФЭУ-хвостом); свёртка по изотропному полю −3…+2 % (Рис. 5). Совместно с энергетическим откликом (1.004 × (0.97…1.02) = 0.97…1.03) инструментальные отклики в изотропном поле искажения не вносят — единицы процентов; паспортная оценка углового отклика (+3.5…+5.9 %, §6.3) — того же порядка.
 
 ![Угловой отклик БДКГ-05 на линиях ДПР](figures/fig_g4_angular_response.png)
@@ -318,13 +318,11 @@ C(t) = C_∞ + (C₀ − C_∞)·e^(−k t), k = λв + λ_Rn, C_∞ = S/(λв +
 
 ## 6. Сравнение с экспериментом #RN3
 
-Теперь сведём расчёт и эксперимент лицом к лицу. Для этого сначала уточним, что именно и с какой погрешностью измерено в #RN3 (§6.1), затем выполним само сопоставление (§6.2) и разберём, какие механизмы проверены и исключены (§6.3), а какие могли внести остаток (§6.4).
-
 ### 6.1. Целевые величины и их погрешности
 
-Эксперимент #RN3 (выключение вентиляции, рост ОА радона 318 → 1193 Бк/м³) измерил коэффициент связи МЭД с ОА **между двумя стабильными плато** — уровнем при работающей вентиляции и верхним плато после набора при выключенной: **+1.09 нЗв/ч на 100 Бк/м³** (95 % ДИ 1.03–1.16)[15]. На стабильных уровнях ДПР находятся в равновесии со своей ОА, поэтому именно эта величина является измерением коэффициента. Вспомогательные оценки — регрессия МЭД по ОА на переходных данных набора внутри одних суток (свободна от примеси суточного хода температуры, но взята на нестационарных данных) — ниже: 0.94 ± 0.34 (p = 0.013) и 0.69 ± 0.47 (незначимо), центральные значения 0.69–0.94.
+Эксперимент #RN3 (выключение вентиляции, рост ОА радона 318 → 1193 Бк/м³) измерил коэффициент связи МЭД с ОА **между двумя стабильными плато** — уровнем при работающей вентиляции и верхним плато после набора при выключенной: **+1.09 нЗв/ч на 100 Бк/м³** (95 % ДИ 1.03–1.16)[15]. На стабильных уровнях ДПР находятся в равновесии со своей ОА, поэтому именно эта величина является измерением коэффициента; он измеряется один на весь эксперимент. Регрессионные оценки по переходным данным отдельных суток нестационарны и в качестве коэффициента не используются.
 
-Доверительный интервал 1.03–1.16 отражает только статистический разброс точек. Сверх него у замера есть погрешность самого прибора: по паспорту **основная относительная погрешность БДКГ-05 — ±20 %** (калибровка по эталону Cs-137). Она смещает все показания МЭД одним общим множителем, поэтому и коэффициент связи МЭД с ОА масштабируется целиком на те же ±20 %, независимо от статистики. С учётом ±20 % измеренный коэффициент расширяется до полосы **0.87–1.31**, вспомогательные посуточные оценки — до **0.55–1.13** нЗв/ч на 100 Бк/м³.
+Доверительный интервал 1.03–1.16 отражает только статистический разброс точек. Сверх него у замера есть погрешность самого прибора: по паспорту **основная относительная погрешность БДКГ-05 — ±20 %** (калибровка по эталону Cs-137). Она смещает все показания МЭД одним общим множителем, поэтому и коэффициент связи МЭД с ОА масштабируется целиком на те же ±20 %, независимо от статистики. С учётом ±20 % полоса измеренного коэффициента — **0.87–1.31** нЗв/ч на 100 Бк/м³.
 
 **Отношение сигнал/фон.** Полезный эффект мал на фоне полной МЭД: за время эксперимента показание БДКГ-05 менялось в пределах 69–83 нЗв/ч, то есть радоновое приращение составило до ~14 нЗв/ч (~20 % фона) в пике набора, а бо́льшую часть времени — единицы процентов. Поэтому вариации фона порядка единиц нЗв/ч (внешнее гамма-поле, приборные дрейфы) конкурируют с сигналом, и статистический ДИ занижает реальную неопределённость коэффициента.
 
@@ -339,10 +337,9 @@ C(t) = C_∞ + (C₀ − C_∞)·e^(−k t), k = λв + λ_Rn, C_∞ = S/(λв +
 | **Показание прибора, Geant4** (поле + корпус + отклик) | 0.754–0.764 | ×1.22–1.27 к полю |
 | Сценарий F = 0.37–0.40 (X ≈ 10): поле (без поправки столешницы) / показание | 0.53 / 0.742 | −10 % / −2 % |
 | Измеренный коэффициент, плато–плато (стат. ДИ) | 1.09 (1.03–1.16) | ×1.43–1.45 к показанию |
-| Измеренный коэффициент + инстр. ±20 % | 0.87–1.31 | ×1.14–1.15 к нижнему краю |
-| Вспом. оценки по переходным данным суток + инстр. ±20 % | 0.55–1.13 | **показание внутри диапазона** |
+| Измеренный коэффициент + инстр. ±20 % | 0.87–1.31 | показание ниже полосы; ×1.14–1.15 к нижнему краю |
 
-С замером корректно сравнивать не поле, а *ожидаемое показание прибора* — 0.754–0.764 нЗв/ч на 100 Бк/м³ (§5.3): коэффициент #RN3 получен по показаниям того же БДКГ-05, в которые входят и осаждение на корпус, и отклик прибора. Показание **лежит внутри диапазона вспомогательных посуточных оценок** (0.55–1.13 нЗв/ч на 100 Бк/м³). К измеренному коэффициенту (плато–плато) остаётся умеренный разрыв: 1.09 выше рассчитанного показания в 1.43–1.45 раза, нижний край инструментальной полосы 0.87 — в 1.14–1.15 раза. Физический механизм (гамма ДПР радона) подтверждён количественно двумя независимыми методами.
+С замером корректно сравнивать не поле, а *ожидаемое показание прибора* — 0.754–0.764 нЗв/ч на 100 Бк/м³ (§5.3): коэффициент #RN3 получен по показаниям того же БДКГ-05, в которые входят и осаждение на корпус, и отклик прибора. Рассчитанное показание лежит **ниже измеренной полосы 0.87–1.31**: в 1.14–1.15 раза ниже её нижнего края (0.87) и в 1.43–1.45 раза ниже центрального значения 1.09. Физический механизм (гамма ДПР радона) подтверждён по порядку величины двумя независимыми методами; остаётся умеренный разрыв ×1.14–1.45 (§6.4).
 
 ### 6.3. Проверенные и исключённые механизмы
 
@@ -355,10 +352,10 @@ C(t) = C_∞ + (C₀ − C_∞)·e^(−k t), k = λв + λ_Rn, C_∞ = S/(λв +
 
 ### 6.4. Кандидаты остатка к измеренному коэффициенту
 
-Показание модели (0.75–0.76) согласуется с вспомогательными посуточными оценками; разрыв в 1.43–1.45 раза остаётся к измеренному коэффициенту (1.09). Возможные вклады в этот остаток:
+Показание модели (0.75–0.76) ниже измеренного коэффициента (1.09) в 1.43–1.45 раза, нижнего края его инструментальной полосы (0.87) — в 1.14–1.15 раза. Возможные вклады в этот разрыв:
 
 1. **Скорость осаждения на корпус прибора** — главная расчётная неопределённость показания: v_d для стали/алюминия прямо не измерена, вариация ×2 даёт +11…+14 % (§5.4).
-2. **Вариабельность самого замера** — сигнал мал относительно фона (§6.1), и сравнение двух плато, разнесённых на сутки, включает межсуточные изменения фона, которых нет в посуточных оценках.
+2. **Фоновая вариабельность между плато** — сигнал мал относительно фона (§6.1), а сравниваемые плато разнесены во времени на сутки: изменения фона, не связанные с радоном, входят в измеренную разность напрямую.
 3. **Гамма из-под пола, коррелированная с ОА.** Средний уровень подпольной гаммы (ДПР в грунте сквозь 30 см бетона, 3.3–6.9 длин пробега, с фактором накопления[14]) мал — 0.06–0.16 нЗв/ч при 20–50 кБк/м³ в грунте, и его постоянная часть в коэффициент #RN3 не входит (регрессия вычитает константу). Однако активность ДПР в грунте под зданием и ОА в комнате управляются общим драйвером — динамикой грунтового газа: коррелированная с ОА часть подпольного поля регрессией не вычитается и входит в измеренный коэффициент. Величина этой вариации в работе не оценивалась.
 4. **Внешнее гамма-поле** — ДПР радона в приземном воздухе и грунте вокруг здания; вымывание ДПР осадками способно менять фон на величины, сопоставимые с сигналом (§7).
 
@@ -382,7 +379,7 @@ C(t) = C_∞ + (C₀ − C_∞)·e^(−k t), k = λв + λ_Rn, C_∞ = S/(λв +
 2. Выполнена независимая численная верификация в Geant4 с полной геометрией блока детектирования и помещения. Кросс-проверка двух методов: воздушная компонента поля совпала лучше 1 %, коэффициент равновесия — в третьем знаке. Энергетический и угловой отклик БДКГ-05 по спектру ДПР искажения не вносят (свёртка 1.004; изотропная свёртка углового отклика −3…+2 %).
 3. **Истинное поле: 0.59–0.64 нЗв/ч на 100 Бк/м³** (аналитика; Geant4 0.594–0.627, физическое рассеяние поднимает альбедо-оценку на +2.5–2.8 %). Доминирует воздушная компонента (63–73 % прямых); зависимость от ОА линейна. **Ожидаемое показание прибора: 0.75–0.76 нЗв/ч на 100 Бк/м³** — выше поля в ×1.22–1.27, главным образом за счёт осаждения ДПР на корпус (11–14 % показания).
 4. Итог робастен к главной немеряной паре «запылённость–коэффициент равновесия»: показание меняется лишь на ±2 % на декаду X; сценарию прямых измерений F = 0.35–0.45 при отключённой вентиляции отвечает показание −2 % (поле −9…−12 %). Крупнейшая неопределённость — скорость осаждения на корпус (×0.5/×2 → −7…+14 % показания); материал подставки после пересчёта на фактической геометрии — лишь −1…−2 % поля.
-5. Измеренный между двумя стабильными плато коэффициент с учётом калибровочной погрешности БДКГ-05 (±20 %) — полоса 0.87–1.31 нЗв/ч на 100 Бк/м³; вспомогательные оценки по переходным данным отдельных суток — 0.55–1.13 (те же единицы, что и расчёт). Рассчитанное показание 0.75–0.76 **попадает внутрь диапазона посуточных оценок**; измеренный коэффициент (1.09) выше рассчитанного показания в 1.43–1.45 раза (нижний край его полосы, 0.87, — в 1.14–1.15 раза). Физический механизм — гамма ²¹⁴Pb/²¹⁴Bi — подтверждён количественно двумя независимыми методами.
+5. Измеренный между двумя стабильными плато коэффициент — 1.09 нЗв/ч на 100 Бк/м³ (95 % ДИ 1.03–1.16); с калибровочной погрешностью БДКГ-05 ±20 % — полоса 0.87–1.31. Рассчитанное показание 0.75–0.76 лежит **ниже полосы**: в 1.14–1.15 раза ниже её нижнего края и в 1.43–1.45 раза ниже центра. Физический механизм — гамма ²¹⁴Pb/²¹⁴Bi — подтверждён по порядку величины двумя независимыми методами; кандидаты остатка — §6.4.
 6. Проверены и исключены: энергетический и угловой отклик прибора (Geant4 + паспорт), рост скоростей осаждения гамма-эмиттеров (связка с балансом воздуха), нулевое осаждение, ДПР торона (замер АльфаАэро). Кандидаты остатка к измеренному коэффициенту: скорость осаждения на корпус, вариабельность замера при малом отношении сигнал/фон, коррелированная с ОА подпольная гамма и внешнее поле (§6.4).
 
 ## 9. Заявление об использовании ИИ
@@ -446,7 +443,7 @@ Calculation of the **H\*(10)** increment from ²¹⁴Pb and ²¹⁴Bi per unit r
 
 **Methods:** a steady-state Jacobi room model with separate unattached and attached fractions and nuclide-specific deposition from the chamber measurements of Leonard (1994); the air-exchange rate is measured from the radon build-up dynamics after the ventilation was switched off (0.01–0.07 h⁻¹), the aerosol attachment rate is set by the normative dust level (X = 25–50 h⁻¹), and the equilibrium factor is a model output (F = 0.57–0.68); transport is direct point-kernel integration over the complete LNHB/DDEP gamma-line set (110 lines with E ≥ 0.2 MeV, ≥ 99 % of the progeny gamma energy) with field averaging over the crystal volume and shadowing by the staircase block; Compton scattering is a cavity model with the concrete dose albedo from the Chilton–Huddleston formula; shielding by the steel tabletop and deposition on its underside are included. Independent verification — a Monte Carlo model of the instrument and the room in Geant4 (§5): full detector-unit geometry, transport over the same 110 lines, progeny deposition on the instrument housing, energy and angular response.
 
-**Conclusion:** the true field is **0.59–0.64 nSv/h per 100 Bq/m³** (analytics 0.59–0.64, Geant4 0.594–0.627 — two independent methods agree); the expected BDKG-05 *reading* exceeds the field by ×1.22–1.27 due to progeny deposition on the instrument housing (11–14 % of the reading) and nearby deposited sources: **0.75–0.76 nSv/h per 100 Bq/m³**. The comparison with the #RN3 measurement is in the same units, nSv/h per 100 Bq/m³: the coefficient measured between two stable plateaus (ventilation on / off) is 1.09, a 0.87–1.31 band with the ±20 % instrument error; it is 1.43–1.45 times the computed reading (the lower band edge — 1.14–1.15 times). The auxiliary slope estimates over the transient single-day data (0.55–1.13 with the same ±20 %) cover the computed reading. The energy and angular response of the instrument over the progeny spectrum introduces no distortion (convolution 1.004); the result is weakly sensitive to the dust level and the equilibrium factor (the F = 0.37–0.40 scenario changes the reading by −2 %, the field by −10 %).
+**Conclusion:** the true field is **0.59–0.64 nSv/h per 100 Bq/m³** (analytics 0.59–0.64, Geant4 0.594–0.627 — two independent methods agree); the expected BDKG-05 *reading* exceeds the field by ×1.22–1.27 due to progeny deposition on the instrument housing (11–14 % of the reading) and nearby deposited sources: **0.75–0.76 nSv/h per 100 Bq/m³**. The comparison with the #RN3 measurement is in the same units, nSv/h per 100 Bq/m³: the coefficient measured between two stable plateaus (ventilation on / off) is 1.09 (95 % CI 1.03–1.16), a 0.87–1.31 band with the ±20 % instrument error. The computed reading lies below the band: 1.14–1.15 times below its lower edge and 1.43–1.45 times below the centre; the mechanism is confirmed to order of magnitude, remainder candidates — §6.4. The energy and angular response of the instrument over the progeny spectrum introduces no distortion (convolution 1.004); the result is weakly sensitive to the dust level and the equilibrium factor (the F = 0.37–0.40 scenario changes the reading by −2 %, the field by −10 %).
 
 **Keywords:** radon, radon progeny, ²¹⁴Pb, ²¹⁴Bi, equilibrium factor, aerosol deposition, Jacobi room model, ambient dose equivalent H\*(10), indoor gamma background, dose albedo, Monte Carlo, Geant4.
 
@@ -460,7 +457,7 @@ The motivation of this work is an independent check of the coefficient measured 
 
 The check is performed by two independent methods: the analytical model (room balance + direct point-kernel integration, §3–§4) and a Monte Carlo calculation in Geant4[19] with the full geometry of the detector unit and the room (§5). The second method additionally answers questions fundamentally inaccessible to the analytics: the contribution of progeny deposition on the housing of the instrument itself, and possible distortion of its energy and angular response over the progeny spectrum.
 
-The exposition goes "from physics to number". First — the input data and how they were obtained (§2). Then the methods: how radon begets its short-lived progeny and how the progeny divide themselves between the air and the surfaces — this division is what decides the whole problem (§3.1–§3.2); how the radiation of the sources reaches the detector (§3.3); how the radon build-up curve itself yields the air-exchange rate (§3.4). The analytical results are collected in §4, the instrument model and the Monte Carlo verification in §5, the check against the field measurement in §6. A reader who needs only the outcome may read the abstract and §6.2.
+The exposition proceeds from the input data (§2) through the room model and transport (§3) to the analytical results (§4), the Monte Carlo model of the instrument (§5) and the check against the field measurement (§6).
 
 ## 2. Input data
 
@@ -490,7 +487,7 @@ Mapping to the geometry: what matters for deposition is the surface in contact w
 
 ## 3. Methods
 
-The problem is solved in three steps, each being its own physics. First — the balance: how much activity of each progeny nuclide resides in a cubic metre of air and on a square metre of each surface. Second — transport: what photon flux these sources create at the detector location. Third — dosimetry: converting the flux into the ambient dose equivalent rate H\*(10). An error at any step propagates into the total linearly, so each step is controlled separately (§3.5).
+The calculation is split into three independently controlled steps: the balance of progeny activities in air and on the surfaces (§3.1–§3.2), radiation transport to the detector location (§3.3), and the dosimetric folding; each step enters the total linearly, computational control — §3.5.
 
 ### 3.1. Room model of the progeny
 
@@ -595,8 +592,6 @@ The computational script includes mandatory checks: the secular-equilibrium test
 
 ## 4. Results
 
-We begin with the quantity that governs the whole picture — the equilibrium factor F: it tells what share of the progeny is still airborne and what share has already settled on the surfaces. Then come the source activities (§4.2) and, finally, the dose itself (§4.3) with its uncertainty budget (§4.4).
-
 ### 4.1. The equilibrium factor as a model output
 
 At the measured ventilation the equilibrium factor is set by the aerosol loading — the progeny-to-aerosol attachment rate X (§3.1):
@@ -694,6 +689,8 @@ The BDKG-05 geometry is built from the drawing of a related detector unit with t
 
 **Fig. 4.** Energy response S(E) per unit H\*(10) (normalised at 662 keV). The main progeny lines (marked red) lie where the response is close to unity; the convolution over the full progeny spectrum is 1.004. *(Figure labels are in Russian.)*
 
+The S(E) curve is taken at normal incidence — the standard reference geometry of a sensitivity characteristic, in which the instrument is also calibrated against Cs-137; the volumetric (near-isotropic) nature of the real field is accounted for separately — by the angular convolution below, and definitively by the full scene of §5.2–5.3, where the reading of 0.754 is obtained by direct transport of photons from their actual positions and already contains the true energy and angular response of the instrument (the S(E) curve is not applied to the total). The 100–150 keV peak does not affect the conclusion because the progeny lines lie above 240 keV, where the response is flat; the shape of the peak at other incidence angles is irrelevant — it is unpopulated in the hard spectrum.
+
 **Angular response.** R(θ)/R(0°) at the progeny lines 295–1764 keV: front-to-side ±9 %, rear 0.60–0.63 (PMT-tail shielding); the isotropic-field convolution is −3…+2 % (Fig. 5). Together with the energy response (1.004 × (0.97…1.02) = 0.97…1.03) the instrumental responses introduce no distortion in an isotropic field — a few per cent; the passport estimate of the angular response (+3.5…+5.9 %, §6.3) is of the same order.
 
 ![BDKG-05 angular response at progeny lines](figures/fig_g4_angular_response.png)
@@ -749,13 +746,11 @@ The Monte Carlo part of the work (§5) was carried out by a separate computation
 
 ## 6. Comparison with experiment #RN3
 
-Now let us bring the calculation and the experiment face to face. First we specify what exactly was measured in #RN3 and with what uncertainty (§6.1), then perform the comparison itself (§6.2), and finally examine which mechanisms have been checked and excluded (§6.3) and which could contribute to the remainder (§6.4).
-
 ### 6.1. Target values and their uncertainties
 
-Experiment #RN3 (ventilation switched off, radon rising 318 → 1193 Bq/m³) measured the dose-rate-to-concentration coefficient **between two stable plateaus** — the level with the ventilation running and the upper plateau after the build-up with it off: **+1.09 nSv/h per 100 Bq/m³** (95 % CI 1.03–1.16)[15]. On the stable levels the progeny are in equilibrium with their radon concentration, so this value is the measurement of the coefficient. The auxiliary estimates — the slope of the dose-rate regression over the transient build-up data within single days (free of the diurnal temperature admixture but taken on non-steady data) — are lower: 0.94 ± 0.34 (p = 0.013) and 0.69 ± 0.47 (not significant), central values 0.69–0.94.
+Experiment #RN3 (ventilation switched off, radon rising 318 → 1193 Bq/m³) measured the dose-rate-to-concentration coefficient **between two stable plateaus** — the level with the ventilation running and the upper plateau after the build-up with it off: **+1.09 nSv/h per 100 Bq/m³** (95 % CI 1.03–1.16)[15]. On the stable levels the progeny are in equilibrium with their radon concentration, so this value is the measurement of the coefficient; it is measured once for the whole experiment. Regression estimates over the transient single-day data are non-steady and are not used as the coefficient.
 
-The confidence interval 1.03–1.16 reflects only the statistical scatter of the points. On top of it the measurement carries the instrument's own error: per the passport, **the BDKG-05 basic relative error is ±20 %** (Cs-137 calibration). It shifts all dose-rate readings by one common multiplier, so the coefficient — the slope of dose vs concentration — is scaled in full by the same ±20 %, independently of the statistics. With ±20 % included, the measured coefficient widens to a band of **0.87–1.31** and the auxiliary single-day estimates to **0.55–1.13** nSv/h per 100 Bq/m³.
+The confidence interval 1.03–1.16 reflects only the statistical scatter of the points. On top of it the measurement carries the instrument's own error: per the passport, **the BDKG-05 basic relative error is ±20 %** (Cs-137 calibration). It shifts all dose-rate readings by one common multiplier, so the coefficient — the slope of dose vs concentration — is scaled in full by the same ±20 %, independently of the statistics. With ±20 % included, the band of the measured coefficient is **0.87–1.31** nSv/h per 100 Bq/m³.
 
 **Signal-to-background ratio.** The useful effect is small against the total dose rate: during the experiment the BDKG-05 reading varied within 69–83 nSv/h, i.e. the radon increment reached ~14 nSv/h (~20 % of the background) at the peak of the build-up, and stayed at a few percent most of the time. Background variations of the order of a few nSv/h (external gamma field, instrument drifts) therefore compete with the signal, and the statistical CI understates the real uncertainty of the coefficient.
 
@@ -770,10 +765,9 @@ The confidence interval 1.03–1.16 reflects only the statistical scatter of the
 | **Instrument reading, Geant4** (field + housing + response) | 0.754–0.764 | ×1.22–1.27 vs field |
 | The F = 0.37–0.40 scenario (X ≈ 10): field (without the tabletop correction) / reading | 0.53 / 0.742 | −10 % / −2 % |
 | Measured coefficient, plateau-to-plateau (stat. CI) | 1.09 (1.03–1.16) | ×1.43–1.45 vs reading |
-| Measured coefficient + instr. ±20 % | 0.87–1.31 | ×1.14–1.15 to lower edge |
-| Aux. slope estimates over transient single-day data + instr. ±20 % | 0.55–1.13 | **reading inside the range** |
+| Measured coefficient + instr. ±20 % | 0.87–1.31 | reading below the band; ×1.14–1.15 to lower edge |
 
-What should be compared with the measurement is not the field but the *expected instrument reading* — 0.754–0.764 nSv/h per 100 Bq/m³ (§5.3): the #RN3 coefficient was obtained from the readings of the same BDKG-05, which include both the deposition on the housing and the instrument response. The reading **lies inside the range of the auxiliary single-day estimates** (0.55–1.13 nSv/h per 100 Bq/m³). A moderate gap remains to the measured coefficient (plateau-to-plateau): 1.09 is 1.43–1.45 times the computed reading, and the lower edge of its instrument band, 0.87, is 1.14–1.15 times it. The physical mechanism (radon progeny gamma) is confirmed quantitatively by two independent methods.
+What should be compared with the measurement is not the field but the *expected instrument reading* — 0.754–0.764 nSv/h per 100 Bq/m³ (§5.3): the #RN3 coefficient was obtained from the readings of the same BDKG-05, which include both the deposition on the housing and the instrument response. The computed reading lies **below the measured band 0.87–1.31**: 1.14–1.15 times below its lower edge (0.87) and 1.43–1.45 times below the central value 1.09. The physical mechanism (radon progeny gamma) is confirmed to order of magnitude by two independent methods; a moderate ×1.14–1.45 gap remains (§6.4).
 
 ### 6.3. Mechanisms examined and excluded
 
@@ -786,10 +780,10 @@ What should be compared with the measurement is not the field but the *expected 
 
 ### 6.4. Candidates for the remainder towards the measured coefficient
 
-The model reading (0.75–0.76) agrees with the auxiliary single-day estimates; a 1.43–1.45-fold gap remains to the measured coefficient (1.09). Possible contributions to this remainder:
+The model reading (0.75–0.76) is 1.43–1.45 times below the measured coefficient (1.09) and 1.14–1.15 times below the lower edge of its instrument band (0.87). Possible contributions to this gap:
 
 1. **The deposition velocity on the instrument housing** — the main computational uncertainty of the reading: v_d for steel/aluminium has not been measured directly; a ×2 variation gives +11…+14 % (§5.4).
-2. **Variability of the measurement itself** — the signal is small against the background (§6.1), and the comparison of two plateaus a day apart includes day-to-day background changes absent from the single-day estimates.
+2. **Background variability between the plateaus** — the signal is small against the background (§6.1), and the compared plateaus are a day apart in time: background changes unrelated to radon enter the measured difference directly.
 3. **Sub-floor gamma correlated with the room concentration.** The mean sub-floor level (progeny in the soil through 30 cm of concrete, 3.3–6.9 mean free paths, with buildup[14]) is small — 0.06–0.16 nSv/h at 20–50 kBq/m³ in the soil — and its constant part does not enter the #RN3 coefficient (the regression subtracts the constant). However, the progeny activity in the soil under the building and the room concentration are driven by the same soil-gas dynamics: the part of the sub-floor field correlated with the room concentration is not subtracted by the regression and enters the measured coefficient. The magnitude of this variation was not assessed in this work.
 4. **The external gamma field** — radon progeny in the near-surface air and soil around the building; washout of the progeny by precipitation can change the background by amounts comparable to the signal (§7).
 
@@ -813,7 +807,7 @@ The model reading (0.75–0.76) agrees with the auxiliary single-day estimates; 
 2. An independent Monte Carlo verification in Geant4 was performed with the full geometry of the detector unit and the room. Cross-check of the two methods: the air component of the field agrees to better than 1 %, the equilibrium factor to the third digit. The BDKG-05 energy and angular response over the progeny spectrum introduces no distortion (convolution 1.004; isotropic angular convolution −3…+2 %).
 3. **True field: 0.59–0.64 nSv/h per 100 Bq/m³** (analytics; Geant4 0.594–0.627 — physical scattering raises the albedo estimate by +2.5–2.8 %). The air component dominates (63–73 % of the uncollided total); the dependence on concentration is linear. **Expected instrument reading: 0.75–0.76 nSv/h per 100 Bq/m³** — above the field by ×1.22–1.27, mainly due to progeny deposition on the housing (11–14 % of the reading).
 4. The result is robust to the main unmeasured pair "aerosol loading – equilibrium factor": the reading changes by only ±2 % per decade of X; the scenario of direct F measurements with ventilation off (F = 0.35–0.45) corresponds to a reading of −2 % (field −9…−12 %). The largest uncertainty is the deposition velocity on the housing (×0.5/×2 → −7…+14 % of the reading); the stand material, recomputed on the as-built geometry, is only −1…−2 % of the field.
-5. The coefficient measured between two stable plateaus, with the BDKG-05 calibration error (±20 %), spans 0.87–1.31 nSv/h per 100 Bq/m³; the auxiliary slope estimates over the transient single-day data — 0.55–1.13 (the same units as the calculation). The computed reading of 0.75–0.76 **falls inside the range of the single-day estimates**; the measured coefficient (1.09) is 1.43–1.45 times the computed reading (the lower edge of its band, 0.87, is 1.14–1.15 times it). The physical mechanism — ²¹⁴Pb/²¹⁴Bi gamma — is confirmed quantitatively by two independent methods.
+5. The coefficient measured between two stable plateaus is 1.09 nSv/h per 100 Bq/m³ (95 % CI 1.03–1.16); with the BDKG-05 calibration error of ±20 % — a band of 0.87–1.31. The computed reading of 0.75–0.76 lies **below the band**: 1.14–1.15 times below its lower edge and 1.43–1.45 times below the centre. The physical mechanism — ²¹⁴Pb/²¹⁴Bi gamma — is confirmed to order of magnitude by two independent methods; remainder candidates — §6.4.
 6. Examined and excluded: the instrument's energy and angular response (Geant4 + passport), higher gamma-emitter deposition velocities (coupled to the air balance), zero deposition, thoron progeny (AlfaAero measurement). Candidates for the remainder towards the measured coefficient: the deposition velocity on the housing, the variability of the measurement at a small signal-to-background ratio, sub-floor gamma correlated with the room concentration, and the external field (§6.4).
 
 ## 9. Statement on the use of AI
