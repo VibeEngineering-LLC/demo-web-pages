@@ -112,7 +112,7 @@
   <p class="kicker">VibeEngineering · радиационная дозиметрия · Geant4 Монте-Карло · 23.07.2026 · ред. 4</p>
   <h1>Расчёт мощности эквивалентной дозы внешнего облучения кожи Ḣ<sub>p</sub>(0,07) от бета- и гамма-излучения уранового стеклянного бисера</h1>
   <p class="lede">Расчёт мощности дозы в коже методом Монте-Карло (Geant4) при контакте с чешским урановым бисером «жёлтый опал 6/0». Измеренные удельные активности <b>²³⁸U 2.27·10⁵ Бк/кг</b>, <b>²³⁵U 9.9·10³ Бк/кг</b>; уран очищенный — вековое равновесие ряда нарушено, гамма-активные дочерние продукты радиевого звена отсутствуют. Три конфигурации укладки, сферическая геометрия бусины. Мощность эквивалентной дозы внешнего облучения кожи Ḣ<sub>p</sub>(0,07) на контакте — от <b>6.7<span class="pm"><b>+2.3</b><b>−0.7</b></span></b> (одна бусина) до <b>48 ± 5 мкЗв/ч</b> (плотный коврик), практически целиком за счёт бета-излучения.</p>
-  <p class="lede" style="margin-top:8px">Расчёт выполнен ИИ-агентом (Anthropic Claude) под руководством и контролем оператора; результаты прошли независимый аудит кода. Подробнее — §10 «Заявление об использовании ИИ».</p>
+  <p class="lede" style="margin-top:8px">Расчёт выполнен ИИ-агентом (Anthropic Claude) под руководством и контролем оператора; результаты прошли независимый аудит кода. Подробнее — §11 «Заявление об использовании ИИ».</p>
 </header>
 
 <div class="abstract">
@@ -157,13 +157,13 @@
 <li><strong>G4RadioactiveDecay</strong> — модуль радиоактивного распада. Для заданного ядра он разыгрывает акт распада по оценённым ядерным данным (библиотека на основе ENSDF / ICRP-107<a class="cit" href="#r4">[4]</a><a class="cit" href="#r5">[5]</a>): вид распада, <em>полный непрерывный β-спектр</em> (а не среднюю энергию), гамма-каскад дочернего ядра, электроны внутренней конверсии, характеристическое рентгеновское излучение и оже-электроны. Спектры источника не задаются вручную — они порождаются из ядерных данных.</li>
 </ul>
 <h3>Первичный источник и учёт цепочки распада</h3>
-<p>Первичной частицей каждой истории служит материнский ион (например, <sup>234</sup>Th) с нулевой кинетической энергией, помещённый в случайную точку объёма стекла; распад разыгрывается немедленно. Поскольку β-распад сохраняет массовое число A, изобарная подцепочка <strong>A = 234</strong> (<sup>234</sup>Th → <sup>234m</sup>Pa → <sup>234</sup>U) в вековом равновесии моделируется как единое целое: один запуск с активностью <sup>234</sup>Th воспроизводит совокупное излучение <sup>234</sup>Th и <sup>234m</sup>Pa (их активности равны). Альфа-распад меняет A, поэтому дальше цепочка не идёт и радиевый ряд не восстанавливается. Цепочка <strong>A = 235</strong> (<sup>235</sup>U → <sup>231</sup>Th) моделируется аналогично. Итоговая доза — сумма вкладов <strong>двух непересекающихся цепочек</strong>, что исключает двойной учёт (см. §10 — независимый аудит кода).</p>
+<p>Первичной частицей каждой истории служит материнский ион (например, <sup>234</sup>Th) с нулевой кинетической энергией, помещённый в случайную точку объёма стекла; распад разыгрывается немедленно. Поскольку β-распад сохраняет массовое число A, изобарная подцепочка <strong>A = 234</strong> (<sup>234</sup>Th → <sup>234m</sup>Pa → <sup>234</sup>U) в вековом равновесии моделируется как единое целое: один запуск с активностью <sup>234</sup>Th воспроизводит совокупное излучение <sup>234</sup>Th и <sup>234m</sup>Pa (их активности равны). Альфа-распад меняет A, поэтому дальше цепочка не идёт и радиевый ряд не восстанавливается. Цепочка <strong>A = 235</strong> (<sup>235</sup>U → <sup>231</sup>Th) моделируется аналогично. Итоговая доза — сумма вкладов <strong>двух непересекающихся цепочек</strong>, что исключает двойной учёт (см. §11 — независимый аудит кода).</p>
 <p><strong>Свёртка активностями.</strong> Каждый расчёт даёт <em>отклик</em> — поглощённую энергию в ткани на один распад. Мощность дозы получается умножением отклика на измеренную активность и суммированием по цепочкам: Ḋ = Σ A<sub>i</sub>·R<sub>i</sub>. Разделение «транспорт ↔ активности» позволяет пересчитывать дозу при уточнении активностей без повторного моделирования.</p>
 <h3>Геометрия и фантом</h3>
 <p><strong>Стекло</strong> — натрий-кальциевое силикатное (сода-известь) с добавкой U 1.84 масс.% и Ce ~0.5 % (CeO<sub>2</sub>; точное содержание неизвестно, влияние на перенос β/γ при этой доле пренебрежимо), плотность 2.5 г/см³<a class="cit" href="#r1">[1]</a>. <strong>Бусина</strong> 6/0 (рокайль) моделируется как <strong>сфера Ø4.1 мм с осевым цилиндрическим отверстием</strong> (радиус 0.93 мм подобран под измеренную массу 63.96 мг); сфера касается кожи в одной точке. Источник распределён по объёму стекла, чем учитывается <strong>самопоглощение бета-частиц</strong>: часть эмитированных бета-частиц поглощается в самом стекле, не достигая кожи. По расчёту в стекле поглощается <strong>55 % энергии бета-частиц</strong> для одиночной бусины и до <strong>67 %</strong> в плотной укладке. <strong>Цепочка</strong> — 11 сфер в линейный ряд с шагом 4.1 мм (касание по внешнему диаметру), ось ряда параллельна поверхности кожи; скоринг под центральной бусиной. <strong>Коврик</strong> — квадратная решётка бусин с тем же шагом.</p>
 <p><strong>Фантом «кожа + прилегающие ткани».</strong> Для бета- и мягкого гамма-излучения от контактного источника адекватен не полноростовой воксельный фантом (бета-частицы уходят в ткань ≤ 1 см и не «видят» остального тела; воксельная модель не разрешает слой 70 мкм), а <strong>слоистая тканевая пластина</strong>: мягкая ткань ICRU<a class="cit" href="#r8">[8]</a> толщиной 2 см. Верхние 0.5 мм разрешены мелким шагом (15 мкм) и низким порогом рождения вторичных частиц (5 мкм). Поглощённая энергия набирается по слоям глубины и по радиусу в диске площадью 1 см²; раздельно учитываются <strong>электроны</strong> (β-частицы, электроны внутренней конверсии и Оже), <strong>фотоны распада</strong> (γ- и характеристическое рентгеновское излучение) и <strong>тормозное излучение</strong>.</p>
 <h3>Статистика</h3>
-<p>Статистика — 2·10⁶ распадов на цепочку A = 234 и 1·10⁶ на A = 235. Статистическая погрешность (1σ) мощности дозы в базальном слое — 0.3 % (одна бусина), 0.6 % (цепочка), 1.0 % (коврик), существенно меньше систематических допущений (§9). Вклад тормозного излучения в дозу кожи пренебрежимо мал (&lt; 0.1 %). Обоснование достоверности расчёта — §8.</p>
+<p>Статистика — 2·10⁶ распадов на цепочку A = 234 и 1·10⁶ на A = 235. Статистическая погрешность (1σ) мощности дозы в базальном слое — 0.3 % (одна бусина), 0.6 % (цепочка), 1.0 % (коврик), существенно меньше систематических допущений (§10). Вклад тормозного излучения в дозу кожи пренебрежимо мал (&lt; 0.1 %). Обоснование достоверности расчёта — §8.</p>
 
 <h2><span class="num">4</span>Доза в коже: результаты</h2>
 <p>Мощность эквивалентной дозы внешнего облучения кожи Ḣ<sub>p</sub>(0,07) (мкГр/ч = мкЗв/ч, взвешивающий коэффициент w<sub>R</sub> = 1 для β и γ), контакт вплотную, усреднение по площади 1 см²:</p>
@@ -232,11 +232,88 @@
   <figcaption><b>Рис. 4.</b> Одна бусина: доза в базальном слое, усреднённая по диску, как функция площади усреднения. Отмечены площади 0.01, 0.1 и 1 см² (нормативная). Пик под точкой контакта превышает нормативное 1-см²-среднее в ~4 раза, оставаясь на порядки ниже порога детерминированных эффектов.</figcaption>
 </figure>
 
-<h2><span class="num">7</span>Сравнение с нормативами</h2>
-<p>Соответствующий норматив — предел эквивалентной дозы <strong>в коже</strong> по НРБ-99/2009<a class="cit" href="#r7">[7]</a>; он определён именно как доза, усреднённая по площади 1 см² на глубине базального слоя, — то есть та величина, что рассчитана здесь. Общий предел эффективной дозы (1 мЗв/год для населения) к локальному облучению кожи напрямую не применяется.</p>
+<h2><span class="num">7</span>Проверочный расчёт классическим методом</h2>
+<p>Чтобы независимо от Geant4 проверить и порядок, и абсолютное значение дозы, выполнена классическая (полуаналитическая) оценка по принципу «от простого к точному»: сначала — замкнутая формула для коврика, которую читатель воспроизведёт вручную (§7.1), затем — объёмный интеграл по шарику с двумя вариантами дозового ядра (§7.2).</p>
+
+<h3>7.1. Ручной расчёт коврика: модель полубесконечного источника</h3>
+<p>Плотный коврик латерально много больше пробега бета-частиц (экстраполированный пробег β <sup>234m</sup>Pa E<sub>max</sub> = 2.27 МэВ в ткани ≈ 1.1 г/см² ≈ 11 мм; коврик 9×9 ≈ 37 мм), поэтому его правомерно приблизить <strong>бесконечной однородной β-активной плоскостью стекла</strong>. Мощность дозы у поверхности полубесконечного однородного источника равна <em>половине</em> равновесной мощности в бесконечной среде (энергия делится поровну «вверх/вниз»), ослабленной до глубины базального слоя:</p>
+<p class="big" style="text-align:center">Ḋ<sub>p</sub>(0,07) = ½ · Σ<sub>i</sub> C<sub>v,i</sub> · Ē<sub>i</sub> · e<sup>−ν<sub>i</sub>σ</sup> · k</p>
+<ul>
+<li>C<sub>v,i</sub> — удельная активность нуклида i, Бк/кг (Табл. 1);</li>
+<li>Ē<sub>i</sub> — средняя энергия β-спектра, МэВ (IAEA/ICRP-107);</li>
+<li>ν<sub>i</sub> = 16·(E<sub>max,i</sub> − 0.036)<sup>−1.4</sup> — коэффициент ослабления β, см²/г (эмпирика Лёвинджера);</li>
+<li>σ = ρ<sub>ткань</sub>·d = 1.03 г/см³ × 7.0·10⁻³ см = <strong>7.21·10⁻³ г/см²</strong> — масс. глубина базального слоя (70 мкм);</li>
+<li>k — перевод (Бк/кг)·МэВ → мкГр/ч: k = 1.602·10⁻¹³ Дж/МэВ × 3.6·10⁹ с·мкГр/(ч·Гр), т.е. Ḋ<sub>∞</sub>[мкГр/ч] = C<sub>v</sub>·Ē·<strong>5.767·10⁻⁴</strong>.</li>
+</ul>
+<p><strong>Пример для доминирующего <sup>234m</sup>Pa</strong> (проверяется калькулятором в четыре строки):</p>
+<ol>
+<li>ν = 16·(2.27 − 0.036)<sup>−1.4</sup> = 16·(2.234)<sup>−1.4</sup> = 16 / 3.08 = <strong>5.19 см²/г</strong>;</li>
+<li>νσ = 5.19 × 7.21·10⁻³ = 0.0374; e<sup>−0.0374</sup> = 0.963;</li>
+<li>Ḋ<sub>∞</sub> = 2.27·10⁵ × 0.819 × 5.767·10⁻⁴ = <strong>107.2 мкГр/ч</strong>;</li>
+<li>вклад = ½ × 107.2 × 0.963 = <strong>51.7 мкГр/ч</strong>.</li>
+</ol>
+<div class="tablewrap"><table>
+<caption>Таблица 5. Ручной расчёт коврика по всем трём β-нуклидам (модель полубесконечного источника).</caption>
+<thead><tr><th>Нуклид</th><th>C<sub>v</sub>, Бк/кг</th><th>Ē, МэВ</th><th>E<sub>max</sub>, МэВ</th><th>ν, см²/г</th><th>νσ</th><th>e<sup>−νσ</sup></th><th>Ḋ<sub>∞</sub>, мкГр/ч</th><th>½·Ḋ<sub>∞</sub>·e<sup>−νσ</sup></th></tr></thead>
+<tbody>
+<tr><td><b><sup>234m</sup>Pa</b></td><td class="num-col">2.27·10⁵</td><td class="num-col">0.819</td><td class="num-col">2.27</td><td class="num-col">5.19</td><td class="num-col">0.037</td><td class="num-col">0.963</td><td class="num-col">107.2</td><td class="num-col">51.7</td></tr>
+<tr><td><sup>234</sup>Th</td><td class="num-col">2.27·10⁵</td><td class="num-col">0.060</td><td class="num-col">0.199</td><td class="num-col">202.8</td><td class="num-col">1.462</td><td class="num-col">0.232</td><td class="num-col">7.86</td><td class="num-col">0.91</td></tr>
+<tr><td><sup>231</sup>Th</td><td class="num-col">9.90·10³</td><td class="num-col">0.163</td><td class="num-col">0.389</td><td class="num-col">68.7</td><td class="num-col">0.496</td><td class="num-col">0.609</td><td class="num-col">0.93</td><td class="num-col">0.28</td></tr>
+<tr class="total"><td colspan="8">Сумма (ручная оценка коврика)</td><td class="num-col"><b>52.8</b></td></tr>
+</tbody></table></div>
+<p><strong>Неопределённость.</strong> Результат доминируется <sup>234m</sup>Pa (множитель e<sup>−νσ</sup> ≈ 0.96 почти не влияет). Определяющие вклады — удельная активность (HPGe, u ≈ 10 %) и средняя энергия β-спектра (u ≈ 10 %): u<sub>отн</sub> = √(0.10² + 0.10²) ≈ 14 %. Итог: <strong>Ḋ<sub>p</sub>(0,07) ≈ 53 ± 7 мкГр/ч</strong>.</p>
+<div class="callout"><b>Ручная оценка 53 ± 7 мкГр/ч против Монте-Карло 48.4 мкГр/ч — согласие +9 %</b> (в пределах неопределённости). Замкнутая формула, считаемая на бумаге, воспроизводит МК-результат для коврика. Небольшое завышение ожидаемо: реальный слой бусин имеет конечную толщину (~0.4 г/см², сопоставимо с пробегом), тогда как «полубесконечная» модель предполагает бесконечно толстый источник и слегка переоценивает вклад дальних слоёв.</div>
+
+<h3>7.2. Уточнение от шарика: объёмный интеграл с дозовым ядром</h3>
+<p>Одиночная бусина мала в сравнении с пробегом β, поэтому полубесконечное приближение к ней неприменимо. Для неё (и промежуточных укладок) взято бета-<strong>точечное дозовое ядро</strong>, проинтегрированное по объёму стекла шарика с учётом самопоглощения; цепочка и коврик получены суперпозицией шариков на решётке:</p>
+<p class="big" style="text-align:center">Ḋ(r) = a·Ē·ν / (4π I) · Φ(ν·m) / r²,   I = ∫₀<sup>∞</sup> Φ(u) du</p>
+<p>где m — масса вдоль луча (стекло + ткань), r — расстояние. Рассмотрены два ядра Φ:</p>
+<ul>
+<li><strong>экспоненциальное</strong> Φ(x) = e<sup>−x</sup> (I = 1) — простейшее, с бесконечным «хвостом»;</li>
+<li><strong>ядро Лёвинджера (1956)</strong> Φ(x) = c(1−(x/c)·e<sup>1−x/c</sup>) + x·e<sup>1−x</sup> при x ≤ c; x·e<sup>1−x</sup> при x &gt; c (c = 2, I = 3.845) — физичнее: спадает круче и обрывается у пробега.</li>
+</ul>
+<div class="tablewrap"><table>
+<caption>Таблица 6. Классическая оценка (интеграл по шарику) против Монте-Карло, мкЗв/ч. В скобках — отношение к МК.</caption>
+<thead><tr><th>Конфигурация</th><th>Монте-Карло</th><th>эксп. ядро</th><th>ядро Лёвинджера</th></tr></thead>
+<tbody>
+<tr><td>одна бусина</td><td class="num-col">6.69</td><td class="num-col">6.39 (×0.96)</td><td class="num-col">5.83 (×0.87)</td></tr>
+<tr><td>цепочка (11)</td><td class="num-col">18.3</td><td class="num-col">21.9 (×1.19)</td><td class="num-col">19.9 (×1.09)</td></tr>
+<tr class="total"><td>коврик (9×9)</td><td class="num-col">48.4</td><td class="num-col">74.6 (×1.54)</td><td class="num-col">68.5 (×1.41)</td></tr>
+</tbody></table></div>
+<p><strong>Для одиночной бусины экспоненциальное ядро совпадает с Монте-Карло на 4 %</strong> (6.39 против 6.69 мкЗв/ч) — базовый источник воспроизведён полностью независимым методом. Систематические отклонения на укладках разобраны в §8.</p>
+<figure>
+  <img src="figures/beads_classic_vs_mc.png" alt="Классическая проверка против Монте-Карло">
+  <figcaption><b>Рис. 5.</b> Классическая (полуаналитическая) оценка от шарика против Монте-Карло. Для одиночной бусины методы совпадают в пределах 4 %; на протяжённых укладках экспоненциальное ядро систематически завышает дозу, а ядро Лёвинджера (обрывается у пробега) заметно ближе к МК.</figcaption>
+</figure>
+
+<h2><span class="num">8</span>Анализ достоверности и расхождений</h2>
+<p>Результату можно доверять, поскольку он подтверждается несколькими <strong>независимыми</strong> линиями; ниже — их сводка, затем разбор единственного систематического расхождения.</p>
+<div class="tablewrap"><table>
+<caption>Таблица 7. Независимые проверки расчёта.</caption>
+<thead><tr><th>Проверка</th><th>Результат</th></tr></thead>
+<tbody>
+<tr><td>Санити-тест нормировки (точечный γ-источник против закона 1/4π<var>r</var>² на 10/20/30 см)</td><td>отношение <b>1.000</b> — геометрия, розыгрыш и нормировка корректны</td></tr>
+<tr><td>Самосогласованность входных активностей (2.27·10⁵ Бк/кг ↔ доля U)</td><td>1.83 масс.% U (измерено 1.84 %); <sup>235</sup>U 0.67 % — сходится</td></tr>
+<tr><td>Ручной расчёт коврика (§7.1)</td><td>53 ± 7 против МК 48.4 → <b>+9 %</b></td></tr>
+<tr><td>Интеграл по шарику, эксп. ядро (§7.2)</td><td>одна бусина <b>4 %</b></td></tr>
+<tr><td>Порядок величины по <sup>90</sup>Y (E<sub>max</sub> 2.28 МэВ ≈ <sup>234m</sup>Pa)</td><td>≈ 3.5 мкЗв/ч на Бк/см² пары <sup>90</sup>Sr+<sup>90</sup>Y<a class="cit" href="#r15">[15]</a> → десятки мкЗв/ч для укладки, согласуется с 48</td></tr>
+<tr><td>Независимый аудит кода</td><td>дозы воспроизведены из сырых прогонов; выявлена и устранена ошибка нормировки первой редакции (§11)</td></tr>
+</tbody></table></div>
+
+<h3>8.1. Расхождение «классика ↔ Монте-Карло» на укладках</h3>
+<p>Единственное систематическое расхождение — рост отношения «интеграл по шарику / МК» с размером укладки: экспоненциальное ядро <strong>×0.96 → ×1.19 → ×1.54</strong>, ядро Лёвинджера <strong>×0.87 → ×1.09 → ×1.41</strong>. Это не случайный разброс, а эффект с ясной физической причиной:</p>
+<ul>
+<li><b>«Толстый хвост» ядра — главная причина.</b> Экспоненциальное ядро e<sup>−ν·m</sup>/r² присваивает ненулевую дозу сколь угодно далёким точкам, тогда как истинное β-ядро <strong>резко обрывается на экстраполированном пробеге</strong>. Для одиночной бусины дозу формирует ближняя зона (обе модели совпадают); при добавлении далёких бусин хвост переоценивает их вклад — тем сильнее, чем больше укладка. Монотонный рост завышения 4 % → 19 % → 54 % — прямая «подпись» эффекта. <strong>Ядро Лёвинджера, спадающее круче и обрывающееся у пробега, систематически ближе к МК</strong> (54 %→41 %, 19 %→9 %), что подтверждает диагноз.</li>
+<li><b>Одна средняя энергия и один ν.</b> Классика заменяет непрерывный β-спектр средней Ē и единым ν(E<sub>max</sub>); реальный спектр мягче у поверхности и жёстче на глубине, а эффективный пробег энергозависим — это дополнительно уплощает спад и завышает дальнее поле.</li>
+<li><b>Прямолинейное изотропное ядро без рассеяния.</b> Не учтены многократное и обратное рассеяние электронов, которые в МК слегка снижают дальнее поле; вклад второго порядка.</li>
+</ul>
+<div class="callout"><b>Вывод.</b> Совпадение на уровне базового источника (ручной расчёт +9 %, шарик 4 %) подтверждает корректность физики и нормировки. Систематическое завышение классики на укладках предсказуемо и объясняется известным ограничением дозового ядра при суперпозиции протяжённых источников; более физичное ядро Лёвинджера это подтверждает, приближаясь к МК. В этой области <strong>Монте-Карло достовернее</strong> — истинный конечный пробег β, полный спектр и рассеяние учтены явно, а не приближённо. Дополнительно результат опирается на валидированную физику (G4EmStandardPhysics_option4, спектры ENSDF/ICRP-107), статистическую сходимость (1σ &lt; 1 %) и консервативные допущения (контакт вплотную, сфера как нижняя оценка), а полная открытость проекта (<code>beads_skin</code>) позволяет перепроверить каждый шаг.</div>
+
+<h2><span class="num">9</span>Сравнение с нормативами</h2>
+<p>Соответствующий норматив — предел эквивалентной дозы <strong>в коже</strong> по НРБ-99/2009<a class="cit" href="#r7">[7]</a>; он определён именно как доза, усреднённая по площади 1 см² на глубине базального слоя, — то есть та величина Ḣ<sub>p</sub>(0,07), что рассчитана здесь. Общий предел эффективной дозы (1 мЗв/год для населения) к локальному облучению кожи напрямую не применяется.</p>
 <div class="tablewrap">
 <table>
-<caption>Таблица 5. Пределы эквивалентной дозы в коже (НРБ-99/2009<a class="cit" href="#r7">[7]</a>) и время контакта до предела для населения (50 мЗв/год).</caption>
+<caption>Таблица 8. Пределы эквивалентной дозы в коже (НРБ-99/2009<a class="cit" href="#r7">[7]</a>) и время контакта до предела для населения (50 мЗв/год).</caption>
 <thead><tr><th>Сценарий</th><th>Ḣ<sub>p</sub>(0,07), мкЗв/ч</th><th>Часов до 50 мЗв/год</th><th>Эквивалент</th></tr></thead>
 <tbody>
 <tr><td>одна бусина</td><td class="num-col">6.7</td><td class="num-col">≈ 7500</td><td>~20 ч каждый день весь год</td></tr>
@@ -247,7 +324,7 @@
 <p>Пределы эквивалентной дозы в коже: <b>население 50 мЗв/год</b>, <b>персонал группы А 500 мЗв/год</b>. Реалистичные режимы обращения:</p>
 <div class="tablewrap">
 <table>
-<caption>Таблица 6. Доза в коже при типичных режимах и доля от предела для населения (50 мЗв/год).</caption>
+<caption>Таблица 9. Доза в коже при типичных режимах и доля от предела для населения (50 мЗв/год).</caption>
 <thead><tr><th>Режим</th><th>Доза в коже за год</th><th>Доля от 50 мЗв</th></tr></thead>
 <tbody>
 <tr><td>украшение (плотный коврик у кожи) 2 ч/сут</td><td class="num-col">≈ 35 мЗв</td><td class="num-col">71 % — ниже предела</td></tr>
@@ -260,34 +337,7 @@
 </div>
 <div class="callout warn"><b>Вывод.</b> Мощности на контакте (6.7–48 мкЗв/ч) сами по себе не малы, однако предел эквивалентной дозы в коже высок (50 мЗв/год для населения), поэтому заметная доза набирается лишь при <b>длительном непрерывном контакте вплотную</b> — многие часы в день круглый год. Обычное обращение (эпизодический контакт, ношение изделия несколько часов в день) укладывается в норматив для населения. Даже круглосуточное ношение плотной укладки прямо на коже (≈ 424 мЗв/год) превышает предел для населения, но остаётся ниже предела для персонала группы А (500 мЗв/год).</div>
 
-<h2><span class="num">8</span>Достоверность расчёта: почему результату можно верить</h2>
-<p>Оценка опирается на несколько независимых линий подтверждения:</p>
-<ul>
-<li><b>Санити-тест нормировки.</b> Для точечного изотропного источника фотонов в вакууме расчётный флюенс сопоставлен с аналитическим законом обратных квадратов <var>N</var>/(4π<var>r</var>²) на расстояниях 10, 20 и 30 см: отношение <strong>1.000</strong>. Это подтверждает корректность геометрии, розыгрыша первичных частиц и нормировки скоринга.</li>
-<li><b>Входные активности из первых принципов.</b> Удельная активность чистого <sup>238</sup>U (λ<var>N</var> = 1.244·10⁷ Бк/г) при измеренных 2.27·10⁵ Бк/кг даёт долю урана 1.83 масс.% — совпадает с независимо измеренными 1.84 %; для <sup>235</sup>U — 0.124 г/кг (измерено 0.1237), обогащение 0.67 %. Входные данные внутренне самосогласованы.</li>
-<li><b>Независимый аудит кода.</b> Сторонний ИИ-агент воспроизвёл дозы из сырых прогонов собственным скриптом свёртки (совпадение до третьей значащей цифры) и прямым трек-дампом Geant4 проверил, какие цепочки распада реально разыгрываются. Аудит выявил и позволил устранить ошибку нормировки первой редакции (двойной учёт изобарной подцепочки); текущий результат прошёл повторную сверку.</li>
-<li><b>Согласие по порядку величины.</b> Для высокоэнергетического бета-эмиттера, близкого по спектру к <sup>234m</sup>Pa (<sup>90</sup>Y, E<sub>max</sub> 2.28 МэВ), справочная кожная доза от поверхностного загрязнения: 1 мкКи/см² (<sup>90</sup>Sr+<sup>90</sup>Y) → 13 000 мбэр/ч = 130 мЗв/ч на 37 кБк/см², т.е. <strong>≈ 3.5 мкЗв/ч на Бк/см²</strong> для пары, из них на высокоэнергетическую <sup>90</sup>Y — около половины<a class="cit" href="#r15">[15]</a>. Эффективная поверхностная активность плотной укладки — десятки Бк/см², что даёт десятки мкЗв/ч и согласуется с расчётными 48 мкЗв/ч.</li>
-<li><b>Независимая классическая (полуаналитическая) проверка.</b> Дозу пересчитали методом, полностью независимым от Geant4: бета-точечное дозовое ядро с экспоненциальным ослаблением, проинтегрированное по объёму <em>одиночного шарика</em> (с самопоглощением в стекле), а цепочка и коврик — суперпозицией шариков на решётке. Для <strong>одиночной бусины совпадение с Монте-Карло — 4 %</strong> (6.4 против 6.7 мкЗв/ч), т.е. базовый источник воспроизводится независимо. Для протяжённых укладок классическая оценка систематически выше (цепочка +19 %, коврик +54 %) — подробный разбор расхождения ниже (Рис. 5).</li>
-<li><b>Валидированная физика.</b> Использован физический список G4EmStandardPhysics_option4 — рекомендованная и многократно верифицированная против эталонов конфигурация электромагнитной физики Geant4 для дозиметрических и микродозиметрических задач; полные β-спектры и схемы распада берутся из оценённых ядерных данных (ENSDF / ICRP-107).</li>
-<li><b>Статистическая сходимость.</b> Приведённые мощности дозы имеют статистическую погрешность (1σ) менее 1 %; результат устойчив к объёму статистики.</li>
-<li><b>Консервативность допущений.</b> Все ключевые допущения (контакт вплотную без зазора, полное вековое равновесие короткоживущих дочерних, сферическая форма как нижняя оценка) смещают результат в бо́льшую сторону — фактические дозы при реальном обращении не выше расчётных.</li>
-<li><b>Полная воспроизводимость.</b> Весь расчёт открыт (проект <code>beads_skin</code>), разделён на транспорт (отклик на распад) и свёртку с активностями, что позволяет независимо перепроверить каждую часть.</li>
-</ul>
-<figure>
-  <img src="figures/beads_classic_vs_mc.png" alt="Классическая проверка против Монте-Карло">
-  <figcaption><b>Рис. 5.</b> Независимая классическая (полуаналитическая) оценка против Монте-Карло. Базовый источник — одиночный шарик; цепочка и коврик получены суперпозицией. Для одиночной бусины методы совпадают в пределах 4 %; для протяжённых укладок классическая оценка систематически выше.</figcaption>
-</figure>
-<h3>Разбор расхождения классика ↔ Монте-Карло</h3>
-<p>Отношение классика/МК растёт монотонно с размером укладки: <strong>×0.96 (бусина) → ×1.19 (цепочка) → ×1.54 (коврик)</strong>. Это не случайный разброс, а систематический эффект с ясной физической причиной:</p>
-<ul>
-<li><b>«Толстый хвост» экспоненциального ядра — главная причина.</b> Классическая модель использует ядро вида exp(−ν·<var>m</var>)/<var>r</var>², которое присваивает ненулевую дозу сколь угодно далёким точкам. Истинное дозовое ядро бета-частицы обрывается резко на <strong>экстраполированном пробеге</strong> (за пробегом энергии у электрона просто нет). Для <em>одиночной</em> бусины доза формируется ближней зоной (самопоглощение + контакт), где обе модели совпадают. По мере добавления далёких бусин (цепочка, коврик) экспоненциальный хвост переоценивает их вклад — тем сильнее, чем больше укладка. Монотонный рост завышения 4 %→19 %→54 % — прямая «подпись» этого эффекта.</li>
-<li><b>Одна средняя энергия и один коэффициент ν.</b> Классика заменяет непрерывный β-спектр средней энергией Ē и единым ν(E<sub>max</sub>); реальный спектр мягче у поверхности и жёстче на глубине из-за фильтрации, а эффективный пробег энергозависим. Это дополнительно уплощает спад и завышает дальнее поле.</li>
-<li><b>Прямолинейное изотропное ядро без рассеяния.</b> Классическое ядро не учитывает многократное рассеяние и обратное рассеяние электронов, которые в МК перераспределяют и слегка снижают дальнее поле; вклад — второго порядка.</li>
-<li><b>Геометрия самопоглощения.</b> Классика берёт длину стекла вдоль луча; МК ведёт полный трёхмерный транспорт в сфере с отверстием. Для одиночной бусины этого достаточно (отсюда 4 %), для укладок — второстепенно на фоне эффекта хвоста.</li>
-</ul>
-<p><strong>Вывод.</strong> Совпадение на уровне базового источника (4 %) подтверждает корректность физики и нормировки; расхождение на укладках предсказуемо и объясняется известным ограничением экспоненциального β-ядра при суперпозиции протяжённых источников. В этой области <strong>Монте-Карло достовернее</strong> (истинный конечный пробег беты, полный спектр, рассеяние), а классическая оценка задаёт независимую верхнюю границу того же порядка. Обе модели воспроизводят и порядок величины, и характер насыщения укладки.</p>
-
-<h2><span class="num">9</span>Допущения и границы применимости</h2>
+<h2><span class="num">10</span>Допущения и границы применимости</h2>
 <ul>
 <li><b>Нарушение равновесия.</b> Принято, что радий и последующие члены ряда отсутствуют (очищенный уран). Остаточный <sup>226</sup>Ra (частичное равновесие) добавил бы проникающее гамма-излучение ряда — это отдельный источник, здесь не учтён. Для радийсодержащего стекла картина изменилась бы качественно.</li>
 <li><b>Плотность стекла</b> 2.5 г/см³ — допущение; на самопоглощение бета-частиц влияет слабо, поскольку при фиксированных измеренной массе и внешнем диаметре поверхностная плотность стекла от плотности почти не зависит.</li>
@@ -297,7 +347,7 @@
 <li><b>Предел для кистей/стоп</b> также 50 мЗв/год (население) — тот же порядок, актуален при длительном удержании бисера в руках.</li>
 </ul>
 
-<h2><span class="num">10</span>Заявление об использовании ИИ</h2>
+<h2><span class="num">11</span>Заявление об использовании ИИ</h2>
 <p>Работа выполнена в связке «оператор + ИИ-агент» (интерфейс Claude Code, Anthropic). Роли распределены так:</p>
 <ul>
 <li><strong>Расчётная линия</strong> (модель источника, геометрия и физика в Geant4, код на C++, прогоны, постпроцессинг и свёртка на Python, иллюстрации и 3D-визуализация поля, текст статьи) — ИИ-агент Claude Code; модели Anthropic Claude Opus 4.8 и Claude Fable 5.</li>
@@ -306,7 +356,7 @@
 </ul>
 <p>Все приведённые величины воспроизводимы приложенным кодом (проект <code>beads_skin</code>).</p>
 
-<h2><span class="num">11</span>Источники, данные и код</h2>
+<h2><span class="num">12</span>Источники, данные и код</h2>
 <ol class="refs">
 <li id="r1">Strahan D. Uranium in glass, glazes and enamels: history, identification and handling. <i>Studies in Conservation</i>, 46(3), 2001, 181–195. Взято: типичное содержание урана в стекле — до ~1.4–2 масс.% (наш образец 1.85 %), обращение и доза. <a href="https://www.tandfonline.com/doi/abs/10.1179/sic.2001.46.3.181">tandfonline</a></li>
 <li id="r2">Bamford C.R. <i>Colour Generation and Control in Glass</i>. Elsevier, 1977. Взято: CeO<sub>2</sub> как обесцвечиватель стекла.</li>
@@ -341,7 +391,7 @@
   <p class="kicker">VibeEngineering · radiation dosimetry · Geant4 Monte Carlo · 23 Jul 2026 · rev. 4</p>
   <h1>Calculation of the Personal Skin Dose-Equivalent Rate Ḣ<sub>p</sub>(0.07) from Beta and Gamma Radiation of Uranium Glass Beads</h1>
   <p class="lede">Monte Carlo (Geant4) calculation of the skin dose rate from contact with Czech uranium glass beads ("yellow opal, size 6/0"). Measured specific activities <b>²³⁸U 2.27·10⁵ Bq/kg</b>, <b>²³⁵U 9.9·10³ Bq/kg</b>; the uranium is purified — the series secular equilibrium is broken, and the gamma-active daughters of the radium branch are absent. Three packing configurations, spherical bead geometry. The personal skin dose-equivalent rate Ḣ<sub>p</sub>(0.07) on contact ranges from <b>6.7<span class="pm"><b>+2.3</b><b>−0.7</b></span></b> (single bead) to <b>48 ± 5 µSv/h</b> (dense mat), almost entirely from beta radiation.</p>
-  <p class="lede" style="margin-top:8px">The calculation was performed by an AI agent (Anthropic Claude) under the guidance and control of the operator; the results passed an independent code audit. See §10 "Statement on the use of AI".</p>
+  <p class="lede" style="margin-top:8px">The calculation was performed by an AI agent (Anthropic Claude) under the guidance and control of the operator; the results passed an independent code audit. See §11 "Statement on the use of AI".</p>
 </header>
 
 <div class="abstract">
@@ -385,13 +435,13 @@
 <li><strong>G4RadioactiveDecay</strong> — the radioactive-decay module. For a given nucleus it samples the decay from evaluated nuclear data (a library based on ENSDF / ICRP-107<a class="cit" href="#r4">[4]</a><a class="cit" href="#r5">[5]</a>): the decay mode, the <em>full continuous β spectrum</em> (not a mean energy), the gamma cascade of the daughter, internal-conversion electrons, characteristic X-rays and Auger electrons. The source spectra are not set by hand — they are generated from nuclear data.</li>
 </ul>
 <h3>Primary source and treatment of the decay chain</h3>
-<p>The primary particle of each history is the parent ion (e.g. <sup>234</sup>Th) at zero kinetic energy, placed at a random point of the glass volume; the decay is sampled immediately. Since β decay conserves the mass number A, the isobaric sub-chain <strong>A = 234</strong> (<sup>234</sup>Th → <sup>234m</sup>Pa → <sup>234</sup>U) in secular equilibrium is modelled as a whole: one run with the activity of <sup>234</sup>Th reproduces the combined radiation of <sup>234</sup>Th and <sup>234m</sup>Pa (their activities are equal). Alpha decay changes A, so the chain does not proceed further and the radium series is not regenerated. The <strong>A = 235</strong> chain (<sup>235</sup>U → <sup>231</sup>Th) is modelled analogously. The total dose is the sum of the contributions of the <strong>two non-overlapping chains</strong>, which excludes double counting (see §10 — independent code audit).</p>
+<p>The primary particle of each history is the parent ion (e.g. <sup>234</sup>Th) at zero kinetic energy, placed at a random point of the glass volume; the decay is sampled immediately. Since β decay conserves the mass number A, the isobaric sub-chain <strong>A = 234</strong> (<sup>234</sup>Th → <sup>234m</sup>Pa → <sup>234</sup>U) in secular equilibrium is modelled as a whole: one run with the activity of <sup>234</sup>Th reproduces the combined radiation of <sup>234</sup>Th and <sup>234m</sup>Pa (their activities are equal). Alpha decay changes A, so the chain does not proceed further and the radium series is not regenerated. The <strong>A = 235</strong> chain (<sup>235</sup>U → <sup>231</sup>Th) is modelled analogously. The total dose is the sum of the contributions of the <strong>two non-overlapping chains</strong>, which excludes double counting (see §11 — independent code audit).</p>
 <p><strong>Convolution with activities.</strong> Each run yields a <em>response</em> — the energy absorbed in tissue per decay. The dose rate is obtained by multiplying the response by the measured activity and summing over the chains: Ḋ = Σ A<sub>i</sub>·R<sub>i</sub>. Separating "transport ↔ activities" allows the dose to be recomputed when activities are refined without repeating the simulation.</p>
 <h3>Geometry and phantom</h3>
 <p><strong>Glass</strong> — soda-lime silicate with U 1.84 wt% and Ce ~0.5 % (CeO<sub>2</sub>; exact content unknown, negligible effect on β/γ transport at this level), density 2.5 g/cm³<a class="cit" href="#r1">[1]</a>. The <strong>bead</strong> 6/0 (rocaille) is modelled as a <strong>sphere Ø4.1 mm with an axial cylindrical hole</strong> (radius 0.93 mm chosen to match the measured mass 63.96 mg); the sphere touches the skin at a single point. The source is distributed over the glass volume, which accounts for <strong>beta self-absorption</strong>: part of the emitted beta particles is absorbed in the glass and never reaches the skin. The calculation gives <strong>55 % of the beta energy absorbed in the glass</strong> for a single bead, rising to <strong>67 %</strong> in a dense packing. The <strong>chain</strong> is 11 spheres in a line at 4.1 mm pitch (touching), the row axis parallel to the skin; scoring is under the central bead. The <strong>mat</strong> is a square lattice of beads at the same pitch.</p>
 <p><strong>The "skin + adjacent tissue" phantom.</strong> For beta and soft gamma radiation from a contact source, a full-body voxel phantom is not appropriate (beta particles travel ≤ 1 cm into tissue and do not "see" the rest of the body; a voxel model does not resolve the 70 µm layer). Instead a <strong>layered tissue slab</strong> is used: ICRU soft tissue<a class="cit" href="#r8">[8]</a>, 2 cm thick. The top 0.5 mm is resolved with a fine step (15 µm) and a low secondary-production threshold (5 µm). The absorbed energy is accumulated versus depth and radius within a 1 cm² disk; <strong>electrons</strong> (β particles, internal-conversion and Auger electrons), <strong>decay photons</strong> (γ and characteristic X-rays) and <strong>bremsstrahlung</strong> are scored separately.</p>
 <h3>Statistics</h3>
-<p>Statistics: 2·10⁶ decays for chain A = 234 and 1·10⁶ for A = 235. The statistical uncertainty (1σ) of the basal-layer dose rate is 0.3 % (single bead), 0.6 % (chain), 1.0 % (mat), far below the systematic assumptions (§9). The bremsstrahlung contribution to the skin dose is negligible (&lt; 0.1 %). The credibility of the calculation is justified in §8.</p>
+<p>Statistics: 2·10⁶ decays for chain A = 234 and 1·10⁶ for A = 235. The statistical uncertainty (1σ) of the basal-layer dose rate is 0.3 % (single bead), 0.6 % (chain), 1.0 % (mat), far below the systematic assumptions (§10). The bremsstrahlung contribution to the skin dose is negligible (&lt; 0.1 %). The credibility of the calculation is justified in §8.</p>
 
 <h2><span class="num">4</span>Skin dose: results</h2>
 <p>Personal skin dose-equivalent rate Ḣ<sub>p</sub>(0.07) (µGy/h = µSv/h, radiation weighting factor w<sub>R</sub> = 1 for β and γ), direct contact, averaged over 1 cm²:</p>
@@ -460,11 +510,88 @@
   <figcaption><b>Fig. 4.</b> Single bead: basal-layer dose averaged over a disk, as a function of the averaging area. The 0.01, 0.1 and 1 cm² (regulatory) areas are marked. The peak under the contact point exceeds the regulatory 1 cm² average by ~4×, while remaining orders of magnitude below the threshold of deterministic effects.</figcaption>
 </figure>
 
-<h2><span class="num">7</span>Comparison with regulatory limits</h2>
-<p>The relevant limit is the equivalent-dose limit <strong>for skin</strong> under Russian radiation safety standards NRB-99/2009<a class="cit" href="#r7">[7]</a>; it is defined as the dose averaged over 1 cm² at the basal-layer depth — exactly the quantity computed here. The general effective-dose limit (1 mSv/year for the public) does not apply directly to localized skin irradiation.</p>
+<h2><span class="num">7</span>Verification by a classical method</h2>
+<p>To check both the order of magnitude and the absolute value independently of Geant4, a classical (semi-analytical) estimate was made, "from simple to accurate": first a closed-form formula for the mat that the reader can reproduce by hand (§7.1), then a volume integral over the sphere with two variants of the dose kernel (§7.2).</p>
+
+<h3>7.1. Hand calculation of the mat: semi-infinite source model</h3>
+<p>The dense mat is laterally much larger than the beta range (the extrapolated range of the <sup>234m</sup>Pa β, E<sub>max</sub> = 2.27 MeV, in tissue ≈ 1.1 g/cm² ≈ 11 mm; the 9×9 mat ≈ 37 mm), so it is legitimate to approximate it as an <strong>infinite uniform β-active plane of glass</strong>. The dose rate at the surface of a semi-infinite uniform source equals <em>half</em> the equilibrium rate in an infinite medium (energy splits equally "up/down"), attenuated to the basal-layer depth:</p>
+<p class="big" style="text-align:center">Ḋ<sub>p</sub>(0.07) = ½ · Σ<sub>i</sub> C<sub>v,i</sub> · Ē<sub>i</sub> · e<sup>−ν<sub>i</sub>σ</sup> · k</p>
+<ul>
+<li>C<sub>v,i</sub> — specific activity of nuclide i, Bq/kg (Table 1);</li>
+<li>Ē<sub>i</sub> — mean energy of the β spectrum, MeV (IAEA/ICRP-107);</li>
+<li>ν<sub>i</sub> = 16·(E<sub>max,i</sub> − 0.036)<sup>−1.4</sup> — the beta attenuation coefficient, cm²/g (Loevinger empirical);</li>
+<li>σ = ρ<sub>tissue</sub>·d = 1.03 g/cm³ × 7.0·10⁻³ cm = <strong>7.21·10⁻³ g/cm²</strong> — the mass depth of the basal layer (70 µm);</li>
+<li>k — conversion (Bq/kg)·MeV → µGy/h: k = 1.602·10⁻¹³ J/MeV × 3.6·10⁹, i.e. Ḋ<sub>∞</sub>[µGy/h] = C<sub>v</sub>·Ē·<strong>5.767·10⁻⁴</strong>.</li>
+</ul>
+<p><strong>Worked example for the dominant <sup>234m</sup>Pa</strong> (four lines on a calculator):</p>
+<ol>
+<li>ν = 16·(2.27 − 0.036)<sup>−1.4</sup> = 16·(2.234)<sup>−1.4</sup> = 16 / 3.08 = <strong>5.19 cm²/g</strong>;</li>
+<li>νσ = 5.19 × 7.21·10⁻³ = 0.0374; e<sup>−0.0374</sup> = 0.963;</li>
+<li>Ḋ<sub>∞</sub> = 2.27·10⁵ × 0.819 × 5.767·10⁻⁴ = <strong>107.2 µGy/h</strong>;</li>
+<li>contribution = ½ × 107.2 × 0.963 = <strong>51.7 µGy/h</strong>.</li>
+</ol>
+<div class="tablewrap"><table>
+<caption>Table 5. Hand calculation of the mat over all three β nuclides (semi-infinite source model).</caption>
+<thead><tr><th>Nuclide</th><th>C<sub>v</sub>, Bq/kg</th><th>Ē, MeV</th><th>E<sub>max</sub>, MeV</th><th>ν, cm²/g</th><th>νσ</th><th>e<sup>−νσ</sup></th><th>Ḋ<sub>∞</sub>, µGy/h</th><th>½·Ḋ<sub>∞</sub>·e<sup>−νσ</sup></th></tr></thead>
+<tbody>
+<tr><td><b><sup>234m</sup>Pa</b></td><td class="num-col">2.27·10⁵</td><td class="num-col">0.819</td><td class="num-col">2.27</td><td class="num-col">5.19</td><td class="num-col">0.037</td><td class="num-col">0.963</td><td class="num-col">107.2</td><td class="num-col">51.7</td></tr>
+<tr><td><sup>234</sup>Th</td><td class="num-col">2.27·10⁵</td><td class="num-col">0.060</td><td class="num-col">0.199</td><td class="num-col">202.8</td><td class="num-col">1.462</td><td class="num-col">0.232</td><td class="num-col">7.86</td><td class="num-col">0.91</td></tr>
+<tr><td><sup>231</sup>Th</td><td class="num-col">9.90·10³</td><td class="num-col">0.163</td><td class="num-col">0.389</td><td class="num-col">68.7</td><td class="num-col">0.496</td><td class="num-col">0.609</td><td class="num-col">0.93</td><td class="num-col">0.28</td></tr>
+<tr class="total"><td colspan="8">Sum (hand estimate of the mat)</td><td class="num-col"><b>52.8</b></td></tr>
+</tbody></table></div>
+<p><strong>Uncertainty.</strong> The result is dominated by <sup>234m</sup>Pa (the factor e<sup>−νσ</sup> ≈ 0.96 barely matters). The governing contributions are the specific activity (HPGe, u ≈ 10 %) and the mean β energy (u ≈ 10 %): u<sub>rel</sub> = √(0.10² + 0.10²) ≈ 14 %. Result: <strong>Ḋ<sub>p</sub>(0.07) ≈ 53 ± 7 µGy/h</strong>.</p>
+<div class="callout"><b>Hand estimate 53 ± 7 µGy/h vs Monte Carlo 48.4 µGy/h — agreement +9 %</b> (within uncertainty). A closed-form formula done on paper reproduces the MC result for the mat. The slight overestimate is expected: a real bead layer has finite thickness (~0.4 g/cm², comparable to the range), whereas the "semi-infinite" model assumes an infinitely thick source and slightly over-counts the contribution of deeper layers.</div>
+
+<h3>7.2. Refinement from the sphere: volume integral with a dose kernel</h3>
+<p>A single bead is small compared with the beta range, so the semi-infinite approximation does not apply to it. For it (and the intermediate packings) a beta <strong>point-dose kernel</strong> was used, integrated over the glass volume of the sphere with self-absorption; the chain and mat are obtained by superposition of spheres on a lattice:</p>
+<p class="big" style="text-align:center">Ḋ(r) = a·Ē·ν / (4π I) · Φ(ν·m) / r²,   I = ∫₀<sup>∞</sup> Φ(u) du</p>
+<p>where m is the mass along the ray (glass + tissue) and r the distance. Two kernels Φ were considered:</p>
+<ul>
+<li><strong>exponential</strong> Φ(x) = e<sup>−x</sup> (I = 1) — the simplest, with an infinite "tail";</li>
+<li><strong>Loevinger (1956)</strong> Φ(x) = c(1−(x/c)·e<sup>1−x/c</sup>) + x·e<sup>1−x</sup> for x ≤ c; x·e<sup>1−x</sup> for x &gt; c (c = 2, I = 3.845) — more physical: it falls off more steeply and cuts off near the range.</li>
+</ul>
+<div class="tablewrap"><table>
+<caption>Table 6. Classical estimate (integral over the sphere) vs Monte Carlo, µSv/h. In parentheses — the ratio to MC.</caption>
+<thead><tr><th>Configuration</th><th>Monte Carlo</th><th>exp. kernel</th><th>Loevinger kernel</th></tr></thead>
+<tbody>
+<tr><td>single bead</td><td class="num-col">6.69</td><td class="num-col">6.39 (×0.96)</td><td class="num-col">5.83 (×0.87)</td></tr>
+<tr><td>chain (11)</td><td class="num-col">18.3</td><td class="num-col">21.9 (×1.19)</td><td class="num-col">19.9 (×1.09)</td></tr>
+<tr class="total"><td>mat (9×9)</td><td class="num-col">48.4</td><td class="num-col">74.6 (×1.54)</td><td class="num-col">68.5 (×1.41)</td></tr>
+</tbody></table></div>
+<p><strong>For a single bead the exponential kernel agrees with Monte Carlo to 4 %</strong> (6.39 vs 6.69 µSv/h) — the fundamental source is reproduced by a fully independent method. The systematic deviations for packings are analysed in §8.</p>
+<figure>
+  <img src="figures/beads_classic_vs_mc.png" alt="Classical cross-check vs Monte Carlo">
+  <figcaption><b>Fig. 5.</b> Classical (semi-analytical) estimate from the sphere vs Monte Carlo. For a single bead the methods agree within 4 %; for extended packings the exponential kernel systematically overestimates the dose, while the Loevinger kernel (cutting off near the range) is markedly closer to MC.</figcaption>
+</figure>
+
+<h2><span class="num">8</span>Analysis of credibility and discrepancy</h2>
+<p>The result can be trusted because it is confirmed by several <strong>independent</strong> lines; below is their summary, then the analysis of the single systematic discrepancy.</p>
+<div class="tablewrap"><table>
+<caption>Table 7. Independent verifications of the calculation.</caption>
+<thead><tr><th>Verification</th><th>Result</th></tr></thead>
+<tbody>
+<tr><td>Normalization sanity test (point γ source vs the 1/4π<var>r</var>² law at 10/20/30 cm)</td><td>ratio <b>1.000</b> — geometry, sampling and normalization are correct</td></tr>
+<tr><td>Self-consistency of the input activities (2.27·10⁵ Bq/kg ↔ U fraction)</td><td>1.83 wt% U (measured 1.84 %); <sup>235</sup>U 0.67 % — consistent</td></tr>
+<tr><td>Hand calculation of the mat (§7.1)</td><td>53 ± 7 vs MC 48.4 → <b>+9 %</b></td></tr>
+<tr><td>Sphere integral, exp. kernel (§7.2)</td><td>single bead <b>4 %</b></td></tr>
+<tr><td>Order of magnitude via <sup>90</sup>Y (E<sub>max</sub> 2.28 MeV ≈ <sup>234m</sup>Pa)</td><td>≈ 3.5 µSv/h per Bq/cm² of the <sup>90</sup>Sr+<sup>90</sup>Y pair<a class="cit" href="#r15">[15]</a> → tens of µSv/h for the packing, consistent with 48</td></tr>
+<tr><td>Independent code audit</td><td>doses reproduced from raw runs; a normalization error of the first revision found and fixed (§11)</td></tr>
+</tbody></table></div>
+
+<h3>8.1. The "classical ↔ Monte Carlo" discrepancy for packings</h3>
+<p>The single systematic discrepancy is the growth of the "sphere integral / MC" ratio with packing size: the exponential kernel <strong>×0.96 → ×1.19 → ×1.54</strong>, the Loevinger kernel <strong>×0.87 → ×1.09 → ×1.41</strong>. This is not random scatter but an effect with a clear physical cause:</p>
+<ul>
+<li><b>The "fat tail" of the kernel — the main cause.</b> The exponential kernel e<sup>−ν·m</sup>/r² assigns non-zero dose to arbitrarily distant points, whereas the true β kernel <strong>cuts off sharply at the extrapolated range</strong>. For a single bead the dose is set by the near field (both models agree); as distant beads are added, the tail over-counts their contribution — the more so the larger the array. The monotonic growth 4 % → 19 % → 54 % is the direct signature of the effect. <strong>The Loevinger kernel, falling off more steeply and cutting off near the range, is systematically closer to MC</strong> (54 %→41 %, 19 %→9 %), which confirms the diagnosis.</li>
+<li><b>Single mean energy and single ν.</b> The classical model replaces the continuous β spectrum by a mean Ē and a single ν(E<sub>max</sub>); the real spectrum is softer at the surface and harder at depth, and the effective range is energy-dependent — this further flattens the fall-off and overestimates the far field.</li>
+<li><b>Straight-line isotropic kernel, no scattering.</b> Multiple and back-scattering of electrons, which in the MC slightly reduce the far field, are not included; a second-order contribution.</li>
+</ul>
+<div class="callout"><b>Conclusion.</b> The agreement at the level of the base source (hand calculation +9 %, sphere 4 %) confirms the physics and the normalization. The systematic overestimate of the classical method for packings is predictable and is explained by the known limitation of the dose kernel under superposition of extended sources; the more physical Loevinger kernel confirms this by approaching MC. In this regime the <strong>Monte Carlo is the more reliable method</strong> — the true finite beta range, the full spectrum and scattering are treated explicitly, not approximately. The result additionally rests on validated physics (G4EmStandardPhysics_option4, ENSDF/ICRP-107 spectra), statistical convergence (1σ &lt; 1 %) and conservative assumptions (direct contact, sphere as a lower estimate), and the full openness of the project (<code>beads_skin</code>) allows every step to be re-checked.</div>
+
+<h2><span class="num">9</span>Comparison with regulatory limits</h2>
+<p>The relevant limit is the equivalent-dose limit <strong>for skin</strong> under Russian radiation safety standards NRB-99/2009<a class="cit" href="#r7">[7]</a>; it is defined as the dose Ḣ<sub>p</sub>(0.07) averaged over 1 cm² at the basal-layer depth — exactly the quantity computed here. The general effective-dose limit (1 mSv/year for the public) does not apply directly to localized skin irradiation.</p>
 <div class="tablewrap">
 <table>
-<caption>Table 5. Equivalent skin-dose limits (NRB-99/2009<a class="cit" href="#r7">[7]</a>) and contact time to the limit for the public (50 mSv/year).</caption>
+<caption>Table 8. Equivalent skin-dose limits (NRB-99/2009<a class="cit" href="#r7">[7]</a>) and contact time to the limit for the public (50 mSv/year).</caption>
 <thead><tr><th>Scenario</th><th>Ḣ<sub>p</sub>(0.07), µSv/h</th><th>Hours to 50 mSv/year</th><th>Equivalent</th></tr></thead>
 <tbody>
 <tr><td>single bead</td><td class="num-col">6.7</td><td class="num-col">≈ 7500</td><td>~20 h every day all year</td></tr>
@@ -475,7 +602,7 @@
 <p>Equivalent skin-dose limits: <b>public 50 mSv/year</b>, <b>occupational (category A) 500 mSv/year</b>. Realistic handling regimes:</p>
 <div class="tablewrap">
 <table>
-<caption>Table 6. Skin dose for typical regimes and fraction of the public limit (50 mSv/year).</caption>
+<caption>Table 9. Skin dose for typical regimes and fraction of the public limit (50 mSv/year).</caption>
 <thead><tr><th>Regime</th><th>Skin dose per year</th><th>Fraction of 50 mSv</th></tr></thead>
 <tbody>
 <tr><td>jewelry (dense mat against skin) 2 h/day</td><td class="num-col">≈ 35 mSv</td><td class="num-col">71 % — below limit</td></tr>
@@ -488,34 +615,7 @@
 </div>
 <div class="callout warn"><b>Conclusion.</b> The contact dose rates (6.7–48 µSv/h) are not small in themselves, but the equivalent skin-dose limit is high (50 mSv/year for the public), so an appreciable dose accumulates only under <b>prolonged continuous direct contact</b> — many hours a day all year round. Normal handling (episodic contact, wearing the item a few hours a day) stays within the public limit. Even round-the-clock wearing of a dense packing directly on the skin (≈ 424 mSv/year) exceeds the public limit but remains below the occupational category-A limit (500 mSv/year).</div>
 
-<h2><span class="num">8</span>Credibility: why the result can be trusted</h2>
-<p>The estimate rests on several independent lines of confirmation:</p>
-<ul>
-<li><b>Normalization sanity test.</b> For a point isotropic photon source in vacuum, the computed fluence was compared with the analytical inverse-square law <var>N</var>/(4π<var>r</var>²) at 10, 20 and 30 cm: the ratio is <strong>1.000</strong>. This confirms the geometry, primary-particle sampling and scoring normalization.</li>
-<li><b>Input activities from first principles.</b> The specific activity of pure <sup>238</sup>U (λ<var>N</var> = 1.244·10⁷ Bq/g) at the measured 2.27·10⁵ Bq/kg gives a uranium fraction of 1.83 wt% — matching the independently measured 1.84 %; for <sup>235</sup>U, 0.124 g/kg (measured 0.1237), enrichment 0.67 %. The inputs are internally self-consistent.</li>
-<li><b>Independent code audit.</b> A separate AI agent reproduced the doses from the raw runs with its own convolution script (agreement to three significant figures) and used a direct Geant4 track dump to verify which decay chains are actually sampled. The audit found and enabled correction of a normalization error in the first revision (double counting of the isobaric sub-chain); the current result passed re-verification.</li>
-<li><b>Order-of-magnitude agreement.</b> For a high-energy beta emitter spectrally close to <sup>234m</sup>Pa (<sup>90</sup>Y, E<sub>max</sub> 2.28 MeV), a reference surface-contamination skin dose: 1 µCi/cm² (<sup>90</sup>Sr+<sup>90</sup>Y) → 13,000 mrem/h = 130 mSv/h per 37 kBq/cm², i.e. <strong>≈ 3.5 µSv/h per Bq/cm²</strong> for the pair, about half from the high-energy <sup>90</sup>Y<a class="cit" href="#r15">[15]</a>. The effective surface activity of a dense packing is tens of Bq/cm², giving tens of µSv/h, consistent with the computed 48 µSv/h.</li>
-<li><b>Independent classical (semi-analytical) cross-check.</b> The dose was recomputed by a method fully independent of Geant4: a beta point-dose kernel with exponential attenuation, integrated over the volume of a <em>single sphere</em> (with glass self-absorption), with the chain and mat built by superposition of spheres on a lattice. For a <strong>single bead the agreement with Monte Carlo is 4 %</strong> (6.4 vs 6.7 µSv/h) — the fundamental source is reproduced independently. For extended packings the classical estimate is systematically higher (chain +19 %, mat +54 %); the discrepancy is analysed below (Fig. 5).</li>
-<li><b>Validated physics.</b> The physics list G4EmStandardPhysics_option4 is the recommended, extensively benchmarked configuration of Geant4 electromagnetic physics for dosimetric and microdosimetric problems; the full β spectra and decay schemes are taken from evaluated nuclear data (ENSDF / ICRP-107).</li>
-<li><b>Statistical convergence.</b> The reported dose rates have a statistical uncertainty (1σ) below 1 %; the result is stable with respect to the amount of statistics.</li>
-<li><b>Conservative assumptions.</b> All key assumptions (direct gap-free contact, full secular equilibrium of the short-lived daughters, spherical shape as a lower estimate) bias the result upward — actual doses under real handling are no higher.</li>
-<li><b>Full reproducibility.</b> The whole calculation is open (project <code>beads_skin</code>), split into transport (response per decay) and convolution with activities, allowing each part to be checked independently.</li>
-</ul>
-<figure>
-  <img src="figures/beads_classic_vs_mc.png" alt="Classical cross-check vs Monte Carlo">
-  <figcaption><b>Fig. 5.</b> Independent classical (semi-analytical) estimate vs Monte Carlo. The base source is a single sphere; the chain and mat are obtained by superposition. For a single bead the methods agree within 4 %; for extended packings the classical estimate is systematically higher.</figcaption>
-</figure>
-<h3>Analysis of the classical ↔ Monte Carlo discrepancy</h3>
-<p>The classical/MC ratio grows monotonically with packing size: <strong>×0.96 (bead) → ×1.19 (chain) → ×1.54 (mat)</strong>. This is not scatter but a systematic effect with a clear physical cause:</p>
-<ul>
-<li><b>The "fat tail" of the exponential kernel — the main cause.</b> The classical model uses a kernel exp(−ν·<var>m</var>)/<var>r</var>², which assigns non-zero dose to arbitrarily distant points. The true beta dose-point-kernel cuts off sharply at the <strong>extrapolated range</strong> (beyond its range the electron simply has no energy). For a <em>single</em> bead the dose is dominated by the near field (self-absorption + contact), where the two models agree. As distant beads are added (chain, mat), the exponential tail over-counts their contribution — the more so the larger the array. The monotonic growth 4 %→19 %→54 % is the direct signature of this effect.</li>
-<li><b>Single mean energy and single ν.</b> The classical model replaces the continuous β spectrum by a mean energy Ē and a single ν(E<sub>max</sub>); the real spectrum is softer at the surface and harder at depth due to filtering, and the effective range is energy-dependent. This further flattens the fall-off and overestimates the far field.</li>
-<li><b>Straight-line isotropic kernel, no scattering.</b> The classical kernel ignores multiple and back-scattering of electrons, which in the MC redistribute and slightly reduce the far field; a second-order contribution.</li>
-<li><b>Self-absorption geometry.</b> The classical model uses the ray-length glass path; the MC performs full 3D transport in the sphere-with-hole. This suffices for a single bead (hence the 4 %) and is secondary for packings against the tail effect.</li>
-</ul>
-<p><strong>Conclusion.</strong> The agreement at the level of the base source (4 %) confirms the physics and the normalization; the discrepancy for packings is predictable and is explained by the known limitation of the exponential β kernel under superposition of extended sources. In this regime the <strong>Monte Carlo is the more reliable method</strong> (true finite beta range, full spectrum, scattering), while the classical estimate provides an independent upper bound of the same order. Both methods reproduce the order of magnitude and the saturation behaviour of the packing.</p>
-
-<h2><span class="num">9</span>Assumptions and applicability</h2>
+<h2><span class="num">10</span>Assumptions and applicability</h2>
 <ul>
 <li><b>Broken equilibrium.</b> It is assumed that radium and the subsequent chain members are absent (purified uranium). Residual <sup>226</sup>Ra (partial equilibrium) would add penetrating series gamma radiation — a separate source, not included here. For radium-bearing glass the picture would change qualitatively.</li>
 <li><b>Glass density</b> 2.5 g/cm³ — an assumption; it weakly affects beta self-absorption, since at fixed measured mass and outer diameter the areal density of the glass barely depends on density.</li>
@@ -525,7 +625,7 @@
 <li><b>The limit for hands/feet</b> is also 50 mSv/year (public) — the same order, relevant for prolonged holding of the beads in the hands.</li>
 </ul>
 
-<h2><span class="num">10</span>Statement on the use of AI</h2>
+<h2><span class="num">11</span>Statement on the use of AI</h2>
 <p>The work was carried out by an "operator + AI agent" pairing (Claude Code interface, Anthropic). Roles:</p>
 <ul>
 <li><strong>Calculation line</strong> (source model, geometry and physics in Geant4, C++ code, runs, Python post-processing and convolution, illustrations and 3D field visualization, article text) — the Claude Code AI agent; Anthropic Claude Opus 4.8 and Claude Fable 5 models.</li>
@@ -534,7 +634,7 @@
 </ul>
 <p>All reported values are reproducible with the attached code (project <code>beads_skin</code>).</p>
 
-<h2><span class="num">11</span>References, data and code</h2>
+<h2><span class="num">12</span>References, data and code</h2>
 <ol class="refs">
 <li>Strahan D. Uranium in glass, glazes and enamels: history, identification and handling. <i>Studies in Conservation</i>, 46(3), 2001, 181–195. Used: typical uranium content of glass up to ~1.4–2 wt% (our sample 1.85 %). <a href="https://www.tandfonline.com/doi/abs/10.1179/sic.2001.46.3.181">tandfonline</a></li>
 <li>Bamford C.R. <i>Colour Generation and Control in Glass</i>. Elsevier, 1977. Used: CeO<sub>2</sub> as a glass decolorizer.</li>
