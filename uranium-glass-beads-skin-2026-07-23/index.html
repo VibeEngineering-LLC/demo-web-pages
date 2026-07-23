@@ -111,7 +111,7 @@
 <header>
   <p class="kicker">УДК 614.876:666.1 · VibeEngineering · радиационная дозиметрия · Geant4 Монте-Карло · 23.07.2026 · ред. 5</p>
   <h1>Расчёт мощности эквивалентной дозы внешнего облучения кожи Ḣ<sub>p</sub>(0,07) от бета- и гамма-излучения уранового стеклянного бисера</h1>
-  <p class="lede">Расчёт мощности дозы в коже методом Монте-Карло (Geant4) при контакте с чешским урановым бисером «жёлтый опал 6/0». Измеренные удельные активности <b>²³⁸U 2,27·10⁵ Бк/кг</b>, <b>²³⁵U 9,9·10³ Бк/кг</b>; уран очищенный — вековое равновесие ряда нарушено, гамма-активные дочерние продукты радиевого звена отсутствуют. Три конфигурации укладки, сферическая геометрия бусины. Мощность эквивалентной дозы внешнего облучения кожи Ḣ<sub>p</sub>(0,07) на контакте — от <b>6,7 (+2,3 / −0,7)</b> (одна бусина) до <b>48 ± 5 мкЗв/ч</b> (плотный коврик), практически целиком за счёт бета-излучения.</p>
+  <p class="lede">Расчёт мощности эквивалентной дозы в коже методом Монте-Карло (Geant4) при контакте с чешским урановым бисером «жёлтый опал 6/0». Измеренные удельные активности <b>²³⁸U 2,27·10⁵ Бк/кг</b>, <b>²³⁵U 9,9·10³ Бк/кг</b>; уран очищенный — вековое равновесие ряда нарушено, гамма-активные дочерние продукты радиевого звена отсутствуют. Три конфигурации укладки, сферическая геометрия бусины. Мощность эквивалентной дозы внешнего облучения кожи Ḣ<sub>p</sub>(0,07) на контакте — от <b>6,7 ± 0,7</b> (одна бусина) до <b>48 ± 5 мкЗв/ч</b> (плотный коврик), практически целиком за счёт бета-излучения.</p>
   <p class="lede" style="margin-top:8px">Расчёт выполнен ИИ-агентом (Anthropic Claude) под руководством и контролем оператора; результаты прошли независимый аудит кода. Подробнее — §11 «Заявление об использовании ИИ».</p>
 </header>
 
@@ -119,7 +119,7 @@
   <p><strong>Образец.</strong> Чешский урановый стеклянный бисер «Бисер жёлтый опал, урановое стекло 6/0, 4,1 мм» (арт. 31119001/0 8200). Масса бусины 63,96 мг (14,710 г / 230 шт). Измерены удельные активности: <sup>238</sup>U 2,27·10<sup>5</sup> Бк/кг (18,37 г/кг), <sup>235</sup>U 9,90·10<sup>3</sup> Бк/кг (0,1237 г/кг); обогащение по <sup>235</sup>U 0,67 % — практически природное. В стекле — флюоресценция церия (обесцвечиватель CeO<sub>2</sub>), барий отсутствует.</p>
   <p><strong>Источник.</strong> Уран в стекле химически очищенный, <mark>содержание радия минимально</mark>: вековое равновесие ряда <sup>238</sup>U нарушено на <sup>226</sup>Ra, поэтому гамма-активные продукты радиевого звена (<sup>214</sup>Pb, <sup>214</sup>Bi) в стекле отсутствуют. Эквивалентную дозу в коже формируют короткоживущие дочерние нуклиды первых звеньев цепочек распада, восстановившие вековое равновесие с ураном за месяцы после варки, — прежде всего высокоэнергетическая β-частица <strong><sup>234m</sup>Pa (E<sub>max</sub> 2,27 МэВ)</strong>.</p>
   <p><strong>Метод.</strong> Geant4 11.2.1<a class="cit" href="#r9">[9]</a>, электромагнитная физика G4EmStandardPhysics_option4 и модуль радиоактивного распада G4RadioactiveDecay<a class="cit" href="#r11">[11]</a>; источник распределён по объёму стекла (учтено самопоглощение бета-частиц), сферическая бусина в контакте с фантомом «кожа + прилегающие ткани» (слоистая мягкая ткань ICRU<a class="cit" href="#r8">[8]</a>). Целевая величина — <strong>мощность эквивалентной дозы внешнего облучения кожи Ḣ<sub>p</sub>(0,07)</strong> (мощность персонального эквивалента дозы на глубине 0,07 мм ≡ 7 мг/см², т.е. базального слоя эпидермиса), усреднённая по площади 1 см² по определению ICRP/ICRU<a class="cit" href="#r6">[6]</a>; в расчёте она берётся как среднее по глубине 50–100 мкм. Нормировка проверена санити-тестом (отношение к аналитическому закону обратных квадратов 1,000).</p>
-  <p><strong>Результат.</strong> Мощность эквивалентной дозы внешнего облучения кожи Ḣ<sub>p</sub>(0,07) (базальный слой, контакт вплотную): <strong>одна бусина 6,7 (+2,3 / −0,7) мкЗв/ч</strong>, <strong>цепочка 18 (+5 / −2) мкЗв/ч</strong>, <strong>плотный коврик 48 ± 5 мкЗв/ч</strong> (статистическая погрешность &lt; 1 %; асимметричная систематическая неопределённость определяется формой бусины — сферическая модель даёт нижнюю оценку — и плотностью стекла, бюджет в §4). Вклад фотонов &lt; 0,2 %; из энергии бета-частиц 55–67 % поглощается в самом стекле. При обычном обращении доза остаётся в пределах норматива для населения (предел эквивалентной дозы в коже — 50 мЗв/год<a class="cit" href="#r7">[7]</a>); заметная доза набирается лишь при многочасовом ежедневном контакте вплотную.</p>
+  <p><strong>Результат.</strong> Мощность эквивалентной дозы внешнего облучения кожи Ḣ<sub>p</sub>(0,07) (базальный слой, контакт вплотную): <strong>одна бусина 6,7 ± 0,7 мкЗв/ч</strong>, <strong>цепочка 18 ± 2 мкЗв/ч</strong>, <strong>плотный коврик 48 ± 5 мкЗв/ч</strong> (статистическая погрешность &lt; 1 %; приведённая погрешность ± отражает неопределённость плотности стекла ±10 %). Форма бусины даёт дополнительную одностороннюю систематику вверх: сферическая модель — консервативная нижняя оценка, истинное значение для одиночной бусины до ~+34 % (полный бюджет в §4). Вклад фотонов &lt; 0,2 %; из энергии бета-частиц 55–67 % поглощается в самом стекле. При обычном обращении доза остаётся в пределах норматива для населения (предел эквивалентной дозы в коже — 50 мЗв/год<a class="cit" href="#r7">[7]</a>); заметная доза набирается лишь при многочасовом ежедневном контакте вплотную.</p>
 </div>
 
 <p class="big"><b>Ключевые слова:</b> урановое стекло; природные радионуклиды (NORM); очищенный уран; нарушение векового равновесия; <sup>234m</sup>Pa; доза в коже; бета-дозиметрия; эффект «горячей частицы»; Монте-Карло; Geant4; потребительские изделия с радиоактивностью.</p>
@@ -133,7 +133,7 @@
 <p>Присутствуют и излучают только короткоживущие дочерние нуклиды <strong>первых звеньев</strong> цепочек распада <sup>238</sup>U и <sup>235</sup>U, восстановившие вековое равновесие с материнским ураном за месяцы после варки стекла:</p>
 <div class="tablewrap">
 <table>
-<caption>Таблица 1. Излучающие нуклиды очищенного урана. Данные распада (T½, β-эндпоинты, γ-линии) — IAEA Live Chart of Nuclides<a class="cit" href="#r3">[3]</a> (ENSDF-оценка, получены через API), библиотека ICRP-107<a class="cit" href="#r4">[4]</a> в расчёте. Мощность дозы рассчитывается по двум непересекающимся цепочкам (A = 234 и A = 235), а не по отдельным нуклидам (см. §3).</caption>
+<caption>Таблица 1. Излучающие нуклиды очищенного урана. Данные распада (T½, β-эндпоинты, γ-линии) — IAEA Live Chart of Nuclides<a class="cit" href="#r3">[3]</a> (ENSDF-оценка, получены через API), библиотека ICRP-107<a class="cit" href="#r4">[4]</a> в расчёте. Мощность эквивалентной дозы рассчитывается по двум непересекающимся цепочкам (A = 234 и A = 235), а не по отдельным нуклидам (см. §3).</caption>
 <thead><tr><th>Нуклид</th><th>Уд. активность, Бк/кг</th><th>На 1 бусину, Бк</th><th>Излучение, значимое для кожи</th></tr></thead>
 <tbody>
 <tr><td colspan="4" style="text-align:center;background:var(--th);font-weight:600;color:var(--accent2)">Цепочка A = 234 (из <sup>238</sup>U)</td></tr>
@@ -165,11 +165,11 @@
 <h3>Статистика</h3>
 <p>Статистика — 2·10⁶ распадов на цепочку A = 234 и 1·10⁶ на A = 235. Статистическая погрешность (1σ) мощности дозы в базальном слое — 0,3 % (одна бусина), 0,6 % (цепочка), 1,0 % (коврик), существенно меньше систематических допущений (§10). Вклад тормозного излучения в дозу кожи пренебрежимо мал (&lt; 0,1 %). Обоснование достоверности расчёта — §8.</p>
 
-<h2><span class="num">4</span>Доза в коже: результаты</h2>
+<h2><span class="num">4</span>Мощность эквивалентной дозы в коже Ḣ<sub>p</sub>(0,07): результаты</h2>
 <p>Мощность эквивалентной дозы внешнего облучения кожи Ḣ<sub>p</sub>(0,07) (мкГр/ч = мкЗв/ч, взвешивающий коэффициент w<sub>R</sub> = 1 для β и γ), контакт вплотную, усреднение по площади 1 см²:</p>
 <div class="tablewrap">
 <table>
-<caption>Таблица 2. Мощность дозы по глубине кожи, мкЗв/ч. Электронная (β) и фотонная (γ) компоненты — раздельно. Статистическая погрешность ≲ 1 %.</caption>
+<caption>Таблица 2. Мощность эквивалентной дозы по глубине кожи, мкЗв/ч. Электронная (β) и фотонная (γ) компоненты — раздельно. Статистическая погрешность ≲ 1 %.</caption>
 <thead><tr><th>Слой кожи</th>
   <th>1 бус. β</th><th>1 бус. γ</th><th>1 бус. Σ</th>
   <th>Коврик β</th><th>Коврик γ</th><th>Коврик Σ</th></tr></thead>
@@ -182,7 +182,7 @@
 </div>
 <div class="tablewrap">
 <table>
-<caption>Таблица 3. Эквивалентная доза в коже (базальный слой) по конфигурациям укладки. Первая погрешность — статистическая (1σ); «расчётный диапазон» учитывает систематику формы бусины и плотности стекла (§ ниже).</caption>
+<caption>Таблица 3. Мощность эквивалентной дозы Ḣ<sub>p</sub>(0,07) в коже (базальный слой) по конфигурациям укладки. Первая погрешность — статистическая (1σ); «расчётный диапазон» учитывает систематику формы бусины и плотности стекла (§ ниже).</caption>
 <thead><tr><th>Конфигурация</th><th>Ḣ<sub>p</sub>(0,07) (сфера), мкЗв/ч</th><th>стат. (1σ)</th><th>расчётный диапазон</th><th>доля электронов</th></tr></thead>
 <tbody>
 <tr><td>одна бусина</td><td class="num-col"><b>6,69</b></td><td class="num-col">±0,3 %</td><td class="num-col">6,0–9,0</td><td>99,9 %</td></tr>
@@ -205,13 +205,13 @@
 </tbody></table>
 </div>
 <p>Кроме перечисленного, результат <strong>линейно пропорционален измеренной удельной активности</strong> источника: её погрешность (входная измеренная величина) переносится в дозу множителем 1:1 и в расчётный бюджет не включена — при уточнении активностей дозу достаточно домножить на соответствующий коэффициент.</p>
-<p>Насыщение поля с ростом укладки: доза в центре растёт лишь пока добавляются бусины в пределах поперечного разлёта бета-частиц (~1 см). Относительно одиночной бусины: цепочка ×2,7; коврик 5×5 ×7,2, 7×7 ×7,3, 9×9 ×7,2 — <strong>дальнейшее расширение укладки дозу не увеличивает</strong> (насыщение достигается уже при размере ~5×5). Эквивалентная доза в коже <strong>практически целиком обусловлена электронной компонентой</strong> (&gt; 99,8 %); вклад фотонов не превышает 0,2 %, однако фотоны проникают в ткань существенно глубже бета-частиц (Рис. 1).</p>
+<p>Насыщение поля с ростом укладки: мощность дозы в центре растёт лишь пока добавляются бусины в пределах поперечного разлёта бета-частиц (~1 см). Относительно одиночной бусины: цепочка ×2,7; коврик 5×5 ×7,2, 7×7 ×7,3, 9×9 ×7,2 — <strong>дальнейшее расширение укладки мощность дозы не увеличивает</strong> (насыщение достигается уже при размере ~5×5). Мощность эквивалентной дозы в коже <strong>практически целиком обусловлена электронной компонентой</strong> (&gt; 99,8 %); вклад фотонов не превышает 0,2 %, однако фотоны проникают в ткань существенно глубже бета-частиц (Рис. 1).</p>
 <figure>
   <img src="figures/beads_skin_profile.png" alt="Профиль мощности дозы по глубине кожи и эквивалентная доза в базальном слое">
-  <figcaption><b>Рис. 1.</b> Слева — распределение мощности поглощённой дозы по глубине фантома кожи для электронной (β-частицы, электроны конверсии и Оже) и фотонной (γ- и рентгеновское излучение) компонент; конфигурации «одна бусина», «цепочка» и «коврик». Зелёной полосой отмечен базальный слой эпидермиса (50–100 мкм), для которого нормируется эквивалентная доза в коже. Мощность дозы электронной компоненты убывает на глубинах, сопоставимых с экстраполированным пробегом β-частиц (≈ 11 мм для E<sub>max</sub> = 2,27 МэВ <sup>234m</sup>Pa); ослабление фотонной компоненты происходит существенно медленнее (экспоненциально, с коэффициентом ослабления μ мягкой ткани). Справа — эквивалентная доза в базальном слое с разложением на компоненты.</figcaption>
+  <figcaption><b>Рис. 1.</b> Слева — распределение мощности поглощённой дозы по глубине фантома кожи для электронной (β-частицы, электроны конверсии и Оже) и фотонной (γ- и рентгеновское излучение) компонент; конфигурации «одна бусина», «цепочка» и «коврик». Зелёной полосой отмечен базальный слой эпидермиса (50–100 мкм), для которого нормируется мощность эквивалентной дозы в коже. Мощность дозы электронной компоненты убывает на глубинах, сопоставимых с экстраполированным пробегом β-частиц (≈ 11 мм для E<sub>max</sub> = 2,27 МэВ <sup>234m</sup>Pa); ослабление фотонной компоненты происходит существенно медленнее (экспоненциально, с коэффициентом ослабления μ мягкой ткани). Справа — мощность эквивалентной дозы в базальном слое с разложением на компоненты.</figcaption>
 </figure>
 
-<h2><span class="num">5</span>Пространственное распределение поля дозы</h2>
+<h2><span class="num">5</span>Пространственное распределение поля мощности дозы</h2>
 <p>Трёхмерное распределение поглощённой дозы (в тканеэквивалентной среде) вокруг источника для трёх конфигураций. С ростом укладки локальное поле отдельной бусины переходит в квазиоднородный приповерхностный слой облучения; фотонная компонента во всех случаях распределена шире электронной и на порядки слабее.</p>
 <div class="fig2">
   <figure><img src="figures/field_3d_single.png" alt="3D поле одной бусины"><figcaption><b>Рис. 2а.</b> Одна бусина: локализованная область повышенной дозы, простирающаяся в кожу на несколько миллиметров.</figcaption></figure>
@@ -235,7 +235,7 @@
 <h2><span class="num">7</span>Проверочный расчёт классическим методом</h2>
 <p>Чтобы независимо от Geant4 проверить и порядок, и абсолютное значение дозы, выполнена классическая (полуаналитическая) оценка по принципу «от простого к точному»: сначала — замкнутая формула для коврика, которую читатель воспроизведёт вручную (§7.1), затем — объёмный интеграл по сфере с двумя вариантами дозового ядра (§7.2).</p>
 
-<h3>7.1. Мощность эквивалентной дозы плотной укладки: замкнутая формула (полубесконечный плоский источник)</h3>
+<h3>7.1. Мощность эквивалентной дозы Ḣ<sub>p</sub>(0,07) плотной укладки: замкнутая формула (полубесконечный плоский источник)</h3>
 <p>Плотный коврик латерально много больше пробега бета-частиц (экстраполированный пробег β <sup>234m</sup>Pa E<sub>max</sub> = 2,27 МэВ в ткани ≈ 1,1 г/см² ≈ 11 мм; коврик 9×9 ≈ 37 мм), поэтому его правомерно приблизить <strong>бесконечной однородной β-активной плоскостью стекла</strong>. Мощность дозы у поверхности полубесконечного однородного источника равна <em>половине</em> равновесной мощности в бесконечной среде (энергия делится поровну «вверх/вниз»), ослабленной до глубины базального слоя:</p>
 <p class="big" style="text-align:center">Ḋ<sub>p</sub>(0,07) = ½ · Σ<sub>i</sub> C<sub>v,i</sub> · Ē<sub>i</sub> · e<sup>−ν<sub>i</sub>σ</sup> · k</p>
 <ul>
@@ -264,7 +264,7 @@
 <p><strong>Неопределённость.</strong> Результат доминируется <sup>234m</sup>Pa (множитель e<sup>−νσ</sup> ≈ 0,96 почти не влияет). Определяющие вклады — удельная активность (HPGe, u ≈ 10 %) и средняя энергия β-спектра (u ≈ 10 %): u<sub>отн</sub> = √(0,10² + 0,10²) ≈ 14 %. Итог: <strong>Ḋ<sub>p</sub>(0,07) ≈ 53 ± 7 мкГр/ч</strong>.</p>
 <div class="callout"><b>Аналитическая оценка 53 ± 7 мкГр/ч против Монте-Карло 48,4 мкГр/ч — согласие +9 %</b> (в пределах неопределённости). Замкнутая формула, считаемая на бумаге, воспроизводит МК-результат для коврика. Небольшое завышение ожидаемо: реальный слой бусин имеет конечную толщину (~0,4 г/см², сопоставимо с пробегом), тогда как «полубесконечная» модель предполагает бесконечно толстый источник и слегка переоценивает вклад дальних слоёв.</div>
 
-<h3>7.2. Мощность эквивалентной дозы одиночной бусины: интеграл дозового ядра по сфере</h3>
+<h3>7.2. Мощность эквивалентной дозы Ḣ<sub>p</sub>(0,07) одиночной бусины: интеграл дозового ядра по сфере</h3>
 <p>Одиночная бусина мала в сравнении с пробегом β, поэтому полубесконечное приближение к ней неприменимо. Для неё (и промежуточных укладок) взято бета-<strong>точечное дозовое ядро</strong>, проинтегрированное по объёму стекла сферы с учётом самопоглощения; цепочка и коврик получены суперпозицией сфер на решётке:</p>
 <p class="big" style="text-align:center">Ḋ(r) = a·Ē·ν / (4π I) · Φ(ν·m) / r²,   I = ∫₀<sup>∞</sup> Φ(u) du</p>
 <p>где m — масса вдоль луча (стекло + ткань), r — расстояние. Рассмотрены два ядра Φ:</p>
@@ -390,7 +390,7 @@
 <header>
   <p class="kicker">UDC 614.876:666.1 · VibeEngineering · radiation dosimetry · Geant4 Monte Carlo · 23 Jul 2026 · rev. 5</p>
   <h1>Calculation of the Personal Skin Dose-Equivalent Rate Ḣ<sub>p</sub>(0.07) from Beta and Gamma Radiation of Uranium Glass Beads</h1>
-  <p class="lede">Monte Carlo (Geant4) calculation of the skin dose rate from contact with Czech uranium glass beads ("yellow opal, size 6/0"). Measured specific activities <b>²³⁸U 2.27·10⁵ Bq/kg</b>, <b>²³⁵U 9.9·10³ Bq/kg</b>; the uranium is purified — the series secular equilibrium is broken, and the gamma-active daughters of the radium branch are absent. Three packing configurations, spherical bead geometry. The personal skin dose-equivalent rate Ḣ<sub>p</sub>(0.07) on contact ranges from <b>6.7 (+2.3 / −0.7)</b> (single bead) to <b>48 ± 5 µSv/h</b> (dense mat), almost entirely from beta radiation.</p>
+  <p class="lede">Monte Carlo (Geant4) calculation of the skin dose rate from contact with Czech uranium glass beads ("yellow opal, size 6/0"). Measured specific activities <b>²³⁸U 2.27·10⁵ Bq/kg</b>, <b>²³⁵U 9.9·10³ Bq/kg</b>; the uranium is purified — the series secular equilibrium is broken, and the gamma-active daughters of the radium branch are absent. Three packing configurations, spherical bead geometry. The personal skin dose-equivalent rate Ḣ<sub>p</sub>(0.07) on contact ranges from <b>6.7 ± 0.7</b> (single bead) to <b>48 ± 5 µSv/h</b> (dense mat), almost entirely from beta radiation.</p>
   <p class="lede" style="margin-top:8px">The calculation was performed by an AI agent (Anthropic Claude) under the guidance and control of the operator; the results passed an independent code audit. See §11 "Statement on the use of AI".</p>
 </header>
 
@@ -398,7 +398,7 @@
   <p><strong>Sample.</strong> Czech uranium glass beads "yellow opal, uranium glass 6/0, 4.1 mm" (art. 31119001/0 8200). Bead mass 63.96 mg (14.710 g / 230 pcs). Measured specific activities: <sup>238</sup>U 2.27·10<sup>5</sup> Bq/kg (18.37 g/kg), <sup>235</sup>U 9.90·10<sup>3</sup> Bq/kg (0.1237 g/kg); <sup>235</sup>U enrichment 0.67 % — essentially natural. The glass shows cerium fluorescence (CeO<sub>2</sub> decolorizer); barium is absent.</p>
   <p><strong>Source.</strong> The uranium is chemically purified, with <mark>minimal radium content</mark>: the secular equilibrium of the <sup>238</sup>U series is broken at <sup>226</sup>Ra, so the gamma-active daughters of the radium branch (<sup>214</sup>Pb, <sup>214</sup>Bi) are absent from the glass. The equivalent skin dose is produced by the short-lived daughters of the first links of the decay chains, which re-established secular equilibrium with the uranium within months after melting — above all the high-energy beta particle of <strong><sup>234m</sup>Pa (E<sub>max</sub> 2.27 MeV)</strong>.</p>
   <p><strong>Method.</strong> Geant4 11.2.1<a class="cit" href="#r9">[9]</a>, electromagnetic physics G4EmStandardPhysics_option4 and the radioactive-decay module G4RadioactiveDecay<a class="cit" href="#r11">[11]</a>; the source is distributed over the glass volume (beta self-absorption is included), the spherical bead is in contact with a "skin + adjacent tissue" phantom (layered ICRU soft tissue<a class="cit" href="#r8">[8]</a>). The target quantity is the <strong>directional/personal skin dose-equivalent rate Ḣ<sub>p</sub>(0.07)</strong> (rate of the personal dose equivalent at 0.07 mm depth ≡ 7 mg/cm², i.e. the epidermal basal layer), averaged over a 1 cm² area per the ICRP/ICRU definition<a class="cit" href="#r6">[6]</a>; in the calculation it is taken as the average over the 50–100 µm depth. The normalization was verified with a sanity test (ratio to the analytical inverse-square law = 1.000).</p>
-  <p><strong>Result.</strong> Personal skin dose-equivalent rate Ḣ<sub>p</sub>(0.07) (basal layer, direct contact): <strong>single bead 6.7 (+2.3 / −0.7) µSv/h</strong>, <strong>chain 18 (+5 / −2) µSv/h</strong>, <strong>dense mat 48 ± 5 µSv/h</strong> (statistical uncertainty &lt; 1 %; the asymmetric systematic uncertainty is set by the bead shape — the spherical model is a lower estimate — and glass density, budget in §4). The photon contribution is &lt; 0.2 %; of the emitted beta energy, 55–67 % is absorbed within the glass itself. Under normal handling the dose stays within the limit for the public (skin equivalent-dose limit 50 mSv/year<a class="cit" href="#r7">[7]</a>); an appreciable dose accumulates only under many hours of daily direct contact.</p>
+  <p><strong>Result.</strong> Personal skin dose-equivalent rate Ḣ<sub>p</sub>(0.07) (basal layer, direct contact): <strong>single bead 6.7 ± 0.7 µSv/h</strong>, <strong>chain 18 ± 2 µSv/h</strong>, <strong>dense mat 48 ± 5 µSv/h</strong> (statistical uncertainty &lt; 1 %; the quoted ± uncertainty reflects the ±10 % glass-density uncertainty). The bead shape adds a one-sided upward systematic: the spherical model is a conservative lower estimate, the true value for a single bead up to ~+34 % (full budget in §4). The photon contribution is &lt; 0.2 %; of the emitted beta energy, 55–67 % is absorbed within the glass itself. Under normal handling the dose stays within the limit for the public (skin equivalent-dose limit 50 mSv/year<a class="cit" href="#r7">[7]</a>); an appreciable dose accumulates only under many hours of daily direct contact.</p>
 </div>
 
 <h2><span class="num">1</span>Sample and objective</h2>
@@ -411,7 +411,7 @@
 <p>Only the short-lived daughters of the <strong>first links</strong> of the <sup>238</sup>U and <sup>235</sup>U chains are present and radiating, having re-established secular equilibrium with the parent uranium within months of melting:</p>
 <div class="tablewrap">
 <table>
-<caption>Table 1. Emitting nuclides of purified uranium. Decay data (half-lives, β endpoints, γ lines) — IAEA Live Chart of Nuclides<a class="cit" href="#r3">[3]</a> (ENSDF-based, via API); ICRP-107<a class="cit" href="#r4">[4]</a> library in the calculation. The dose is computed over two non-overlapping chains (A = 234 and A = 235), not per individual nuclide (see §3).</caption>
+<caption>Table 1. Emitting nuclides of purified uranium. Decay data (half-lives, β endpoints, γ lines) — IAEA Live Chart of Nuclides<a class="cit" href="#r3">[3]</a> (ENSDF-based, via API); ICRP-107<a class="cit" href="#r4">[4]</a> library in the calculation. The dose rate is computed over two non-overlapping chains (A = 234 and A = 235), not per individual nuclide (see §3).</caption>
 <thead><tr><th>Nuclide</th><th>Spec. activity, Bq/kg</th><th>Per bead, Bq</th><th>Radiation relevant to skin</th></tr></thead>
 <tbody>
 <tr><td colspan="4" style="text-align:center;background:var(--th);font-weight:600;color:var(--accent2)">Chain A = 234 (from <sup>238</sup>U)</td></tr>
@@ -443,7 +443,7 @@
 <h3>Statistics</h3>
 <p>Statistics: 2·10⁶ decays for chain A = 234 and 1·10⁶ for A = 235. The statistical uncertainty (1σ) of the basal-layer dose rate is 0.3 % (single bead), 0.6 % (chain), 1.0 % (mat), far below the systematic assumptions (§10). The bremsstrahlung contribution to the skin dose is negligible (&lt; 0.1 %). The credibility of the calculation is justified in §8.</p>
 
-<h2><span class="num">4</span>Skin dose: results</h2>
+<h2><span class="num">4</span>Skin dose-equivalent rate Ḣ<sub>p</sub>(0.07): results</h2>
 <p>Personal skin dose-equivalent rate Ḣ<sub>p</sub>(0.07) (µGy/h = µSv/h, radiation weighting factor w<sub>R</sub> = 1 for β and γ), direct contact, averaged over 1 cm²:</p>
 <div class="tablewrap">
 <table>
@@ -460,7 +460,7 @@
 </div>
 <div class="tablewrap">
 <table>
-<caption>Table 3. Equivalent skin dose (basal layer) by packing configuration. The first uncertainty is statistical (1σ); the "calculation range" accounts for the systematics of bead shape and glass density (§ below).</caption>
+<caption>Table 3. Skin dose-equivalent rate Ḣ<sub>p</sub>(0.07) (basal layer) by packing configuration. The first uncertainty is statistical (1σ); the "calculation range" accounts for the systematics of bead shape and glass density (§ below).</caption>
 <thead><tr><th>Configuration</th><th>Ḣ<sub>p</sub>(0.07) (sphere), µSv/h</th><th>stat. (1σ)</th><th>calculation range</th><th>electron fraction</th></tr></thead>
 <tbody>
 <tr><td>single bead</td><td class="num-col"><b>6.69</b></td><td class="num-col">±0.3 %</td><td class="num-col">6.0–9.0</td><td>99.9 %</td></tr>
@@ -483,14 +483,14 @@
 </tbody></table>
 </div>
 <p>In addition, the result is <strong>linearly proportional to the measured specific activity</strong> of the source: its uncertainty (a measured input) propagates to the dose 1:1 and is not included in the calculation budget — when the activities are refined, the dose is simply rescaled by the corresponding factor.</p>
-<p>Field saturation with packing size: the central dose grows only while beads are added within the lateral spread of the beta particles (~1 cm). Relative to a single bead: chain ×2.7; mat 5×5 ×7.2, 7×7 ×7.3, 9×9 ×7.2 — <strong>further enlargement of the packing does not increase the dose</strong> (saturation is already reached at ~5×5). The equivalent skin dose is <strong>almost entirely due to the electron component</strong> (&gt; 99.8 %); the photon contribution does not exceed 0.2 %, but photons penetrate substantially deeper than beta particles (Fig. 1).</p>
+<p>Field saturation with packing size: the central dose rate grows only while beads are added within the lateral spread of the beta particles (~1 cm). Relative to a single bead: chain ×2.7; mat 5×5 ×7.2, 7×7 ×7.3, 9×9 ×7.2 — <strong>further enlargement of the packing does not increase the dose rate</strong> (saturation is already reached at ~5×5). The skin dose-equivalent rate is <strong>almost entirely due to the electron component</strong> (&gt; 99.8 %); the photon contribution does not exceed 0.2 %, but photons penetrate substantially deeper than beta particles (Fig. 1).</p>
 <figure>
   <img src="figures/beads_skin_profile.png" alt="Dose-rate depth profile and equivalent basal-layer dose">
-  <figcaption><b>Fig. 1.</b> Left — the absorbed-dose-rate distribution versus depth in the skin phantom for the electron (β particles, conversion and Auger electrons) and photon (γ and X-ray) components; the "single bead", "chain" and "mat" configurations. The green band marks the epidermal basal layer (50–100 µm), for which the equivalent skin dose is normalized. The electron-component dose rate falls off at depths comparable to the extrapolated range of the beta particles (≈ 11 mm for E<sub>max</sub> = 2.27 MeV <sup>234m</sup>Pa); the photon component attenuates much more slowly (exponentially, with the mass attenuation coefficient μ of soft tissue). Right — the basal-layer equivalent dose split into components.</figcaption>
+  <figcaption><b>Fig. 1.</b> Left — the absorbed-dose-rate distribution versus depth in the skin phantom for the electron (β particles, conversion and Auger electrons) and photon (γ and X-ray) components; the "single bead", "chain" and "mat" configurations. The green band marks the epidermal basal layer (50–100 µm), for which the skin dose-equivalent rate is normalized. The electron-component dose rate falls off at depths comparable to the extrapolated range of the beta particles (≈ 11 mm for E<sub>max</sub> = 2.27 MeV <sup>234m</sup>Pa); the photon component attenuates much more slowly (exponentially, with the mass attenuation coefficient μ of soft tissue). Right — the basal-layer dose-equivalent rate split into components.</figcaption>
 </figure>
 
-<h2><span class="num">5</span>Spatial distribution of the dose field</h2>
-<p>Three-dimensional distribution of the absorbed dose (in a tissue-equivalent medium) around the source for the three configurations. As the packing grows, the localized field of a single bead turns into a quasi-uniform near-surface irradiation layer; the photon component is always broader and orders of magnitude weaker than the electron one.</p>
+<h2><span class="num">5</span>Spatial distribution of the dose-rate field</h2>
+<p>Three-dimensional distribution of the absorbed dose rate (in a tissue-equivalent medium) around the source for the three configurations. As the packing grows, the localized field of a single bead turns into a quasi-uniform near-surface irradiation layer; the photon component is always broader and orders of magnitude weaker than the electron one.</p>
 <div class="fig2">
   <figure><img src="figures/field_3d_single.png" alt="3D field of a single bead"><figcaption><b>Fig. 2a.</b> Single bead: a localized region of elevated dose extending a few millimetres into the skin.</figcaption></figure>
   <figure><img src="figures/field_3d_chain.png" alt="3D field of a chain"><figcaption><b>Fig. 2b.</b> Chain: the irradiated region is elongated along the thread.</figcaption></figure>
@@ -513,7 +513,7 @@
 <h2><span class="num">7</span>Verification by a classical method</h2>
 <p>To check both the order of magnitude and the absolute value independently of Geant4, a classical (semi-analytical) estimate was made, "from simple to accurate": first a closed-form formula for the mat that the reader can reproduce by hand (§7.1), then a volume integral over the sphere with two variants of the dose kernel (§7.2).</p>
 
-<h3>7.1. Equivalent dose rate of the dense packing: closed-form (semi-infinite plane source)</h3>
+<h3>7.1. Equivalent dose rate Ḣ<sub>p</sub>(0.07) of the dense packing: closed-form (semi-infinite plane source)</h3>
 <p>The dense mat is laterally much larger than the beta range (the extrapolated range of the <sup>234m</sup>Pa β, E<sub>max</sub> = 2.27 MeV, in tissue ≈ 1.1 g/cm² ≈ 11 mm; the 9×9 mat ≈ 37 mm), so it is legitimate to approximate it as an <strong>infinite uniform β-active plane of glass</strong>. The dose rate at the surface of a semi-infinite uniform source equals <em>half</em> the equilibrium rate in an infinite medium (energy splits equally "up/down"), attenuated to the basal-layer depth:</p>
 <p class="big" style="text-align:center">Ḋ<sub>p</sub>(0.07) = ½ · Σ<sub>i</sub> C<sub>v,i</sub> · Ē<sub>i</sub> · e<sup>−ν<sub>i</sub>σ</sup> · k</p>
 <ul>
@@ -542,7 +542,7 @@
 <p><strong>Uncertainty.</strong> The result is dominated by <sup>234m</sup>Pa (the factor e<sup>−νσ</sup> ≈ 0.96 barely matters). The governing contributions are the specific activity (HPGe, u ≈ 10 %) and the mean β energy (u ≈ 10 %): u<sub>rel</sub> = √(0.10² + 0.10²) ≈ 14 %. Result: <strong>Ḋ<sub>p</sub>(0.07) ≈ 53 ± 7 µGy/h</strong>.</p>
 <div class="callout"><b>Analytical estimate 53 ± 7 µGy/h vs Monte Carlo 48.4 µGy/h — agreement +9 %</b> (within uncertainty). A closed-form formula done on paper reproduces the MC result for the mat. The slight overestimate is expected: a real bead layer has finite thickness (~0.4 g/cm², comparable to the range), whereas the "semi-infinite" model assumes an infinitely thick source and slightly over-counts the contribution of deeper layers.</div>
 
-<h3>7.2. Equivalent dose rate of the single bead: dose-kernel integral over the sphere</h3>
+<h3>7.2. Equivalent dose rate Ḣ<sub>p</sub>(0.07) of the single bead: dose-kernel integral over the sphere</h3>
 <p>A single bead is small compared with the beta range, so the semi-infinite approximation does not apply to it. For it (and the intermediate packings) a beta <strong>point-dose kernel</strong> was used, integrated over the glass volume of the sphere with self-absorption; the chain and mat are obtained by superposition of spheres on a lattice:</p>
 <p class="big" style="text-align:center">Ḋ(r) = a·Ē·ν / (4π I) · Φ(ν·m) / r²,   I = ∫₀<sup>∞</sup> Φ(u) du</p>
 <p>where m is the mass along the ray (glass + tissue) and r the distance. Two kernels Φ were considered:</p>
