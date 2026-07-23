@@ -498,8 +498,8 @@
 <div id="lb" aria-hidden="true"><span class="x">&times;</span><img alt=""><div class="cap"></div></div>
 <script>
 function setLang(l){
-  document.getElementById('lang-ru').style.display = l=='en'?'none':'';
-  document.getElementById('lang-en').style.display = l=='en'?'':'none';
+  document.getElementById('lang-ru').style.display = l=='en'?'none':'block';
+  document.getElementById('lang-en').style.display = l=='en'?'block':'none';
   document.getElementById('btn-ru').classList.toggle('active',l!='en');
   document.getElementById('btn-en').classList.toggle('active',l=='en');
   document.documentElement.lang = l;
