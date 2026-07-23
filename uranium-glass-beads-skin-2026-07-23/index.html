@@ -85,6 +85,9 @@
   .lang-btn:last-child{border-radius:0 4px 4px 0}
   .lang-btn.active{background:var(--accent); border-color:var(--accent); color:#fff}
   #lang-en{display:none}
+  .pm{display:inline-block; vertical-align:-.42em; font-size:.6em; line-height:1.02;
+    text-align:left; margin-left:1px; letter-spacing:0}
+  .pm b{display:block; font-weight:inherit}
   #lb{position:fixed; inset:0; background:rgba(0,0,0,.88); display:none;
     align-items:center; justify-content:center; z-index:100; cursor:zoom-out; padding:24px}
   #lb.open{display:flex}
@@ -108,15 +111,15 @@
 <header>
   <p class="kicker">VibeEngineering · радиационная дозиметрия · Geant4 Монте-Карло · 23.07.2026 · ред. 4</p>
   <h1>Монте-Карло расчёт эквивалентной дозы в коже от бета- и гамма-излучения уранового стеклянного бисера</h1>
-  <p class="lede">Расчёт мощности дозы в коже методом Монте-Карло (Geant4) при контакте с чешским урановым бисером «жёлтый опал 6/0». Измеренные удельные активности <b>²³⁸U 2.27·10⁵ Бк/кг</b>, <b>²³⁵U 9.9·10³ Бк/кг</b>; уран очищенный — вековое равновесие ряда нарушено, гамма-активные дочерние продукты радиевого звена отсутствуют. Три конфигурации укладки, сферическая геометрия бусины. Эквивалентная доза в коже на контакте — от <b>6.7<sub>−0.7</sub><sup>+2.3</sup></b> (одна бусина) до <b>48 ± 5 мкЗв/ч</b> (плотный коврик), практически целиком за счёт бета-излучения.</p>
-  <p class="lede" style="margin-top:8px">Расчёт выполнен ИИ-агентом (Anthropic Claude) под руководством и контролем оператора; результаты прошли независимый аудит кода. Подробнее — §11 «Заявление об использовании ИИ».</p>
+  <p class="lede">Расчёт мощности дозы в коже методом Монте-Карло (Geant4) при контакте с чешским урановым бисером «жёлтый опал 6/0». Измеренные удельные активности <b>²³⁸U 2.27·10⁵ Бк/кг</b>, <b>²³⁵U 9.9·10³ Бк/кг</b>; уран очищенный — вековое равновесие ряда нарушено, гамма-активные дочерние продукты радиевого звена отсутствуют. Три конфигурации укладки, сферическая геометрия бусины. Мощность эквивалентной дозы внешнего облучения кожи Ḣ<sub>p</sub>(0,07) на контакте — от <b>6.7<span class="pm"><b>+2.3</b><b>−0.7</b></span></b> (одна бусина) до <b>48 ± 5 мкЗв/ч</b> (плотный коврик), практически целиком за счёт бета-излучения.</p>
+  <p class="lede" style="margin-top:8px">Расчёт выполнен ИИ-агентом (Anthropic Claude) под руководством и контролем оператора; результаты прошли независимый аудит кода. Подробнее — §10 «Заявление об использовании ИИ».</p>
 </header>
 
 <div class="abstract">
   <p><strong>Образец.</strong> Чешский урановый стеклянный бисер «Бисер жёлтый опал, урановое стекло 6/0, 4.1 мм» (арт. 31119001/0 8200). Масса бусины 63.96 мг (14.710 г / 230 шт). Измерены удельные активности: <sup>238</sup>U 2.27·10<sup>5</sup> Бк/кг (18.37 г/кг), <sup>235</sup>U 9.90·10<sup>3</sup> Бк/кг (0.1237 г/кг); обогащение по <sup>235</sup>U 0.67 % — практически природное. В стекле — флюоресценция церия (обесцвечиватель CeO<sub>2</sub>), барий отсутствует.</p>
   <p><strong>Источник.</strong> Уран в стекле химически очищенный, <mark>содержание радия минимально</mark>: вековое равновесие ряда <sup>238</sup>U нарушено на <sup>226</sup>Ra, поэтому гамма-активные продукты радиевого звена (<sup>214</sup>Pb, <sup>214</sup>Bi) в стекле отсутствуют. Эквивалентную дозу в коже формируют короткоживущие дочерние нуклиды первых звеньев цепочек распада, восстановившие вековое равновесие с ураном за месяцы после варки, — прежде всего высокоэнергетическая β-частица <strong><sup>234m</sup>Pa (E<sub>max</sub> 2.27 МэВ)</strong>.</p>
-  <p><strong>Метод.</strong> Geant4 11.2.1<a class="cit" href="#r9">[9]</a>, электромагнитная физика G4EmStandardPhysics_option4 и модуль радиоактивного распада G4RadioactiveDecay<a class="cit" href="#r11">[11]</a>; источник распределён по объёму стекла (учтено самопоглощение бета-частиц), сферическая бусина в контакте с фантомом «кожа + прилегающие ткани» (слоистая мягкая ткань ICRU<a class="cit" href="#r8">[8]</a>). Мощность дозы рассчитывается по глубине, усреднённой по площади 1 см²; эквивалентная доза в коже берётся на глубине базального слоя эпидермиса (среднее по 50–100 мкм) по определению ICRP<a class="cit" href="#r6">[6]</a>. Нормировка проверена санити-тестом (отношение к аналитическому закону обратных квадратов 1.000).</p>
-  <p><strong>Результат.</strong> Эквивалентная доза в коже (базальный слой, контакт вплотную): <strong>одна бусина 6.7<sub>−0.7</sub><sup>+2.3</sup> мкЗв/ч</strong>, цепочка 18<sub>−2</sub><sup>+5</sup>, <strong>плотный коврик 48 ± 5 мкЗв/ч</strong> (статистическая погрешность &lt; 1 %; асимметричная систематическая неопределённость определяется формой бусины — сферическая модель даёт нижнюю оценку — и плотностью стекла, бюджет в §4). Вклад фотонов &lt; 0.2 %; из энергии бета-частиц 55–67 % поглощается в самом стекле. При обычном обращении доза остаётся в пределах норматива для населения (предел эквивалентной дозы в коже — 50 мЗв/год<a class="cit" href="#r7">[7]</a>); заметная доза набирается лишь при многочасовом ежедневном контакте вплотную.</p>
+  <p><strong>Метод.</strong> Geant4 11.2.1<a class="cit" href="#r9">[9]</a>, электромагнитная физика G4EmStandardPhysics_option4 и модуль радиоактивного распада G4RadioactiveDecay<a class="cit" href="#r11">[11]</a>; источник распределён по объёму стекла (учтено самопоглощение бета-частиц), сферическая бусина в контакте с фантомом «кожа + прилегающие ткани» (слоистая мягкая ткань ICRU<a class="cit" href="#r8">[8]</a>). Целевая величина — <strong>мощность эквивалентной дозы внешнего облучения кожи Ḣ<sub>p</sub>(0,07)</strong> (мощность персонального эквивалента дозы на глубине 0,07 мм ≡ 7 мг/см², т.е. базального слоя эпидермиса), усреднённая по площади 1 см² по определению ICRP/ICRU<a class="cit" href="#r6">[6]</a>; в расчёте она берётся как среднее по глубине 50–100 мкм. Нормировка проверена санити-тестом (отношение к аналитическому закону обратных квадратов 1.000).</p>
+  <p><strong>Результат.</strong> Мощность эквивалентной дозы внешнего облучения кожи Ḣ<sub>p</sub>(0,07) (базальный слой, контакт вплотную): <strong>одна бусина 6.7<span class="pm"><b>+2.3</b><b>−0.7</b></span> мкЗв/ч</strong>, цепочка 18<span class="pm"><b>+5</b><b>−2</b></span>, <strong>плотный коврик 48 ± 5 мкЗв/ч</strong> (статистическая погрешность &lt; 1 %; асимметричная систематическая неопределённость определяется формой бусины — сферическая модель даёт нижнюю оценку — и плотностью стекла, бюджет в §4). Вклад фотонов &lt; 0.2 %; из энергии бета-частиц 55–67 % поглощается в самом стекле. При обычном обращении доза остаётся в пределах норматива для населения (предел эквивалентной дозы в коже — 50 мЗв/год<a class="cit" href="#r7">[7]</a>); заметная доза набирается лишь при многочасовом ежедневном контакте вплотную.</p>
 </div>
 
 <p class="big"><b>Ключевые слова:</b> урановое стекло; природные радионуклиды (NORM); очищенный уран; нарушение векового равновесия; <sup>234m</sup>Pa; доза в коже; бета-дозиметрия; эффект «горячей частицы»; Монте-Карло; Geant4; потребительские изделия с радиоактивностью.</p>
@@ -154,7 +157,7 @@
 <li><strong>G4RadioactiveDecay</strong> — модуль радиоактивного распада. Для заданного ядра он разыгрывает акт распада по оценённым ядерным данным (библиотека на основе ENSDF / ICRP-107<a class="cit" href="#r4">[4]</a><a class="cit" href="#r5">[5]</a>): вид распада, <em>полный непрерывный β-спектр</em> (а не среднюю энергию), гамма-каскад дочернего ядра, электроны внутренней конверсии, характеристическое рентгеновское излучение и оже-электроны. Спектры источника не задаются вручную — они порождаются из ядерных данных.</li>
 </ul>
 <h3>Первичный источник и учёт цепочки распада</h3>
-<p>Первичной частицей каждой истории служит материнский ион (например, <sup>234</sup>Th) с нулевой кинетической энергией, помещённый в случайную точку объёма стекла; распад разыгрывается немедленно. Поскольку β-распад сохраняет массовое число A, изобарная подцепочка <strong>A = 234</strong> (<sup>234</sup>Th → <sup>234m</sup>Pa → <sup>234</sup>U) в вековом равновесии моделируется как единое целое: один запуск с активностью <sup>234</sup>Th воспроизводит совокупное излучение <sup>234</sup>Th и <sup>234m</sup>Pa (их активности равны). Альфа-распад меняет A, поэтому дальше цепочка не идёт и радиевый ряд не восстанавливается. Цепочка <strong>A = 235</strong> (<sup>235</sup>U → <sup>231</sup>Th) моделируется аналогично. Итоговая доза — сумма вкладов <strong>двух непересекающихся цепочек</strong>, что исключает двойной учёт (см. §11 — независимый аудит кода).</p>
+<p>Первичной частицей каждой истории служит материнский ион (например, <sup>234</sup>Th) с нулевой кинетической энергией, помещённый в случайную точку объёма стекла; распад разыгрывается немедленно. Поскольку β-распад сохраняет массовое число A, изобарная подцепочка <strong>A = 234</strong> (<sup>234</sup>Th → <sup>234m</sup>Pa → <sup>234</sup>U) в вековом равновесии моделируется как единое целое: один запуск с активностью <sup>234</sup>Th воспроизводит совокупное излучение <sup>234</sup>Th и <sup>234m</sup>Pa (их активности равны). Альфа-распад меняет A, поэтому дальше цепочка не идёт и радиевый ряд не восстанавливается. Цепочка <strong>A = 235</strong> (<sup>235</sup>U → <sup>231</sup>Th) моделируется аналогично. Итоговая доза — сумма вкладов <strong>двух непересекающихся цепочек</strong>, что исключает двойной учёт (см. §10 — независимый аудит кода).</p>
 <p><strong>Свёртка активностями.</strong> Каждый расчёт даёт <em>отклик</em> — поглощённую энергию в ткани на один распад. Мощность дозы получается умножением отклика на измеренную активность и суммированием по цепочкам: Ḋ = Σ A<sub>i</sub>·R<sub>i</sub>. Разделение «транспорт ↔ активности» позволяет пересчитывать дозу при уточнении активностей без повторного моделирования.</p>
 <h3>Геометрия и фантом</h3>
 <p><strong>Стекло</strong> — натрий-кальциевое силикатное (сода-известь) с добавкой U 1.84 масс.% и Ce ~0.5 % (CeO<sub>2</sub>; точное содержание неизвестно, влияние на перенос β/γ при этой доле пренебрежимо), плотность 2.5 г/см³<a class="cit" href="#r1">[1]</a>. <strong>Бусина</strong> 6/0 (рокайль) моделируется как <strong>сфера Ø4.1 мм с осевым цилиндрическим отверстием</strong> (радиус 0.93 мм подобран под измеренную массу 63.96 мг); сфера касается кожи в одной точке. Источник распределён по объёму стекла, чем учитывается <strong>самопоглощение бета-частиц</strong>: часть эмитированных бета-частиц поглощается в самом стекле, не достигая кожи. По расчёту в стекле поглощается <strong>55 % энергии бета-частиц</strong> для одиночной бусины и до <strong>67 %</strong> в плотной укладке. <strong>Цепочка</strong> — 11 сфер в линейный ряд с шагом 4.1 мм (касание по внешнему диаметру), ось ряда параллельна поверхности кожи; скоринг под центральной бусиной. <strong>Коврик</strong> — квадратная решётка бусин с тем же шагом.</p>
@@ -163,7 +166,7 @@
 <p>Статистика — 2·10⁶ распадов на цепочку A = 234 и 1·10⁶ на A = 235. Статистическая погрешность (1σ) мощности дозы в базальном слое — 0.3 % (одна бусина), 0.6 % (цепочка), 1.0 % (коврик), существенно меньше систематических допущений (§9). Вклад тормозного излучения в дозу кожи пренебрежимо мал (&lt; 0.1 %). Обоснование достоверности расчёта — §8.</p>
 
 <h2><span class="num">4</span>Доза в коже: результаты</h2>
-<p>Мощность эквивалентной дозы в коже (мкГр/ч = мкЗв/ч, взвешивающий коэффициент w<sub>R</sub> = 1 для β и γ), контакт вплотную, усреднение по площади 1 см²:</p>
+<p>Мощность эквивалентной дозы внешнего облучения кожи Ḣ<sub>p</sub>(0,07) (мкГр/ч = мкЗв/ч, взвешивающий коэффициент w<sub>R</sub> = 1 для β и γ), контакт вплотную, усреднение по площади 1 см²:</p>
 <div class="tablewrap">
 <table>
 <caption>Таблица 2. Мощность дозы по глубине кожи, мкЗв/ч. Электронная (β) и фотонная (γ) компоненты — раздельно. Статистическая погрешность ≲ 1 %.</caption>
@@ -180,7 +183,7 @@
 <div class="tablewrap">
 <table>
 <caption>Таблица 3. Эквивалентная доза в коже (базальный слой) по конфигурациям укладки. Первая погрешность — статистическая (1σ); «расчётный диапазон» учитывает систематику формы бусины и плотности стекла (§ ниже).</caption>
-<thead><tr><th>Конфигурация</th><th>H<sub>кожа</sub> (сфера), мкЗв/ч</th><th>стат. (1σ)</th><th>расчётный диапазон</th><th>доля электронов</th></tr></thead>
+<thead><tr><th>Конфигурация</th><th>Ḣ<sub>p</sub>(0,07) (сфера), мкЗв/ч</th><th>стат. (1σ)</th><th>расчётный диапазон</th><th>доля электронов</th></tr></thead>
 <tbody>
 <tr><td>одна бусина</td><td class="num-col"><b>6.69</b></td><td class="num-col">±0.3 %</td><td class="num-col">6.0–9.0</td><td>99.9 %</td></tr>
 <tr><td>цепочка (11 бусин)</td><td class="num-col"><b>18.3</b></td><td class="num-col">±0.6 %</td><td class="num-col">16–23</td><td>99.9 %</td></tr>
@@ -191,7 +194,7 @@
 <p>Статистическая погрешность метода Монте-Карло мала (&lt; 1 %); итоговую неопределённость расчёта определяют систематические допущения, прежде всего форма бусины. Сферическая модель даёт <strong>нижнюю оценку</strong> кожной дозы (компактная геометрия, точечный контакт, максимальное самопоглощение); цилиндрическая — верхнюю; истинное значение для реального рокайля (скруглённый бочонок) лежит между ними.</p>
 <div class="tablewrap">
 <table>
-<caption>Таблица 4. Бюджет неопределённостей расчётной части (вклад в H<sub>кожа</sub>).</caption>
+<caption>Таблица 4. Бюджет неопределённостей расчётной части (вклад в Ḣ<sub>p</sub>(0,07)).</caption>
 <thead><tr><th>Источник</th><th>Тип</th><th>Одна бусина</th><th>Коврик</th></tr></thead>
 <tbody>
 <tr><td>статистика Монте-Карло</td><td>случайная</td><td>±0.3 %</td><td>±1.0 %</td></tr>
@@ -234,7 +237,7 @@
 <div class="tablewrap">
 <table>
 <caption>Таблица 5. Пределы эквивалентной дозы в коже (НРБ-99/2009<a class="cit" href="#r7">[7]</a>) и время контакта до предела для населения (50 мЗв/год).</caption>
-<thead><tr><th>Сценарий</th><th>H<sub>кожа</sub>, мкЗв/ч</th><th>Часов до 50 мЗв/год</th><th>Эквивалент</th></tr></thead>
+<thead><tr><th>Сценарий</th><th>Ḣ<sub>p</sub>(0,07), мкЗв/ч</th><th>Часов до 50 мЗв/год</th><th>Эквивалент</th></tr></thead>
 <tbody>
 <tr><td>одна бусина</td><td class="num-col">6.7</td><td class="num-col">≈ 7500</td><td>~20 ч каждый день весь год</td></tr>
 <tr><td>цепочка (11)</td><td class="num-col">18.3</td><td class="num-col">≈ 2700</td><td>~7.5 ч каждый день весь год</td></tr>
@@ -294,7 +297,16 @@
 <li><b>Предел для кистей/стоп</b> также 50 мЗв/год (население) — тот же порядок, актуален при длительном удержании бисера в руках.</li>
 </ul>
 
-<h2><span class="num">10</span>Источники, данные и код</h2>
+<h2><span class="num">10</span>Заявление об использовании ИИ</h2>
+<p>Работа выполнена в связке «оператор + ИИ-агент» (интерфейс Claude Code, Anthropic). Роли распределены так:</p>
+<ul>
+<li><strong>Расчётная линия</strong> (модель источника, геометрия и физика в Geant4, код на C++, прогоны, постпроцессинг и свёртка на Python, иллюстрации и 3D-визуализация поля, текст статьи) — ИИ-агент Claude Code; модели Anthropic Claude Opus 4.8 и Claude Fable 5.</li>
+<li><strong>Независимый аудит</strong> — отдельный ИИ-агент (модель Anthropic Claude): проверка по фактам и методике. Аудит независимо воспроизвёл дозы из сырых данных расчёта и выявил ошибку нормировки в первой редакции (двойной учёт изобарной подцепочки при суммировании перекрывающихся прогонов): команда ограничения цепочки в аналоговом режиме Geant4 не действует, поэтому запуск <sup>234</sup>Th уже содержал вклад <sup>234m</sup>Pa. Исправление — суммирование только по двум непересекающимся цепочкам (A = 234, A = 235). Качественные выводы при этом не изменились (ошибка была в консервативную сторону).</li>
+<li><strong>Оператор (человек):</strong> предоставление образца и его характеристик, измеренных коллегами методом гамма-спектрометрии на HPGe-детекторе<a class="cit" href="#r14">[14]</a> (удельные активности <sup>238</sup>U/<sup>235</sup>U, масса, геометрия), постановка задачи, выбор и подтверждение допущений, приёмка каждого шага, критические замечания, решения о публикации. Ответственность за исходные допущения и итоговые выводы — на операторе.</li>
+</ul>
+<p>Все приведённые величины воспроизводимы приложенным кодом (проект <code>beads_skin</code>).</p>
+
+<h2><span class="num">11</span>Источники, данные и код</h2>
 <ol class="refs">
 <li id="r1">Strahan D. Uranium in glass, glazes and enamels: history, identification and handling. <i>Studies in Conservation</i>, 46(3), 2001, 181–195. Взято: типичное содержание урана в стекле — до ~1.4–2 масс.% (наш образец 1.85 %), обращение и доза. <a href="https://www.tandfonline.com/doi/abs/10.1179/sic.2001.46.3.181">tandfonline</a></li>
 <li id="r2">Bamford C.R. <i>Colour Generation and Control in Glass</i>. Elsevier, 1977. Взято: CeO<sub>2</sub> как обесцвечиватель стекла.</li>
@@ -316,15 +328,6 @@
 </ol>
 <p class="big"><b>Код и данные расчёта:</b> проект Geant4 <code>beads_skin</code> (main.cc, свёртка <code>postproc_beads.py</code>, рендеры <code>field_render.py</code>, <code>fig_hotparticle.py</code>). Все графические материалы — в каталоге <code>figures/</code> этой страницы.</p>
 
-<h2><span class="num">11</span>Заявление об использовании ИИ</h2>
-<p>Работа выполнена в связке «оператор + ИИ-агент» (интерфейс Claude Code, Anthropic). Роли распределены так:</p>
-<ul>
-<li><strong>Расчётная линия</strong> (модель источника, геометрия и физика в Geant4, код на C++, прогоны, постпроцессинг и свёртка на Python, иллюстрации и 3D-визуализация поля, текст статьи) — ИИ-агент Claude Code; модели Anthropic Claude Opus 4.8 и Claude Fable 5.</li>
-<li><strong>Независимый аудит</strong> — отдельный ИИ-агент (модель Anthropic Claude): проверка по фактам и методике. Аудит независимо воспроизвёл дозы из сырых данных расчёта и выявил ошибку нормировки в первой редакции (двойной учёт изобарной подцепочки при суммировании перекрывающихся прогонов): команда ограничения цепочки в аналоговом режиме Geant4 не действует, поэтому запуск <sup>234</sup>Th уже содержал вклад <sup>234m</sup>Pa. Исправление — суммирование только по двум непересекающимся цепочкам (A = 234, A = 235). Качественные выводы при этом не изменились (ошибка была в консервативную сторону).</li>
-<li><strong>Оператор (человек):</strong> предоставление образца и его характеристик, измеренных коллегами методом гамма-спектрометрии на HPGe-детекторе<a class="cit" href="#r14">[14]</a> (удельные активности <sup>238</sup>U/<sup>235</sup>U, масса, геометрия), постановка задачи, выбор и подтверждение допущений, приёмка каждого шага, критические замечания, решения о публикации. Ответственность за исходные допущения и итоговые выводы — на операторе.</li>
-</ul>
-<p>Все приведённые величины воспроизводимы приложенным кодом (проект <code>beads_skin</code>).</p>
-
 <div class="foot">
   <p>Расчёт выполнен ИИ-агентом (Anthropic Claude) под руководством и контролем оператора. Метод — прямое Монте-Карло моделирование переноса излучения (Geant4 11.2.1) со свёрткой измеренными активностями. Величины даны для консервативной геометрии контакта вплотную.</p>
   <p>VibeEngineering · 23.07.2026 · дозиметрия уранового бисера · ред. 4 (научная редакция: заголовок, IAEA-данные, классическая проверка, живые ссылки)</p>
@@ -337,15 +340,15 @@
 <header>
   <p class="kicker">VibeEngineering · radiation dosimetry · Geant4 Monte Carlo · 23 Jul 2026 · rev. 4</p>
   <h1>Monte Carlo Calculation of the Equivalent Skin Dose from Beta and Gamma Radiation of Uranium Glass Beads</h1>
-  <p class="lede">Monte Carlo (Geant4) calculation of the skin dose rate from contact with Czech uranium glass beads ("yellow opal, size 6/0"). Measured specific activities <b>²³⁸U 2.27·10⁵ Bq/kg</b>, <b>²³⁵U 9.9·10³ Bq/kg</b>; the uranium is purified — the series secular equilibrium is broken, and the gamma-active daughters of the radium branch are absent. Three packing configurations, spherical bead geometry. The equivalent skin dose on contact ranges from <b>6.7<sub>−0.7</sub><sup>+2.3</sup></b> (single bead) to <b>48 ± 5 µSv/h</b> (dense mat), almost entirely from beta radiation.</p>
-  <p class="lede" style="margin-top:8px">The calculation was performed by an AI agent (Anthropic Claude) under the guidance and control of the operator; the results passed an independent code audit. See §11 "Statement on the use of AI".</p>
+  <p class="lede">Monte Carlo (Geant4) calculation of the skin dose rate from contact with Czech uranium glass beads ("yellow opal, size 6/0"). Measured specific activities <b>²³⁸U 2.27·10⁵ Bq/kg</b>, <b>²³⁵U 9.9·10³ Bq/kg</b>; the uranium is purified — the series secular equilibrium is broken, and the gamma-active daughters of the radium branch are absent. Three packing configurations, spherical bead geometry. The personal skin dose-equivalent rate Ḣ<sub>p</sub>(0.07) on contact ranges from <b>6.7<span class="pm"><b>+2.3</b><b>−0.7</b></span></b> (single bead) to <b>48 ± 5 µSv/h</b> (dense mat), almost entirely from beta radiation.</p>
+  <p class="lede" style="margin-top:8px">The calculation was performed by an AI agent (Anthropic Claude) under the guidance and control of the operator; the results passed an independent code audit. See §10 "Statement on the use of AI".</p>
 </header>
 
 <div class="abstract">
   <p><strong>Sample.</strong> Czech uranium glass beads "yellow opal, uranium glass 6/0, 4.1 mm" (art. 31119001/0 8200). Bead mass 63.96 mg (14.710 g / 230 pcs). Measured specific activities: <sup>238</sup>U 2.27·10<sup>5</sup> Bq/kg (18.37 g/kg), <sup>235</sup>U 9.90·10<sup>3</sup> Bq/kg (0.1237 g/kg); <sup>235</sup>U enrichment 0.67 % — essentially natural. The glass shows cerium fluorescence (CeO<sub>2</sub> decolorizer); barium is absent.</p>
   <p><strong>Source.</strong> The uranium is chemically purified, with <mark>minimal radium content</mark>: the secular equilibrium of the <sup>238</sup>U series is broken at <sup>226</sup>Ra, so the gamma-active daughters of the radium branch (<sup>214</sup>Pb, <sup>214</sup>Bi) are absent from the glass. The equivalent skin dose is produced by the short-lived daughters of the first links of the decay chains, which re-established secular equilibrium with the uranium within months after melting — above all the high-energy beta particle of <strong><sup>234m</sup>Pa (E<sub>max</sub> 2.27 MeV)</strong>.</p>
-  <p><strong>Method.</strong> Geant4 11.2.1<a class="cit" href="#r9">[9]</a>, electromagnetic physics G4EmStandardPhysics_option4 and the radioactive-decay module G4RadioactiveDecay<a class="cit" href="#r11">[11]</a>; the source is distributed over the glass volume (beta self-absorption is included), the spherical bead is in contact with a "skin + adjacent tissue" phantom (layered ICRU soft tissue<a class="cit" href="#r8">[8]</a>). The dose rate is computed versus depth, averaged over a 1 cm² area; the equivalent skin dose is taken at the depth of the epidermal basal layer (averaged over 50–100 µm) per the ICRP definition<a class="cit" href="#r6">[6]</a>. The normalization was verified with a sanity test (ratio to the analytical inverse-square law = 1.000).</p>
-  <p><strong>Result.</strong> Equivalent skin dose (basal layer, direct contact): <strong>single bead 6.7<sub>−0.7</sub><sup>+2.3</sup> µSv/h</strong>, chain 18<sub>−2</sub><sup>+5</sup>, <strong>dense mat 48 ± 5 µSv/h</strong> (statistical uncertainty &lt; 1 %; the asymmetric systematic uncertainty is set by the bead shape — the spherical model is a lower estimate — and glass density, budget in §4). The photon contribution is &lt; 0.2 %; of the emitted beta energy, 55–67 % is absorbed within the glass itself. Under normal handling the dose stays within the limit for the public (skin equivalent-dose limit 50 mSv/year<a class="cit" href="#r7">[7]</a>); an appreciable dose accumulates only under many hours of daily direct contact.</p>
+  <p><strong>Method.</strong> Geant4 11.2.1<a class="cit" href="#r9">[9]</a>, electromagnetic physics G4EmStandardPhysics_option4 and the radioactive-decay module G4RadioactiveDecay<a class="cit" href="#r11">[11]</a>; the source is distributed over the glass volume (beta self-absorption is included), the spherical bead is in contact with a "skin + adjacent tissue" phantom (layered ICRU soft tissue<a class="cit" href="#r8">[8]</a>). The target quantity is the <strong>directional/personal skin dose-equivalent rate Ḣ<sub>p</sub>(0.07)</strong> (rate of the personal dose equivalent at 0.07 mm depth ≡ 7 mg/cm², i.e. the epidermal basal layer), averaged over a 1 cm² area per the ICRP/ICRU definition<a class="cit" href="#r6">[6]</a>; in the calculation it is taken as the average over the 50–100 µm depth. The normalization was verified with a sanity test (ratio to the analytical inverse-square law = 1.000).</p>
+  <p><strong>Result.</strong> Personal skin dose-equivalent rate Ḣ<sub>p</sub>(0.07) (basal layer, direct contact): <strong>single bead 6.7<span class="pm"><b>+2.3</b><b>−0.7</b></span> µSv/h</strong>, chain 18<span class="pm"><b>+5</b><b>−2</b></span>, <strong>dense mat 48 ± 5 µSv/h</strong> (statistical uncertainty &lt; 1 %; the asymmetric systematic uncertainty is set by the bead shape — the spherical model is a lower estimate — and glass density, budget in §4). The photon contribution is &lt; 0.2 %; of the emitted beta energy, 55–67 % is absorbed within the glass itself. Under normal handling the dose stays within the limit for the public (skin equivalent-dose limit 50 mSv/year<a class="cit" href="#r7">[7]</a>); an appreciable dose accumulates only under many hours of daily direct contact.</p>
 </div>
 
 <h2><span class="num">1</span>Sample and objective</h2>
@@ -382,7 +385,7 @@
 <li><strong>G4RadioactiveDecay</strong> — the radioactive-decay module. For a given nucleus it samples the decay from evaluated nuclear data (a library based on ENSDF / ICRP-107<a class="cit" href="#r4">[4]</a><a class="cit" href="#r5">[5]</a>): the decay mode, the <em>full continuous β spectrum</em> (not a mean energy), the gamma cascade of the daughter, internal-conversion electrons, characteristic X-rays and Auger electrons. The source spectra are not set by hand — they are generated from nuclear data.</li>
 </ul>
 <h3>Primary source and treatment of the decay chain</h3>
-<p>The primary particle of each history is the parent ion (e.g. <sup>234</sup>Th) at zero kinetic energy, placed at a random point of the glass volume; the decay is sampled immediately. Since β decay conserves the mass number A, the isobaric sub-chain <strong>A = 234</strong> (<sup>234</sup>Th → <sup>234m</sup>Pa → <sup>234</sup>U) in secular equilibrium is modelled as a whole: one run with the activity of <sup>234</sup>Th reproduces the combined radiation of <sup>234</sup>Th and <sup>234m</sup>Pa (their activities are equal). Alpha decay changes A, so the chain does not proceed further and the radium series is not regenerated. The <strong>A = 235</strong> chain (<sup>235</sup>U → <sup>231</sup>Th) is modelled analogously. The total dose is the sum of the contributions of the <strong>two non-overlapping chains</strong>, which excludes double counting (see §11 — independent code audit).</p>
+<p>The primary particle of each history is the parent ion (e.g. <sup>234</sup>Th) at zero kinetic energy, placed at a random point of the glass volume; the decay is sampled immediately. Since β decay conserves the mass number A, the isobaric sub-chain <strong>A = 234</strong> (<sup>234</sup>Th → <sup>234m</sup>Pa → <sup>234</sup>U) in secular equilibrium is modelled as a whole: one run with the activity of <sup>234</sup>Th reproduces the combined radiation of <sup>234</sup>Th and <sup>234m</sup>Pa (their activities are equal). Alpha decay changes A, so the chain does not proceed further and the radium series is not regenerated. The <strong>A = 235</strong> chain (<sup>235</sup>U → <sup>231</sup>Th) is modelled analogously. The total dose is the sum of the contributions of the <strong>two non-overlapping chains</strong>, which excludes double counting (see §10 — independent code audit).</p>
 <p><strong>Convolution with activities.</strong> Each run yields a <em>response</em> — the energy absorbed in tissue per decay. The dose rate is obtained by multiplying the response by the measured activity and summing over the chains: Ḋ = Σ A<sub>i</sub>·R<sub>i</sub>. Separating "transport ↔ activities" allows the dose to be recomputed when activities are refined without repeating the simulation.</p>
 <h3>Geometry and phantom</h3>
 <p><strong>Glass</strong> — soda-lime silicate with U 1.84 wt% and Ce ~0.5 % (CeO<sub>2</sub>; exact content unknown, negligible effect on β/γ transport at this level), density 2.5 g/cm³<a class="cit" href="#r1">[1]</a>. The <strong>bead</strong> 6/0 (rocaille) is modelled as a <strong>sphere Ø4.1 mm with an axial cylindrical hole</strong> (radius 0.93 mm chosen to match the measured mass 63.96 mg); the sphere touches the skin at a single point. The source is distributed over the glass volume, which accounts for <strong>beta self-absorption</strong>: part of the emitted beta particles is absorbed in the glass and never reaches the skin. The calculation gives <strong>55 % of the beta energy absorbed in the glass</strong> for a single bead, rising to <strong>67 %</strong> in a dense packing. The <strong>chain</strong> is 11 spheres in a line at 4.1 mm pitch (touching), the row axis parallel to the skin; scoring is under the central bead. The <strong>mat</strong> is a square lattice of beads at the same pitch.</p>
@@ -391,7 +394,7 @@
 <p>Statistics: 2·10⁶ decays for chain A = 234 and 1·10⁶ for A = 235. The statistical uncertainty (1σ) of the basal-layer dose rate is 0.3 % (single bead), 0.6 % (chain), 1.0 % (mat), far below the systematic assumptions (§9). The bremsstrahlung contribution to the skin dose is negligible (&lt; 0.1 %). The credibility of the calculation is justified in §8.</p>
 
 <h2><span class="num">4</span>Skin dose: results</h2>
-<p>Equivalent skin dose rate (µGy/h = µSv/h, radiation weighting factor w<sub>R</sub> = 1 for β and γ), direct contact, averaged over 1 cm²:</p>
+<p>Personal skin dose-equivalent rate Ḣ<sub>p</sub>(0.07) (µGy/h = µSv/h, radiation weighting factor w<sub>R</sub> = 1 for β and γ), direct contact, averaged over 1 cm²:</p>
 <div class="tablewrap">
 <table>
 <caption>Table 2. Dose rate versus skin depth, µSv/h. Electron (β) and photon (γ) components separately. Statistical uncertainty ≲ 1 %.</caption>
@@ -408,7 +411,7 @@
 <div class="tablewrap">
 <table>
 <caption>Table 3. Equivalent skin dose (basal layer) by packing configuration. The first uncertainty is statistical (1σ); the "calculation range" accounts for the systematics of bead shape and glass density (§ below).</caption>
-<thead><tr><th>Configuration</th><th>H<sub>skin</sub> (sphere), µSv/h</th><th>stat. (1σ)</th><th>calculation range</th><th>electron fraction</th></tr></thead>
+<thead><tr><th>Configuration</th><th>Ḣ<sub>p</sub>(0.07) (sphere), µSv/h</th><th>stat. (1σ)</th><th>calculation range</th><th>electron fraction</th></tr></thead>
 <tbody>
 <tr><td>single bead</td><td class="num-col"><b>6.69</b></td><td class="num-col">±0.3 %</td><td class="num-col">6.0–9.0</td><td>99.9 %</td></tr>
 <tr><td>chain (11 beads)</td><td class="num-col"><b>18.3</b></td><td class="num-col">±0.6 %</td><td class="num-col">16–23</td><td>99.9 %</td></tr>
@@ -419,7 +422,7 @@
 <p>The Monte Carlo statistical uncertainty is small (&lt; 1 %); the overall calculation uncertainty is set by the systematic assumptions, chiefly the bead shape. The spherical model gives a <strong>lower estimate</strong> of the skin dose (compact geometry, point contact, maximal self-absorption); the cylindrical one an upper estimate; the true value for a real rocaille (rounded barrel) lies between them.</p>
 <div class="tablewrap">
 <table>
-<caption>Table 4. Uncertainty budget of the calculation (contribution to H<sub>skin</sub>).</caption>
+<caption>Table 4. Uncertainty budget of the calculation (contribution to Ḣ<sub>p</sub>(0.07)).</caption>
 <thead><tr><th>Source</th><th>Type</th><th>Single bead</th><th>Mat</th></tr></thead>
 <tbody>
 <tr><td>Monte Carlo statistics</td><td>random</td><td>±0.3 %</td><td>±1.0 %</td></tr>
@@ -462,7 +465,7 @@
 <div class="tablewrap">
 <table>
 <caption>Table 5. Equivalent skin-dose limits (NRB-99/2009<a class="cit" href="#r7">[7]</a>) and contact time to the limit for the public (50 mSv/year).</caption>
-<thead><tr><th>Scenario</th><th>H<sub>skin</sub>, µSv/h</th><th>Hours to 50 mSv/year</th><th>Equivalent</th></tr></thead>
+<thead><tr><th>Scenario</th><th>Ḣ<sub>p</sub>(0.07), µSv/h</th><th>Hours to 50 mSv/year</th><th>Equivalent</th></tr></thead>
 <tbody>
 <tr><td>single bead</td><td class="num-col">6.7</td><td class="num-col">≈ 7500</td><td>~20 h every day all year</td></tr>
 <tr><td>chain (11)</td><td class="num-col">18.3</td><td class="num-col">≈ 2700</td><td>~7.5 h every day all year</td></tr>
@@ -522,7 +525,16 @@
 <li><b>The limit for hands/feet</b> is also 50 mSv/year (public) — the same order, relevant for prolonged holding of the beads in the hands.</li>
 </ul>
 
-<h2><span class="num">10</span>References, data and code</h2>
+<h2><span class="num">10</span>Statement on the use of AI</h2>
+<p>The work was carried out by an "operator + AI agent" pairing (Claude Code interface, Anthropic). Roles:</p>
+<ul>
+<li><strong>Calculation line</strong> (source model, geometry and physics in Geant4, C++ code, runs, Python post-processing and convolution, illustrations and 3D field visualization, article text) — the Claude Code AI agent; Anthropic Claude Opus 4.8 and Claude Fable 5 models.</li>
+<li><strong>Independent audit</strong> — a separate AI agent (Anthropic Claude): a fact- and methodology-based review. It independently reproduced the doses from the raw calculation data and identified a normalization error in the first revision (double counting of the isobaric sub-chain when summing overlapping runs): the chain-limiting command has no effect in Geant4 analog mode, so the <sup>234</sup>Th run already contained the <sup>234m</sup>Pa contribution. The fix — summing only over the two non-overlapping chains (A = 234, A = 235). The qualitative conclusions were unchanged (the error was on the conservative side).</li>
+<li><strong>Operator (human):</strong> provided the sample and its characteristics, measured by colleagues via gamma-ray spectrometry on an HPGe detector<a class="cit" href="#r14">[14]</a> (specific activities <sup>238</sup>U/<sup>235</sup>U, mass, geometry), set the task, chose and confirmed the assumptions, accepted each step, made critical remarks, and made the publication decisions. Responsibility for the input assumptions and final conclusions rests with the operator.</li>
+</ul>
+<p>All reported values are reproducible with the attached code (project <code>beads_skin</code>).</p>
+
+<h2><span class="num">11</span>References, data and code</h2>
 <ol class="refs">
 <li>Strahan D. Uranium in glass, glazes and enamels: history, identification and handling. <i>Studies in Conservation</i>, 46(3), 2001, 181–195. Used: typical uranium content of glass up to ~1.4–2 wt% (our sample 1.85 %). <a href="https://www.tandfonline.com/doi/abs/10.1179/sic.2001.46.3.181">tandfonline</a></li>
 <li>Bamford C.R. <i>Colour Generation and Control in Glass</i>. Elsevier, 1977. Used: CeO<sub>2</sub> as a glass decolorizer.</li>
@@ -543,15 +555,6 @@
 <li>Hassan H.J., Hashim S. et al. Naturally Occurring Radioactive Materials in Bracelets and Necklaces: Radiological Risk Evaluation. <i>Int. J. Environ. Res. Public Health</i> 18(21), 2021, 11170. Analogous study (HPGe + Geant4 MC of NORM jewelry): their gamma-only, radium-bearing, low-U items → skin dose 0.04–0.42 µSv/h; our purified-U beta-dominated beads → higher skin dose but no penetrating series γ. <a href="https://doi.org/10.3390/ijerph182111170">doi:10.3390/ijerph182111170</a></li>
 </ol>
 <p class="big"><b>Calculation code and data:</b> Geant4 project <code>beads_skin</code> (main.cc, convolution <code>postproc_beads.py</code>, renderers <code>field_render.py</code>, <code>fig_hotparticle.py</code>). All graphics are in the <code>figures/</code> folder of this page.</p>
-
-<h2><span class="num">11</span>Statement on the use of AI</h2>
-<p>The work was carried out by an "operator + AI agent" pairing (Claude Code interface, Anthropic). Roles:</p>
-<ul>
-<li><strong>Calculation line</strong> (source model, geometry and physics in Geant4, C++ code, runs, Python post-processing and convolution, illustrations and 3D field visualization, article text) — the Claude Code AI agent; Anthropic Claude Opus 4.8 and Claude Fable 5 models.</li>
-<li><strong>Independent audit</strong> — a separate AI agent (Anthropic Claude): a fact- and methodology-based review. It independently reproduced the doses from the raw calculation data and identified a normalization error in the first revision (double counting of the isobaric sub-chain when summing overlapping runs): the chain-limiting command has no effect in Geant4 analog mode, so the <sup>234</sup>Th run already contained the <sup>234m</sup>Pa contribution. The fix — summing only over the two non-overlapping chains (A = 234, A = 235). The qualitative conclusions were unchanged (the error was on the conservative side).</li>
-<li><strong>Operator (human):</strong> provided the sample and its characteristics, measured by colleagues via gamma-ray spectrometry on an HPGe detector<a class="cit" href="#r14">[14]</a> (specific activities <sup>238</sup>U/<sup>235</sup>U, mass, geometry), set the task, chose and confirmed the assumptions, accepted each step, made critical remarks, and made the publication decisions. Responsibility for the input assumptions and final conclusions rests with the operator.</li>
-</ul>
-<p>All reported values are reproducible with the attached code (project <code>beads_skin</code>).</p>
 
 <div class="foot">
   <p>The calculation was performed by an AI agent (Anthropic Claude) under the guidance and control of the operator. Method — direct Monte Carlo radiation transport (Geant4 11.2.1) with convolution by measured activities. Values are for the conservative direct-contact geometry.</p>
