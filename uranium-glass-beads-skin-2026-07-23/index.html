@@ -379,6 +379,26 @@
 </ol>
 <p class="big"><b>Код и данные расчёта:</b> проект Geant4 <code>beads_skin</code> (main.cc, свёртка <code>postproc_beads.py</code>, рендеры <code>field_render.py</code>, <code>fig_hotparticle.py</code>). Все графические материалы — в каталоге <code>figures/</code> этой страницы.</p>
 
+<h2>Приложение А. Пересчёт плотности потока β в мощность эквивалентной дозы Ḣ<sub>p</sub>(0,07) (плотная укладка)</h2>
+<p>Для полевого контроля удобно связать показание <strong>плотности потока β-частиц</strong> φ<sub>β</sub> (измеряется блоком детектирования <strong>БДПБ</strong>, в том числе в составе дозиметра-радиометра <strong>МКС-01СА</strong>) с мощностью эквивалентной дозы в коже. Для геометрии «плотная укладка» (квазибесконечная плоскость, модель §7.1):</p>
+<p class="big" style="text-align:center">Ḣ<sub>p</sub>(0,07) = K · φ<sub>β</sub></p>
+<p><strong>Плотность потока с поверхности.</strong> Эмиссионный ток β-частиц в верхнюю полусферу (2π) с поверхности полубесконечного однородного источника:</p>
+<p class="big" style="text-align:center">J = S<sub>v</sub>/(6μ′) = C<sub>m</sub>·n<sub>β</sub>/(6ν)</p>
+<p>где S<sub>v</sub> = C<sub>m</sub>·ρ·n<sub>β</sub> — объёмная эмиссия [β·см⁻³·с⁻¹], μ′ = ν·ρ — линейный коэффициент ослабления [см⁻¹], C<sub>m</sub> — удельная активность [Бк/г], n<sub>β</sub> — число β на распад; плотность стекла ρ сокращается. Вывод: J = ∫<sub>0</sub><sup>∞</sup>d<var>z</var>·S<sub>v</sub>·(1/4π)∫<sub>2π</sub>e<sup>−μ′<var>z</var>/cosθ</sup>cosθ dΩ = S<sub>v</sub>/(4πμ′)·(2π/3). Коэффициент ν = 16(E<sub>max</sub>−0,036)<sup>−1,4</sup> — по Лёвинджеру<a class="cit" href="#r16">[16]</a><a class="cit" href="#r17">[17]</a> (как в §7).</p>
+<div class="tablewrap"><table>
+<caption>Таблица А1. Плотность потока β с поверхности плотной укладки по нуклидам.</caption>
+<thead><tr><th>Нуклид</th><th>C<sub>m</sub>, Бк/г</th><th>ν, см²/г</th><th>J, β·см⁻²·с⁻¹</th></tr></thead>
+<tbody>
+<tr><td><b><sup>234m</sup>Pa</b></td><td class="num-col">227</td><td class="num-col">5,19</td><td class="num-col">7,29</td></tr>
+<tr><td><sup>234</sup>Th</td><td class="num-col">227</td><td class="num-col">202,8</td><td class="num-col">0,19</td></tr>
+<tr><td><sup>231</sup>Th</td><td class="num-col">9,9</td><td class="num-col">68,7</td><td class="num-col">0,02</td></tr>
+<tr class="total"><td colspan="3">Итого φ<sub>β</sub></td><td class="num-col"><b>7,5</b> (= 450 β·см⁻²·мин⁻¹)</td></tr>
+</tbody></table></div>
+<p><strong>Коэффициент.</strong> При Ḣ<sub>p</sub>(0,07) плотной укладки = 48,4 мкЗв/ч (Монте-Карло, §4) и φ<sub>β</sub> = 7,5 β·см⁻²·с⁻¹:</p>
+<p class="big" style="text-align:center"><b>K = 6,5 ± 1,6 (мкЗв/ч)/(β·см⁻²·с⁻¹)</b> &nbsp;&nbsp;или&nbsp;&nbsp; <b>K = 0,11 (мкЗв/ч)/(β·см⁻²·мин⁻¹)</b></p>
+<p>Неопределённость: u(J) = √(0,20² + 0,10²) ≈ 22 % (модель ν и активность), u(D) ≈ 10 % (плотность стекла) → u(K) ≈ 24 %. Ориентир: <b>1000 β·см⁻²·мин⁻¹ ≈ 108 мкЗв/ч</b>; типичная для образца эмиссия φ<sub>β</sub> ≈ 450 β·см⁻²·мин⁻¹ → ≈ 48 мкЗв/ч.</p>
+<div class="callout"><b>Как пользоваться.</b> Измерить блоком БДПБ (или МКС-01СА) плотность потока β на поверхности изделия плотной укладки (вышивка, плотное низание) и умножить на K. Замечания: <b>(1)</b> коэффициент выведен для <em>плотной укладки</em> (квазибесконечная плоскость); для одиночной бусины или редкой раскладки локальная связь «поток ↔ доза» иная. <b>(2)</b> Прибор регистрирует 2π-эмиссию с поверхности — использовать штатную калибровку прибора по плотности потока. <b>(3)</b> БДПБ обычно калибруют по <sup>90</sup>Sr+<sup>90</sup>Y; поскольку E<sub>max</sub> <sup>234m</sup>Pa (2,27 МэВ) ≈ <sup>90</sup>Y (2,28 МэВ), энергетический отклик прибора практически совпадает — калибровка применима напрямую. <b>(4)</b> Геометрия — контакт вплотную (консервативная оценка). Расчёт: скрипт <code>handcalc_flux.py</code> проекта <code>beads_skin</code>.</div>
+
 <div class="foot">
   <p>Расчёт выполнен ИИ-агентом (Anthropic Claude) под руководством и контролем оператора. Метод — прямое Монте-Карло моделирование переноса излучения (Geant4 11.2.1) со свёрткой измеренными активностями. Величины даны для консервативной геометрии контакта вплотную.</p>
   <p>VibeEngineering · 23.07.2026 · дозиметрия уранового бисера · ред. 5 (структура проблема→решение→проверка→анализ; величина Ḣ<sub>p</sub>(0,07); ручной классический расчёт; оформление по ГОСТ 8.417 — десятичная запятая, УДК)</p>
@@ -658,6 +678,26 @@
 <li>Cross W.G., Freedman N.O., Wong P.Y. Beta-ray dose distributions from point sources in an infinite water medium. <i>Health Physics</i> 63(2), 1992, 160–171. Used (§7.2): the beta <b>point-dose-kernel</b> method — the 1/(4π<var>r</var>²) geometric spreading with a radial fall-off function; reference dose distributions around a point source in water. <a href="https://pubmed.ncbi.nlm.nih.gov/1399614/">PubMed 1399614</a></li>
 </ol>
 <p class="big"><b>Calculation code and data:</b> Geant4 project <code>beads_skin</code> (main.cc, convolution <code>postproc_beads.py</code>, renderers <code>field_render.py</code>, <code>fig_hotparticle.py</code>). All graphics are in the <code>figures/</code> folder of this page.</p>
+
+<h2>Appendix A. Conversion from β flux density to the skin dose-equivalent rate Ḣ<sub>p</sub>(0.07) (dense packing)</h2>
+<p>For field monitoring it is convenient to relate the reading of the <strong>β-particle flux density</strong> φ<sub>β</sub> (measured with a <strong>BDPB</strong> detector unit, including as part of the <strong>MKS-01SA</strong> dose-rate/radiometer) to the skin dose-equivalent rate. For the dense-packing geometry (quasi-infinite plane, model of §7.1):</p>
+<p class="big" style="text-align:center">Ḣ<sub>p</sub>(0.07) = K · φ<sub>β</sub></p>
+<p><strong>Surface flux density.</strong> The β-particle emission current into the upper hemisphere (2π) from the surface of a semi-infinite uniform source:</p>
+<p class="big" style="text-align:center">J = S<sub>v</sub>/(6μ′) = C<sub>m</sub>·n<sub>β</sub>/(6ν)</p>
+<p>where S<sub>v</sub> = C<sub>m</sub>·ρ·n<sub>β</sub> is the volumetric emission [β·cm⁻³·s⁻¹], μ′ = ν·ρ the linear attenuation coefficient [cm⁻¹], C<sub>m</sub> the specific activity [Bq/g], n<sub>β</sub> the number of β per decay; the glass density ρ cancels. Derivation: J = ∫<sub>0</sub><sup>∞</sup>d<var>z</var>·S<sub>v</sub>·(1/4π)∫<sub>2π</sub>e<sup>−μ′<var>z</var>/cosθ</sup>cosθ dΩ = S<sub>v</sub>/(4πμ′)·(2π/3). The coefficient ν = 16(E<sub>max</sub>−0.036)<sup>−1.4</sup> is Loevinger's<a class="cit" href="#r16">[16]</a><a class="cit" href="#r17">[17]</a> (as in §7).</p>
+<div class="tablewrap"><table>
+<caption>Table A1. β flux density from the dense-packing surface, by nuclide.</caption>
+<thead><tr><th>Nuclide</th><th>C<sub>m</sub>, Bq/g</th><th>ν, cm²/g</th><th>J, β·cm⁻²·s⁻¹</th></tr></thead>
+<tbody>
+<tr><td><b><sup>234m</sup>Pa</b></td><td class="num-col">227</td><td class="num-col">5.19</td><td class="num-col">7.29</td></tr>
+<tr><td><sup>234</sup>Th</td><td class="num-col">227</td><td class="num-col">202.8</td><td class="num-col">0.19</td></tr>
+<tr><td><sup>231</sup>Th</td><td class="num-col">9.9</td><td class="num-col">68.7</td><td class="num-col">0.02</td></tr>
+<tr class="total"><td colspan="3">Total φ<sub>β</sub></td><td class="num-col"><b>7.5</b> (= 450 β·cm⁻²·min⁻¹)</td></tr>
+</tbody></table></div>
+<p><strong>The coefficient.</strong> With Ḣ<sub>p</sub>(0.07) of the dense packing = 48.4 µSv/h (Monte Carlo, §4) and φ<sub>β</sub> = 7.5 β·cm⁻²·s⁻¹:</p>
+<p class="big" style="text-align:center"><b>K = 6.5 ± 1.6 (µSv/h)/(β·cm⁻²·s⁻¹)</b> &nbsp;&nbsp;or&nbsp;&nbsp; <b>K = 0.11 (µSv/h)/(β·cm⁻²·min⁻¹)</b></p>
+<p>Uncertainty: u(J) = √(0.20² + 0.10²) ≈ 22 % (ν model and activity), u(D) ≈ 10 % (glass density) → u(K) ≈ 24 %. Rule of thumb: <b>1000 β·cm⁻²·min⁻¹ ≈ 108 µSv/h</b>; the sample's typical emission φ<sub>β</sub> ≈ 450 β·cm⁻²·min⁻¹ → ≈ 48 µSv/h.</p>
+<div class="callout"><b>How to use.</b> Measure the β flux density with a BDPB (or MKS-01SA) on the surface of a dense-packing item (embroidery, tight beading) and multiply by K. Notes: <b>(1)</b> the coefficient is derived for a <em>dense packing</em> (quasi-infinite plane); for a single bead or a sparse layout the local "flux ↔ dose" relation differs. <b>(2)</b> The instrument registers the 2π surface emission — use the instrument's own flux-density calibration. <b>(3)</b> BDPB is usually calibrated with <sup>90</sup>Sr+<sup>90</sup>Y; since E<sub>max</sub> of <sup>234m</sup>Pa (2.27 MeV) ≈ <sup>90</sup>Y (2.28 MeV), the instrument's energy response nearly coincides — the calibration applies directly. <b>(4)</b> The geometry is direct contact (a conservative estimate). Calculation: script <code>handcalc_flux.py</code> of the <code>beads_skin</code> project.</div>
 
 <div class="foot">
   <p>The calculation was performed by an AI agent (Anthropic Claude) under the guidance and control of the operator. Method — direct Monte Carlo radiation transport (Geant4 11.2.1) with convolution by measured activities. Values are for the conservative direct-contact geometry.</p>
