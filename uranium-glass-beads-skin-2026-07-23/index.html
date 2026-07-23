@@ -119,8 +119,10 @@
   <p><strong>Результат.</strong> Эквивалентная доза в коже (базальный слой, контакт вплотную): <strong>одна бусина 6.7 мкЗв/ч</strong> (расчётный диапазон 6–9), цепочка 18.3 (16–23), <strong>плотный коврик 48 мкЗв/ч</strong> (44–53); статистическая погрешность &lt; 1 %, итоговую неопределённость определяет форма бусины (сферическая модель — нижняя оценка) и плотность стекла (§4). Вклад фотонов &lt; 0.2 %; из энергии бета-частиц 55–67 % поглощается в самом стекле. При обычном обращении доза остаётся в пределах норматива для населения (предел эквивалентной дозы в коже — 50 мЗв/год<a class="cit" href="#r7">[7]</a>); заметная доза набирается лишь при многочасовом ежедневном контакте вплотную.</p>
 </div>
 
+<p class="big"><b>Ключевые слова:</b> урановое стекло; природные радионуклиды (NORM); очищенный уран; нарушение векового равновесия; <sup>234m</sup>Pa; доза в коже; бета-дозиметрия; эффект «горячей частицы»; Монте-Карло; Geant4; потребительские изделия с радиоактивностью.</p>
+
 <h2><span class="num">1</span>Образец и постановка</h2>
-<p>Урановое стекло — силикатное стекло, окрашенное соединениями урана (обычно 0.1–2 масс.% U, исторически до десятков процентов); ему свойственны жёлто-зелёная окраска и яркая зелёная флюоресценция<a class="cit" href="#r1">[1]</a>. В исследуемом бисере измеренная массовая доля урана составляет <strong>1.85 %</strong> (18.37 г <sup>238</sup>U + 0.124 г <sup>235</sup>U на кг стекла). Наблюдаемая флюоресценция церия и отсутствие бария указывают на введение в стекломассу оксида церия CeO<sub>2</sub> — распространённого обесцвечивателя и осветлителя стекла<a class="cit" href="#r2">[2]</a>.</p>
+<p>Урановое стекло — силикатное стекло, окрашенное соединениями урана (обычно 0.1–2 масс.% U, исторически до десятков процентов); ему свойственны жёлто-зелёная окраска и яркая зелёная флюоресценция<a class="cit" href="#r1">[1]</a>. В исследуемом бисере измеренная массовая доля урана составляет <strong>1.85 %</strong> (18.37 г <sup>238</sup>U + 0.124 г <sup>235</sup>U на кг стекла). Наблюдаемая флюоресценция церия и отсутствие бария указывают на введение в стекломассу оксида церия CeO<sub>2</sub> — распространённого обесцвечивателя стекла: церий действует не как краситель, а как окислитель, переводящий примесное железо Fe<sup>2+</sup> (сильный сине-зелёный краситель) в Fe<sup>3+</sup> (слабый жёлтый) и тем снимая нежелательный оттенок<a class="cit" href="#r2">[2]</a>. Типичные вводимые доли CeO<sub>2</sub> — 0.025–0.2 масс.%<a class="cit" href="#r2b">[2б]</a>; в расчёте принято ~0.5 % (верхняя оценка, на перенос β/γ не влияет, §3).</p>
 <p>Цель работы — оценить <strong>мощность эквивалентной дозы и дозу в коже от бета- и гамма-излучения</strong> при непосредственном контакте бисера с кожей, для трёх сценариев обращения: (а) одна бусина, (б) цепочка бусин (нить, браслет), (в) плотная однорядная укладка — «коврик» (вышивка, плотное низание бисером). Доза нормируется на <strong>базальный слой эпидермиса</strong> (глубина 50–100 мкм, ≈ 5–10 мг/см²), усреднённой по площади 1 см² — стандартное определение эквивалентной дозы в коже<a class="cit" href="#r6">[6]</a><a class="cit" href="#r7">[7]</a>.</p>
 
 <h2><span class="num">2</span>Радионуклидный состав источника</h2>
@@ -294,20 +296,23 @@
 
 <h2><span class="num">10</span>Источники, данные и код</h2>
 <ol class="refs">
-<li id="r1">Strahan D. Uranium in glass, glazes and enamels: history, identification and handling. <i>Studies in Conservation</i>, 46(3), 2001, 181–195. — состав уранового стекла (0.1–2 масс.% U), плотность, обращение и доза.</li>
-<li id="r2">Bamford C.R. <i>Colour Generation and Control in Glass</i>. Elsevier, 1977. — CeO<sub>2</sub> как обесцвечиватель/осветлитель стекломассы.</li>
-<li id="r3">Laboratoire National Henri Becquerel (LNHB), <i>Table de Radionucléides</i> (DDEP recommended data): <sup>238</sup>U, <sup>234</sup>Th, <sup>234m</sup>Pa, <sup>235</sup>U, <sup>231</sup>Th, <sup>230</sup>Th. <a href="http://www.lnhb.fr/nuclides/">lnhb.fr/nuclides</a></li>
-<li id="r4">ICRP Publication 107. <i>Nuclear Decay Data for Dosimetric Calculations</i>. Ann. ICRP 38(3), 2008.</li>
-<li id="r5">Evaluated Nuclear Structure Data File (ENSDF), NNDC, Brookhaven National Laboratory. <a href="https://www.nndc.bnl.gov/ensdf/">nndc.bnl.gov/ensdf</a>.</li>
-<li id="r6">ICRP Publication 103. <i>The 2007 Recommendations of the ICRP</i>. Ann. ICRP 37(2–4), 2007. — определение эквивалентной дозы в коже (~70 мкм, 7 мг/см², усреднение по 1 см²).</li>
-<li id="r7">Нормы радиационной безопасности НРБ-99/2009 (СанПиН 2.6.1.2523-09). — пределы: кожа население 50 мЗв/год, персонал А 500 мЗв/год.</li>
-<li id="r8">ICRU Report 44. <i>Tissue Substitutes in Radiation Dosimetry and Measurement</i>. 1989. — состав мягкой ткани.</li>
-<li id="r9">Agostinelli S. et al. Geant4 — a simulation toolkit. <i>Nucl. Instrum. Meth. A</i> 506(3), 2003, 250–303.</li>
-<li id="r10">Allison J. et al. Recent developments in Geant4. <i>Nucl. Instrum. Meth. A</i> 835, 2016, 186–225.</li>
-<li id="r11">Geant4 Physics Reference Manual (v11.2): G4EmStandardPhysics_option4, G4RadioactiveDecay. <a href="https://geant4.web.cern.ch/">geant4.web.cern.ch</a>.</li>
-<li id="r12">Bourdon B. et al. (eds). <i>Uranium-series Geochemistry</i>. Reviews in Mineralogy and Geochemistry 52, 2003.</li>
-<li id="r13">Hamby D.M. et al. VARSKIN — a computer code for skin contamination dosimetry (NUREG/CR-6918).</li>
-<li id="r14">Данные образца (удельные активности <sup>238</sup>U/<sup>235</sup>U, геометрия «Чашка Петри», масса) — измерения по проекту (С. Байдаков, 2021, внутренние данные).</li>
+<li id="r1">Strahan D. Uranium in glass, glazes and enamels: history, identification and handling. <i>Studies in Conservation</i>, 46(3), 2001, 181–195. Взято: типичное содержание урана в стекле — до ~1.4–2 масс.% (наш образец 1.85 %), обращение и доза. <a href="https://www.tandfonline.com/doi/abs/10.1179/sic.2001.46.3.181">tandfonline</a></li>
+<li id="r2">Bamford C.R. <i>Colour Generation and Control in Glass</i>. Elsevier, 1977. Взято: CeO<sub>2</sub> как обесцвечиватель стекла.</li>
+<li id="r2b">Механизм обесцвечивания церием (окисление Fe<sup>2+</sup>→Fe<sup>3+</sup>) и типичные доли CeO<sub>2</sub> 0.025–0.2 масс.%: обзор «Use of cerium oxide as decolorant in the glass industry»; Stanford Advanced Materials. <a href="https://www.researchgate.net/publication/294227162_Use_of_cerium_oxide_as_decolorant_in_the_glass_industry">ResearchGate</a> · <a href="https://www.stanfordmaterials.com/blog/cerium-oxide-applications-in-polishing-decolorization-and-clarification.html">Stanford Materials</a></li>
+<li id="r3"><b>IAEA Nuclear Data Services, Live Chart of Nuclides</b> (оценка ENSDF). Данные распада (T½, β-эндпоинты, γ-линии) для <sup>234</sup>Th, <sup>234m</sup>Pa, <sup>235</sup>U, <sup>231</sup>Th, <sup>230</sup>Th получены напрямую через API (relnsd/v1). Взято: <sup>234m</sup>Pa Q<sub>β</sub> ≈ 2.27 МэВ; <sup>235</sup>U γ 143.8/163.4/185.7/205.3 кэВ (185.7 = 57.2 %); <sup>234</sup>Th γ 63.3 кэВ; <sup>231</sup>Th Q<sub>β</sub> 391.5 кэВ; <sup>230</sup>Th T½ 75 584 года. <a href="https://www-nds.iaea.org/relnsd/vcharthtml/VChartHTML.html">nds.iaea.org — Live Chart</a></li>
+<li id="r4">ICRP Publication 107. <i>Nuclear Decay Data for Dosimetric Calculations</i>. Ann. ICRP 38(3), 2008. Библиотека распада, использованная в Geant4 RadioactiveDecay. <a href="https://www.icrp.org/publication.asp?id=ICRP%20Publication%20107">icrp.org</a></li>
+<li id="r5">Evaluated Nuclear Structure Data File (ENSDF), NNDC, Brookhaven National Laboratory. <a href="https://www.nndc.bnl.gov/ensdf/">nndc.bnl.gov/ensdf</a></li>
+<li id="r6">ICRP Publication 103. <i>The 2007 Recommendations of the ICRP</i>. Ann. ICRP 37(2–4), 2007. Взято: доза в коже — среднее по 1 см² на глубине 70 мкм (7 мг/см²). <a href="https://www.icrp.org/publication.asp?id=ICRP%20Publication%20103">icrp.org</a></li>
+<li id="r7">Нормы радиационной безопасности НРБ-99/2009 (СанПиН 2.6.1.2523-09). Пределы: кожа население 50 мЗв/год, персонал А 500 мЗв/год. <a href="https://www.ntcexpert.ru/documents/docs/nrb-99-2009.pdf">PDF</a></li>
+<li id="r8">ICRU Report 44. <i>Tissue Substitutes in Radiation Dosimetry and Measurement</i>. 1989. Взято: состав мягкой ткани (реализован через материал G4_TISSUE_SOFT_ICRP). <a href="https://www.icru.org/report/tissue-substitutes-in-radiation-dosimetry-and-measurement-report-44/">icru.org</a></li>
+<li id="r9">Agostinelli S. et al. Geant4 — a simulation toolkit. <i>Nucl. Instrum. Meth. A</i> 506(3), 2003, 250–303. <a href="https://doi.org/10.1016/S0168-9002(03)01368-8">doi:10.1016/S0168-9002(03)01368-8</a></li>
+<li id="r10">Allison J. et al. Recent developments in Geant4. <i>Nucl. Instrum. Meth. A</i> 835, 2016, 186–225. <a href="https://doi.org/10.1016/j.nima.2016.06.125">doi:10.1016/j.nima.2016.06.125</a></li>
+<li id="r11">Geant4 Physics Reference Manual (v11.2): G4EmStandardPhysics_option4, G4RadioactiveDecay. <a href="https://geant4.web.cern.ch/">geant4.web.cern.ch</a></li>
+<li id="r12">Bourdon B. et al. (eds). <i>Uranium-series Geochemistry</i>. Reviews in Mineralogy and Geochemistry 52, 2003. Взято: нарушение векового равновесия при химическом фракционировании урана. <a href="https://doi.org/10.1515/9781501509308">doi:10.1515/9781501509308</a></li>
+<li id="r13">Hamby D.M. et al. VARSKIN — a computer code for skin contamination dosimetry. NUREG/CR-6918. Методологический аналог; сравнение в данной работе не проводилось. <a href="https://www.nrc.gov/reading-rm/doc-collections/nuregs/contract/cr6918/">nrc.gov</a></li>
+<li id="r14">Данные образца — удельные активности <sup>238</sup>U/<sup>235</sup>U, масса и геометрия («Чашка Петри») измерены коллегами методом гамма-спектрометрии высокого разрешения на полупроводниковом HPGe-детекторе (особо чистый германий); данные предоставлены оператору (внутренние, 2021).</li>
+<li id="r15">Коэффициент кожной дозы от поверхностного β-загрязнения (<sup>90</sup>Sr/<sup>90</sup>Y), сверка порядка величины §8: Colorado State Univ., Radiation Safety Module 5 — Dosimetry; Stanford EH&amp;S, <sup>90</sup>Sr Radionuclide Safety Data Sheet. <a href="http://www.ehs.colostate.edu/_PDF/Rad/Mod-5.pdf">colostate</a> · <a href="https://ehs.stanford.edu/wp-content/uploads/Sr-90-RSDS.pdf">stanford</a></li>
+<li id="r16">Hassan H.J., Hashim S. et al. Naturally Occurring Radioactive Materials in Bracelets and Necklaces: Radiological Risk Evaluation. <i>Int. J. Environ. Res. Public Health</i> 18(21), 2021, 11170. Аналогичная работа (HPGe + Geant4 MC по украшениям с NORM): их гамма-only, радийсодержащий, низкий U → кожная доза 0.04–0.42 мкЗв/ч; наш очищенный U бета-доминантный → выше по коже, но без проникающей γ ряда. <a href="https://doi.org/10.3390/ijerph182111170">doi:10.3390/ijerph182111170</a></li>
 </ol>
 <p class="big"><b>Код и данные расчёта:</b> проект Geant4 <code>beads_skin</code> (main.cc, свёртка <code>postproc_beads.py</code>, рендеры <code>field_render.py</code>, <code>fig_hotparticle.py</code>). Все графические материалы — в каталоге <code>figures/</code> этой страницы.</p>
 
@@ -316,13 +321,13 @@
 <ul>
 <li><strong>Расчётная линия</strong> (модель источника, геометрия и физика в Geant4, код на C++, прогоны, постпроцессинг и свёртка на Python, иллюстрации и 3D-визуализация поля, текст статьи) — ИИ-агент Claude Code; модели Anthropic Claude Opus 4.8 и Claude Fable 5.</li>
 <li><strong>Независимый аудит</strong> — отдельный ИИ-агент (модель Anthropic Claude): проверка по фактам и методике. Аудит независимо воспроизвёл дозы из сырых данных расчёта и выявил ошибку нормировки в первой редакции (двойной учёт изобарной подцепочки при суммировании перекрывающихся прогонов): команда ограничения цепочки в аналоговом режиме Geant4 не действует, поэтому запуск <sup>234</sup>Th уже содержал вклад <sup>234m</sup>Pa. Исправление — суммирование только по двум непересекающимся цепочкам (A = 234, A = 235). Качественные выводы при этом не изменились (ошибка была в консервативную сторону).</li>
-<li><strong>Оператор (человек):</strong> предоставление образца и его измеренных характеристик (С. Байдаков, 2021<a class="cit" href="#r14">[14]</a>), постановка задачи, выбор и подтверждение допущений, приёмка каждого шага, критические замечания, решения о публикации. Ответственность за исходные допущения и итоговые выводы — на операторе.</li>
+<li><strong>Оператор (человек):</strong> предоставление образца и его характеристик, измеренных коллегами методом гамма-спектрометрии на HPGe-детекторе<a class="cit" href="#r14">[14]</a> (удельные активности <sup>238</sup>U/<sup>235</sup>U, масса, геометрия), постановка задачи, выбор и подтверждение допущений, приёмка каждого шага, критические замечания, решения о публикации. Ответственность за исходные допущения и итоговые выводы — на операторе.</li>
 </ul>
 <p>Все приведённые величины воспроизводимы приложенным кодом (проект <code>beads_skin</code>).</p>
 
 <div class="foot">
   <p>Расчёт выполнен ИИ-агентом (Anthropic Claude) под руководством и контролем оператора. Метод — прямое Монте-Карло моделирование переноса излучения (Geant4 11.2.1) со свёрткой измеренными активностями. Величины даны для консервативной геометрии контакта вплотную.</p>
-  <p>VibeEngineering · 23.07.2026 · дозиметрия уранового бисера · ред. 3</p>
+  <p>VibeEngineering · 23.07.2026 · дозиметрия уранового бисера · ред. 4 (научная редакция: заголовок, IAEA-данные, классическая проверка, живые ссылки)</p>
 </div>
 
 </div><!-- /lang-ru -->
@@ -330,8 +335,8 @@
 <div id="lang-en">
 
 <header>
-  <p class="kicker">VibeEngineering · dosimetry · Geant4 Monte Carlo · 23 Jul 2026 · rev. 3</p>
-  <h1>Skin dose from uranium glass beads: beta and gamma radiation of purified uranium</h1>
+  <p class="kicker">VibeEngineering · radiation dosimetry · Geant4 Monte Carlo · 23 Jul 2026 · rev. 4</p>
+  <h1>Radiological Assessment of Uranium Glass Beads: Skin Dose from Beta and Gamma Radiation of Purified Uranium (Geant4 Monte Carlo)</h1>
   <p class="lede">Monte Carlo (Geant4) calculation of the skin dose rate from contact with Czech uranium glass beads ("yellow opal, size 6/0"). Measured specific activities <b>²³⁸U 2.27·10⁵ Bq/kg</b>, <b>²³⁵U 9.9·10³ Bq/kg</b>; the uranium is purified — the series secular equilibrium is broken, and the gamma-active daughters of the radium branch are absent. Three packing configurations, spherical bead geometry. The equivalent skin dose on contact is <b>6.7–48 µSv/h</b>, almost entirely from beta radiation.</p>
   <p class="lede" style="margin-top:8px">The calculation was performed by an AI agent (Anthropic Claude) under the guidance and control of the operator; the results passed an independent code audit. See §11 "Statement on the use of AI".</p>
 </header>
@@ -344,7 +349,8 @@
 </div>
 
 <h2><span class="num">1</span>Sample and objective</h2>
-<p>Uranium glass is a silicate glass coloured with uranium compounds (typically 0.1–2 wt% U, historically up to tens of percent); it shows a yellow-green colour and bright green fluorescence<a class="cit" href="#r1">[1]</a>. The measured uranium mass fraction in the beads studied is <strong>1.85 %</strong> (18.37 g <sup>238</sup>U + 0.124 g <sup>235</sup>U per kg of glass). The observed cerium fluorescence and the absence of barium indicate that cerium oxide CeO<sub>2</sub> — a common glass decolorizer and fining agent — was added to the melt<a class="cit" href="#r2">[2]</a>.</p>
+<p>Uranium glass is a silicate glass coloured with uranium compounds (typically 0.1–2 wt% U, historically up to tens of percent); it shows a yellow-green colour and bright green fluorescence<a class="cit" href="#r1">[1]</a>. The measured uranium mass fraction in the beads studied is <strong>1.85 %</strong> (18.37 g <sup>238</sup>U + 0.124 g <sup>235</sup>U per kg of glass). The observed cerium fluorescence and the absence of barium indicate that cerium oxide CeO<sub>2</sub> — a common glass decolorizer — was added to the melt: cerium acts not as a colorant but as an oxidizer, converting impurity iron Fe<sup>2+</sup> (a strong blue-green colorant) into Fe<sup>3+</sup> (a weak yellow), thereby removing the unwanted tint<a class="cit" href="#r2">[2]</a>. Typical CeO<sub>2</sub> additions are 0.025–0.2 wt%<a class="cit" href="#r2b">[2b]</a>; the calculation adopts ~0.5 % (an upper estimate, negligible for β/γ transport, §3).</p>
+<p class="big"><b>Keywords:</b> uranium glass; naturally occurring radioactive material (NORM); purified uranium; secular equilibrium disruption; <sup>234m</sup>Pa; skin dose; beta dosimetry; hot-particle effect; Monte Carlo; Geant4; radioactive consumer products.</p>
 <p>The aim is to estimate the <strong>equivalent skin dose rate and skin dose from beta and gamma radiation</strong> for direct contact of the beads with skin, in three handling scenarios: (a) one bead, (b) a chain of beads (thread, bracelet), (c) a dense single-row packing — a "mat" (embroidery, dense beadwork). The dose is normalized to the <strong>epidermal basal layer</strong> (depth 50–100 µm, ≈ 5–10 mg/cm²), averaged over a 1 cm² area — the standard definition of the equivalent skin dose<a class="cit" href="#r6">[6]</a><a class="cit" href="#r7">[7]</a>.</p>
 
 <h2><span class="num">2</span>Radionuclide composition of the source</h2>
@@ -352,7 +358,7 @@
 <p>Only the short-lived daughters of the <strong>first links</strong> of the <sup>238</sup>U and <sup>235</sup>U chains are present and radiating, having re-established secular equilibrium with the parent uranium within months of melting:</p>
 <div class="tablewrap">
 <table>
-<caption>Table 1. Emitting nuclides of purified uranium. Decay data — LNHB/DDEP<a class="cit" href="#r3">[3]</a>, ICRP-107<a class="cit" href="#r4">[4]</a>. The dose is computed over two non-overlapping chains (A = 234 and A = 235), not per individual nuclide (see §3).</caption>
+<caption>Table 1. Emitting nuclides of purified uranium. Decay data (half-lives, β endpoints, γ lines) — IAEA Live Chart of Nuclides<a class="cit" href="#r3">[3]</a> (ENSDF-based, via API); ICRP-107<a class="cit" href="#r4">[4]</a> library in the calculation. The dose is computed over two non-overlapping chains (A = 234 and A = 235), not per individual nuclide (see §3).</caption>
 <thead><tr><th>Nuclide</th><th>Spec. activity, Bq/kg</th><th>Per bead, Bq</th><th>Radiation relevant to skin</th></tr></thead>
 <tbody>
 <tr><td colspan="4" style="text-align:center;background:var(--th);font-weight:600;color:var(--accent2)">Chain A = 234 (from <sup>238</sup>U)</td></tr>
@@ -485,12 +491,26 @@
 <li><b>Normalization sanity test.</b> For a point isotropic photon source in vacuum, the computed fluence was compared with the analytical inverse-square law <var>N</var>/(4π<var>r</var>²) at 10, 20 and 30 cm: the ratio is <strong>1.000</strong>. This confirms the geometry, primary-particle sampling and scoring normalization.</li>
 <li><b>Input activities from first principles.</b> The specific activity of pure <sup>238</sup>U (λ<var>N</var> = 1.244·10⁷ Bq/g) at the measured 2.27·10⁵ Bq/kg gives a uranium fraction of 1.83 wt% — matching the independently measured 1.84 %; for <sup>235</sup>U, 0.124 g/kg (measured 0.1237), enrichment 0.67 %. The inputs are internally self-consistent.</li>
 <li><b>Independent code audit.</b> A separate AI agent reproduced the doses from the raw runs with its own convolution script (agreement to three significant figures) and used a direct Geant4 track dump to verify which decay chains are actually sampled. The audit found and enabled correction of a normalization error in the first revision (double counting of the isobaric sub-chain); the current result passed re-verification.</li>
-<li><b>Order-of-magnitude agreement.</b> For a hard beta emitter spectrally close to <sup>234m</sup>Pa (e.g. <sup>90</sup>Y, E<sub>max</sub> 2.28 MeV), the known surface skin-dose coefficient is ~1.9 (µGy/h)/(Bq/cm²) at 7 mg/cm². The effective surface activity of a dense packing is tens of Bq/cm², giving tens of µGy/h, consistent with the computed 48 µGy/h.</li>
+<li><b>Order-of-magnitude agreement.</b> For a hard beta emitter spectrally close to <sup>234m</sup>Pa (<sup>90</sup>Y, E<sub>max</sub> 2.28 MeV), a reference surface-contamination skin dose: 1 µCi/cm² (<sup>90</sup>Sr+<sup>90</sup>Y) → 13,000 mrem/h = 130 mSv/h per 37 kBq/cm², i.e. <strong>≈ 3.5 µSv/h per Bq/cm²</strong> for the pair, about half from the hard <sup>90</sup>Y<a class="cit" href="#r15">[15]</a>. The effective surface activity of a dense packing is tens of Bq/cm², giving tens of µSv/h, consistent with the computed 48 µSv/h.</li>
+<li><b>Independent classical (semi-analytical) cross-check.</b> The dose was recomputed by a method fully independent of Geant4: a beta point-dose kernel with exponential attenuation, integrated over the volume of a <em>single sphere</em> (with glass self-absorption), with the chain and mat built by superposition of spheres on a lattice. For a <strong>single bead the agreement with Monte Carlo is 4 %</strong> (6.4 vs 6.7 µSv/h) — the fundamental source is reproduced independently. For extended packings the classical estimate is systematically higher (chain +19 %, mat +54 %); the discrepancy is analysed below (Fig. 5).</li>
 <li><b>Validated physics.</b> The physics list G4EmStandardPhysics_option4 is the recommended, extensively benchmarked configuration of Geant4 electromagnetic physics for dosimetric and microdosimetric problems; the full β spectra and decay schemes are taken from evaluated nuclear data (ENSDF / ICRP-107).</li>
 <li><b>Statistical convergence.</b> The reported dose rates have a statistical uncertainty (1σ) below 1 %; the result is stable with respect to the amount of statistics.</li>
 <li><b>Conservative assumptions.</b> All key assumptions (direct gap-free contact, full secular equilibrium of the short-lived daughters, spherical shape as a lower estimate) bias the result upward — actual doses under real handling are no higher.</li>
 <li><b>Full reproducibility.</b> The whole calculation is open (project <code>beads_skin</code>), split into transport (response per decay) and convolution with activities, allowing each part to be checked independently.</li>
 </ul>
+<figure>
+  <img src="figures/beads_classic_vs_mc.png" alt="Classical cross-check vs Monte Carlo">
+  <figcaption><b>Fig. 5.</b> Independent classical (semi-analytical) estimate vs Monte Carlo. The base source is a single sphere; the chain and mat are obtained by superposition. For a single bead the methods agree within 4 %; for extended packings the classical estimate is systematically higher.</figcaption>
+</figure>
+<h3>Analysis of the classical ↔ Monte Carlo discrepancy</h3>
+<p>The classical/MC ratio grows monotonically with packing size: <strong>×0.96 (bead) → ×1.19 (chain) → ×1.54 (mat)</strong>. This is not scatter but a systematic effect with a clear physical cause:</p>
+<ul>
+<li><b>The "fat tail" of the exponential kernel — the main cause.</b> The classical model uses a kernel exp(−ν·<var>m</var>)/<var>r</var>², which assigns non-zero dose to arbitrarily distant points. The true beta dose-point-kernel cuts off sharply at the <strong>extrapolated range</strong> (beyond its range the electron simply has no energy). For a <em>single</em> bead the dose is dominated by the near field (self-absorption + contact), where the two models agree. As distant beads are added (chain, mat), the exponential tail over-counts their contribution — the more so the larger the array. The monotonic growth 4 %→19 %→54 % is the direct signature of this effect.</li>
+<li><b>Single mean energy and single ν.</b> The classical model replaces the continuous β spectrum by a mean energy Ē and a single ν(E<sub>max</sub>); the real spectrum is softer at the surface and harder at depth due to filtering, and the effective range is energy-dependent. This further flattens the fall-off and overestimates the far field.</li>
+<li><b>Straight-line isotropic kernel, no scattering.</b> The classical kernel ignores multiple and back-scattering of electrons, which in the MC redistribute and slightly reduce the far field; a second-order contribution.</li>
+<li><b>Self-absorption geometry.</b> The classical model uses the ray-length glass path; the MC performs full 3D transport in the sphere-with-hole. This suffices for a single bead (hence the 4 %) and is secondary for packings against the tail effect.</li>
+</ul>
+<p><strong>Conclusion.</strong> The agreement at the level of the base source (4 %) confirms the physics and the normalization; the discrepancy for packings is predictable and is explained by the known limitation of the exponential β kernel under superposition of extended sources. In this regime the <strong>Monte Carlo is the more reliable method</strong> (true finite beta range, full spectrum, scattering), while the classical estimate provides an independent upper bound of the same order. Both methods reproduce the order of magnitude and the saturation behaviour of the packing.</p>
 
 <h2><span class="num">9</span>Assumptions and applicability</h2>
 <ul>
@@ -504,20 +524,23 @@
 
 <h2><span class="num">10</span>References, data and code</h2>
 <ol class="refs">
-<li>Strahan D. Uranium in glass, glazes and enamels: history, identification and handling. <i>Studies in Conservation</i>, 46(3), 2001, 181–195.</li>
-<li>Bamford C.R. <i>Colour Generation and Control in Glass</i>. Elsevier, 1977.</li>
-<li>Laboratoire National Henri Becquerel (LNHB), <i>Table de Radionucléides</i> (DDEP recommended data). <a href="http://www.lnhb.fr/nuclides/">lnhb.fr/nuclides</a></li>
-<li>ICRP Publication 107. <i>Nuclear Decay Data for Dosimetric Calculations</i>. Ann. ICRP 38(3), 2008.</li>
-<li>Evaluated Nuclear Structure Data File (ENSDF), NNDC, Brookhaven National Laboratory.</li>
-<li>ICRP Publication 103. <i>The 2007 Recommendations of the ICRP</i>. Ann. ICRP 37(2–4), 2007.</li>
-<li>Radiation Safety Standards NRB-99/2009 (SanPiN 2.6.1.2523-09), Russia. Skin limits: public 50 mSv/year, occupational A 500 mSv/year.</li>
-<li>ICRU Report 44. <i>Tissue Substitutes in Radiation Dosimetry and Measurement</i>. 1989.</li>
-<li>Agostinelli S. et al. Geant4 — a simulation toolkit. <i>Nucl. Instrum. Meth. A</i> 506(3), 2003, 250–303.</li>
-<li>Allison J. et al. Recent developments in Geant4. <i>Nucl. Instrum. Meth. A</i> 835, 2016, 186–225.</li>
-<li>Geant4 Physics Reference Manual (v11.2). <a href="https://geant4.web.cern.ch/">geant4.web.cern.ch</a>.</li>
-<li>Bourdon B. et al. (eds). <i>Uranium-series Geochemistry</i>. Rev. Mineral. Geochem. 52, 2003.</li>
-<li>Hamby D.M. et al. VARSKIN (NUREG/CR-6918).</li>
-<li>Sample data (specific activities <sup>238</sup>U/<sup>235</sup>U, "Petri dish" geometry, mass) — project measurements (S. Baydakov, 2021, internal).</li>
+<li>Strahan D. Uranium in glass, glazes and enamels: history, identification and handling. <i>Studies in Conservation</i>, 46(3), 2001, 181–195. Used: typical uranium content of glass up to ~1.4–2 wt% (our sample 1.85 %). <a href="https://www.tandfonline.com/doi/abs/10.1179/sic.2001.46.3.181">tandfonline</a></li>
+<li>Bamford C.R. <i>Colour Generation and Control in Glass</i>. Elsevier, 1977. Used: CeO<sub>2</sub> as a glass decolorizer.</li>
+<li>Cerium decolorizing mechanism (Fe<sup>2+</sup>→Fe<sup>3+</sup> oxidation) and typical CeO<sub>2</sub> fractions 0.025–0.2 wt%: review "Use of cerium oxide as decolorant in the glass industry"; Stanford Advanced Materials. <a href="https://www.researchgate.net/publication/294227162_Use_of_cerium_oxide_as_decolorant_in_the_glass_industry">ResearchGate</a> · <a href="https://www.stanfordmaterials.com/blog/cerium-oxide-applications-in-polishing-decolorization-and-clarification.html">Stanford Materials</a></li>
+<li><b>IAEA Nuclear Data Services, Live Chart of Nuclides</b> (ENSDF-based). Decay data (half-lives, β endpoints, γ lines) for <sup>234</sup>Th, <sup>234m</sup>Pa, <sup>235</sup>U, <sup>231</sup>Th, <sup>230</sup>Th obtained directly via the API (relnsd/v1). Used: <sup>234m</sup>Pa Q<sub>β</sub> ≈ 2.27 MeV; <sup>235</sup>U γ 143.8/163.4/185.7/205.3 keV (185.7 = 57.2 %); <sup>234</sup>Th γ 63.3 keV; <sup>231</sup>Th Q<sub>β</sub> 391.5 keV; <sup>230</sup>Th T½ 75,584 y. <a href="https://www-nds.iaea.org/relnsd/vcharthtml/VChartHTML.html">nds.iaea.org — Live Chart</a></li>
+<li>ICRP Publication 107. <i>Nuclear Decay Data for Dosimetric Calculations</i>. Ann. ICRP 38(3), 2008. <a href="https://www.icrp.org/publication.asp?id=ICRP%20Publication%20107">icrp.org</a></li>
+<li>Evaluated Nuclear Structure Data File (ENSDF), NNDC, Brookhaven National Laboratory. <a href="https://www.nndc.bnl.gov/ensdf/">nndc.bnl.gov/ensdf</a></li>
+<li>ICRP Publication 103. <i>The 2007 Recommendations of the ICRP</i>. Ann. ICRP 37(2–4), 2007. Used: skin dose averaged over 1 cm² at 70 µm (7 mg/cm²). <a href="https://www.icrp.org/publication.asp?id=ICRP%20Publication%20103">icrp.org</a></li>
+<li>Radiation Safety Standards NRB-99/2009 (SanPiN 2.6.1.2523-09), Russia. Skin limits: public 50 mSv/year, occupational A 500 mSv/year. <a href="https://www.ntcexpert.ru/documents/docs/nrb-99-2009.pdf">PDF</a></li>
+<li>ICRU Report 44. <i>Tissue Substitutes in Radiation Dosimetry and Measurement</i>. 1989. <a href="https://www.icru.org/report/tissue-substitutes-in-radiation-dosimetry-and-measurement-report-44/">icru.org</a></li>
+<li>Agostinelli S. et al. Geant4 — a simulation toolkit. <i>Nucl. Instrum. Meth. A</i> 506(3), 2003, 250–303. <a href="https://doi.org/10.1016/S0168-9002(03)01368-8">doi:10.1016/S0168-9002(03)01368-8</a></li>
+<li>Allison J. et al. Recent developments in Geant4. <i>Nucl. Instrum. Meth. A</i> 835, 2016, 186–225. <a href="https://doi.org/10.1016/j.nima.2016.06.125">doi:10.1016/j.nima.2016.06.125</a></li>
+<li>Geant4 Physics Reference Manual (v11.2). <a href="https://geant4.web.cern.ch/">geant4.web.cern.ch</a></li>
+<li>Bourdon B. et al. (eds). <i>Uranium-series Geochemistry</i>. Rev. Mineral. Geochem. 52, 2003. <a href="https://doi.org/10.1515/9781501509308">doi:10.1515/9781501509308</a></li>
+<li>Hamby D.M. et al. VARSKIN — skin contamination dosimetry. NUREG/CR-6918. Methodological analogue; no comparison performed here. <a href="https://www.nrc.gov/reading-rm/doc-collections/nuregs/contract/cr6918/">nrc.gov</a></li>
+<li>Sample data — specific activities <sup>238</sup>U/<sup>235</sup>U, mass and geometry ("Petri dish") measured by colleagues via high-resolution gamma-ray spectrometry on an HPGe (high-purity germanium) detector; provided to the operator (internal, 2021).</li>
+<li><sup>90</sup>Sr/<sup>90</sup>Y surface-contamination skin-dose factor (order-of-magnitude check, §8): Colorado State Univ., Radiation Safety Module 5; Stanford EH&amp;S <sup>90</sup>Sr Safety Data Sheet. <a href="http://www.ehs.colostate.edu/_PDF/Rad/Mod-5.pdf">colostate</a> · <a href="https://ehs.stanford.edu/wp-content/uploads/Sr-90-RSDS.pdf">stanford</a></li>
+<li>Hassan H.J., Hashim S. et al. Naturally Occurring Radioactive Materials in Bracelets and Necklaces: Radiological Risk Evaluation. <i>Int. J. Environ. Res. Public Health</i> 18(21), 2021, 11170. Analogous study (HPGe + Geant4 MC of NORM jewelry): their gamma-only, radium-bearing, low-U items → skin dose 0.04–0.42 µSv/h; our purified-U beta-dominated beads → higher skin dose but no penetrating series γ. <a href="https://doi.org/10.3390/ijerph182111170">doi:10.3390/ijerph182111170</a></li>
 </ol>
 <p class="big"><b>Calculation code and data:</b> Geant4 project <code>beads_skin</code> (main.cc, convolution <code>postproc_beads.py</code>, renderers <code>field_render.py</code>, <code>fig_hotparticle.py</code>). All graphics are in the <code>figures/</code> folder of this page.</p>
 
@@ -526,13 +549,13 @@
 <ul>
 <li><strong>Calculation line</strong> (source model, geometry and physics in Geant4, C++ code, runs, Python post-processing and convolution, illustrations and 3D field visualization, article text) — the Claude Code AI agent; Anthropic Claude Opus 4.8 and Claude Fable 5 models.</li>
 <li><strong>Independent audit</strong> — a separate AI agent (Anthropic Claude): a fact- and methodology-based review. It independently reproduced the doses from the raw calculation data and identified a normalization error in the first revision (double counting of the isobaric sub-chain when summing overlapping runs): the chain-limiting command has no effect in Geant4 analog mode, so the <sup>234</sup>Th run already contained the <sup>234m</sup>Pa contribution. The fix — summing only over the two non-overlapping chains (A = 234, A = 235). The qualitative conclusions were unchanged (the error was on the conservative side).</li>
-<li><strong>Operator (human):</strong> provided the sample and its measured characteristics (S. Baydakov, 2021<a class="cit" href="#r14">[14]</a>), set the task, chose and confirmed the assumptions, accepted each step, made critical remarks, and made the publication decisions. Responsibility for the input assumptions and final conclusions rests with the operator.</li>
+<li><strong>Operator (human):</strong> provided the sample and its characteristics, measured by colleagues via gamma-ray spectrometry on an HPGe detector<a class="cit" href="#r14">[14]</a> (specific activities <sup>238</sup>U/<sup>235</sup>U, mass, geometry), set the task, chose and confirmed the assumptions, accepted each step, made critical remarks, and made the publication decisions. Responsibility for the input assumptions and final conclusions rests with the operator.</li>
 </ul>
 <p>All reported values are reproducible with the attached code (project <code>beads_skin</code>).</p>
 
 <div class="foot">
   <p>The calculation was performed by an AI agent (Anthropic Claude) under the guidance and control of the operator. Method — direct Monte Carlo radiation transport (Geant4 11.2.1) with convolution by measured activities. Values are for the conservative direct-contact geometry.</p>
-  <p>VibeEngineering · 23 Jul 2026 · uranium-bead dosimetry · rev. 3</p>
+  <p>VibeEngineering · 23 Jul 2026 · uranium-bead dosimetry · rev. 4 (scientific revision: title, IAEA data, classical cross-check, live links)</p>
 </div>
 
 </div><!-- /lang-en -->
