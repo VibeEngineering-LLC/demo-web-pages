@@ -236,12 +236,12 @@
 <p>Чтобы независимо от Geant4 проверить и порядок, и абсолютное значение дозы, выполнена классическая (полуаналитическая) оценка по принципу «от простого к точному»: сначала — замкнутая формула для коврика, которую читатель воспроизведёт вручную (§7.1), затем — объёмный интеграл по сфере с двумя вариантами дозового ядра (§7.2).</p>
 
 <h3>7.1. Мощность эквивалентной дозы Ḣ<sub>p</sub>(0,07) плотной укладки: замкнутая формула (полубесконечный плоский источник)</h3>
-<p>Плотный коврик латерально много больше пробега бета-частиц (экстраполированный пробег β <sup>234m</sup>Pa E<sub>max</sub> = 2,27 МэВ в ткани ≈ 1,1 г/см² ≈ 11 мм; коврик 9×9 ≈ 37 мм), поэтому его правомерно приблизить <strong>бесконечной однородной β-активной плоскостью стекла</strong>. Мощность дозы у поверхности полубесконечного однородного источника равна <em>половине</em> равновесной мощности в бесконечной среде (энергия делится поровну «вверх/вниз»), ослабленной до глубины базального слоя:</p>
+<p>Плотный коврик латерально много больше пробега бета-частиц (экстраполированный пробег β <sup>234m</sup>Pa E<sub>max</sub> = 2,27 МэВ в ткани ≈ 1,1 г/см² ≈ 11 мм; коврик 9×9 ≈ 37 мм), поэтому его правомерно приблизить <strong>бесконечной однородной β-активной плоскостью стекла</strong>. Мощность дозы у поверхности полубесконечного однородного источника равна <em>половине</em> равновесной мощности в бесконечной среде<a class="cit" href="#r18">[18]</a> (энергия делится поровну «вверх/вниз»), ослабленной до глубины базального слоя:</p>
 <p class="big" style="text-align:center">Ḋ<sub>p</sub>(0,07) = ½ · Σ<sub>i</sub> C<sub>v,i</sub> · Ē<sub>i</sub> · e<sup>−ν<sub>i</sub>σ</sup> · k</p>
 <ul>
 <li>C<sub>v,i</sub> — удельная активность нуклида i, Бк/кг (Табл. 1);</li>
 <li>Ē<sub>i</sub> — средняя энергия β-спектра, МэВ (IAEA/ICRP-107);</li>
-<li>ν<sub>i</sub> = 16·(E<sub>max,i</sub> − 0,036)<sup>−1,4</sup> — коэффициент ослабления β, см²/г (эмпирика Лёвинджера);</li>
+<li>ν<sub>i</sub> = 16·(E<sub>max,i</sub> − 0,036)<sup>−1,4</sup> — коэффициент ослабления β, см²/г (эмпирика Лёвинджера<a class="cit" href="#r17">[17]</a><a class="cit" href="#r18">[18]</a>);</li>
 <li>σ = ρ<sub>ткань</sub>·d = 1,03 г/см³ × 7,0·10⁻³ см = <strong>7,21·10⁻³ г/см²</strong> — масс. глубина базального слоя (70 мкм);</li>
 <li>k — перевод (Бк/кг)·МэВ → мкГр/ч: k = 1,602·10⁻¹³ Дж/МэВ × 3,6·10⁹ с·мкГр/(ч·Гр), т.е. Ḋ<sub>∞</sub>[мкГр/ч] = C<sub>v</sub>·Ē·<strong>5,767·10⁻⁴</strong>.</li>
 </ul>
@@ -270,7 +270,7 @@
 <p>где m — масса вдоль луча (стекло + ткань), r — расстояние. Рассмотрены два ядра Φ:</p>
 <ul>
 <li><strong>экспоненциальное</strong> Φ(x) = e<sup>−x</sup> (I = 1) — простейшее, с бесконечным «хвостом»;</li>
-<li><strong>ядро Лёвинджера (1956)</strong> Φ(x) = c(1−(x/c)·e<sup>1−x/c</sup>) + x·e<sup>1−x</sup> при x ≤ c; x·e<sup>1−x</sup> при x &gt; c (c = 2, I = 3,845) — физичнее: спадает круче и обрывается у пробега.</li>
+<li><strong>ядро Лёвинджера (1956)</strong><a class="cit" href="#r17">[17]</a> Φ(x) = c(1−(x/c)·e<sup>1−x/c</sup>) + x·e<sup>1−x</sup> при x ≤ c; x·e<sup>1−x</sup> при x &gt; c (c = 2, I = 3,845) — физичнее: спадает круче и обрывается у пробега.</li>
 </ul>
 <div class="tablewrap"><table>
 <caption>Таблица 6. Классическая оценка (интеграл по сфере) против Монте-Карло, мкЗв/ч. В скобках — отношение к МК.</caption>
@@ -375,6 +375,8 @@
 <li id="r14">Данные образца — удельные активности <sup>238</sup>U/<sup>235</sup>U, масса и геометрия («Чашка Петри») измерены коллегами методом гамма-спектрометрии высокого разрешения на полупроводниковом HPGe-детекторе (особо чистый германий); данные предоставлены оператору (внутренние, 2021).</li>
 <li id="r15">Коэффициент кожной дозы от поверхностного β-загрязнения (<sup>90</sup>Sr/<sup>90</sup>Y), сверка порядка величины §8: Colorado State Univ., Radiation Safety Module 5 — Dosimetry; Stanford EH&amp;S, <sup>90</sup>Sr Radionuclide Safety Data Sheet. <a href="http://www.ehs.colostate.edu/_PDF/Rad/Mod-5.pdf">colostate</a> · <a href="https://ehs.stanford.edu/wp-content/uploads/Sr-90-RSDS.pdf">stanford</a></li>
 <li id="r16">Hassan H.J., Hashim S. et al. Naturally Occurring Radioactive Materials in Bracelets and Necklaces: Radiological Risk Evaluation. <i>Int. J. Environ. Res. Public Health</i> 18(21), 2021, 11170. Аналогичная работа (HPGe + Geant4 MC по украшениям с NORM): их гамма-only, радийсодержащий, низкий U → кожная доза 0.04–0.42 мкЗв/ч; наш очищенный U бета-доминантный → выше по коже, но без проникающей γ ряда. <a href="https://doi.org/10.3390/ijerph182111170">doi:10.3390/ijerph182111170</a></li>
+<li id="r17">Loevinger R. The dosimetry of beta sources in tissue. The point-source function. <i>Radiology</i> 66(1), 1956, 55–62. Взято (§7.2): бета-точечная дозовая функция Φ(x), в т.ч. форма Лёвинджера, и эмпирический коэффициент ослабления β. <a href="https://doi.org/10.1148/66.1.55">doi:10.1148/66.1.55</a></li>
+<li id="r18">Cember H., Johnson T.E. <i>Introduction to Health Physics</i>, 4-е изд. McGraw-Hill, 2009, гл. «Beta dosimetry». Взято (§7.1): рабочие формулы β-дозиметрии — кажущийся коэффициент ослабления ν = 16(E<sub>max</sub> − 0,036)<sup>−1,4</sup> см²/г; равновесная поглощённая доза в бесконечной среде Ḋ<sub>∞</sub> = C<sub>v</sub>·Ē и её половина у поверхности полубесконечного источника.</li>
 </ol>
 <p class="big"><b>Код и данные расчёта:</b> проект Geant4 <code>beads_skin</code> (main.cc, свёртка <code>postproc_beads.py</code>, рендеры <code>field_render.py</code>, <code>fig_hotparticle.py</code>). Все графические материалы — в каталоге <code>figures/</code> этой страницы.</p>
 
@@ -514,12 +516,12 @@
 <p>To check both the order of magnitude and the absolute value independently of Geant4, a classical (semi-analytical) estimate was made, "from simple to accurate": first a closed-form formula for the mat that the reader can reproduce by hand (§7.1), then a volume integral over the sphere with two variants of the dose kernel (§7.2).</p>
 
 <h3>7.1. Equivalent dose rate Ḣ<sub>p</sub>(0.07) of the dense packing: closed-form (semi-infinite plane source)</h3>
-<p>The dense mat is laterally much larger than the beta range (the extrapolated range of the <sup>234m</sup>Pa β, E<sub>max</sub> = 2.27 MeV, in tissue ≈ 1.1 g/cm² ≈ 11 mm; the 9×9 mat ≈ 37 mm), so it is legitimate to approximate it as an <strong>infinite uniform β-active plane of glass</strong>. The dose rate at the surface of a semi-infinite uniform source equals <em>half</em> the equilibrium rate in an infinite medium (energy splits equally "up/down"), attenuated to the basal-layer depth:</p>
+<p>The dense mat is laterally much larger than the beta range (the extrapolated range of the <sup>234m</sup>Pa β, E<sub>max</sub> = 2.27 MeV, in tissue ≈ 1.1 g/cm² ≈ 11 mm; the 9×9 mat ≈ 37 mm), so it is legitimate to approximate it as an <strong>infinite uniform β-active plane of glass</strong>. The dose rate at the surface of a semi-infinite uniform source equals <em>half</em> the equilibrium rate in an infinite medium<a class="cit" href="#r18">[18]</a> (energy splits equally "up/down"), attenuated to the basal-layer depth:</p>
 <p class="big" style="text-align:center">Ḋ<sub>p</sub>(0.07) = ½ · Σ<sub>i</sub> C<sub>v,i</sub> · Ē<sub>i</sub> · e<sup>−ν<sub>i</sub>σ</sup> · k</p>
 <ul>
 <li>C<sub>v,i</sub> — specific activity of nuclide i, Bq/kg (Table 1);</li>
 <li>Ē<sub>i</sub> — mean energy of the β spectrum, MeV (IAEA/ICRP-107);</li>
-<li>ν<sub>i</sub> = 16·(E<sub>max,i</sub> − 0.036)<sup>−1.4</sup> — the beta attenuation coefficient, cm²/g (Loevinger empirical);</li>
+<li>ν<sub>i</sub> = 16·(E<sub>max,i</sub> − 0.036)<sup>−1.4</sup> — the beta attenuation coefficient, cm²/g (Loevinger empirical<a class="cit" href="#r17">[17]</a><a class="cit" href="#r18">[18]</a>);</li>
 <li>σ = ρ<sub>tissue</sub>·d = 1.03 g/cm³ × 7.0·10⁻³ cm = <strong>7.21·10⁻³ g/cm²</strong> — the mass depth of the basal layer (70 µm);</li>
 <li>k — conversion (Bq/kg)·MeV → µGy/h: k = 1.602·10⁻¹³ J/MeV × 3.6·10⁹, i.e. Ḋ<sub>∞</sub>[µGy/h] = C<sub>v</sub>·Ē·<strong>5.767·10⁻⁴</strong>.</li>
 </ul>
@@ -548,7 +550,7 @@
 <p>where m is the mass along the ray (glass + tissue) and r the distance. Two kernels Φ were considered:</p>
 <ul>
 <li><strong>exponential</strong> Φ(x) = e<sup>−x</sup> (I = 1) — the simplest, with an infinite "tail";</li>
-<li><strong>Loevinger (1956)</strong> Φ(x) = c(1−(x/c)·e<sup>1−x/c</sup>) + x·e<sup>1−x</sup> for x ≤ c; x·e<sup>1−x</sup> for x &gt; c (c = 2, I = 3.845) — more physical: it falls off more steeply and cuts off near the range.</li>
+<li><strong>Loevinger (1956)</strong><a class="cit" href="#r17">[17]</a> Φ(x) = c(1−(x/c)·e<sup>1−x/c</sup>) + x·e<sup>1−x</sup> for x ≤ c; x·e<sup>1−x</sup> for x &gt; c (c = 2, I = 3.845) — more physical: it falls off more steeply and cuts off near the range.</li>
 </ul>
 <div class="tablewrap"><table>
 <caption>Table 6. Classical estimate (integral over the sphere) vs Monte Carlo, µSv/h. In parentheses — the ratio to MC.</caption>
@@ -653,6 +655,8 @@
 <li>Sample data — specific activities <sup>238</sup>U/<sup>235</sup>U, mass and geometry ("Petri dish") measured by colleagues via high-resolution gamma-ray spectrometry on an HPGe (high-purity germanium) detector; provided to the operator (internal, 2021).</li>
 <li><sup>90</sup>Sr/<sup>90</sup>Y surface-contamination skin-dose factor (order-of-magnitude check, §8): Colorado State Univ., Radiation Safety Module 5; Stanford EH&amp;S <sup>90</sup>Sr Safety Data Sheet. <a href="http://www.ehs.colostate.edu/_PDF/Rad/Mod-5.pdf">colostate</a> · <a href="https://ehs.stanford.edu/wp-content/uploads/Sr-90-RSDS.pdf">stanford</a></li>
 <li>Hassan H.J., Hashim S. et al. Naturally Occurring Radioactive Materials in Bracelets and Necklaces: Radiological Risk Evaluation. <i>Int. J. Environ. Res. Public Health</i> 18(21), 2021, 11170. Analogous study (HPGe + Geant4 MC of NORM jewelry): their gamma-only, radium-bearing, low-U items → skin dose 0.04–0.42 µSv/h; our purified-U beta-dominated beads → higher skin dose but no penetrating series γ. <a href="https://doi.org/10.3390/ijerph182111170">doi:10.3390/ijerph182111170</a></li>
+<li>Loevinger R. The dosimetry of beta sources in tissue. The point-source function. <i>Radiology</i> 66(1), 1956, 55–62. Used (§7.2): the beta point-source dose function Φ(x), including the Loevinger form, and the empirical β attenuation coefficient. <a href="https://doi.org/10.1148/66.1.55">doi:10.1148/66.1.55</a></li>
+<li>Cember H., Johnson T.E. <i>Introduction to Health Physics</i>, 4th ed. McGraw-Hill, 2009, "Beta dosimetry" chapter. Used (§7.1): working β-dosimetry formulas — the apparent attenuation coefficient ν = 16(E<sub>max</sub> − 0.036)<sup>−1.4</sup> cm²/g; the equilibrium absorbed dose in an infinite medium Ḋ<sub>∞</sub> = C<sub>v</sub>·Ē and its half at the surface of a semi-infinite source.</li>
 </ol>
 <p class="big"><b>Calculation code and data:</b> Geant4 project <code>beads_skin</code> (main.cc, convolution <code>postproc_beads.py</code>, renderers <code>field_render.py</code>, <code>fig_hotparticle.py</code>). All graphics are in the <code>figures/</code> folder of this page.</p>
 
