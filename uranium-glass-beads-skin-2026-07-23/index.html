@@ -233,9 +233,9 @@
 </figure>
 
 <h2><span class="num">7</span>Проверочный расчёт классическим методом</h2>
-<p>Чтобы независимо от Geant4 проверить и порядок, и абсолютное значение дозы, выполнена классическая (полуаналитическая) оценка по принципу «от простого к точному»: сначала — замкнутая формула для коврика, которую читатель воспроизведёт вручную (§7.1), затем — объёмный интеграл по шарику с двумя вариантами дозового ядра (§7.2).</p>
+<p>Чтобы независимо от Geant4 проверить и порядок, и абсолютное значение дозы, выполнена классическая (полуаналитическая) оценка по принципу «от простого к точному»: сначала — замкнутая формула для коврика, которую читатель воспроизведёт вручную (§7.1), затем — объёмный интеграл по сфере с двумя вариантами дозового ядра (§7.2).</p>
 
-<h3>7.1. Ручной расчёт коврика: модель полубесконечного источника</h3>
+<h3>7.1. Аналитическая оценка коврика: модель полубесконечного источника</h3>
 <p>Плотный коврик латерально много больше пробега бета-частиц (экстраполированный пробег β <sup>234m</sup>Pa E<sub>max</sub> = 2,27 МэВ в ткани ≈ 1,1 г/см² ≈ 11 мм; коврик 9×9 ≈ 37 мм), поэтому его правомерно приблизить <strong>бесконечной однородной β-активной плоскостью стекла</strong>. Мощность дозы у поверхности полубесконечного однородного источника равна <em>половине</em> равновесной мощности в бесконечной среде (энергия делится поровну «вверх/вниз»), ослабленной до глубины базального слоя:</p>
 <p class="big" style="text-align:center">Ḋ<sub>p</sub>(0,07) = ½ · Σ<sub>i</sub> C<sub>v,i</sub> · Ē<sub>i</sub> · e<sup>−ν<sub>i</sub>σ</sup> · k</p>
 <ul>
@@ -253,7 +253,7 @@
 <li>вклад = ½ × 107,2 × 0,963 = <strong>51,7 мкГр/ч</strong>.</li>
 </ol>
 <div class="tablewrap"><table>
-<caption>Таблица 5. Ручной расчёт коврика по всем трём β-нуклидам (модель полубесконечного источника).</caption>
+<caption>Таблица 5. Аналитическая оценка коврика по всем трём β-нуклидам (модель полубесконечного источника).</caption>
 <thead><tr><th>Нуклид</th><th>C<sub>v</sub>, Бк/кг</th><th>Ē, МэВ</th><th>E<sub>max</sub>, МэВ</th><th>ν, см²/г</th><th>νσ</th><th>e<sup>−νσ</sup></th><th>Ḋ<sub>∞</sub>, мкГр/ч</th><th>½·Ḋ<sub>∞</sub>·e<sup>−νσ</sup></th></tr></thead>
 <tbody>
 <tr><td><b><sup>234m</sup>Pa</b></td><td class="num-col">2,27·10⁵</td><td class="num-col">0,819</td><td class="num-col">2,27</td><td class="num-col">5,19</td><td class="num-col">0,037</td><td class="num-col">0,963</td><td class="num-col">107,2</td><td class="num-col">51,7</td></tr>
@@ -262,10 +262,10 @@
 <tr class="total"><td colspan="8">Сумма (ручная оценка коврика)</td><td class="num-col"><b>52,8</b></td></tr>
 </tbody></table></div>
 <p><strong>Неопределённость.</strong> Результат доминируется <sup>234m</sup>Pa (множитель e<sup>−νσ</sup> ≈ 0,96 почти не влияет). Определяющие вклады — удельная активность (HPGe, u ≈ 10 %) и средняя энергия β-спектра (u ≈ 10 %): u<sub>отн</sub> = √(0,10² + 0,10²) ≈ 14 %. Итог: <strong>Ḋ<sub>p</sub>(0,07) ≈ 53 ± 7 мкГр/ч</strong>.</p>
-<div class="callout"><b>Ручная оценка 53 ± 7 мкГр/ч против Монте-Карло 48,4 мкГр/ч — согласие +9 %</b> (в пределах неопределённости). Замкнутая формула, считаемая на бумаге, воспроизводит МК-результат для коврика. Небольшое завышение ожидаемо: реальный слой бусин имеет конечную толщину (~0,4 г/см², сопоставимо с пробегом), тогда как «полубесконечная» модель предполагает бесконечно толстый источник и слегка переоценивает вклад дальних слоёв.</div>
+<div class="callout"><b>Аналитическая оценка 53 ± 7 мкГр/ч против Монте-Карло 48,4 мкГр/ч — согласие +9 %</b> (в пределах неопределённости). Замкнутая формула, считаемая на бумаге, воспроизводит МК-результат для коврика. Небольшое завышение ожидаемо: реальный слой бусин имеет конечную толщину (~0,4 г/см², сопоставимо с пробегом), тогда как «полубесконечная» модель предполагает бесконечно толстый источник и слегка переоценивает вклад дальних слоёв.</div>
 
-<h3>7.2. Уточнение от шарика: объёмный интеграл с дозовым ядром</h3>
-<p>Одиночная бусина мала в сравнении с пробегом β, поэтому полубесконечное приближение к ней неприменимо. Для неё (и промежуточных укладок) взято бета-<strong>точечное дозовое ядро</strong>, проинтегрированное по объёму стекла шарика с учётом самопоглощения; цепочка и коврик получены суперпозицией шариков на решётке:</p>
+<h3>7.2. Уточнение сферической моделью: объёмный интеграл с дозовым ядром</h3>
+<p>Одиночная бусина мала в сравнении с пробегом β, поэтому полубесконечное приближение к ней неприменимо. Для неё (и промежуточных укладок) взято бета-<strong>точечное дозовое ядро</strong>, проинтегрированное по объёму стекла сферы с учётом самопоглощения; цепочка и коврик получены суперпозицией сфер на решётке:</p>
 <p class="big" style="text-align:center">Ḋ(r) = a·Ē·ν / (4π I) · Φ(ν·m) / r²,   I = ∫₀<sup>∞</sup> Φ(u) du</p>
 <p>где m — масса вдоль луча (стекло + ткань), r — расстояние. Рассмотрены два ядра Φ:</p>
 <ul>
@@ -273,7 +273,7 @@
 <li><strong>ядро Лёвинджера (1956)</strong> Φ(x) = c(1−(x/c)·e<sup>1−x/c</sup>) + x·e<sup>1−x</sup> при x ≤ c; x·e<sup>1−x</sup> при x &gt; c (c = 2, I = 3,845) — физичнее: спадает круче и обрывается у пробега.</li>
 </ul>
 <div class="tablewrap"><table>
-<caption>Таблица 6. Классическая оценка (интеграл по шарику) против Монте-Карло, мкЗв/ч. В скобках — отношение к МК.</caption>
+<caption>Таблица 6. Классическая оценка (интеграл по сфере) против Монте-Карло, мкЗв/ч. В скобках — отношение к МК.</caption>
 <thead><tr><th>Конфигурация</th><th>Монте-Карло</th><th>эксп. ядро</th><th>ядро Лёвинджера</th></tr></thead>
 <tbody>
 <tr><td>одна бусина</td><td class="num-col">6,69</td><td class="num-col">6,39 (×0,96)</td><td class="num-col">5,83 (×0,87)</td></tr>
@@ -283,7 +283,7 @@
 <p><strong>Для одиночной бусины экспоненциальное ядро совпадает с Монте-Карло на 4 %</strong> (6,39 против 6,69 мкЗв/ч) — базовый источник воспроизведён полностью независимым методом. Систематические отклонения на укладках разобраны в §8.</p>
 <figure>
   <img src="figures/beads_classic_vs_mc.png" alt="Классическая проверка против Монте-Карло">
-  <figcaption><b>Рис. 5.</b> Классическая (полуаналитическая) оценка от шарика против Монте-Карло. Для одиночной бусины методы совпадают в пределах 4 %; на протяжённых укладках экспоненциальное ядро систематически завышает дозу, а ядро Лёвинджера (обрывается у пробега) заметно ближе к МК.</figcaption>
+  <figcaption><b>Рис. 5.</b> Классическая (полуаналитическая) оценка по сферической модели против Монте-Карло. Для одиночной бусины методы совпадают в пределах 4 %; на протяжённых укладках экспоненциальное ядро систематически завышает дозу, а ядро Лёвинджера (обрывается у пробега) заметно ближе к МК.</figcaption>
 </figure>
 
 <h2><span class="num">8</span>Анализ достоверности и расхождений</h2>
@@ -294,20 +294,20 @@
 <tbody>
 <tr><td>Санити-тест нормировки (точечный γ-источник против закона 1/4π<var>r</var>² на 10/20/30 см)</td><td>отношение <b>1,000</b> — геометрия, розыгрыш и нормировка корректны</td></tr>
 <tr><td>Самосогласованность входных активностей (2,27·10⁵ Бк/кг ↔ доля U)</td><td>1,83 масс.% U (измерено 1,84 %); <sup>235</sup>U 0,67 % — сходится</td></tr>
-<tr><td>Ручной расчёт коврика (§7.1)</td><td>53 ± 7 против МК 48,4 → <b>+9 %</b></td></tr>
-<tr><td>Интеграл по шарику, эксп. ядро (§7.2)</td><td>одна бусина <b>4 %</b></td></tr>
+<tr><td>Аналитическая оценка коврика (§7.1)</td><td>53 ± 7 против МК 48,4 → <b>+9 %</b></td></tr>
+<tr><td>Интеграл по сфере, эксп. ядро (§7.2)</td><td>одна бусина <b>4 %</b></td></tr>
 <tr><td>Порядок величины по <sup>90</sup>Y (E<sub>max</sub> 2,28 МэВ ≈ <sup>234m</sup>Pa)</td><td>≈ 3,5 мкЗв/ч на Бк/см² пары <sup>90</sup>Sr+<sup>90</sup>Y<a class="cit" href="#r15">[15]</a> → десятки мкЗв/ч для укладки, согласуется с 48</td></tr>
 <tr><td>Независимый аудит кода</td><td>дозы воспроизведены из сырых прогонов; выявлена и устранена ошибка нормировки первой редакции (§11)</td></tr>
 </tbody></table></div>
 
 <h3>8.1. Расхождение «классика ↔ Монте-Карло» на укладках</h3>
-<p>Единственное систематическое расхождение — рост отношения «интеграл по шарику / МК» с размером укладки: экспоненциальное ядро <strong>×0,96 → ×1,19 → ×1,54</strong>, ядро Лёвинджера <strong>×0,87 → ×1,09 → ×1,41</strong>. Это не случайный разброс, а эффект с ясной физической причиной:</p>
+<p>Единственное систематическое расхождение — рост отношения «интеграл по сфере / МК» с размером укладки: экспоненциальное ядро <strong>×0,96 → ×1,19 → ×1,54</strong>, ядро Лёвинджера <strong>×0,87 → ×1,09 → ×1,41</strong>. Это не случайный разброс, а эффект с ясной физической причиной:</p>
 <ul>
 <li><b>«Толстый хвост» ядра — главная причина.</b> Экспоненциальное ядро e<sup>−ν·m</sup>/r² присваивает ненулевую дозу сколь угодно далёким точкам, тогда как истинное β-ядро <strong>резко обрывается на экстраполированном пробеге</strong>. Для одиночной бусины дозу формирует ближняя зона (обе модели совпадают); при добавлении далёких бусин хвост переоценивает их вклад — тем сильнее, чем больше укладка. Монотонный рост завышения 4 % → 19 % → 54 % — прямая «подпись» эффекта. <strong>Ядро Лёвинджера, спадающее круче и обрывающееся у пробега, систематически ближе к МК</strong> (54 %→41 %, 19 %→9 %), что подтверждает диагноз.</li>
 <li><b>Одна средняя энергия и один ν.</b> Классика заменяет непрерывный β-спектр средней Ē и единым ν(E<sub>max</sub>); реальный спектр мягче у поверхности и жёстче на глубине, а эффективный пробег энергозависим — это дополнительно уплощает спад и завышает дальнее поле.</li>
 <li><b>Прямолинейное изотропное ядро без рассеяния.</b> Не учтены многократное и обратное рассеяние электронов, которые в МК слегка снижают дальнее поле; вклад второго порядка.</li>
 </ul>
-<div class="callout"><b>Вывод.</b> Совпадение на уровне базового источника (ручной расчёт +9 %, шарик 4 %) подтверждает корректность физики и нормировки. Систематическое завышение классики на укладках предсказуемо и объясняется известным ограничением дозового ядра при суперпозиции протяжённых источников; более физичное ядро Лёвинджера это подтверждает, приближаясь к МК. В этой области <strong>Монте-Карло достовернее</strong> — истинный конечный пробег β, полный спектр и рассеяние учтены явно, а не приближённо. Дополнительно результат опирается на валидированную физику (G4EmStandardPhysics_option4, спектры ENSDF/ICRP-107), статистическую сходимость (1σ &lt; 1 %) и консервативные допущения (контакт вплотную, сфера как нижняя оценка), а полная открытость проекта (<code>beads_skin</code>) позволяет перепроверить каждый шаг.</div>
+<div class="callout"><b>Вывод.</b> Совпадение на уровне базового источника (ручной расчёт +9 %, сфера 4 %) подтверждает корректность физики и нормировки. Систематическое завышение классики на укладках предсказуемо и объясняется известным ограничением дозового ядра при суперпозиции протяжённых источников; более физичное ядро Лёвинджера это подтверждает, приближаясь к МК. В этой области <strong>Монте-Карло достовернее</strong> — истинный конечный пробег β, полный спектр и рассеяние учтены явно, а не приближённо. Дополнительно результат опирается на валидированную физику (G4EmStandardPhysics_option4, спектры ENSDF/ICRP-107), статистическую сходимость (1σ &lt; 1 %) и консервативные допущения (контакт вплотную, сфера как нижняя оценка), а полная открытость проекта (<code>beads_skin</code>) позволяет перепроверить каждый шаг.</div>
 
 <h2><span class="num">9</span>Сравнение с нормативами</h2>
 <p>Соответствующий норматив — предел эквивалентной дозы <strong>в коже</strong> по НРБ-99/2009<a class="cit" href="#r7">[7]</a>; он определён именно как доза, усреднённая по площади 1 см² на глубине базального слоя, — то есть та величина Ḣ<sub>p</sub>(0,07), что рассчитана здесь. Общий предел эффективной дозы (1 мЗв/год для населения) к локальному облучению кожи напрямую не применяется.</p>
@@ -513,7 +513,7 @@
 <h2><span class="num">7</span>Verification by a classical method</h2>
 <p>To check both the order of magnitude and the absolute value independently of Geant4, a classical (semi-analytical) estimate was made, "from simple to accurate": first a closed-form formula for the mat that the reader can reproduce by hand (§7.1), then a volume integral over the sphere with two variants of the dose kernel (§7.2).</p>
 
-<h3>7.1. Hand calculation of the mat: semi-infinite source model</h3>
+<h3>7.1. Analytical estimate of the mat: semi-infinite source model</h3>
 <p>The dense mat is laterally much larger than the beta range (the extrapolated range of the <sup>234m</sup>Pa β, E<sub>max</sub> = 2.27 MeV, in tissue ≈ 1.1 g/cm² ≈ 11 mm; the 9×9 mat ≈ 37 mm), so it is legitimate to approximate it as an <strong>infinite uniform β-active plane of glass</strong>. The dose rate at the surface of a semi-infinite uniform source equals <em>half</em> the equilibrium rate in an infinite medium (energy splits equally "up/down"), attenuated to the basal-layer depth:</p>
 <p class="big" style="text-align:center">Ḋ<sub>p</sub>(0.07) = ½ · Σ<sub>i</sub> C<sub>v,i</sub> · Ē<sub>i</sub> · e<sup>−ν<sub>i</sub>σ</sup> · k</p>
 <ul>
@@ -531,7 +531,7 @@
 <li>contribution = ½ × 107.2 × 0.963 = <strong>51.7 µGy/h</strong>.</li>
 </ol>
 <div class="tablewrap"><table>
-<caption>Table 5. Hand calculation of the mat over all three β nuclides (semi-infinite source model).</caption>
+<caption>Table 5. Analytical estimate of the mat over all three β nuclides (semi-infinite source model).</caption>
 <thead><tr><th>Nuclide</th><th>C<sub>v</sub>, Bq/kg</th><th>Ē, MeV</th><th>E<sub>max</sub>, MeV</th><th>ν, cm²/g</th><th>νσ</th><th>e<sup>−νσ</sup></th><th>Ḋ<sub>∞</sub>, µGy/h</th><th>½·Ḋ<sub>∞</sub>·e<sup>−νσ</sup></th></tr></thead>
 <tbody>
 <tr><td><b><sup>234m</sup>Pa</b></td><td class="num-col">2.27·10⁵</td><td class="num-col">0.819</td><td class="num-col">2.27</td><td class="num-col">5.19</td><td class="num-col">0.037</td><td class="num-col">0.963</td><td class="num-col">107.2</td><td class="num-col">51.7</td></tr>
@@ -540,7 +540,7 @@
 <tr class="total"><td colspan="8">Sum (hand estimate of the mat)</td><td class="num-col"><b>52.8</b></td></tr>
 </tbody></table></div>
 <p><strong>Uncertainty.</strong> The result is dominated by <sup>234m</sup>Pa (the factor e<sup>−νσ</sup> ≈ 0.96 barely matters). The governing contributions are the specific activity (HPGe, u ≈ 10 %) and the mean β energy (u ≈ 10 %): u<sub>rel</sub> = √(0.10² + 0.10²) ≈ 14 %. Result: <strong>Ḋ<sub>p</sub>(0.07) ≈ 53 ± 7 µGy/h</strong>.</p>
-<div class="callout"><b>Hand estimate 53 ± 7 µGy/h vs Monte Carlo 48.4 µGy/h — agreement +9 %</b> (within uncertainty). A closed-form formula done on paper reproduces the MC result for the mat. The slight overestimate is expected: a real bead layer has finite thickness (~0.4 g/cm², comparable to the range), whereas the "semi-infinite" model assumes an infinitely thick source and slightly over-counts the contribution of deeper layers.</div>
+<div class="callout"><b>Analytical estimate 53 ± 7 µGy/h vs Monte Carlo 48.4 µGy/h — agreement +9 %</b> (within uncertainty). A closed-form formula done on paper reproduces the MC result for the mat. The slight overestimate is expected: a real bead layer has finite thickness (~0.4 g/cm², comparable to the range), whereas the "semi-infinite" model assumes an infinitely thick source and slightly over-counts the contribution of deeper layers.</div>
 
 <h3>7.2. Refinement from the sphere: volume integral with a dose kernel</h3>
 <p>A single bead is small compared with the beta range, so the semi-infinite approximation does not apply to it. For it (and the intermediate packings) a beta <strong>point-dose kernel</strong> was used, integrated over the glass volume of the sphere with self-absorption; the chain and mat are obtained by superposition of spheres on a lattice:</p>
@@ -572,7 +572,7 @@
 <tbody>
 <tr><td>Normalization sanity test (point γ source vs the 1/4π<var>r</var>² law at 10/20/30 cm)</td><td>ratio <b>1.000</b> — geometry, sampling and normalization are correct</td></tr>
 <tr><td>Self-consistency of the input activities (2.27·10⁵ Bq/kg ↔ U fraction)</td><td>1.83 wt% U (measured 1.84 %); <sup>235</sup>U 0.67 % — consistent</td></tr>
-<tr><td>Hand calculation of the mat (§7.1)</td><td>53 ± 7 vs MC 48.4 → <b>+9 %</b></td></tr>
+<tr><td>Analytical estimate of the mat (§7.1)</td><td>53 ± 7 vs MC 48.4 → <b>+9 %</b></td></tr>
 <tr><td>Sphere integral, exp. kernel (§7.2)</td><td>single bead <b>4 %</b></td></tr>
 <tr><td>Order of magnitude via <sup>90</sup>Y (E<sub>max</sub> 2.28 MeV ≈ <sup>234m</sup>Pa)</td><td>≈ 3.5 µSv/h per Bq/cm² of the <sup>90</sup>Sr+<sup>90</sup>Y pair<a class="cit" href="#r15">[15]</a> → tens of µSv/h for the packing, consistent with 48</td></tr>
 <tr><td>Independent code audit</td><td>doses reproduced from raw runs; a normalization error of the first revision found and fixed (§11)</td></tr>
