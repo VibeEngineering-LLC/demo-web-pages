@@ -114,7 +114,7 @@
 <header>
   <h1 data-i18n="h1">Калькулятор Рационального метода<br>надёжности измерения радона в помещении</h1>
   <p class="sub" data-i18n="sub1">Достаточна ли длительность замера, чтобы решение о соответствии нормативу было надёжным (≥&nbsp;95&nbsp;%)?</p>
-  <p class="sub" data-i18n="sub2">Реализация критериев Рационального метода&nbsp;— Tsapalov&nbsp;&amp;&nbsp;Kranrod, <i>Atmosphere</i> 2026.</p>
+  <p class="sub" data-i18n="sub2">Реализация критериев Рационального метода&nbsp;— Цапалов (АНРИ 2025) / Tsapalov&nbsp;&amp;&nbsp;Kranrod (<i>Atmosphere</i> 2026).</p>
 </header>
 
 <!-- ─────────────── КАЛЬКУЛЯТОР ─────────────── -->
@@ -127,7 +127,7 @@
         <input type="number" id="ct" value="85" min="0" step="1">
         <select class="unit" disabled><option data-i18n="unitBq">Бк/м³</option></select>
       </div>
-      <p class="hint" data-i18n="hintCt">Показание радон-монитора, среднее за весь период измерения</p>
+      <p class="hint" data-i18n="hintCt">Показание радон-монитора (ОА радона), среднее за весь период. Если прибор измеряет ЭРОА&nbsp;— умножьте на 2 (приведение к ОА).</p>
     </div>
     <div>
       <label for="dur" data-i18n="lblDur">Длительность измерения t</label>
@@ -139,23 +139,23 @@
         </select>
       </div>
       <p class="hint" data-i18n="hintDur">За сколько усреднено C(t). Нормальный режим&nbsp;— от 4&nbsp;суток. 1&nbsp;месяц = 30&nbsp;суток</p>
-      <p class="hint" data-i18n="discClosed">Таблица ниже&nbsp;— только для нормального режима эксплуатации/вентиляции. Для закрытого режима (t от 2&nbsp;суток) нужна отдельная база U<sub>V</sub>(t)/MF(t)&nbsp;— здесь не реализовано.</p>
+      <p class="hint" data-i18n="discClosed">Таблица ниже&nbsp;— только для нормального режима эксплуатации/вентиляции. Для ограниченного режима (окна/двери закрыты, t от 2&nbsp;суток) нужна отдельная база U<sub>V</sub>(t)/K<sub>p</sub>(t)&nbsp;— здесь не реализовано.</p>
     </div>
     <div>
-      <label for="rl" data-i18n="lblRl">Референтный уровень C<sub>RL</sub></label>
+      <label for="rl" data-i18n="lblRl">Норматив C<sub>ну</sub></label>
       <div class="field">
-        <input type="number" id="rl" value="100" min="1" step="1">
+        <input type="number" id="rl" value="200" min="1" step="1">
         <select class="unit" disabled><option data-i18n="unitBq2">Бк/м³</option></select>
       </div>
-      <p class="hint" data-i18n="hintRl">Национальный норматив на среднегодовую концентрацию (реестр WHO; обычно 100–400)</p>
+      <p class="hint" data-i18n="hintRl">Норматив на среднегодовую концентрацию. РФ (эксплуатируемые здания)&nbsp;— 200&nbsp;Бк/м³ по ОА; реестр WHO&nbsp;— обычно 100–400.</p>
     </div>
     <div>
-      <label for="ud" data-i18n="lblUd">Приборная неопределённость U<sub>D</sub></label>
+      <label for="ud" data-i18n="lblUd">Инструментальная неопределённость U<sub>и</sub></label>
       <div class="field">
         <input type="number" id="ud" value="20" min="0" max="95" step="1">
         <select class="unit" disabled><option data-i18n="unitPct">% (k=2)</option></select>
       </div>
-      <p class="hint" data-i18n="hintUd">Паспортная погрешность прибора (охват k=2). Ниже 20&nbsp;% не рекомендуется</p>
+      <p class="hint" data-i18n="hintUd">Калибровочная неопределённость прибора (охват k=2). Ориентир: краткосрочный тест&nbsp;— до ±40&nbsp;%, долгосрочный&nbsp;— ±20–30&nbsp;%. Ниже 20&nbsp;% не рекомендуется.</p>
     </div>
   </div>
 
@@ -169,51 +169,51 @@
     <li data-i18n="note1"><b>Что решает.</b> По одному измерению <code>C(t)</code> за время <code>t</code> метод
       относит помещение к одному из трёх исходов с надёжностью решения ≥&nbsp;95&nbsp;%:
       <b>соответствует</b> нормативу, <b>не соответствует</b> (нужны защитные мероприятия) или
-      <b>решение неопределённое</b> (измерение продолжить).</li>
+      <b>серая зона</b> (измерение продолжить).</li>
     <li data-i18n="note2"><b>Главная идея.</b> Основной вклад в неопределённость решения даёт <b>временная</b>
       неопределённость <code>U<sub>V</sub>(t)</code> (радон сильно меняется во времени),
-      а не приборная <code>U<sub>D</sub></code>. Поэтому длительность измерения важнее точности прибора.</li>
+      а не инструментальная <code>U<sub>и</sub></code>. Поэтому длительность измерения важнее точности прибора.</li>
     <li data-i18n="note3"><b>Практический вывод статьи.</b> Краткие измерения (4–6&nbsp;суток) почти не уступают
       длительным (2–3&nbsp;месяца) по доле надёжных решений (в среднем ≈&nbsp;80&nbsp;% по 26&nbsp;странам),
       но дешевле более чем на порядок.</li>
     <li data-i18n="note4"><b>Режимы.</b> Таблица <code>U<sub>V</sub>(t)</code> ниже&nbsp;— для нормального режима
-      эксплуатации/вентиляции (минимум 4&nbsp;суток). Для закрытого режима&nbsp;— минимум 2&nbsp;суток
+      эксплуатации/вентиляции (минимум 4&nbsp;суток). Для ограниченного режима&nbsp;— минимум 2&nbsp;суток
       (отдельная база, здесь не приводится).</li>
   </ul>
 
   <div class="formula" data-i18n="formulaBlock">
-    (a) соответствует:&nbsp; C(t)·[1&nbsp;+&nbsp;√(U<sub>V</sub>²&nbsp;+&nbsp;U<sub>D</sub>²)]&nbsp;&lt;&nbsp;C<sub>RL</sub><br>
-    (b) не соответствует:&nbsp; C(t)/MF(t)·[1&nbsp;−&nbsp;U<sub>D</sub>]&nbsp;&gt;&nbsp;C<sub>RL</sub><br>
-    (c) иначе&nbsp;— решение неопределённое, измерение продолжить.
+    (a) соответствует:&nbsp; C(t)·[1&nbsp;+&nbsp;√(U<sub>V</sub>²&nbsp;+&nbsp;U<sub>и</sub>²)]&nbsp;&lt;&nbsp;C<sub>ну</sub><br>
+    (b) не соответствует:&nbsp; C(t)/K<sub>p</sub>(t)·[1&nbsp;−&nbsp;U<sub>и</sub>]&nbsp;&gt;&nbsp;C<sub>ну</sub><br>
+    (c) иначе&nbsp;— серая зона, измерение продолжить.
   </div>
-  <p class="hint" data-i18n="formulaHint">Пороги: C<sub>AL</sub><sup>(1)</sup> = C<sub>RL</sub>/[1+√(U<sub>V</sub>²+U<sub>D</sub>²)] &nbsp;·&nbsp;
-    C<sub>AL</sub><sup>(2)</sup> = MF(t)·C<sub>RL</sub>/(1−U<sub>D</sub>). Формулы (1),(2),(7),(8) статьи.</p>
+  <p class="hint" data-i18n="formulaHint">Пороги: C<sub>AL</sub><sup>(1)</sup> = C<sub>ну</sub>/[1+√(U<sub>V</sub>²+U<sub>и</sub>²)] &nbsp;·&nbsp;
+    C<sub>AL</sub><sup>(2)</sup> = K<sub>p</sub>(t)·C<sub>ну</sub>/(1−U<sub>и</sub>). Формулы (1),(2) статьи (пороги&nbsp;— их эквивалентная форма).</p>
 </section>
 
 <!-- ─────────────── ТАБЛИЦА 1 ─────────────── -->
 <section class="card">
-  <h2 data-i18n="tableH2">Таблица 1 — временная неопределённость U<sub>V</sub>(t) и коэффициент кратности MF(t)</h2>
-  <p class="hint" style="margin-top:0" data-i18n="tableHintTop">Нормальный режим. Между узлами калькулятор интерполирует по log&nbsp;t. Источник: статья, Table&nbsp;1 (данные YLCM, Россия/Израиль/Финляндия).</p>
+  <h2 data-i18n="tableH2">Таблица 1 — временная неопределённость U<sub>V</sub>(t) и коэффициент кратности K<sub>p</sub>(t)</h2>
+  <p class="hint" style="margin-top:0" data-i18n="tableHintTop">Нормальный режим. Между узлами калькулятор интерполирует по log&nbsp;t. Источник: статья, Приложение А / Table&nbsp;1 (данные YLCM, Россия/Израиль/Финляндия).</p>
   <div class="tblscroll">
     <table>
       <tr><th class="rowlab" data-i18n="thDay">Сутки</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>10</th><th>12</th><th>14</th><th>20</th></tr>
       <tr><td class="rowlab">U<sub>V</sub>(t)</td><td>2.30</td><td>1.60</td><td>1.40</td><td>1.25</td><td>1.20</td><td>1.20</td><td>1.20</td><td>1.20</td><td>1.10</td><td>1.10</td><td>1.10</td><td>1.10</td></tr>
-      <tr><td class="rowlab">MF(t)</td><td>—</td><td>—</td><td>—</td><td>1.74</td><td>1.72</td><td>1.70</td><td>1.69</td><td>1.68</td><td>1.67</td><td>1.66</td><td>1.65</td><td>1.61</td></tr>
+      <tr><td class="rowlab" data-i18n="labMF">K<sub>p</sub>(t)</td><td>—</td><td>—</td><td>—</td><td>1.74</td><td>1.72</td><td>1.70</td><td>1.69</td><td>1.68</td><td>1.67</td><td>1.66</td><td>1.65</td><td>1.61</td></tr>
       <tr><th class="rowlab" data-i18n="thMonth">Месяц</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th></tr>
       <tr><td class="rowlab">U<sub>V</sub>(t)</td><td>1.05</td><td>1.00</td><td>0.85</td><td>0.65</td><td>0.55</td><td>0.45</td><td>0.35</td><td>0.25</td><td>0.17</td><td>0.10</td><td>0.05</td><td>0.00</td></tr>
-      <tr><td class="rowlab">MF(t)</td><td>1.56</td><td>1.48</td><td>1.44</td><td>1.42</td><td>1.37</td><td>1.31</td><td>1.24</td><td>1.20</td><td>1.14</td><td>1.09</td><td>1.05</td><td>1.00</td></tr>
+      <tr><td class="rowlab" data-i18n="labMF">K<sub>p</sub>(t)</td><td>1.56</td><td>1.48</td><td>1.44</td><td>1.42</td><td>1.37</td><td>1.31</td><td>1.24</td><td>1.20</td><td>1.14</td><td>1.09</td><td>1.05</td><td>1.00</td></tr>
     </table>
   </div>
   <p class="hint" data-i18n="tableHintBottom">Обратите внимание: при 2&nbsp;месяцах U<sub>V</sub>&nbsp;=&nbsp;100&nbsp;%, при 3&nbsp;месяцах&nbsp;=&nbsp;85&nbsp;%&nbsp;— двух-трёхмесячное измерение ещё далеко от среднегодового.</p>
 </section>
 
 <footer>
-  <p data-i18n="footSrc"><b>Источник метода:</b> Tsapalov, A.; Kranrod, C. Measurement Duration for Reliable
+  <p data-i18n="footSrc"><b>Источник метода:</b> Цапалов А.В. Рациональный метод контроля радона в зданиях. <i>АНРИ</i> <b>2025</b>, №1(120). Англоязычное развитие: Tsapalov, A.; Kranrod, C. Measurement Duration for Reliable
     Indoor Radon Testing. <i>Atmosphere</i> <b>2026</b>, 17, 706.
     <a href="https://doi.org/10.3390/atmos17070706" target="_blank" rel="noopener">doi.org/10.3390/atmos17070706</a>
-    (открытый доступ, CC&nbsp;BY&nbsp;4.0). Метод впервые: Tsapalov&nbsp;&amp;&nbsp;Kovler, <i>J.&nbsp;Environ.&nbsp;Radioact.</i> 2018, 183, 59–72.</p>
-  <p data-i18n="footDisc">Калькулятор воспроизводит критерии (1),(2) и пороги (7),(8) с табличными значениями
-    U<sub>V</sub>(t)/MF(t) статьи. Неофициальная вспомогательная реализация контура «Радоновый риск».
+    (открытый доступ, CC&nbsp;BY&nbsp;4.0).</p>
+  <p data-i18n="footDisc">Калькулятор воспроизводит критерии (1),(2) с табличными значениями
+    U<sub>V</sub>(t)/K<sub>p</sub>(t) статьи. Неофициальная вспомогательная реализация контура «Радоновый риск».
     Для торона (ДПР Rn-220) метод пока не разработан. Расчёт не заменяет официальные протоколы измерений.</p>
 </footer>
 
@@ -221,7 +221,7 @@
 
 <script>
 "use strict";
-// ── Таблица 1: сутки → [UV, MF]; месяцы переведены ×30 для общей оси ──
+// ── Таблица 1: сутки → [UV, Kp]; месяцы переведены ×30 для общей оси ──
 var TAB = {
   1:[2.30,null],2:[1.60,null],3:[1.40,null],4:[1.25,1.74],5:[1.20,1.72],6:[1.20,1.70],
   7:[1.20,1.69],8:[1.20,1.68],10:[1.10,1.67],12:[1.10,1.66],14:[1.10,1.65],20:[1.10,1.61],
@@ -230,7 +230,7 @@ var TAB = {
 };
 var DAYS = Object.keys(TAB).map(Number).sort(function(a,b){return a-b;});
 
-// линейная интерполяция по log(t); idx=0 → UV, idx=1 → MF (null пропускается)
+// линейная интерполяция по log(t); idx=0 → UV, idx=1 → Kp (null пропускается)
 function interp(t, idx){
   if(t<=DAYS[0]) return TAB[DAYS[0]][idx];
   if(t>=DAYS[DAYS.length-1]) return TAB[DAYS[DAYS.length-1]][idx];
@@ -255,90 +255,90 @@ var I18N = {
     btnTheme:"◑ тема",
     h1:"Калькулятор Рационального метода<br>надёжности измерения радона в помещении",
     sub1:"Достаточна ли длительность замера, чтобы решение о соответствии нормативу было надёжным (≥&nbsp;95&nbsp;%)?",
-    sub2:"Реализация критериев Рационального метода&nbsp;— Tsapalov&nbsp;&amp;&nbsp;Kranrod, <i>Atmosphere</i> 2026.",
+    sub2:"Реализация критериев Рационального метода&nbsp;— Цапалов (АНРИ 2025) / Tsapalov&nbsp;&amp;&nbsp;Kranrod (<i>Atmosphere</i> 2026).",
     calcH2:"Расчёт решения",
     lblCt:"Измеренная концентрация C(t)",
-    hintCt:"Показание радон-монитора, среднее за весь период измерения",
+    hintCt:"Показание радон-монитора (ОА радона), среднее за весь период. Если прибор измеряет ЭРОА&nbsp;— умножьте на 2 (приведение к ОА).",
     unitBq:"Бк/м³", unitBq2:"Бк/м³", unitPct:"% (k=2)",
     lblDur:"Длительность измерения t",
     optDay:"сутки", optMonth:"месяцы",
     hintDur:"За сколько усреднено C(t). Нормальный режим&nbsp;— от 4&nbsp;суток. 1&nbsp;месяц = 30&nbsp;суток",
-    discClosed:"Таблица ниже&nbsp;— только для нормального режима эксплуатации/вентиляции. Для закрытого режима (t от 2&nbsp;суток) нужна отдельная база U<sub>V</sub>(t)/MF(t)&nbsp;— здесь не реализовано.",
-    lblRl:"Референтный уровень C<sub>RL</sub>",
-    hintRl:"Национальный норматив на среднегодовую концентрацию (реестр WHO; обычно 100–400)",
-    lblUd:"Приборная неопределённость U<sub>D</sub>",
-    hintUd:"Паспортная погрешность прибора (охват k=2). Ниже 20&nbsp;% не рекомендуется",
+    discClosed:"Таблица ниже&nbsp;— только для нормального режима эксплуатации/вентиляции. Для ограниченного режима (окна/двери закрыты, t от 2&nbsp;суток) нужна отдельная база U<sub>V</sub>(t)/K<sub>p</sub>(t)&nbsp;— здесь не реализовано.",
+    lblRl:"Норматив C<sub>ну</sub>",
+    hintRl:"Норматив на среднегодовую концентрацию. РФ (эксплуатируемые здания)&nbsp;— 200&nbsp;Бк/м³ по ОА; реестр WHO&nbsp;— обычно 100–400.",
+    lblUd:"Инструментальная неопределённость U<sub>и</sub>",
+    hintUd:"Калибровочная неопределённость прибора (охват k=2). Ориентир: краткосрочный тест&nbsp;— до ±40&nbsp;%, долгосрочный&nbsp;— ±20–30&nbsp;%. Ниже 20&nbsp;% не рекомендуется.",
     methodH2:"Коротко о методе",
-    note1:"<b>Что решает.</b> По одному измерению <code>C(t)</code> за время <code>t</code> метод относит помещение к одному из трёх исходов с надёжностью решения ≥&nbsp;95&nbsp;%: <b>соответствует</b> нормативу, <b>не соответствует</b> (нужны защитные мероприятия) или <b>решение неопределённое</b> (измерение продолжить).",
-    note2:"<b>Главная идея.</b> Основной вклад в неопределённость решения даёт <b>временная</b> неопределённость <code>U<sub>V</sub>(t)</code> (радон сильно меняется во времени), а не приборная <code>U<sub>D</sub></code>. Поэтому длительность измерения важнее точности прибора.",
+    note1:"<b>Что решает.</b> По одному измерению <code>C(t)</code> за время <code>t</code> метод относит помещение к одному из трёх исходов с надёжностью решения ≥&nbsp;95&nbsp;%: <b>соответствует</b> нормативу, <b>не соответствует</b> (нужны защитные мероприятия) или <b>серая зона</b> (измерение продолжить).",
+    note2:"<b>Главная идея.</b> Основной вклад в неопределённость решения даёт <b>временная</b> неопределённость <code>U<sub>V</sub>(t)</code> (радон сильно меняется во времени), а не инструментальная <code>U<sub>и</sub></code>. Поэтому длительность измерения важнее точности прибора.",
     note3:"<b>Практический вывод статьи.</b> Краткие измерения (4–6&nbsp;суток) почти не уступают длительным (2–3&nbsp;месяца) по доле надёжных решений (в среднем ≈&nbsp;80&nbsp;% по 26&nbsp;странам), но дешевле более чем на порядок.",
-    note4:"<b>Режимы.</b> Таблица <code>U<sub>V</sub>(t)</code> ниже&nbsp;— для нормального режима эксплуатации/вентиляции (минимум 4&nbsp;суток). Для закрытого режима&nbsp;— минимум 2&nbsp;суток (отдельная база, здесь не приводится).",
-    formulaBlock:"(a) соответствует:&nbsp; C(t)·[1&nbsp;+&nbsp;√(U<sub>V</sub>²&nbsp;+&nbsp;U<sub>D</sub>²)]&nbsp;&lt;&nbsp;C<sub>RL</sub><br>(b) не соответствует:&nbsp; C(t)/MF(t)·[1&nbsp;−&nbsp;U<sub>D</sub>]&nbsp;&gt;&nbsp;C<sub>RL</sub><br>(c) иначе&nbsp;— решение неопределённое, измерение продолжить.",
-    formulaHint:"Пороги: C<sub>AL</sub><sup>(1)</sup> = C<sub>RL</sub>/[1+√(U<sub>V</sub>²+U<sub>D</sub>²)] &nbsp;·&nbsp; C<sub>AL</sub><sup>(2)</sup> = MF(t)·C<sub>RL</sub>/(1−U<sub>D</sub>). Формулы (1),(2),(7),(8) статьи.",
-    tableH2:"Таблица 1 — временная неопределённость U<sub>V</sub>(t) и коэффициент кратности MF(t)",
-    tableHintTop:"Нормальный режим. Между узлами калькулятор интерполирует по log&nbsp;t. Источник: статья, Table&nbsp;1 (данные YLCM, Россия/Израиль/Финляндия).",
-    thDay:"Сутки", thMonth:"Месяц",
+    note4:"<b>Режимы.</b> Таблица <code>U<sub>V</sub>(t)</code> ниже&nbsp;— для нормального режима эксплуатации/вентиляции (минимум 4&nbsp;суток). Для ограниченного режима&nbsp;— минимум 2&nbsp;суток (отдельная база, здесь не приводится).",
+    formulaBlock:"(a) соответствует:&nbsp; C(t)·[1&nbsp;+&nbsp;√(U<sub>V</sub>²&nbsp;+&nbsp;U<sub>и</sub>²)]&nbsp;&lt;&nbsp;C<sub>ну</sub><br>(b) не соответствует:&nbsp; C(t)/K<sub>p</sub>(t)·[1&nbsp;−&nbsp;U<sub>и</sub>]&nbsp;&gt;&nbsp;C<sub>ну</sub><br>(c) иначе&nbsp;— серая зона, измерение продолжить.",
+    formulaHint:"Пороги: C<sub>AL</sub><sup>(1)</sup> = C<sub>ну</sub>/[1+√(U<sub>V</sub>²+U<sub>и</sub>²)] &nbsp;·&nbsp; C<sub>AL</sub><sup>(2)</sup> = K<sub>p</sub>(t)·C<sub>ну</sub>/(1−U<sub>и</sub>). Формулы (1),(2) статьи (пороги&nbsp;— их эквивалентная форма).",
+    tableH2:"Таблица 1 — временная неопределённость U<sub>V</sub>(t) и коэффициент кратности K<sub>p</sub>(t)",
+    tableHintTop:"Нормальный режим. Между узлами калькулятор интерполирует по log&nbsp;t. Источник: статья, Приложение А / Table&nbsp;1 (данные YLCM, Россия/Израиль/Финляндия).",
+    thDay:"Сутки", thMonth:"Месяц", labUV:"U<sub>V</sub>(t)", labMF:"K<sub>p</sub>(t)",
     tableHintBottom:"Обратите внимание: при 2&nbsp;месяцах U<sub>V</sub>&nbsp;=&nbsp;100&nbsp;%, при 3&nbsp;месяцах&nbsp;=&nbsp;85&nbsp;%&nbsp;— двух-трёхмесячное измерение ещё далеко от среднегодового.",
-    footSrc:"<b>Источник метода:</b> Tsapalov, A.; Kranrod, C. Measurement Duration for Reliable Indoor Radon Testing. <i>Atmosphere</i> <b>2026</b>, 17, 706. <a href=\"https://doi.org/10.3390/atmos17070706\" target=\"_blank\" rel=\"noopener\">doi.org/10.3390/atmos17070706</a> (открытый доступ, CC&nbsp;BY&nbsp;4.0). Метод впервые: Tsapalov&nbsp;&amp;&nbsp;Kovler, <i>J.&nbsp;Environ.&nbsp;Radioact.</i> 2018, 183, 59–72.",
-    footDisc:"Калькулятор воспроизводит критерии (1),(2) и пороги (7),(8) с табличными значениями U<sub>V</sub>(t)/MF(t) статьи. Неофициальная вспомогательная реализация контура «Радоновый риск». Для торона (ДПР Rn-220) метод пока не разработан. Расчёт не заменяет официальные протоколы измерений.",
+    footSrc:"<b>Источник метода:</b> Цапалов А.В. Рациональный метод контроля радона в зданиях. <i>АНРИ</i> <b>2025</b>, №1(120). Англоязычное развитие: Tsapalov, A.; Kranrod, C. Measurement Duration for Reliable Indoor Radon Testing. <i>Atmosphere</i> <b>2026</b>, 17, 706. <a href=\"https://doi.org/10.3390/atmos17070706\" target=\"_blank\" rel=\"noopener\">doi.org/10.3390/atmos17070706</a> (открытый доступ, CC&nbsp;BY&nbsp;4.0).",
+    footDisc:"Калькулятор воспроизводит критерии (1),(2) с табличными значениями U<sub>V</sub>(t)/K<sub>p</sub>(t) статьи. Неофициальная вспомогательная реализация контура «Радоновый риск». Для торона (ДПР Rn-220) метод пока не разработан. Расчёт не заменяет официальные протоколы измерений.",
     // динамика
     v_ok:"Соответствует нормативу",
-    e_ok:"Защитные мероприятия не требуются. Верхняя оценка среднегодовой концентрации ниже C<sub>RL</sub> — решение надёжно (≥ 95 %).",
+    e_ok:"Защитные мероприятия не требуются. Верхняя оценка среднегодовой концентрации ниже C<sub>ну</sub> — решение надёжно (≥ 95 %).",
     v_bad:"Не соответствует нормативу",
-    e_bad:"Требуются защитные (противорадоновые) мероприятия. Нижняя оценка среднегодовой концентрации выше C<sub>RL</sub> — превышение надёжно (≥ 95 %).",
-    v_wait:"Решение неопределённое",
-    e_wait:"Данных недостаточно для надёжного вывода. Измерение нужно продолжить (или повторить длительным протоколом 10–12 месяцев).",
+    e_bad:"Требуются защитные (противорадоновые) мероприятия. Нижняя оценка среднегодовой концентрации выше C<sub>ну</sub> — превышение надёжно (≥ 95 %).",
+    v_wait:"Серая зона",
+    e_wait:"Данных недостаточно для надёжного вывода. Измерение нужно продолжить (или повторить длительным протоколом 2–12 месяцев), после чего U<sub>V</sub> резко падает и решение становится однозначным.",
     chipThr1:"порог (a) C<sub>AL</sub><sup>(1)</sup>", chipThr2:"порог (b) C<sub>AL</sub><sup>(2)</sup>",
     chipDays:"сут.", bq:"Бк/м³",
-    warnT4:"t &lt; 4 суток: вне области применимости критериев (нормальный режим — от 4 суток, закрытый — от 2). Значения U<sub>V</sub>(t) для 1–3 суток приведены справочно; исход «не соответствует» в этой зоне не выносится.",
-    warnUd:"U<sub>D</sub> &lt; 20 %: статья не рекомендует (межгодовые вариации радона ≈ 15–20 %).",
+    warnT4:"t &lt; 4 суток: вне области применимости критериев (нормальный режим — от 4 суток, ограниченный — от 2). Значения U<sub>V</sub>(t) для 1–3 суток приведены справочно; исход «не соответствует» в этой зоне не выносится.",
+    warnUd:"U<sub>и</sub> &lt; 20 %: статья не рекомендует (межгодовые вариации радона ≈ 15–20 %).",
     warnT12:"свыше 12 месяцев: за пределами таблицы, приняты значения для 12 месяцев (U<sub>V</sub>=0).",
     errCt:"Задайте концентрацию C(t) ≥ 0.",
     errDur:"Задайте длительность t &gt; 0.",
-    errRl:"Задайте референтный уровень C<sub>RL</sub> &gt; 0.",
-    errUd:"Задайте приборную неопределённость U<sub>D</sub>."
+    errRl:"Задайте норматив C<sub>ну</sub> &gt; 0.",
+    errUd:"Задайте инструментальную неопределённость U<sub>и</sub>."
   },
   en:{
     title:"Rational Method Calculator — reliability of indoor radon measurement",
     btnTheme:"◑ theme",
     h1:"Rational Method Calculator<br>reliability of indoor radon measurement",
     sub1:"Is the measurement long enough for the compliance decision to be reliable (≥&nbsp;95%)?",
-    sub2:"Implementation of the Rational Method criteria&nbsp;— Tsapalov&nbsp;&amp;&nbsp;Kranrod, <i>Atmosphere</i> 2026.",
+    sub2:"Implementation of the Rational Method criteria&nbsp;— Tsapalov (ANRI 2025) / Tsapalov&nbsp;&amp;&nbsp;Kranrod (<i>Atmosphere</i> 2026).",
     calcH2:"Decision calculation",
     lblCt:"Measured concentration C(t)",
-    hintCt:"Radon-monitor reading, averaged over the whole measurement period",
+    hintCt:"Radon-monitor reading (radon activity concentration), averaged over the whole period. If the device measures EEC — multiply by 2 (conversion to activity concentration).",
     unitBq:"Bq/m³", unitBq2:"Bq/m³", unitPct:"% (k=2)",
     lblDur:"Measurement duration t",
     optDay:"days", optMonth:"months",
     hintDur:"Over what period C(t) is averaged. Normal mode&nbsp;— from 4&nbsp;days. 1&nbsp;month = 30&nbsp;days",
-    discClosed:"The table below applies only to the normal operation/ventilation mode. The closed mode (t from 2&nbsp;days) requires a separate U<sub>V</sub>(t)/MF(t) dataset&nbsp;— not implemented here.",
+    discClosed:"The table below applies only to the normal operation/ventilation mode. The restricted mode (windows/doors closed, t from 2&nbsp;days) requires a separate U<sub>V</sub>(t)/MF(t) dataset&nbsp;— not implemented here.",
     lblRl:"Reference level C<sub>RL</sub>",
-    hintRl:"National reference level for the annual-average concentration (WHO registry; usually 100–400)",
+    hintRl:"Reference level for the annual-average concentration (WHO registry; usually 100–400 Bq/m³).",
     lblUd:"Instrumental uncertainty U<sub>D</sub>",
-    hintUd:"Device datasheet uncertainty (coverage factor k=2). Below 20% is not recommended",
+    hintUd:"Device calibration uncertainty (coverage factor k=2). Guide: short-term test — up to ±40%, long-term — ±20–30%. Below 20% is not recommended.",
     methodH2:"The method in brief",
-    note1:"<b>What it decides.</b> From a single measurement <code>C(t)</code> over time <code>t</code> the method assigns the room to one of three outcomes with decision reliability ≥&nbsp;95%: <b>complies</b> with the reference level, <b>does not comply</b> (remediation measures needed), or <b>indeterminate</b> (continue the measurement).",
+    note1:"<b>What it decides.</b> From a single measurement <code>C(t)</code> over time <code>t</code> the method assigns the room to one of three outcomes with decision reliability ≥&nbsp;95%: <b>complies</b> with the reference level, <b>does not comply</b> (remediation measures needed), or <b>grey zone</b> (continue the measurement).",
     note2:"<b>Key idea.</b> The dominant contribution to decision uncertainty is the <b>temporal</b> uncertainty <code>U<sub>V</sub>(t)</code> (radon varies strongly in time), not the instrumental <code>U<sub>D</sub></code>. So measurement duration matters more than device precision.",
     note3:"<b>Practical conclusion of the article.</b> Short measurements (4–6&nbsp;days) are almost as good as long ones (2–3&nbsp;months) in the share of reliable decisions (≈&nbsp;80% on average across 26&nbsp;countries), yet cost more than an order of magnitude less.",
-    note4:"<b>Modes.</b> The <code>U<sub>V</sub>(t)</code> table below is for the normal operation/ventilation mode (minimum 4&nbsp;days). The closed mode requires a minimum of 2&nbsp;days (a separate dataset, not given here).",
-    formulaBlock:"(a) complies:&nbsp; C(t)·[1&nbsp;+&nbsp;√(U<sub>V</sub>²&nbsp;+&nbsp;U<sub>D</sub>²)]&nbsp;&lt;&nbsp;C<sub>RL</sub><br>(b) does not comply:&nbsp; C(t)/MF(t)·[1&nbsp;−&nbsp;U<sub>D</sub>]&nbsp;&gt;&nbsp;C<sub>RL</sub><br>(c) otherwise&nbsp;— indeterminate, continue the measurement.",
-    formulaHint:"Action levels: C<sub>AL</sub><sup>(1)</sup> = C<sub>RL</sub>/[1+√(U<sub>V</sub>²+U<sub>D</sub>²)] &nbsp;·&nbsp; C<sub>AL</sub><sup>(2)</sup> = MF(t)·C<sub>RL</sub>/(1−U<sub>D</sub>). Eqs. (1),(2),(7),(8) of the article.",
+    note4:"<b>Modes.</b> The <code>U<sub>V</sub>(t)</code> table below is for the normal operation/ventilation mode (minimum 4&nbsp;days). The restricted mode requires a minimum of 2&nbsp;days (a separate dataset, not given here).",
+    formulaBlock:"(a) complies:&nbsp; C(t)·[1&nbsp;+&nbsp;√(U<sub>V</sub>²&nbsp;+&nbsp;U<sub>D</sub>²)]&nbsp;&lt;&nbsp;C<sub>RL</sub><br>(b) does not comply:&nbsp; C(t)/MF(t)·[1&nbsp;−&nbsp;U<sub>D</sub>]&nbsp;&gt;&nbsp;C<sub>RL</sub><br>(c) otherwise&nbsp;— grey zone, continue the measurement.",
+    formulaHint:"Action levels: C<sub>AL</sub><sup>(1)</sup> = C<sub>RL</sub>/[1+√(U<sub>V</sub>²+U<sub>D</sub>²)] &nbsp;·&nbsp; C<sub>AL</sub><sup>(2)</sup> = MF(t)·C<sub>RL</sub>/(1−U<sub>D</sub>). Eqs. (1),(2) of the article (levels — their equivalent form).",
     tableH2:"Table 1 — temporal uncertainty U<sub>V</sub>(t) and multiplicity factor MF(t)",
-    tableHintTop:"Normal mode. Between nodes the calculator interpolates in log&nbsp;t. Source: article, Table&nbsp;1 (YLCM data, Russia/Israel/Finland).",
-    thDay:"Day", thMonth:"Month",
+    tableHintTop:"Normal mode. Between nodes the calculator interpolates in log&nbsp;t. Source: article, Appendix A / Table&nbsp;1 (YLCM data, Russia/Israel/Finland).",
+    thDay:"Day", thMonth:"Month", labUV:"U<sub>V</sub>(t)", labMF:"MF(t)",
     tableHintBottom:"Note: at 2&nbsp;months U<sub>V</sub>&nbsp;=&nbsp;100%, at 3&nbsp;months&nbsp;=&nbsp;85%&nbsp;— a two-to-three-month measurement is still far from the annual average.",
-    footSrc:"<b>Method source:</b> Tsapalov, A.; Kranrod, C. Measurement Duration for Reliable Indoor Radon Testing. <i>Atmosphere</i> <b>2026</b>, 17, 706. <a href=\"https://doi.org/10.3390/atmos17070706\" target=\"_blank\" rel=\"noopener\">doi.org/10.3390/atmos17070706</a> (open access, CC&nbsp;BY&nbsp;4.0). Method first published: Tsapalov&nbsp;&amp;&nbsp;Kovler, <i>J.&nbsp;Environ.&nbsp;Radioact.</i> 2018, 183, 59–72.",
-    footDisc:"The calculator reproduces criteria (1),(2) and action levels (7),(8) with the article's tabulated U<sub>V</sub>(t)/MF(t) values. Unofficial auxiliary implementation of the “Radon Risk” pipeline. For thoron (Rn-220 progeny) the method is not yet developed. This calculation does not replace official measurement protocols.",
+    footSrc:"<b>Method source:</b> Tsapalov, A.V. Rational method for indoor radon control. <i>ANRI</i> <b>2025</b>, No.1(120) (in Russian). English development: Tsapalov, A.; Kranrod, C. Measurement Duration for Reliable Indoor Radon Testing. <i>Atmosphere</i> <b>2026</b>, 17, 706. <a href=\"https://doi.org/10.3390/atmos17070706\" target=\"_blank\" rel=\"noopener\">doi.org/10.3390/atmos17070706</a> (open access, CC&nbsp;BY&nbsp;4.0).",
+    footDisc:"The calculator reproduces criteria (1),(2) with the article's tabulated U<sub>V</sub>(t)/MF(t) values. Unofficial auxiliary implementation of the “Radon Risk” pipeline. For thoron (Rn-220 progeny) the method is not yet developed. This calculation does not replace official measurement protocols.",
     // dynamic
     v_ok:"Complies with the reference level",
     e_ok:"Remediation measures are not required. The upper estimate of the annual-average concentration is below C<sub>RL</sub> — the decision is reliable (≥ 95%).",
     v_bad:"Does not comply with the reference level",
     e_bad:"Remediation measures are required. The lower estimate of the annual-average concentration is above C<sub>RL</sub> — the exceedance is reliable (≥ 95%).",
-    v_wait:"Indeterminate",
-    e_wait:"Data are insufficient for a reliable conclusion. Continue the measurement (or repeat with a long-term 10–12-month protocol).",
+    v_wait:"Grey zone",
+    e_wait:"Data are insufficient for a reliable conclusion. Continue the measurement (or repeat with a long-term 2–12-month protocol), after which U<sub>V</sub> drops sharply and the decision becomes unambiguous.",
     chipThr1:"AL (a) C<sub>AL</sub><sup>(1)</sup>", chipThr2:"AL (b) C<sub>AL</sub><sup>(2)</sup>",
     chipDays:"days", bq:"Bq/m³",
-    warnT4:"t &lt; 4 days: outside the applicability range of the criteria (normal mode — from 4 days, closed mode — from 2). U<sub>V</sub>(t) for 1–3 days is shown for reference only; the “does not comply” outcome is not issued in this zone.",
+    warnT4:"t &lt; 4 days: outside the applicability range of the criteria (normal mode — from 4 days, restricted mode — from 2). U<sub>V</sub>(t) for 1–3 days is shown for reference only; the “does not comply” outcome is not issued in this zone.",
     warnUd:"U<sub>D</sub> &lt; 20%: not recommended by the article (year-to-year radon variation ≈ 15–20%).",
     warnT12:"over 12 months: beyond the table, values for 12 months are used (U<sub>V</sub>=0).",
     errCt:"Enter concentration C(t) ≥ 0.",
@@ -411,8 +411,8 @@ function calc(){
   }
 
   var chips =
-    '<span class="chip">U<sub>V</sub>(t) = <b>'+fmt(uv)+'</b></span>'+
-    '<span class="chip">MF(t) = <b>'+(mf===null?'—':fmt(mf))+'</b></span>'+
+    '<span class="chip">'+L.labUV+' = <b>'+fmt(uv)+'</b></span>'+
+    '<span class="chip">'+L.labMF+' = <b>'+(mf===null?'—':fmt(mf))+'</b></span>'+
     '<span class="chip">'+L.chipThr1+' = <b>'+fmt(cAL1,1)+'</b> '+L.bq+'</span>'+
     (cAL2!==null?'<span class="chip">'+L.chipThr2+' = <b>'+fmt(cAL2,1)+'</b> '+L.bq+'</span>':'')+
     '<span class="chip">t = <b>'+fmt(tDays,0)+'</b> '+L.chipDays+'</span>';
