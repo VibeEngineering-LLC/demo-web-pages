@@ -1,6 +1,6 @@
 // 3D-сцена: бусины на коже + поле мощности дозы Hp(0,07) в виде рельефа/карты.
 import * as THREE from './vendor/three.module.min.js';
-import { doseAt, beadResponse, layout, REF } from './physics.js';
+import { doseAt, beadResponse, layout, REF } from './physics.js?v=2';
 
 const NG = 120;            // разбиение сетки поля
 const RELIEF_MM = 14;      // высота рельефа при масштабе 100 %, мм (абсолютная,

@@ -1,6 +1,6 @@
 // Связка интерфейса, расчёта и 3D-сцены. Страница двуязычная: русский и английский.
-import { doseRate, doseAt, beadResponse, layout, fmtPM, REF, A_U238_PER_KG_U } from './physics.js';
-import { Scene3D } from './view3d.js';
+import { doseRate, doseAt, beadResponse, layout, fmtPM, REF, A_U238_PER_KG_U } from './physics.js?v=2';
+import { Scene3D } from './view3d.js?v=2';
 
 const $ = id => document.getElementById(id);
 const REL_U = 0.10;                      // относительная неопределённость результата
