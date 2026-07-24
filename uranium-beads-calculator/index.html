@@ -22,10 +22,10 @@
   *{box-sizing:border-box}
   body{margin:0; background:var(--bg); color:var(--fg);
     font:17px/1.65 "Georgia","Times New Roman",serif}
-  .wrap{max-width:1180px; margin:0 auto; padding:40px 24px 90px}
+  .wrap{max-width:1180px; margin:0 auto; padding:26px 24px 90px}
   header{border-bottom:2px solid var(--accent); padding-bottom:20px; margin-bottom:26px}
   .kicker{font:600 12px/1.4 system-ui,sans-serif; letter-spacing:.14em;
-    text-transform:uppercase; color:var(--accent); margin:0 0 10px}
+    text-transform:uppercase; color:var(--accent); margin:0 0 10px; text-align:left}
   h1{font:700 27px/1.28 "Georgia",serif; margin:0 0 10px}
   .lede{color:var(--muted); font-size:15px; margin:0; text-align:justify; hyphens:auto}
   .lede b{color:var(--fg)}
@@ -42,6 +42,19 @@
   .callout{background:var(--hl); border-radius:6px; padding:14px 19px; margin:18px 0;
     font-size:14.5px; text-align:justify; hyphens:auto}
   .callout b{color:var(--accent)}
+
+  /* ---------- переключатель языка ---------- */
+  .lang-bar{position:sticky; top:10px; z-index:20; display:flex; justify-content:flex-end;
+    align-items:flex-start; margin-bottom:6px}
+  .lang-btn{appearance:none; -webkit-appearance:none; margin:0; box-sizing:border-box;
+    height:30px; border:1px solid var(--line); background:var(--code); color:var(--muted);
+    font:600 11px/28px system-ui,sans-serif; letter-spacing:.08em; padding:0 14px;
+    cursor:pointer; box-shadow:var(--shadow)}
+  .lang-btn:first-child{border-radius:4px 0 0 4px; border-right:none}
+  .lang-btn:last-child{border-radius:0 4px 4px 0}
+  .lang-btn.active{background:var(--accent); border-color:var(--accent); color:#fff}
+  body[data-lang="ru"] .only-en{display:none}
+  body[data-lang="en"] .only-ru{display:none}
 
   /* ---------- рабочая область ---------- */
   .app{display:grid; grid-template-columns:330px 1fr; gap:20px; align-items:start}
@@ -111,21 +124,34 @@
     font:12.5px/1.5 system-ui,sans-serif; text-align:justify}
 </style>
 </head>
-<body>
+<body data-lang="ru">
 <div class="wrap">
 
+<div class="lang-bar" role="group" aria-label="Язык страницы / Page language">
+  <button class="lang-btn active" id="btn-ru">РУС</button>
+  <button class="lang-btn" id="btn-en">ENG</button>
+</div>
+
 <header>
-  <p class="kicker">VibeEngineering · радиационная дозиметрия · интерактивный расчёт · 24.07.2026</p>
-  <h1>Калькулятор мощности эквивалентной дозы Ḣ<sub>p</sub>(0,07) от уранового стеклянного бисера</h1>
-  <p class="lede">Мощность эквивалентной дозы внешнего облучения кожи при контакте с урановым
+  <p class="kicker only-ru">VibeEngineering · радиационная дозиметрия · интерактивный расчёт · 24.07.2026</p>
+  <p class="kicker only-en">VibeEngineering · radiation dosimetry · interactive calculation · 24.07.2026</p>
+  <h1 class="only-ru">Калькулятор мощности эквивалентной дозы Ḣ<sub>p</sub>(0,07) от уранового стеклянного бисера</h1>
+  <h1 class="only-en">Calculator of the personal skin dose-equivalent rate Ḣ<sub>p</sub>(0.07) from uranium glass beads</h1>
+  <p class="lede only-ru">Мощность эквивалентной дозы внешнего облучения кожи при контакте с урановым
     стеклом: произвольная геометрия раскладки, содержание урана и размер бусин.
     Модель откалибрована по расчёту <b>Geant4</b> и воспроизводит его опорные точки
     со среднеквадратичным отклонением <b>0,7 %</b>.
     Основная статья: <a href="../uranium-glass-beads-skin-2026-07-23/">Расчёт Ḣ<sub>p</sub>(0,07)
     от бета- и гамма-излучения уранового стеклянного бисера</a>.</p>
+  <p class="lede only-en">Personal dose-equivalent rate for skin in contact with uranium glass:
+    arbitrary packing geometry, uranium content and bead size.
+    The model is calibrated against a <b>Geant4</b> calculation and reproduces its reference
+    points with an r.m.s. deviation of <b>0.7 %</b>.
+    Main paper: <a href="../uranium-glass-beads-skin-2026-07-23/">Calculation of Ḣ<sub>p</sub>(0.07)
+    from beta and gamma radiation of uranium glass beads</a>.</p>
 </header>
 
-<div class="disclaimer">
+<div class="disclaimer only-ru">
   <b>Предупреждение и ограничение ответственности.</b> Калькулятор носит справочный
   и учебный характер. Он реализует упрощённую модель, откалиброванную по одному
   расчёту Монте-Карло для одного конкретного состава стекла и одной формы бусины;
@@ -137,6 +163,17 @@
   <b>независимую проверку</b> — расчётом другим методом и прямым измерением.
   Авторы не несут ответственности за любые последствия использования результатов.
 </div>
+<div class="disclaimer only-en">
+  <b>Warning and disclaimer.</b> This calculator is for reference and educational use only.
+  It implements a simplified model calibrated against a single Monte Carlo calculation, for one
+  particular glass composition and one bead shape; outside the calibration range (see §&nbsp;4)
+  the result is an extrapolation. It <b>does not replace a measurement</b> with a calibrated
+  instrument and is not a basis for radiation-safety decisions, work authorisation or medical
+  decisions. An error in the model, in the input data or in the calibration itself is possible
+  and could lead to an underestimate of the dose. Before relying on these numbers, obtain an
+  <b>independent verification</b> — by an alternative calculation and by direct measurement.
+  The authors accept no liability for any consequences of using these results.
+</div>
 
 <div class="app">
 
@@ -144,56 +181,62 @@
   <div class="panel">
 
     <div class="grp">
-      <h3>Геометрия раскладки</h3>
+      <h3><span data-en="Packing geometry">Геометрия раскладки</span></h3>
       <select id="shape">
-        <option value="single">Одиночная бусина</option>
-        <option value="chain">Цепочка (ряд)</option>
-        <option value="grid" selected>Прямоугольная раскладка</option>
-        <option value="disk">Круглая раскладка (россыпь)</option>
+        <option value="single" data-en="Single bead">Одиночная бусина</option>
+        <option value="chain" data-en="Chain (single row)">Цепочка (ряд)</option>
+        <option value="grid" selected data-en="Rectangular array">Прямоугольная раскладка</option>
+        <option value="disk" data-en="Circular spread">Круглая раскладка (россыпь)</option>
       </select>
-      <div class="row" id="r-nx"><label for="nx">Бусин по оси X</label>
+      <div class="row" id="r-nx"><label for="nx"><span id="lbNx" data-en="Beads along X">Бусин по оси X</span></label>
         <input type="number" id="nx" min="1" max="61" step="1" value="9"></div>
-      <div class="row" id="r-ny"><label for="ny">Бусин по оси Y</label>
+      <div class="row" id="r-ny"><label for="ny"><span data-en="Beads along Y">Бусин по оси Y</span></label>
         <input type="number" id="ny" min="1" max="61" step="1" value="9"></div>
-      <div class="row" id="r-rad"><label for="radius">Радиус россыпи <span class="u">мм</span></label>
+      <div class="row" id="r-rad"><label for="radius"><span data-en="Spread radius">Радиус россыпи</span>
+        <span class="u" data-en="mm">мм</span></label>
         <input type="number" id="radius" min="2" max="120" step="1" value="18"></div>
-      <div class="row"><label for="dense">Плотная укладка (шаг = диаметру)</label>
+      <div class="row"><label for="dense"><span data-en="Dense packing (pitch = diameter)">Плотная укладка (шаг = диаметру)</span></label>
         <input type="checkbox" id="dense" checked style="width:auto"></div>
-      <div class="row"><label for="pitch">Шаг укладки <span class="u">мм</span></label>
+      <div class="row"><label for="pitch"><span data-en="Packing pitch">Шаг укладки</span>
+        <span class="u" data-en="mm">мм</span></label>
         <input type="number" id="pitch" min="0.5" max="40" step="0.1" value="4.1"></div>
       <input type="range" id="pitchR" min="0.5" max="40" step="0.1" value="4.1">
       <p class="hint" id="hPitch"></p>
     </div>
 
     <div class="grp">
-      <h3>Бусина</h3>
-      <div class="row"><label for="d">Диаметр <span class="u">мм</span></label>
+      <h3><span data-en="Bead">Бусина</span></h3>
+      <div class="row"><label for="d"><span data-en="Diameter">Диаметр</span>
+        <span class="u" data-en="mm">мм</span></label>
         <input type="number" id="d" min="0.5" max="20" step="0.1" value="4.1"></div>
       <input type="range" id="dR" min="0.5" max="20" step="0.1" value="4.1">
-      <div class="row"><label for="rho">Плотность стекла <span class="u">г/см³</span></label>
+      <div class="row"><label for="rho"><span data-en="Glass density">Плотность стекла</span>
+        <span class="u" data-en="g/cm³">г/см³</span></label>
         <input type="number" id="rho" min="2.0" max="3.2" step="0.05" value="2.5"></div>
       <p class="hint" id="hBead"></p>
     </div>
 
     <div class="grp">
-      <h3>Содержание урана</h3>
-      <div class="row"><label for="wU">Массовая доля U <span class="u">% масс.</span></label>
+      <h3><span data-en="Uranium content">Содержание урана</span></h3>
+      <div class="row"><label for="wU"><span data-en="U mass fraction">Массовая доля U</span>
+        <span class="u" data-en="wt %">% масс.</span></label>
         <input type="number" id="wU" min="0.01" max="15" step="0.05" value="1.85"></div>
       <input type="range" id="wUR" min="0.01" max="15" step="0.01" value="1.85">
       <p class="hint" id="hAct"></p>
     </div>
 
     <div class="grp">
-      <h3>Условия усреднения и контакта</h3>
-      <div class="row"><label>Площадь усреднения</label></div>
+      <h3><span data-en="Averaging and contact">Условия усреднения и контакта</span></h3>
+      <div class="row"><label><span data-en="Averaging area">Площадь усреднения</span></label></div>
       <div class="seg" id="areaSeg">
-        <button data-a="1">1 см²</button>
-        <button data-a="0.1">0,1 см²</button>
-        <button data-a="0.01">0,01 см²</button>
+        <button data-a="1" data-en="1 cm²">1 см²</button>
+        <button data-a="0.1" data-en="0.1 cm²">0,1 см²</button>
+        <button data-a="0.01" data-en="0.01 cm²">0,01 см²</button>
       </div>
-      <div class="row"><label for="tses">Длительность контакта <span class="u">ч</span></label>
+      <div class="row"><label for="tses"><span data-en="Contact duration">Длительность контакта</span>
+        <span class="u" data-en="h">ч</span></label>
         <input type="number" id="tses" min="0.01" max="24" step="0.25" value="1"></div>
-      <div class="row"><label for="nses">Контактов в год</label>
+      <div class="row"><label for="nses"><span data-en="Contacts per year">Контактов в год</span></label>
         <input type="number" id="nses" min="1" max="3650" step="1" value="50"></div>
     </div>
   </div>
@@ -201,42 +244,45 @@
   <!-- ------------------------------ результат и сцена ------------------------------ -->
   <div>
     <div class="out">
-      <div class="sub">Мощность эквивалентной дозы Ḣ<sub>p</sub>(0,07) в центре раскладки,
-        усреднение по <span id="oArea">1 см²</span></div>
-      <div class="big"><span id="oVal">—</span><span class="un">мкЗв/ч</span></div>
+      <div class="sub"><span data-en="Personal dose-equivalent rate Ḣ">Мощность эквивалентной дозы Ḣ</span><sub>p</sub><span
+        data-en="(0.07) at the centre of the packing, averaged over ">(0,07) в центре раскладки, усреднение по </span><span id="oArea">1 см²</span></div>
+      <div class="big"><span id="oVal">—</span><span class="un" id="oUnit">мкЗв/ч</span></div>
       <div class="sub" id="oNote"></div>
       <div class="kv">
-        <div class="k">Доза за один контакт</div><b id="oSes">—</b>
-        <div class="k">Доза за год при заданном режиме</div><b id="oYear">—</b>
-        <div class="k">От предела для кожи персонала (500 мЗв/год)</div><b id="oLimA">—</b>
-        <div class="k">От предела для кожи населения (50 мЗв/год)</div><b id="oLimB">—</b>
-        <div class="k">Бусин в раскладке / масса стекла</div><b id="oN">—</b>
-        <div class="k">Полная активность по U-238</div><b id="oAct">—</b>
-        <div class="k">Максимум поля (локальный, вне усреднения)</div><b id="oPeak">—</b>
+        <div class="k"><span data-en="Dose per contact">Доза за один контакт</span></div><b id="oSes">—</b>
+        <div class="k"><span data-en="Annual dose for this regime">Доза за год при заданном режиме</span></div><b id="oYear">—</b>
+        <div class="k"><span data-en="Of the skin limit for workers (500 mSv/y)">От предела для кожи персонала (500 мЗв/год)</span></div><b id="oLimA">—</b>
+        <div class="k"><span data-en="Of the skin limit for the public (50 mSv/y)">От предела для кожи населения (50 мЗв/год)</span></div><b id="oLimB">—</b>
+        <div class="k"><span data-en="Beads in the packing / mass of glass">Бусин в раскладке / масса стекла</span></div><b id="oN">—</b>
+        <div class="k"><span data-en="Total U-238 activity">Полная активность по U-238</span></div><b id="oAct">—</b>
+        <div class="k"><span data-en="Field maximum (local, not averaged)">Максимум поля (локальный, вне усреднения)</span></div><b id="oPeak">—</b>
       </div>
       <div class="warnbox" id="warn"></div>
     </div>
 
     <canvas id="cv"></canvas>
     <div class="cvbar">
-      <label>рельеф поля <input type="range" id="cRelief" min="0" max="100" step="1" value="45"
+      <label><span data-en="field relief">рельеф поля</span> <input type="range" id="cRelief" min="0" max="100" step="1" value="45"
         style="width:110px"></label>
-      <label><input type="checkbox" id="cRing" checked> контур усреднения</label>
+      <label><input type="checkbox" id="cRing" checked> <span data-en="averaging contour">контур усреднения</span></label>
       <button id="bReset" style="border:1px solid var(--line);background:var(--code);
         color:var(--muted);border-radius:4px;padding:3px 10px;cursor:pointer;
-        font:12.5px system-ui,sans-serif">вид по умолчанию</button>
-      <span class="scale">поле: 0<span class="bar"></span><span id="oScale">—</span></span>
+        font:12.5px system-ui,sans-serif" data-en="default view">вид по умолчанию</button>
+      <span class="scale"><span data-en="field: 0">поле: 0</span><span class="bar"></span><span id="oScale">—</span></span>
       <span id="oExt">—</span>
-      <span>вращение — мышью, масштаб — колесом</span>
+      <span data-en="drag to rotate, wheel to zoom">вращение — мышью, масштаб — колесом</span>
     </div>
 
     <canvas id="prof"></canvas>
-    <p class="hint">Профиль мощности дозы вдоль оси X на поверхности кожи (без усреднения
+    <p class="hint only-ru">Профиль мощности дозы вдоль оси X на поверхности кожи (без усреднения
       по площади). Пунктир — уровень, усреднённый по выбранной площади.</p>
+    <p class="hint only-en">Dose-rate profile along the X axis at the skin surface (not averaged
+      over area). The dashed line is the level averaged over the selected area.</p>
   </div>
 </div>
 
-<!-- =============================== пояснения =============================== -->
+<!-- =============================== пояснения (RU) =============================== -->
+<div class="only-ru">
 
 <h2><span class="num">1</span>Что именно вычисляется</h2>
 <p>Вычисляется <b>мощность эквивалентной дозы внешнего облучения кожи Ḣ<sub>p</sub>(0,07)</b> —
@@ -274,14 +320,65 @@
 <h2><span class="num">3</span>Проверка: модель против Geant4</h2>
 <p>Ниже — сравнение с опорными точками расчёта Монте-Карло, по которым калибровалось ядро.
 Значения вычисляются страницей прямо сейчас, тем же кодом, что и результат калькулятора.</p>
+</div>
+
+<!-- =============================== пояснения (EN) =============================== -->
+<div class="only-en">
+
+<h2><span class="num">1</span>What exactly is computed</h2>
+<p>The quantity computed is the <b>personal dose-equivalent rate for skin, Ḣ<sub>p</sub>(0.07)</b> —
+an operational quantity defined at a depth of 0.07 mm (70 µm, the basal layer of the epidermis)
+and averaged over an area of 1 cm². This is the quantity against which skin limits are set.
+The dose comes from beta particles of purified uranium (dominated by <sup>234m</sup>Pa,
+E<sub>max</sub> = 2.27 MeV); the gamma contribution is included in the result and is below 0.3 %.</p>
+<p>The geometry is beads resting directly on the skin, with no air gap and no clothing.
+This is the conservative (worst-case) direct-contact situation.</p>
+
+<h2><span class="num">2</span>The model</h2>
+<p>The calculation is built on a <b>point surface kernel</b> h(r) — the dose rate in the basal
+layer at a point of skin located a distance r from a point beta source on the surface:</p>
+<p style="text-align:center"><code>h(r) = C · exp(−(r/a)<sup>b</sup>) / (r² + r<sub>0</sub>²)<sup>s</sup></code></p>
+<p>A bead is treated as an emitting face of radius d/2 with a radial emission profile
+<code>q(ρ) ∝ (1 − (ρ/(d/2))²)<sup>m</sup></code>, which reflects the varying thickness of a
+rocaille bead. The dose rate at a point is the sum over all beads; the result is then averaged
+over a disc of the selected area. The parameters <code>C, a, b, s, r<sub>0</sub>, m</code> are
+fitted so that the model reproduces the Geant4 calculation (see §&nbsp;3).</p>
+<p>Scaling with the input parameters:</p>
+<ul>
+  <li><b>Uranium content</b> enters linearly: the <sup>238</sup>U specific activity of the glass
+    is proportional to the uranium mass fraction (1.2356·10<sup>7</sup> Bq per kg of uranium).</li>
+  <li><b>Bead size</b> enters in two ways: through the area of the emitting face (integration over
+    the disc d/2) and through saturation with thickness. Beta particles escape only from a surface
+    layer of order 1/(ν·ρ) ≈ 0.8 mm, so a bead's contribution grows roughly as its area rather than
+    its volume; the saturation factor is 1 − exp(−ν·ρ·h) with ν = 5.19 cm²/g.</li>
+  <li><b>Glass density</b> acts only through that saturation factor: the surface emission from a
+    saturated layer is practically independent of density, because the layer thickness is inversely
+    proportional to it.</li>
+  <li><b>Packing pitch</b> and <b>number of beads</b> enter through the summation — no separate
+    fitting is needed for a new geometry.</li>
+</ul>
+
+<h2><span class="num">3</span>Verification: model against Geant4</h2>
+<p>Below is the comparison with the Monte Carlo reference points used to calibrate the kernel.
+The values are computed by this page right now, with the same code that produces the calculator
+result.</p>
+</div>
+
 <div class="tablewrap"><table id="vtab">
-  <caption>Таблица 1. Модель против расчёта Geant4 (базовые параметры: d = 4,1 мм, шаг 4,1 мм,
+  <caption class="only-ru">Таблица 1. Модель против расчёта Geant4 (базовые параметры: d = 4,1 мм, шаг 4,1 мм,
     U 1,85 % масс., ρ = 2,5 г/см³)</caption>
-  <thead><tr><th>Конфигурация</th><th>Усреднение</th><th>Geant4, мкЗв/ч</th>
-    <th>Модель, мкЗв/ч</th><th>Отклонение</th></tr></thead>
+  <caption class="only-en">Table 1. Model against the Geant4 calculation (baseline: d = 4.1 mm, pitch 4.1 mm,
+    U 1.85 wt %, ρ = 2.5 g/cm³)</caption>
+  <thead><tr>
+    <th><span data-en="Configuration">Конфигурация</span></th>
+    <th><span data-en="Averaging">Усреднение</span></th>
+    <th><span data-en="Geant4, µSv/h">Geant4, мкЗв/ч</span></th>
+    <th><span data-en="Model, µSv/h">Модель, мкЗв/ч</span></th>
+    <th><span data-en="Deviation">Отклонение</span></th></tr></thead>
   <tbody></tbody>
 </table></div>
 
+<div class="only-ru">
 <h2><span class="num">4</span>Границы применимости</h2>
 <ul>
   <li>Калибровка выполнена для бусины-рокайля <b>Ø 4,1 мм</b> в укладке с шагом 4,1 мм.
@@ -312,11 +409,47 @@
 бисера» (Geant4 11.2.1, G4EmStandardPhysics_option4 + G4RadioactiveDecay). Методика,
 исходные данные, проверочный классический расчёт и полный список источников приведены
 в основной статье.</p>
+</div>
+
+<div class="only-en">
+<h2><span class="num">4</span>Limits of applicability</h2>
+<ul>
+  <li>The calibration was performed for a rocaille bead of <b>Ø 4.1 mm</b> packed at a pitch of
+    4.1 mm. Diameters of roughly <b>2…8 mm</b> should be regarded as interpolation; beyond that
+    range the result is an extrapolation, and the page warns about it explicitly.</li>
+  <li><b>Purified uranium</b> is assumed, with the <sup>238</sup>U chain broken at <sup>226</sup>Ra:
+    the emitters are <sup>234</sup>Th, <sup>234m</sup>Pa, <sup>235</sup>U and <sup>231</sup>Th.
+    For ore or unpurified material the decay-product activity would be higher.</li>
+  <li>Contact is assumed <b>tight and without any gap</b>. Any interlayer — a glove, fabric, or an
+    unusually thick stratum corneum — reduces the dose, and reduces it strongly: the model does not
+    account for this and is therefore conservative.</li>
+  <li>Not accounted for: intake, glass fragments entering a wound, hand contamination and transfer
+    of activity. These are separate and potentially more significant exposure pathways.</li>
+  <li>The stated uncertainty of <b>±10 %</b> is the uncertainty of the underlying Geant4 calculation
+    (mainly glass density and composition). The model's own deviation from Geant4 (0.7 %) is
+    contained within it, whereas the systematic effects of bead shape and of the contact assumption
+    are <b>not</b> included.</li>
+</ul>
+
+<div class="callout"><b>How to use the result.</b> The number from this calculator is an estimate of
+the order of magnitude and of relative changes (how much worse a larger array is, or glass with a
+higher uranium content). For an absolute conclusion about safety a direct measurement is required:
+the beta radiation of uranium glass is readily detected by both consumer and professional
+instruments.</div>
+
+<p class="note">The kernel is calibrated against the data of "Calculation of the personal skin
+dose-equivalent rate Ḣ<sub>p</sub>(0.07) from beta and gamma radiation of uranium glass beads"
+(Geant4 11.2.1, G4EmStandardPhysics_option4 + G4RadioactiveDecay). The method, input data, the
+independent classical cross-check and the full list of references are given in the main paper.</p>
+</div>
 
 <div class="foot">
-  VibeEngineering · интерактивный расчёт к статье от 23.07.2026 ·
-  <a href="../uranium-glass-beads-skin-2026-07-23/">к статье</a> ·
-  расчёт выполняется в браузере, данные никуда не передаются
+  <span class="only-ru">VibeEngineering · интерактивный расчёт к статье от 23.07.2026 ·
+    <a href="../uranium-glass-beads-skin-2026-07-23/">к статье</a> ·
+    расчёт выполняется в браузере, данные никуда не передаются</span>
+  <span class="only-en">VibeEngineering · interactive companion to the paper of 23.07.2026 ·
+    <a href="../uranium-glass-beads-skin-2026-07-23/">to the paper</a> ·
+    everything is computed in your browser; no data is sent anywhere</span>
 </div>
 
 </div>
