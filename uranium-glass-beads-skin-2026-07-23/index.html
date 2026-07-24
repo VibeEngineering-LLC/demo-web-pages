@@ -9,12 +9,14 @@
     --bg:#fbfbf9; --fg:#1a1a17; --muted:#5c5c54; --line:#e0ded6;
     --accent:#4e7a34; --accent2:#2b5f8a; --card:#ffffff; --code:#f3f1ea;
     --th:#eef0e8; --hl:#eef4e6; --shadow:0 1px 3px rgba(0,0,0,.06);
+    --warn-bg:#f8e7e4; --warn-bd:#b23a2e;
   }
   @media (prefers-color-scheme:dark){
     :root{
       --bg:#16171a; --fg:#e6e4de; --muted:#9a988f; --line:#2c2e33;
       --accent:#8ec46f; --accent2:#7fb2dd; --card:#1d1f23; --code:#22242a;
       --th:#242a24; --hl:#1e241a; --shadow:0 1px 3px rgba(0,0,0,.3);
+    --warn-bg:#2c1b19; --warn-bd:#d68278;
     }
   }
   *{box-sizing:border-box}
@@ -64,6 +66,9 @@
   .callout{background:var(--hl); border-radius:6px; padding:16px 20px; margin:20px 0; font-size:15px}
   .callout b{color:var(--accent)}
   .warn{background:var(--hl); border-left:3px solid var(--accent2)}
+  .disclaimer{background:var(--warn-bg); border-left:3px solid var(--warn-bd); border-radius:6px;
+    padding:16px 20px; margin:20px 0; font-size:15px; text-align:justify; hyphens:auto}
+  .disclaimer b{color:var(--warn-bd)}
   ul,ol{margin:14px 0; padding-left:22px}
   li{margin:7px 0; text-align:justify; hyphens:auto; -webkit-hyphens:auto}
   .refs{font-size:14px; line-height:1.6}
@@ -115,7 +120,7 @@
   <p class="lede" style="margin-top:8px">Расчёт выполнен ИИ-агентом (Anthropic Claude) под руководством и контролем оператора; результаты прошли независимый аудит кода. Подробнее — §11 «Заявление об использовании ИИ».</p>
 </header>
 
-<div class="callout warn"><b>⚠ Ограничение ответственности и необходимость независимой проверки.</b> Материал носит информационно-справочный и демонстрационный характер. Приведённые величины — результат численного (Монте-Карло) моделирования и упрощённых аналитических моделей, которые <strong>могут содержать методические ошибки, неточности исходных данных и допущений</strong>; итоговые оценки <strong>не являются метрологически аттестованными измерениями</strong>. Материал <strong>не заменяет</strong> официальную дозиметрию, аттестованный расчёт и заключение уполномоченных специалистов по радиационной безопасности и <strong>не должен использоваться как единственное основание</strong> для решений, влияющих на здоровье, безопасность или соответствие нормативам. Перед любым практическим применением результаты подлежат <strong>независимой проверке квалифицированными специалистами</strong> и, при необходимости, прямому измерению аттестованными приборами. Авторы и оператор не дают гарантий полноты и точности и не несут ответственности за последствия использования сведений; использование информации — на собственный риск читателя.</div>
+<div class="disclaimer"><b>⚠ Ограничение ответственности и необходимость независимой проверки.</b> Материал носит информационно-справочный и демонстрационный характер. Приведённые величины — результат численного (Монте-Карло) моделирования и упрощённых аналитических моделей, которые <strong>могут содержать методические ошибки, неточности исходных данных и допущений</strong>; итоговые оценки <strong>не являются метрологически аттестованными измерениями</strong>. Материал <strong>не заменяет</strong> официальную дозиметрию, аттестованный расчёт и заключение уполномоченных специалистов по радиационной безопасности и <strong>не должен использоваться как единственное основание</strong> для решений, влияющих на здоровье, безопасность или соответствие нормативам. Перед любым практическим применением результаты подлежат <strong>независимой проверке квалифицированными специалистами</strong> и, при необходимости, прямому измерению аттестованными приборами. Авторы и оператор не дают гарантий полноты и точности и не несут ответственности за последствия использования сведений; использование информации — на собственный риск читателя.</div>
 
 <div class="abstract">
   <p><strong>Образец.</strong> Чешский урановый стеклянный бисер «Бисер жёлтый опал, урановое стекло 6/0, 4,1 мм» (арт. 31119001/0 8200). Масса бусины 63,96 мг (14,710 г / 230 шт). Измерены удельные активности: <sup>238</sup>U 2,27·10<sup>5</sup> Бк/кг (18,37 г/кг), <sup>235</sup>U 9,90·10<sup>3</sup> Бк/кг (0,1237 г/кг); обогащение по <sup>235</sup>U 0,67 % — практически природное. В стекле — флюоресценция церия (обесцвечиватель CeO<sub>2</sub>), барий отсутствует.</p>
@@ -414,7 +419,7 @@
   <p class="lede" style="margin-top:8px">The calculation was performed by an AI agent (Anthropic Claude) under the guidance and control of the operator; the results passed an independent code audit. See §11 "Statement on the use of AI".</p>
 </header>
 
-<div class="callout warn"><b>⚠ Disclaimer and need for independent verification.</b> This material is informational and demonstrational. The reported values are the result of numerical (Monte Carlo) modelling and simplified analytical models, which <strong>may contain methodological errors and inaccuracies in the input data and assumptions</strong>; the resulting estimates are <strong>not metrologically certified measurements</strong>. This material <strong>does not replace</strong> official dosimetry, a certified calculation, or the assessment of authorized radiation-safety specialists, and <strong>must not be used as the sole basis</strong> for decisions affecting health, safety, or regulatory compliance. Before any practical use, the results must be <strong>independently verified by qualified specialists</strong> and, where necessary, by direct measurement with certified instruments. The authors and the operator give no warranty of completeness or accuracy and accept no liability for the consequences of use; the information is used at the reader's own risk.</div>
+<div class="disclaimer"><b>⚠ Disclaimer and need for independent verification.</b> This material is informational and demonstrational. The reported values are the result of numerical (Monte Carlo) modelling and simplified analytical models, which <strong>may contain methodological errors and inaccuracies in the input data and assumptions</strong>; the resulting estimates are <strong>not metrologically certified measurements</strong>. This material <strong>does not replace</strong> official dosimetry, a certified calculation, or the assessment of authorized radiation-safety specialists, and <strong>must not be used as the sole basis</strong> for decisions affecting health, safety, or regulatory compliance. Before any practical use, the results must be <strong>independently verified by qualified specialists</strong> and, where necessary, by direct measurement with certified instruments. The authors and the operator give no warranty of completeness or accuracy and accept no liability for the consequences of use; the information is used at the reader's own risk.</div>
 
 <div class="abstract">
   <p><strong>Sample.</strong> Czech uranium glass beads "yellow opal, uranium glass 6/0, 4.1 mm" (art. 31119001/0 8200). Bead mass 63.96 mg (14.710 g / 230 pcs). Measured specific activities: <sup>238</sup>U 2.27·10<sup>5</sup> Bq/kg (18.37 g/kg), <sup>235</sup>U 9.90·10<sup>3</sup> Bq/kg (0.1237 g/kg); <sup>235</sup>U enrichment 0.67 % — essentially natural. The glass shows cerium fluorescence (CeO<sub>2</sub> decolorizer); barium is absent.</p>
