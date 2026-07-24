@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Калькулятор Hp(0,07): урановый стеклянный бисер на коже</title>
+<style>
+  :root{
+    --bg:#fbfbf9; --fg:#1a1a17; --muted:#5c5c54; --line:#e0ded6;
+    --accent:#4e7a34; --accent2:#2b5f8a; --card:#ffffff; --code:#f3f1ea;
+    --th:#eef0e8; --hl:#eef4e6; --shadow:0 1px 3px rgba(0,0,0,.06);
+    --warn-bg:#f8e7e4; --warn-bd:#b23a2e;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#16171a; --fg:#e6e4de; --muted:#9a988f; --line:#2c2e33;
+      --accent:#8ec46f; --accent2:#7fb2dd; --card:#1d1f23; --code:#22242a;
+      --th:#242a24; --hl:#1e241a; --shadow:0 1px 3px rgba(0,0,0,.3);
+      --warn-bg:#2c1b19; --warn-bd:#d68278;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--bg); color:var(--fg);
+    font:17px/1.65 "Georgia","Times New Roman",serif}
+  .wrap{max-width:1180px; margin:0 auto; padding:40px 24px 90px}
+  header{border-bottom:2px solid var(--accent); padding-bottom:20px; margin-bottom:26px}
+  .kicker{font:600 12px/1.4 system-ui,sans-serif; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--accent); margin:0 0 10px}
+  h1{font:700 27px/1.28 "Georgia",serif; margin:0 0 10px}
+  .lede{color:var(--muted); font-size:15px; margin:0; text-align:justify; hyphens:auto}
+  .lede b{color:var(--fg)}
+  h2{font:700 20px/1.3 "Georgia",serif; margin:38px 0 6px; padding-top:13px;
+    border-top:1px solid var(--line)}
+  h2 .num{color:var(--accent); font-size:15px; vertical-align:2px; margin-right:8px}
+  h3{font:600 13px/1.4 system-ui,sans-serif; margin:0 0 12px; color:var(--accent2);
+    letter-spacing:.03em; text-transform:uppercase}
+  p{margin:13px 0; text-align:justify; hyphens:auto}
+  a{color:var(--accent2)}
+  .disclaimer{background:var(--warn-bg); border-left:3px solid var(--warn-bd); border-radius:6px;
+    padding:15px 20px; margin:20px 0; font-size:14.5px; text-align:justify; hyphens:auto}
+  .disclaimer b{color:var(--warn-bd)}
+  .callout{background:var(--hl); border-radius:6px; padding:14px 19px; margin:18px 0;
+    font-size:14.5px; text-align:justify; hyphens:auto}
+  .callout b{color:var(--accent)}
+
+  /* ---------- рабочая область ---------- */
+  .app{display:grid; grid-template-columns:330px 1fr; gap:20px; align-items:start}
+  @media(max-width:900px){.app{grid-template-columns:1fr}}
+  .panel{background:var(--card); border:1px solid var(--line); border-radius:8px;
+    padding:18px 18px 20px; box-shadow:var(--shadow)}
+  .grp{margin:0 0 18px; padding:0 0 16px; border-bottom:1px dashed var(--line)}
+  .grp:last-child{border-bottom:none; padding-bottom:0; margin-bottom:0}
+  .row{display:flex; align-items:center; justify-content:space-between; gap:10px; margin:9px 0}
+  .row label{font:13.5px/1.35 system-ui,sans-serif; color:var(--fg); flex:1}
+  .row .u{color:var(--muted); font-size:12px}
+  input[type=range]{width:100%; accent-color:var(--accent)}
+  input[type=number]{width:76px; padding:4px 6px; text-align:right; border:1px solid var(--line);
+    border-radius:4px; background:var(--bg); color:var(--fg);
+    font:13.5px/1.3 system-ui,sans-serif; font-variant-numeric:tabular-nums}
+  select{width:100%; padding:6px 8px; border:1px solid var(--line); border-radius:4px;
+    background:var(--bg); color:var(--fg); font:13.5px/1.3 system-ui,sans-serif}
+  .seg{display:flex; gap:0; margin-top:4px}
+  .seg button{flex:1; border:1px solid var(--line); background:var(--code); color:var(--muted);
+    font:600 11.5px/26px system-ui,sans-serif; cursor:pointer; padding:0}
+  .seg button:not(:last-child){border-right:none}
+  .seg button:first-child{border-radius:4px 0 0 4px}
+  .seg button:last-child{border-radius:0 4px 4px 0}
+  .seg button.on{background:var(--accent); border-color:var(--accent); color:#fff}
+  .hint{font:12px/1.45 system-ui,sans-serif; color:var(--muted); margin:6px 0 0}
+
+  /* ---------- результат ---------- */
+  .out{background:var(--card); border:1px solid var(--line); border-left:3px solid var(--accent);
+    border-radius:8px; padding:16px 20px; box-shadow:var(--shadow); margin:0 0 16px}
+  .big{font:700 34px/1.15 "Georgia",serif; font-variant-numeric:tabular-nums; margin:2px 0 2px}
+  .big .un{font:400 16px/1 system-ui,sans-serif; color:var(--muted); margin-left:6px}
+  .sub{font:13px/1.5 system-ui,sans-serif; color:var(--muted)}
+  .kv{display:grid; grid-template-columns:1fr auto; gap:3px 14px;
+    font:13.5px/1.6 system-ui,sans-serif; margin-top:12px;
+    border-top:1px solid var(--line); padding-top:11px}
+  .kv b{font-variant-numeric:tabular-nums; font-weight:600}
+  .kv .k{color:var(--muted)}
+  #cv{width:100%; height:430px; display:block; border:1px solid var(--line);
+    border-radius:8px; background:linear-gradient(#f6f5f1,#e9e7e0); cursor:grab}
+  @media (prefers-color-scheme:dark){#cv{background:linear-gradient(#191b1f,#101114)}}
+  #cv:active{cursor:grabbing}
+  .cvbar{display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin:10px 0 0;
+    font:12.5px/1.5 system-ui,sans-serif; color:var(--muted)}
+  .cvbar label{display:flex; align-items:center; gap:6px; cursor:pointer}
+  .scale{display:flex; align-items:center; gap:8px}
+  .scale .bar{width:120px; height:10px; border-radius:5px; border:1px solid var(--line);
+    background:linear-gradient(90deg,#000003,#210c4a,#57106e,#8a226a,#bc3754,#e45a31,#f98e09,#f9cb35,#fcffa4)}
+  #prof{width:100%; height:150px; display:block; margin-top:14px}
+
+  .tablewrap{overflow-x:auto; margin:18px 0}
+  table{border-collapse:collapse; width:100%; font:13.5px/1.5 system-ui,sans-serif}
+  caption{caption-side:top; text-align:left; font:600 12.5px/1.5 system-ui,sans-serif;
+    color:var(--muted); margin-bottom:8px}
+  th,td{padding:7px 11px; text-align:right; border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left}
+  thead th{background:var(--th); border-bottom:2px solid var(--line); font-weight:600}
+  .num-col{font-variant-numeric:tabular-nums}
+  code{background:var(--code); border-radius:4px; padding:1px 5px;
+    font:13px/1.4 "SF Mono",Consolas,monospace}
+  .note{font-size:13.5px; color:var(--muted); font-style:italic;
+    border-top:1px solid var(--line); padding-top:15px; margin-top:26px; text-align:justify}
+  .foot{margin-top:44px; padding-top:18px; border-top:1px solid var(--line);
+    font-size:13px; color:var(--muted)}
+  ul{margin:12px 0; padding-left:22px} li{margin:6px 0; text-align:justify; hyphens:auto}
+  .warnbox{display:none; background:var(--warn-bg); border-left:3px solid var(--warn-bd);
+    border-radius:6px; padding:10px 14px; margin:12px 0 0;
+    font:12.5px/1.5 system-ui,sans-serif; text-align:justify}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="kicker">VibeEngineering · радиационная дозиметрия · интерактивный расчёт · 24.07.2026</p>
+  <h1>Калькулятор мощности эквивалентной дозы Ḣ<sub>p</sub>(0,07) от уранового стеклянного бисера</h1>
+  <p class="lede">Мощность эквивалентной дозы внешнего облучения кожи при контакте с урановым
+    стеклом: произвольная геометрия раскладки, содержание урана и размер бусин.
+    Модель откалибрована по расчёту <b>Geant4</b> и воспроизводит его опорные точки
+    со среднеквадратичным отклонением <b>0,7 %</b>.
+    Основная статья: <a href="../uranium-glass-beads-skin-2026-07-23/">Расчёт Ḣ<sub>p</sub>(0,07)
+    от бета- и гамма-излучения уранового стеклянного бисера</a>.</p>
+</header>
+
+<div class="disclaimer">
+  <b>Предупреждение и ограничение ответственности.</b> Калькулятор носит справочный
+  и учебный характер. Он реализует упрощённую модель, откалиброванную по одному
+  расчёту Монте-Карло для одного конкретного состава стекла и одной формы бусины;
+  вне области калибровки (см. §&nbsp;4) результат является экстраполяцией.
+  Расчёт <b>не заменяет измерение</b> поверенным прибором и не является основанием
+  для решений о радиационной безопасности, допуске к работам или медицинских решений.
+  Ошибка в модели, входных данных или в самой калибровке возможна и может привести
+  к занижению дозы. Перед тем как опираться на эти числа, выполните
+  <b>независимую проверку</b> — расчётом другим методом и прямым измерением.
+  Авторы не несут ответственности за любые последствия использования результатов.
+</div>
+
+<div class="app">
+
+  <!-- ------------------------------ панель параметров ------------------------------ -->
+  <div class="panel">
+
+    <div class="grp">
+      <h3>Геометрия раскладки</h3>
+      <select id="shape">
+        <option value="single">Одиночная бусина</option>
+        <option value="chain">Цепочка (ряд)</option>
+        <option value="grid" selected>Прямоугольная раскладка</option>
+        <option value="disk">Круглая раскладка (россыпь)</option>
+      </select>
+      <div class="row" id="r-nx"><label for="nx">Бусин по оси X</label>
+        <input type="number" id="nx" min="1" max="61" step="1" value="9"></div>
+      <div class="row" id="r-ny"><label for="ny">Бусин по оси Y</label>
+        <input type="number" id="ny" min="1" max="61" step="1" value="9"></div>
+      <div class="row" id="r-rad"><label for="radius">Радиус россыпи <span class="u">мм</span></label>
+        <input type="number" id="radius" min="2" max="120" step="1" value="18"></div>
+      <div class="row"><label for="dense">Плотная укладка (шаг = диаметру)</label>
+        <input type="checkbox" id="dense" checked style="width:auto"></div>
+      <div class="row"><label for="pitch">Шаг укладки <span class="u">мм</span></label>
+        <input type="number" id="pitch" min="0.5" max="40" step="0.1" value="4.1"></div>
+      <input type="range" id="pitchR" min="0.5" max="40" step="0.1" value="4.1">
+      <p class="hint" id="hPitch"></p>
+    </div>
+
+    <div class="grp">
+      <h3>Бусина</h3>
+      <div class="row"><label for="d">Диаметр <span class="u">мм</span></label>
+        <input type="number" id="d" min="0.5" max="20" step="0.1" value="4.1"></div>
+      <input type="range" id="dR" min="0.5" max="20" step="0.1" value="4.1">
+      <div class="row"><label for="rho">Плотность стекла <span class="u">г/см³</span></label>
+        <input type="number" id="rho" min="2.0" max="3.2" step="0.05" value="2.5"></div>
+      <p class="hint" id="hBead"></p>
+    </div>
+
+    <div class="grp">
+      <h3>Содержание урана</h3>
+      <div class="row"><label for="wU">Массовая доля U <span class="u">% масс.</span></label>
+        <input type="number" id="wU" min="0.01" max="15" step="0.05" value="1.85"></div>
+      <input type="range" id="wUR" min="0.01" max="15" step="0.01" value="1.85">
+      <p class="hint" id="hAct"></p>
+    </div>
+
+    <div class="grp">
+      <h3>Условия усреднения и контакта</h3>
+      <div class="row"><label>Площадь усреднения</label></div>
+      <div class="seg" id="areaSeg">
+        <button data-a="1">1 см²</button>
+        <button data-a="0.1">0,1 см²</button>
+        <button data-a="0.01">0,01 см²</button>
+      </div>
+      <div class="row"><label for="tses">Длительность контакта <span class="u">ч</span></label>
+        <input type="number" id="tses" min="0.01" max="24" step="0.25" value="1"></div>
+      <div class="row"><label for="nses">Контактов в год</label>
+        <input type="number" id="nses" min="1" max="3650" step="1" value="50"></div>
+    </div>
+  </div>
+
+  <!-- ------------------------------ результат и сцена ------------------------------ -->
+  <div>
+    <div class="out">
+      <div class="sub">Мощность эквивалентной дозы Ḣ<sub>p</sub>(0,07) в центре раскладки,
+        усреднение по <span id="oArea">1 см²</span></div>
+      <div class="big"><span id="oVal">—</span><span class="un">мкЗв/ч</span></div>
+      <div class="sub" id="oNote"></div>
+      <div class="kv">
+        <div class="k">Доза за один контакт</div><b id="oSes">—</b>
+        <div class="k">Доза за год при заданном режиме</div><b id="oYear">—</b>
+        <div class="k">От предела для кожи персонала (500 мЗв/год)</div><b id="oLimA">—</b>
+        <div class="k">От предела для кожи населения (50 мЗв/год)</div><b id="oLimB">—</b>
+        <div class="k">Бусин в раскладке / масса стекла</div><b id="oN">—</b>
+        <div class="k">Полная активность по U-238</div><b id="oAct">—</b>
+        <div class="k">Максимум поля (локальный, вне усреднения)</div><b id="oPeak">—</b>
+      </div>
+      <div class="warnbox" id="warn"></div>
+    </div>
+
+    <canvas id="cv"></canvas>
+    <div class="cvbar">
+      <label>рельеф поля <input type="range" id="cRelief" min="0" max="100" step="1" value="45"
+        style="width:110px"></label>
+      <label><input type="checkbox" id="cRing" checked> контур усреднения</label>
+      <button id="bReset" style="border:1px solid var(--line);background:var(--code);
+        color:var(--muted);border-radius:4px;padding:3px 10px;cursor:pointer;
+        font:12.5px system-ui,sans-serif">вид по умолчанию</button>
+      <span class="scale">поле: 0<span class="bar"></span><span id="oScale">—</span></span>
+      <span id="oExt">—</span>
+      <span>вращение — мышью, масштаб — колесом</span>
+    </div>
+
+    <canvas id="prof"></canvas>
+    <p class="hint">Профиль мощности дозы вдоль оси X на поверхности кожи (без усреднения
+      по площади). Пунктир — уровень, усреднённый по выбранной площади.</p>
+  </div>
+</div>
+
+<!-- =============================== пояснения =============================== -->
+
+<h2><span class="num">1</span>Что именно вычисляется</h2>
+<p>Вычисляется <b>мощность эквивалентной дозы внешнего облучения кожи Ḣ<sub>p</sub>(0,07)</b> —
+операционная величина, определённая на глубине 0,07 мм (70 мкм, базальный слой эпидермиса)
+и усреднённая по площади 1 см². Именно с ней сравниваются пределы для кожи.
+Вклад дают бета-частицы очищенного урана (доминирует <sup>234m</sup>Pa, E<sub>max</sub> = 2,27 МэВ);
+вклад гамма-излучения включён в результат и составляет менее 0,3 %.</p>
+<p>Геометрия — бисер, лежащий вплотную на коже без зазора и без одежды. Это консервативный
+(наихудший) случай прямого контакта.</p>
+
+<h2><span class="num">2</span>Модель</h2>
+<p>Расчёт строится на <b>точечном поверхностном ядре</b> h(r) — мощности дозы в базальном слое
+в точке кожи на расстоянии r от точечного источника бета на поверхности:</p>
+<p style="text-align:center"><code>h(r) = C · exp(−(r/a)<sup>b</sup>) / (r² + r<sub>0</sub>²)<sup>s</sup></code></p>
+<p>Бусина рассматривается как излучающая площадка радиусом d/2 с радиальным профилем эмиссии
+<code>q(ρ) ∝ (1 − (ρ/(d/2))²)<sup>m</sup></code>, отражающим переменную толщину рокайля.
+Мощность дозы в точке — сумма по всем бусинам; результат усредняется по диску заданной площади.
+Параметры <code>C, a, b, s, r<sub>0</sub>, m</code> подобраны так, чтобы модель воспроизводила
+расчёт Geant4 (см. §&nbsp;3).</p>
+<p>Масштабирование по входным параметрам:</p>
+<ul>
+  <li><b>Содержание урана</b> входит линейно: удельная активность стекла по <sup>238</sup>U
+    пропорциональна массовой доле урана (1,2356·10<sup>7</sup> Бк на кг урана).</li>
+  <li><b>Размер бусины</b> входит двояко: через площадь излучающей площадки (интегрирование
+    по диску d/2) и через насыщение по толщине. Бета-частицы выходят лишь из приповерхностного
+    слоя толщиной порядка 1/(ν·ρ) ≈ 0,8 мм, поэтому вклад бусины растёт примерно как её площадь,
+    а не как объём; фактор насыщения 1 − exp(−ν·ρ·h) при ν = 5,19 см²/г.</li>
+  <li><b>Плотность стекла</b> влияет только через этот фактор насыщения: поверхностная эмиссия
+    из насыщенного слоя от плотности практически не зависит, так как толщина слоя обратно
+    пропорциональна плотности.</li>
+  <li><b>Шаг укладки</b> и <b>число бусин</b> входят через суммирование — никакой отдельной
+    подгонки для новой геометрии не требуется.</li>
+</ul>
+
+<h2><span class="num">3</span>Проверка: модель против Geant4</h2>
+<p>Ниже — сравнение с опорными точками расчёта Монте-Карло, по которым калибровалось ядро.
+Значения вычисляются страницей прямо сейчас, тем же кодом, что и результат калькулятора.</p>
+<div class="tablewrap"><table id="vtab">
+  <caption>Таблица 1. Модель против расчёта Geant4 (базовые параметры: d = 4,1 мм, шаг 4,1 мм,
+    U 1,85 % масс., ρ = 2,5 г/см³)</caption>
+  <thead><tr><th>Конфигурация</th><th>Усреднение</th><th>Geant4, мкЗв/ч</th>
+    <th>Модель, мкЗв/ч</th><th>Отклонение</th></tr></thead>
+  <tbody></tbody>
+</table></div>
+
+<h2><span class="num">4</span>Границы применимости</h2>
+<ul>
+  <li>Калибровка выполнена для бусины-рокайля <b>Ø 4,1 мм</b> в укладке с шагом 4,1 мм.
+    Диапазон диаметров примерно <b>2…8 мм</b> следует считать интерполяцией, за его
+    пределами — экстраполяцией; страница предупреждает об этом явно.</li>
+  <li>Предполагается <b>очищенный уран</b> с разорванной цепочкой <sup>238</sup>U на
+    <sup>226</sup>Ra: излучают <sup>234</sup>Th, <sup>234m</sup>Pa, <sup>235</sup>U, <sup>231</sup>Th.
+    Для руды или неочищенного материала активность продуктов распада будет выше.</li>
+  <li>Контакт принимается <b>плотным и без зазора</b>. Любая прослойка — перчатка, ткань,
+    роговой слой сверх нормы — снижает дозу, и снижает сильно: модель этого не учитывает
+    и потому консервативна.</li>
+  <li>Не учитываются: инкорпорация, попадание осколков стекла в рану, загрязнение рук
+    и перенос активности. Это отдельные и потенциально более значимые пути облучения.</li>
+  <li>Заявленная неопределённость <b>±10 %</b> — это неопределённость исходного расчёта
+    Geant4 (в основном плотность и состав стекла). Погрешность самой модели относительно
+    Geant4 (0,7 %) в неё вложена, а систематика, связанная с формой бусины и предположением
+    о контакте, в неё <b>не входит</b>.</li>
+</ul>
+
+<div class="callout"><b>Как пользоваться результатом.</b> Число из калькулятора — оценка
+порядка величины и относительных изменений (во сколько раз опаснее раскладка большего размера
+или стекло с большим содержанием урана). Для абсолютного вывода о безопасности нужен
+прямой замер: бета-излучение уранового стекла уверенно регистрируется бытовыми и
+профессиональными приборами.</div>
+
+<p class="note">Расчётное ядро калибровано по данным работы «Расчёт мощности эквивалентной дозы
+внешнего облучения кожи Ḣ<sub>p</sub>(0,07) от бета- и гамма-излучения уранового стеклянного
+бисера» (Geant4 11.2.1, G4EmStandardPhysics_option4 + G4RadioactiveDecay). Методика,
+исходные данные, проверочный классический расчёт и полный список источников приведены
+в основной статье.</p>
+
+<div class="foot">
+  VibeEngineering · интерактивный расчёт к статье от 23.07.2026 ·
+  <a href="../uranium-glass-beads-skin-2026-07-23/">к статье</a> ·
+  расчёт выполняется в браузере, данные никуда не передаются
+</div>
+
+</div>
+<script type="module" src="./app.js"></script>
+</body>
+</html>
