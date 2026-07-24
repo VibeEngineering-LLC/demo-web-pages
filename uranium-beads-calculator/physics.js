@@ -165,7 +165,7 @@ export function doseAt(cfg, x, y, tab, centers) {
 // --------------------------------------------------------------- оформление чисел
 // Округление по правилам представления результата: погрешность до 1–2 значащих
 // цифр, значение — до того же разряда.
-export function fmtPM(v, rel) {
+export function fmtPM(v, rel, lang = 'ru') {
   const u = v * rel;
   if (!isFinite(v) || v <= 0) return { v: '0', u: '0' };
   const e = Math.floor(Math.log10(u));
@@ -174,6 +174,7 @@ export function fmtPM(v, rel) {
   const step = Math.pow(10, e - dig);
   const ur = Math.ceil(u / step) * step, vr = Math.round(v / step) * step;
   const dec = Math.max(0, dig - e);
-  const ru = x => x.toFixed(dec).replace('.', ',');   // ГОСТ 8.417 — десятичная запятая
-  return { v: ru(vr), u: ru(ur) };
+  // ГОСТ 8.417 — в русском тексте десятичная запятая, в английском точка
+  const f = x => lang === 'ru' ? x.toFixed(dec).replace('.', ',') : x.toFixed(dec);
+  return { v: f(vr), u: f(ur) };
 }
