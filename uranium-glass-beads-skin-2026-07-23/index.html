@@ -104,6 +104,44 @@
   #lb .cap{position:fixed; bottom:14px; left:0; right:0; text-align:center;
     color:#eee; font:13px/1.5 system-ui,sans-serif; padding:0 24px}
   #lb .x{position:fixed; top:14px; right:22px; color:#eee; font:300 34px/1 system-ui; cursor:pointer}
+
+  /* ---------------- Печать и экспорт в PDF ---------------- */
+  @page{size:A4; margin:18mm 16mm 20mm}
+  @media print{
+    /* печатаем в светлой палитре независимо от темы системы */
+    :root{
+      --bg:#ffffff; --fg:#111111; --muted:#444444; --line:#c8c8c8;
+      --accent:#3d6128; --accent2:#22506f; --card:#ffffff; --code:#f2f2ef;
+      --th:#eceee6; --hl:#f1f5eb; --shadow:none;
+      --warn-bg:#fbeeec; --warn-bd:#9e3327;
+    }
+    body{background:#fff; font-size:10.5pt; line-height:1.45}
+    .wrap{max-width:none; margin:0; padding:0}
+    .lang-bar, #lb{display:none !important}          /* элементы управления не печатаем */
+    figure img{cursor:default; border-color:var(--line)}
+    a{color:var(--fg); text-decoration:none}
+    a[href^="#"]{color:var(--accent2)}
+    /* внешние ссылки: раскрываем URL, иначе в PDF адрес теряется */
+    #lang-ru .refs a[href^="http"]::after,
+    #lang-en .refs a[href^="http"]::after{content:" (" attr(href) ")";
+      font:9pt/1.3 "SF Mono",Consolas,monospace; color:var(--muted); word-break:break-all}
+    h1{font-size:19pt} h2{font-size:13.5pt} h3{font-size:11pt}
+    /* заголовок не должен отрываться от своего текста */
+    h1,h2,h3{break-after:avoid; page-break-after:avoid}
+    h2{break-before:auto; padding-top:10px; margin-top:22px}
+    /* неразрывные блоки; длинные текстовые (аннотация, дисклеймер) переносить
+       разрешено — иначе внизу страницы остаётся крупная пустота */
+    figure, table, .callout, .tablewrap{break-inside:avoid; page-break-inside:avoid}
+    .abstract, .disclaimer{break-inside:auto; page-break-inside:auto}
+    figure img{max-height:150mm; object-fit:contain}
+    .fig2{grid-template-columns:1fr 1fr 1fr; gap:8px}
+    tr, li, p{break-inside:avoid; page-break-inside:avoid}
+    thead{display:table-header-group}                 /* шапка таблицы на каждой странице */
+    .refs li{break-inside:avoid; page-break-inside:avoid}
+    /* сноски-цитаты в тексте */
+    .cit{color:var(--accent2)}
+    .foot{break-before:avoid}
+  }
 </style>
 </head>
 <body>
