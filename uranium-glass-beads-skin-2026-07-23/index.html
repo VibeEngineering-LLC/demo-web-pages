@@ -128,16 +128,31 @@
     h1{font-size:19pt} h2{font-size:13.5pt} h3{font-size:11pt}
     /* заголовок не должен отрываться от своего текста */
     h1,h2,h3{break-after:avoid; page-break-after:avoid}
-    h2{break-before:auto; padding-top:10px; margin-top:22px}
-    /* неразрывные блоки; длинные текстовые (аннотация, дисклеймер) переносить
-       разрешено — иначе внизу страницы остаётся крупная пустота */
-    figure, table, .callout, .tablewrap{break-inside:avoid; page-break-inside:avoid}
-    .abstract, .disclaimer{break-inside:auto; page-break-inside:auto}
-    figure img{max-height:150mm; object-fit:contain}
+    h2{padding-top:9px; margin:20px 0 4px}
+    h3{margin:15px 0 6px}
+
+    /* Заполнение страниц. Запрет разрыва ставим ТОЛЬКО там, где разрыв искажает
+       смысл: внутри строки таблицы, между рисунком и его подписью, внутри
+       короткой врезки. Абзацы, списки, таблицы и длинные врезки переносить
+       разрешено — иначе блок целиком уезжает на следующую страницу и внизу
+       остаётся крупная пустота (замерено: было до 55 % высоты полосы). */
+    p, li, table, .tablewrap, .abstract, .disclaimer, .refs, .callout{
+      break-inside:auto; page-break-inside:auto}
+    tr{break-inside:avoid; page-break-inside:avoid}
+    p, li{orphans:2; widows:2}          /* но не оставлять висячих строк */
+    thead{display:table-header-group}   /* шапка длинной таблицы — на каждой странице */
+    .tablewrap{overflow:visible}        /* иначе overflow-x обрезает широкую таблицу */
+    caption{break-after:avoid; page-break-after:avoid}
+
+    /* Рисунки. Сам рисунок неразрывен физически, поэтому его высоту ограничиваем
+       так, чтобы блок «рисунок + подпись» помещался в остаток страницы после
+       абзаца текста, а не вытеснял его целиком. */
+    figure{break-inside:avoid; page-break-inside:avoid; margin:16px 0}
+    figure img{max-height:88mm; width:auto; max-width:100%; object-fit:contain}
+    .fig2 figure img{max-height:52mm}
+    figcaption{break-before:avoid; page-break-before:avoid; margin-top:6px}
     .fig2{grid-template-columns:1fr 1fr 1fr; gap:8px}
-    tr, li, p{break-inside:avoid; page-break-inside:avoid}
-    thead{display:table-header-group}                 /* шапка таблицы на каждой странице */
-    .refs li{break-inside:avoid; page-break-inside:avoid}
+
     /* сноски-цитаты в тексте */
     .cit{color:var(--accent2)}
     .foot{break-before:avoid}
