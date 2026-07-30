@@ -1328,22 +1328,33 @@ function drawDiagram(inp, mode){
   // сам стандарт ASHRAE 55 численных границ по влажности не задаёт.
   var hiLim = 60, loLim = 30, hiEnd = 100, loEnd = 10;
 
-  // верхний градиент — синий (сырость)
+  // Все градиенты дискомфорта — единая шкала «зелёное → красное».
+  // Верхний (сырость) и нижний (сухость) — красный, растущий за пределы
+  // 60/30 %, чтобы читаться в одном ключе с тепловым PPD.
+  var RED_OVERLAY = 'rgba(178, 62, 55,';
   if(hiLim < H1){
     var gTop = CTX.createLinearGradient(0, ph(hiEnd), 0, ph(hiLim));
-    gTop.addColorStop(0, 'rgba( 55, 95,180,.45)');
-    gTop.addColorStop(1, 'rgba( 55, 95,180,.00)');
+    gTop.addColorStop(0, RED_OVERLAY + '.55)');
+    gTop.addColorStop(1, RED_OVERLAY + '.00)');
     CTX.fillStyle = gTop;
     CTX.fillRect(r.x, ph(hiEnd), r.w, ph(hiLim) - ph(hiEnd));
   }
-  // нижний градиент — оранжевый (сухость)
   if(loLim > H0){
     var gBot = CTX.createLinearGradient(0, ph(loLim), 0, ph(loEnd));
-    gBot.addColorStop(0, 'rgba(200,120, 55,.00)');
-    gBot.addColorStop(1, 'rgba(200,120, 55,.45)');
+    gBot.addColorStop(0, RED_OVERLAY + '.00)');
+    gBot.addColorStop(1, RED_OVERLAY + '.55)');
     CTX.fillStyle = gBot;
     CTX.fillRect(r.x, ph(loLim), r.w, ph(loEnd) - ph(loLim));
   }
+
+  // крупные надписи «сухо» / «влажно» по центру соответствующих зон
+  CTX.font = 'bold 22px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
+  CTX.fillStyle = 'rgba(255,255,255,.95)';
+  CTX.textAlign = 'center'; CTX.textBaseline = 'middle';
+  var wetY = ph((hiLim + hiEnd) / 2);
+  var dryY = ph((loLim + loEnd) / 2);
+  if(hiLim < H1) CTX.fillText('влажно', r.x + r.w * 0.15, wetY);
+  if(loLim > H0) CTX.fillText('сухо',   r.x + r.w * 0.15, dryY);
 
   // тонкие штриховые границы 30/60 % с подписями
   CTX.strokeStyle = 'rgba(28,27,25,.55)';
