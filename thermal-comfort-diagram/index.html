@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Диаграмма теплового комфорта — PMV/PPD, сквозняк, результирующая температура</title>
+<meta name="description" content="Интерактивная диаграмма теплового комфорта: подвижность воздуха в рабочей зоне, температура, влажность, активность, одежда. Расчёт PMV и PPD по ГОСТ Р ИСО 7730-2009, категории A/B/C, скорость сквозняка DR, результирующая температура по ГОСТ 30494-2011.">
+<style>
+  :root{
+    --bg:#f7f6f3; --card:#ffffff; --ink:#1c1b19; --muted:#605c54;
+    --line:#e3e0d8; --accent:#4a6b8a; --accent-ink:#2c4a63;
+    --ok-bg:#e8f3ea; --ok-ink:#1f6b3a; --ok-line:#bcdcc5;
+    --bad-bg:#fbeaea; --bad-ink:#9a2b2b; --bad-line:#eec6c6;
+    --wait-bg:#fbf3e2; --wait-ink:#8a6420; --wait-line:#ecd9ad;
+    --input-bg:#fdfcfa; --grid:#cfcbc1;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#1a1917; --card:#232220; --ink:#ece9e3; --muted:#a7a299;
+      --line:#38352f; --accent:#89aecb; --accent-ink:#a9c6df;
+      --ok-bg:#1c2e22; --ok-ink:#7fce9a; --ok-line:#2f5138;
+      --bad-bg:#33201f; --bad-ink:#e79a9a; --bad-line:#5a3230;
+      --wait-bg:#312a1a; --wait-ink:#e2c079; --wait-line:#584a2c;
+      --input-bg:#1c1b19; --grid:#4a463f;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1a1917; --card:#232220; --ink:#ece9e3; --muted:#a7a299;
+    --line:#38352f; --accent:#89aecb; --accent-ink:#a9c6df;
+    --ok-bg:#1c2e22; --ok-ink:#7fce9a; --ok-line:#2f5138;
+    --bad-bg:#33201f; --bad-ink:#e79a9a; --bad-line:#5a3230;
+    --wait-bg:#312a1a; --wait-ink:#e2c079; --wait-line:#584a2c;
+    --input-bg:#1c1b19; --grid:#4a463f;
+  }
+  :root[data-theme="light"]{
+    --bg:#f7f6f3; --card:#ffffff; --ink:#1c1b19; --muted:#605c54;
+    --line:#e3e0d8; --accent:#4a6b8a; --accent-ink:#2c4a63;
+    --ok-bg:#e8f3ea; --ok-ink:#1f6b3a; --ok-line:#bcdcc5;
+    --bad-bg:#fbeaea; --bad-ink:#9a2b2b; --bad-line:#eec6c6;
+    --wait-bg:#fbf3e2; --wait-ink:#8a6420; --wait-line:#ecd9ad;
+    --input-bg:#fdfcfa; --grid:#cfcbc1;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1360px; margin:0 auto; padding:32px 20px 64px}
+  header h1{font-size:26px; line-height:1.25; margin:0 0 8px}
+  header .sub{color:var(--muted); font-size:15px; margin:0 0 4px}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:22px; margin:22px 0;
+  }
+  h2{font-size:18px; margin:0 0 14px}
+  h3{font-size:15px; margin:20px 0 8px}
+  p{margin:0 0 12px}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px 20px}
+  .grid3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px 20px}
+  @media (max-width:620px){.grid,.grid3{grid-template-columns:1fr}}
+  label{display:block; font-size:12.5px; color:var(--muted); margin:0 0 5px; font-weight:600;
+    text-transform:uppercase; letter-spacing:.03em}
+  input[type=range]{width:100%; accent-color:var(--accent)}
+  select,input[type=number]{
+    width:100%; padding:9px 11px; font-size:15px; color:var(--ink);
+    background:var(--input-bg); border:1px solid var(--line); border-radius:9px;
+    font-variant-numeric:tabular-nums;
+  }
+  select:focus,input:focus{outline:2px solid var(--accent); outline-offset:1px; border-color:var(--accent)}
+  .val{font-variant-numeric:tabular-nums; font-weight:700; color:var(--accent-ink)}
+  .hint{font-size:12.5px; color:var(--muted); margin:5px 0 0}
+  .res{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin:0 0 14px}
+  .tile{border:1px solid var(--line); border-radius:11px; padding:12px 14px; background:var(--input-bg)}
+  .tile .k{font-size:11.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); font-weight:600}
+  .tile .v{font-size:23px; font-weight:700; font-variant-numeric:tabular-nums; line-height:1.2; margin-top:3px}
+  .tile .u{font-size:12.5px; color:var(--muted); font-weight:400}
+  .badge{display:inline-block; padding:3px 10px; border-radius:999px; font-size:13px; font-weight:700; border:1px solid}
+  .b-a{background:var(--ok-bg); color:var(--ok-ink); border-color:var(--ok-line)}
+  .b-b{background:var(--wait-bg); color:var(--wait-ink); border-color:var(--wait-line)}
+  .b-c{background:var(--wait-bg); color:var(--wait-ink); border-color:var(--wait-line)}
+  .b-x{background:var(--bad-bg); color:var(--bad-ink); border-color:var(--bad-line)}
+  canvas{display:block; width:100%; height:auto; border-radius:10px; border:1px solid var(--line)}
+  .legend{display:flex; flex-wrap:wrap; gap:8px 16px; font-size:13px; color:var(--muted); margin:12px 0 0}
+  .legend i{display:inline-block; width:13px; height:13px; border-radius:3px; vertical-align:-2px; margin-right:5px; border:1px solid rgba(0,0,0,.15)}
+  table{width:100%; border-collapse:collapse; font-size:14px}
+  th,td{text-align:left; padding:7px 9px; border-bottom:1px solid var(--line); vertical-align:top}
+  th{font-size:12px; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); font-weight:600}
+  td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
+  .pass{color:var(--ok-ink); font-weight:700}
+  .fail{color:var(--bad-ink); font-weight:700}
+  .na{color:var(--muted)}
+  .tblwrap{overflow-x:auto}
+  code{font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    background:var(--input-bg); border:1px solid var(--line); border-radius:5px; padding:1px 5px}
+  .formula{background:var(--input-bg); border:1px solid var(--line); border-radius:9px;
+    padding:12px 14px; margin:10px 0; font:13.5px/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    overflow-x:auto; white-space:pre}
+  .note{background:var(--wait-bg); border:1px solid var(--wait-line); color:var(--wait-ink);
+    border-radius:10px; padding:12px 14px; margin:14px 0; font-size:14px}
+  .note b{color:inherit}
+  a{color:var(--accent-ink)}
+  ul{margin:0 0 12px; padding-left:22px}
+  li{margin:0 0 6px}
+  .lvl{font-size:12px; font-weight:700; padding:1px 6px; border-radius:5px; border:1px solid}
+  .lvl-ok{background:var(--ok-bg); color:var(--ok-ink); border-color:var(--ok-line)}
+  .lvl-bib{background:var(--wait-bg); color:var(--wait-ink); border-color:var(--wait-line)}
+  footer{color:var(--muted); font-size:13px; margin-top:28px; border-top:1px solid var(--line); padding-top:16px}
+  .themebtn{position:fixed; top:12px; right:12px; padding:6px 11px; font-size:13px;
+    background:var(--card); color:var(--ink); border:1px solid var(--line);
+    border-radius:8px; cursor:pointer}
+
+  /* макет: канвас слева, ручки справа (5 range сверху + 3 select снизу) */
+  .diagwrap{display:flex; flex-direction:row; align-items:flex-start; gap:14px; flex-wrap:wrap}
+  .diagwrap > .plot{flex:1 1 640px; min-width:0}
+  canvas#cv{background:var(--input-bg); border:1px solid var(--line); border-radius:10px; width:100%; height:auto; display:block}
+  .sidebar{flex:0 0 auto; width:520px;
+           display:flex; flex-direction:column; gap:8px;
+           background:var(--input-bg); border:1px solid var(--line); border-radius:10px;
+           padding:10px}
+  .srow{display:grid; gap:6px}
+  .srow.ranges{grid-template-columns:repeat(5, 1fr)}
+  .srow.selects{grid-template-columns:1fr}
+  @media (max-width:1180px){ .sidebar{width:100%} }
+  @media (max-width:640px){
+    .srow.ranges{grid-template-columns:repeat(3, 1fr)}
+    .srow.selects{grid-template-columns:1fr}
+  }
+  .vslot{display:flex; flex-direction:column; align-items:center; gap:4px;
+         padding:8px 6px; border:1px solid var(--line); border-radius:8px;
+         background:var(--card); min-width:0}
+  .vslot .lab{font-size:11px; color:var(--muted); font-weight:600; text-transform:uppercase;
+              letter-spacing:.03em; text-align:center; line-height:1.25; min-height:2.4em}
+  .vslot .cur{font-size:16px; font-weight:700; color:var(--accent-ink);
+              font-variant-numeric:tabular-nums; line-height:1.1; text-align:center; min-height:1.2em}
+  .vslot .track{display:flex; align-items:center; gap:5px; height:130px}
+  .vslot .track .scale{display:flex; flex-direction:column; justify-content:space-between;
+                       height:100%; font-size:10px; color:var(--muted);
+                       font-variant-numeric:tabular-nums; text-align:left}
+  .vslot input[type=range][orient=vertical], .vslot input[type=range].vert{
+    -webkit-appearance:slider-vertical; appearance:slider-vertical;
+    writing-mode:vertical-lr; direction:rtl;
+    height:100%; width:24px; margin:0; accent-color:var(--accent);
+  }
+  .vslot select{width:100%; padding:6px 8px; font-size:13px;
+                background:var(--card); color:var(--ink); border:1px solid var(--line);
+                border-radius:6px}
+  .vslot.sel{justify-content:flex-start}
+  .vslot.sel .track{display:none}
+  .vslot.sel select{margin-top:auto; margin-bottom:auto}
+</style>
+</head>
+<body>
+<button class="themebtn" id="theme" type="button">Тема</button>
+<div class="wrap">
+
+<header>
+  <h1>Диаграмма теплового комфорта</h1>
+  <p class="sub">Подвижность воздуха в рабочей зоне, температура, влажность, активность человека, одежда — и то, что из них следует: PMV, PPD, категория среды, риск сквозняка.</p>
+</header>
+
+<section class="card">
+  <h2>Суть вопроса</h2>
+  <p>Тепловое ощущение человека определяется не температурой воздуха, а совместным действием
+  <b>шести</b> величин. Четыре относятся к среде — температура воздуха, средняя радиационная
+  температура окружающих поверхностей, скорость движения воздуха и влажность. Две относятся к
+  человеку — уровень двигательной активности и термоизоляция одежды.</p>
+
+  <p>Отсюда практическое следствие: одна и та же температура воздуха даёт разное ощущение.
+  При 22 °C в помещении с холодным остеклением радиационная температура ниже температуры
+  воздуха, и человек мёрзнет; при той же температуре воздуха и подвижности 0,4 м/с он
+  мёрзнет уже от сквозняка. Норматив, задающий только температуру, оставляет ощущение
+  неопределённым.</p>
+
+  <p>Для количественной оценки применяют показатель <b>PMV</b> (predicted mean vote,
+  прогнозируемая средняя оценка) — положение среднего ощущения группы людей на семибалльной
+  шкале от −3 (холодно) до +3 (жарко), где 0 — нейтрально. Из PMV следует <b>PPD</b>
+  (predicted percentage of dissatisfied) — прогнозируемый процент недовольных. Ноль
+  недовольных недостижим: даже при PMV = 0 остаётся 5 %, поскольку люди различаются.</p>
+
+  <p>Отдельно рассматривают <b>локальный дискомфорт</b> — недовольство от охлаждения
+  отдельной части тела при формально нейтральном ощущении в целом. Сквозняк, разность
+  температур между головой и стопами, слишком холодный или тёплый пол, асимметрия
+  теплового излучения от холодного окна или тёплого потолка. Проценты недовольных по
+  разным видам локального дискомфорта <b>не складываются</b>: один и тот же
+  чувствительный к холоду человек попадает в несколько категорий сразу.</p>
+
+  <p>Диаграмма ниже показывает, какая категория среды достигается при заданных активности,
+  одежде, влажности и радиационной температуре — в зависимости от температуры воздуха и его
+  подвижности в рабочей зоне. Учитываются оба ограничения: по общему комфорту (PMV и PPD)
+  и по сквозняку (DR).</p>
+</section>
+
+
+<section class="card">
+  <h2>Результат</h2>
+  <div class="res">
+    <div class="tile"><div class="k">PMV</div><div class="v" id="o_pmv">—</div><div class="u" id="o_sens">—</div></div>
+    <div class="tile"><div class="k">PPD</div><div class="v" id="o_ppd">—<span class="u"> %</span></div><div class="u">недовольных теплом в целом</div></div>
+    <div class="tile"><div class="k">DR — сквозняк</div><div class="v" id="o_dr">—<span class="u"> %</span></div><div class="u">недовольных сквозняком</div></div>
+    <div class="tile"><div class="k">Достигнутая категория</div><div class="v" id="o_cat">—</div><div class="u">по PMV, PPD и DR</div></div>
+    <div class="tile"><div class="k">Результирующая температура</div><div class="v" id="o_tsu">—<span class="u"> °C</span></div><div class="u">t<sub>su</sub>, ГОСТ 30494-2011</div></div>
+    <div class="tile"><div class="k">Температура поверхности одежды</div><div class="v" id="o_tcl">—<span class="u"> °C</span></div><div class="u">t<sub>cl</sub>, промежуточная величина</div></div>
+  </div>
+  <div class="tblwrap">
+    <table id="checks">
+      <thead><tr><th>Критерий требуемой категории</th><th>Расчёт</th><th>Граница</th><th>Итог</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <p class="hint" id="lim"></p>
+</section>
+
+<section class="card wide">
+  <h2>Диаграмма комфорта: температура и относительная влажность</h2>
+  <div class="diagwrap">
+    <div class="plot">
+      <canvas id="cv" width="1200" height="900"></canvas>
+      <div class="legend">
+        <span><i style="background:#3f8f5e"></i>категория A</span>
+        <span><i style="background:#8fbf5a"></i>категория B</span>
+        <span><i style="background:#e3c469"></i>категория C</span>
+        <span><i style="background:#c9705f"></i>вне A/B/C</span>
+        <span>— белый маркер: точка (t, φ). Кликните канвас, чтобы перенести её.</span>
+      </div>
+      <p class="hint" style="margin-top:8px">Полосы категорий заданы моделью PMV/PPD (ГОСТ Р ИСО 7730-2009): влажность
+      в неё входит слабо, поэтому категории идут почти вертикально. Штриховые линии на
+      30 % и 60 % — <b>гигиенические</b> границы для <b>жилой комнаты в холодный период
+      года</b> по <b>ГОСТ 30494-2011, табл. 1</b> (верхняя граница «не более 60 %») и
+      <b>СанПиН 1.2.3685-21, табл. 5.27</b> (диапазон «60–30 %»). Для тёплого периода и
+      других типов помещений границы иные. Внутри «комфорта» по PMV точка может лежать
+      вне этих границ — тогда общий комфорт достигнут, а гигиенический норматив по
+      влажности — нет.</p>
+    </div>
+
+    <aside class="sidebar">
+      <div class="srow ranges">
+        <div class="vslot">
+          <div class="lab">Температура</div>
+          <div class="cur"><span id="ta_v">24,0</span> °C</div>
+          <div class="track">
+            <input type="range" id="ta" orient="vertical" class="vert" min="10" max="38" step="0.2" value="24">
+            <div class="scale"><span>38</span><span>24</span><span>10</span></div>
+          </div>
+        </div>
+
+        <div class="vslot">
+          <div class="lab">Влажность</div>
+          <div class="cur"><span id="rh_v">50</span> %</div>
+          <div class="track">
+            <input type="range" id="rh" orient="vertical" class="vert" min="10" max="100" step="1" value="50">
+            <div class="scale"><span>100</span><span>50</span><span>10</span></div>
+          </div>
+        </div>
+
+        <div class="vslot">
+          <div class="lab">Подвижность воздуха</div>
+          <div class="cur"><span id="v_v">0,15</span> м/с</div>
+          <div class="track">
+            <input type="range" id="v" orient="vertical" class="vert" min="0" max="0.6" step="0.01" value="0.15">
+            <div class="scale"><span>0,6</span><span>0,3</span><span>0</span></div>
+          </div>
+          <p class="hint" style="margin:6px 0 0; font-size:11px; text-align:center">v<sub>ar</sub> = <span id="var_v">0,15</span> м/с</p>
+        </div>
+
+        <div class="vslot">
+          <div class="lab">Δt<sub>r</sub> = t<sub>r</sub> − t<sub>a</sub></div>
+          <div class="cur"><span id="dtr_v">+0,0</span> °C</div>
+          <div class="track">
+            <input type="range" id="dtr" orient="vertical" class="vert" min="-8" max="8" step="0.2" value="0">
+            <div class="scale"><span>+8</span><span>0</span><span>−8</span></div>
+          </div>
+        </div>
+
+        <div class="vslot">
+          <div class="lab">Турбулентность (для DR)</div>
+          <div class="cur"><span id="tu_v">40</span> %</div>
+          <div class="track">
+            <input type="range" id="tu" orient="vertical" class="vert" min="10" max="60" step="1" value="40">
+            <div class="scale"><span>60</span><span>35</span><span>10</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="srow selects">
+        <div class="vslot sel">
+          <div class="lab">Активность</div>
+          <select id="met">
+            <option value="0.8">0,8 мет — покой, лёжа</option>
+            <option value="1.0" selected>1,0 мет — сидя</option>
+            <option value="1.2">1,2 мет — офис</option>
+            <option value="1.4">1,4 мет — стоя, лёгкая</option>
+            <option value="1.6">1,6 мет — средняя</option>
+            <option value="2.0">2,0 мет — ходьба</option>
+            <option value="3.0">3,0 мет — тяжёлая</option>
+          </select>
+        </div>
+
+        <div class="vslot sel">
+          <div class="lab">Одежда</div>
+          <select id="clo">
+            <option value="0">0 кло — без одежды</option>
+            <option value="0.25">0,25 кло — лёгкая</option>
+            <option value="0.5" selected>0,50 кло — летний комплект</option>
+            <option value="0.75">0,75 кло — рубашка, брюки</option>
+            <option value="1.0">1,00 кло — костюм</option>
+            <option value="1.5">1,50 кло — тёплый комплект</option>
+          </select>
+        </div>
+
+        <div class="vslot sel">
+          <div class="lab">Требуемая категория</div>
+          <select id="cat">
+            <option value="A">A — |PMV| &lt; 0,2</option>
+            <option value="B" selected>B — |PMV| &lt; 0,5</option>
+            <option value="C">C — |PMV| &lt; 0,7</option>
+          </select>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Как это считается</h2>
+
+  <h3>Общий комфорт: PMV и PPD</h3>
+  <p>PMV вычисляется из теплового баланса тела: вырабатываемое тепло минус потери
+  на диффузию через кожу, потоотделение, скрытое и сухое дыхание, излучение и конвекцию.
+  Температура поверхности одежды находится итерационно.</p>
+  <div class="formula">PMV = [0,303·exp(−0,036·M) + 0,028] · {(M−W)
+       − 3,05·10⁻³·[5733 − 6,99·(M−W) − p_a]
+       − 0,42·[(M−W) − 58,15]
+       − 1,7·10⁻⁵·M·(5867 − p_a)
+       − 0,0014·M·(34 − t_a)
+       − 3,96·10⁻⁸·f_cl·[(t_cl+273)⁴ − (t_r+273)⁴]
+       − f_cl·h_c·(t_cl − t_a)}
+
+PPD = 100 − 95·exp(−0,03353·PMV⁴ − 0,2179·PMV²)</div>
+  <p class="hint">M — уровень двигательной активности, Вт/м²; W — внешняя механическая работа,
+  Вт/м² (принята нулевой); p<sub>a</sub> — парциальное давление водяного пара, Па;
+  t<sub>r</sub> — средняя радиационная температура, °C; f<sub>cl</sub> — множитель площади
+  поверхности одежды; h<sub>c</sub> — коэффициент теплообмена конвекцией, Вт/(м²·К).
+  Формулы (1)—(5) ГОСТ Р ИСО 7730-2009.</p>
+
+  <h3>Сквозняк</h3>
+  <div class="formula">DR = (34 − t_a,l) · (v_a,l − 0,05)^0,62 · (0,37·v_a,l·Tu + 3,14)</div>
+  <p class="hint">Формула (6) ГОСТ Р ИСО 7730-2009. При v<sub>a,l</sub> &lt; 0,05 м/с принимается
+  0,05 м/с; при DR &gt; 100 % принимается 100 %.</p>
+
+  <h3>Результирующая температура помещения</h3>
+  <div class="formula">t_su = (t_p + t_r) / 2            при v ≤ 0,2 м/с
+t_su = 0,6·t_p + 0,4·t_r          при 0,2 &lt; v ≤ 0,6 м/с</div>
+  <p class="hint">Формулы (А.1) и (А.2) приложения А (обязательного) ГОСТ 30494-2011.
+  Результирующая температура входит в таблицы микроклимата наравне с температурой воздуха.</p>
+
+  <h3>Категории среды</h3>
+  <div class="tblwrap">
+  <table>
+    <thead><tr><th>Категория</th><th>PPD, %</th><th>PMV</th><th>DR, %</th><th>Δt по вертикали, °C</th><th>Температура пола, °C</th></tr></thead>
+    <tbody>
+      <tr><td>A</td><td class="num">&lt; 6</td><td class="num">−0,2…+0,2</td><td class="num">&lt; 10</td><td class="num">&lt; 2</td><td class="num">19…29</td></tr>
+      <tr><td>B</td><td class="num">&lt; 10</td><td class="num">−0,5…+0,5</td><td class="num">&lt; 20</td><td class="num">&lt; 3</td><td class="num">19…29</td></tr>
+      <tr><td>C</td><td class="num">&lt; 15</td><td class="num">−0,7…+0,7</td><td class="num">&lt; 30</td><td class="num">&lt; 4</td><td class="num">17…31</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="hint">Таблицы A.1—A.3 ГОСТ Р ИСО 7730-2009. Разность температур по вертикали
+  и температура пола на диаграмме не рассчитываются — они не следуют из заданных здесь
+  величин и проверяются отдельно.</p>
+</section>
+
+<section class="card">
+  <h2>Проверка расчёта</h2>
+  <p>Реализация сверена с таблицей E.2 ГОСТ Р ИСО 7730-2009 (уровень двигательной
+  активности 58 Вт/м²): 41 контрольное значение PMV для 0; 0,25; 0,50 и 0,75 кло при
+  скоростях движения воздуха 0; 0,10; 0,20; 0,30 и 0,50 м/с. Все 41 сходятся,
+  максимальное отклонение <b>0,062 балла PMV</b>. Условия таблиц приложения E:
+  t<sub>a</sub> = t<sub>r</sub>, относительная влажность 50 %, внешняя работа 0.</p>
+
+  <div class="note">
+    <b>Расхождение внутри стандарта, зафиксированное при разборе.</b>
+    Печатная формула (4) ГОСТ Р ИСО 7730-2009 задаёт множитель площади поверхности
+    одежды как <code>f_cl = 1,05 + 1,645·I_cl</code> при I<sub>cl</sub> &gt; 0,078 м²·К/Вт,
+    тогда как листинг программы в приложении D того же стандарта содержит
+    <code>FCL = 1.05 + .645 * ICL</code>. Расхождение разрешено в пользу листинга по двум
+    независимым признакам. Во-первых, непрерывность: в точке ветвления
+    I<sub>cl</sub> = 0,078 первая ветвь даёт 1,1006, вторая с коэффициентом 0,645 —
+    1,1003 (функция непрерывна), с коэффициентом 1,645 — 1,1783, то есть скачок 7 %;
+    множитель площади одежды не может изменяться скачком при непрерывном изменении
+    термоизоляции. Во-вторых, сверка с таблицей E.2: на строках, где эта ветвь
+    задействована (0,75 кло), отклонения с коэффициентом 0,645 составляют
+    от −0,022 до +0,014 — того же порядка, что на строках, где ветвь не задействована
+    вовсе; с коэффициентом 1,645 они систематически смещены и составляют
+    от −0,198 до −0,063. Расчёт на этой странице ведётся с коэффициентом <b>0,645</b>.
+  </div>
+</section>
+
+<section class="card">
+  <h2>Первоисточники</h2>
+  <p class="hint">Уровень проверки: <span class="lvl lvl-ok">✅</span> — документ открыт,
+  формулы и таблицы прочитаны по содержанию, в том числе по изображениям страниц, где
+  текстовый слой PDF искажает запись;
+  <span class="lvl lvl-bib">📗</span> — реквизиты подтверждены, содержимое не читалось.</p>
+
+  <h3>Использованы в расчёте</h3>
+  <ul>
+    <li><span class="lvl lvl-ok">✅</span> <b>ГОСТ Р ИСО 7730-2009.</b> Эргономика термальной
+    среды. Аналитическое определение и интерпретация комфортности теплового режима с
+    использованием расчёта показателей PMV и PPD и критериев локального теплового комфорта.
+    Утверждён и введён в действие приказом Федерального агентства по техническому
+    регулированию и метрологии от 7 декабря 2009 г. № 573-ст. Введён впервые. Издание:
+    Стандартинформ, Москва, 2011. Стандарт <b>идентичен (IDT)</b> международному стандарту
+    <b>ISO 7730:2005</b> «Ergonomics of the thermal environment — Analytical determination
+    and interpretation of thermal comfort using calculation of the PMV and PPD indices and
+    local thermal comfort criteria». Использованы формулы (1)—(6), таблицы 1, A.1—A.4,
+    листинг приложения D, таблицы приложения E.
+    <br>Открытая копия:
+    <a href="https://meganorm.ru/Data2/1/4293820/4293820818.pdf" rel="noopener nofollow">meganorm.ru/Data2/1/4293820/4293820818.pdf</a>
+    (обращение 30.07.2026, 43 с.).</li>
+
+    <li><span class="lvl lvl-ok">✅</span> <b>ГОСТ 30494-2011.</b> Межгосударственный
+    стандарт. Здания жилые и общественные. Параметры микроклимата в помещениях. Принят
+    МНТКС, протокол № 39 от 8 декабря 2011 г. Приказом Федерального агентства по
+    техническому регулированию и метрологии от 12 июля 2012 г. № 191-ст введён в действие
+    в качестве национального стандарта Российской Федерации с 1 января 2013 г. Взамен
+    ГОСТ 30494-96. Издание: Стандартинформ, Москва, 2013. Использованы пункты 2.5, 2.6,
+    4.4—4.7, 6.5—6.9, таблица 1, приложения А и Б (оба обязательные).
+    <br>Открытая копия:
+    <a href="https://files.stroyinf.ru/Data2/1/4293788/4293788520.pdf" rel="noopener nofollow">files.stroyinf.ru/Data2/1/4293788/4293788520.pdf</a>
+    (обращение 30.07.2026, 15 с.).</li>
+  </ul>
+
+  <h3>Смежные нормативы (упоминаются в тексте, в расчёт не входят)</h3>
+  <p class="hint">По правилу citation-green уровень ✅ ставится только тем документам, чьи
+  формулы или таблицы непосредственно применены в расчётах страницы. Для СанПиН и СП ниже
+  на этой странице использованы только реквизиты — их содержательное чтение выполнено
+  в рамках отдельного задания контура (реестр `SOURCES.md`), но не под задачу
+  этой страницы, поэтому здесь уровень 📗.</p>
+  <ul>
+    <li><span class="lvl lvl-bib">📗</span> <b>СанПиН 1.2.3685-21.</b> Гигиенические
+    нормативы и требования к обеспечению безопасности и (или) безвредности для человека
+    факторов среды обитания. Постановление Главного государственного санитарного врача
+    Российской Федерации от 28.01.2021 № 2, введён в действие с 01.03.2021, срок действия
+    до 01.03.2027; в редакции постановлений от 30.12.2022 № 24, от 16.12.2024 № 12,
+    от 17.03.2025 № 2, от 22.09.2025 № 17, от 24.12.2025 № 19. Таблицы 5.27 и 5.28 задают
+    оптимальные и допустимые параметры микроклимата помещений жилых и общественных зданий
+    (включая результирующую температуру).
+    <br>Открытая копия:
+    <a href="https://meganorm.ru/mega_doc/dop1/81/postanovlenie_glavnogo_gosudarstvennogo_sanitarnogo_vracha_megainfo/0/postanovlenie_glavnogo_gosudarstvennogo_sanitarnogo_vracha.html" rel="noopener nofollow">meganorm.ru → постановление от 28.01.2021 № 2</a>
+    (обращение 30.07.2026).</li>
+
+    <li><span class="lvl lvl-bib">📗</span> <b>СП 131.13330.2020</b> «СНиП 23-01-99*
+    Строительная климатология». Приказ Минстроя России от 24 декабря 2020 г. № 859/пр,
+    введён с 25 июня 2021 г., пересмотр СП 131.13330.2018; в редакции Изменения № 1
+    (приказ от 30.05.2022 № 430/пр) и Изменения № 2 (приказ от 30.06.2023 № 469/пр).
+    Таблица 3.1 задаёт температуру наиболее холодной пятидневки обеспеченностью 0,92, к
+    которой отсылает ГОСТ 30494-2011 при выборе строки таблицы микроклимата.
+    <br>Открытая копия:
+    <a href="https://istkult.ru/upload/medialibrary/998/e6b5nxn6oe3hzau5xni7bpn5aby7t81u/SP-131.13330.2020.-Stroitelnaya-klimatologiya..pdf" rel="noopener nofollow">istkult.ru → СП 131.13330.2020</a>
+    (обращение 30.07.2026, 235 с.).</li>
+
+    <li><span class="lvl lvl-bib">📗</span> <b>СП 50.13330.2024</b> «СНиП 23-02-2003
+    Тепловая защита зданий». Приказ Минстроя России от 15 мая 2024 г. № 327/пр, введён с
+    16 июня 2024 г., пересмотр СП 50.13330.2012. Формула (5.2) связывает градусо-сутки
+    отопительного периода с минимальными значениями оптимальной температуры по ГОСТ 30494.</li>
+  </ul>
+
+  <h3>Упомянуты как международный контекст: содержимое не читалось</h3>
+  <ul>
+    <li><span class="lvl lvl-bib">📗</span> <b>ANSI/ASHRAE Standard 55-2023</b> «Thermal
+    Environmental Conditions for Human Occupancy» (заменяет Standard 55-2020). Содержит
+    адаптивную модель комфорта, отсутствующую в ГОСТ Р ИСО 7730-2009. Распространяется
+    платно; содержимое не читалось.</li>
+    <li><span class="lvl lvl-bib">📗</span> <b>EN 16798-1:2019</b> «Energy performance of
+    buildings — Ventilation for buildings — Indoor environmental input parameters…»
+    (заменил EN 15251:2007). Задаёт категории внутренней среды I—IV. Распространяется
+    платно; содержимое не читалось.</li>
+  </ul>
+
+  <div class="note">
+    <b>Оговорка о полноте.</b> Открытые копии по приведённым ссылкам размещены не
+    издателем стандарта, а сторонними ресурсами; реквизиты выше — единственное
+    достоверное указание на документ. Официальные ресурсы (сайт Минстроя России,
+    <code>docs.cntd.ru</code>) на момент подготовки страницы из рабочей сети не
+    открывались, поэтому состав изменений сверялся по содержанию самих полученных
+    экземпляров, а не по реестрам издателей.
+  </div>
+</section>
+
+<section class="card">
+  <h2>Границы применимости</h2>
+  <ul>
+    <li>Модель сквозняка (формула 6) задана для локальной температуры воздуха от 20 до
+    26 °C, скорости движения воздуха менее 0,5 м/с и интенсивности турбулентности от 10
+    до 60 %. Применяется к людям со слабой физической активностью, преимущественно в позе
+    сидя, с температурной чувствительностью, близкой к нейтральной, и для прогнозирования
+    сквозняка в области шеи. На уровне рук и стоп модель может завысить результат.
+    Чувствительность к сквозняку меньше при активности выше 1,2 мет.</li>
+    <li>Значения PD по разным видам локального дискомфорта не аддитивны — складывать их
+    нельзя.</li>
+    <li>Приложение А ГОСТ 30494-2011 определено до скорости движения воздуха 0,6 м/с.</li>
+    <li>Проверка соответствия категории A (−0,2 &lt; PMV &lt; +0,2) по прямым измерениям
+    затруднена точностью аппаратуры — оговорка самого стандарта; вместо этого проверка
+    может основываться на диапазоне эквивалентной температуры.</li>
+    <li>Соответствие таблицам ГОСТ 30494-2011 не равнозначно попаданию в категорию A или B
+    по ГОСТ Р ИСО 7730-2009: табличный диапазон задан без учёта активности и одежды. Пункт
+    2.6 ГОСТ 30494-2011 определяет оптимальные параметры как обеспечивающие ощущение
+    комфорта не менее чем у 80 % людей, то есть допускает до 20 % недовольных — это слабее
+    всех трёх категорий по ГОСТ Р ИСО 7730-2009, включая наименее строгую C (PPD &lt; 15 %).</li>
+    <li>Уровень двигательной активности и термоизоляция одежды — проектные допущения, а не
+    нормируемые величины. При ссылке на достигнутую категорию их следует называть явно.</li>
+    <li>Страница даёт оценку по перечисленным зависимостям и не заменяет проектный расчёт
+    систем отопления, вентиляции и кондиционирования.</li>
+  </ul>
+</section>
+
+<footer>
+  Расчёт выполняется в браузере, данные никуда не передаются. Десятичный разделитель —
+  запятая (ГОСТ 8.417). Страница самодостаточна: внешних скриптов и шрифтов не подключает.
+  <br>VibeEngineering-LLC · контур «Строительная климатология» · 30.07.2026
+</footer>
+
+</div>
+
+<script>
+"use strict";
+/* ------------------------------------------------------------------ ядро
+   ГОСТ Р ИСО 7730-2009 (идентичен ISO 7730:2005), формулы (1)-(6);
+   ГОСТ 30494-2011, приложение А, формулы (А.1), (А.2).
+   f_cl при I_cl > 0,078 м2*К/Вт: коэффициент 0,645 по листингу приложения D
+   (печатная формула (4) даёт 1,645 — см. раздел «Проверка расчёта»).        */
+
+var MET = 58.15, CLO = 0.155, FCL_B = 0.645;
+
+function pSatKPa(t){ return Math.exp(16.6536 - 4030.183/(t + 235)); }
+
+function pmv(ta, tr, var_, rh, met, clo, wme){
+  wme = wme || 0;
+  var pa = rh * 10 * pSatKPa(ta);
+  var icl = CLO * clo, m = MET * met, w = MET * wme, mw = m - w;
+  var fcl = icl <= 0.078 ? 1 + 1.290*icl : 1.05 + FCL_B*icl;
+  var hcf = 12.1 * Math.sqrt(var_);
+  var taa = ta + 273, tra = tr + 273;
+
+  var tcla = taa + (35.5 - ta)/(3.5*icl + 0.1);
+  var p1 = icl*fcl, p2 = p1*3.96, p3 = p1*100, p4 = p1*taa;
+  var p5 = 308.7 - 0.028*mw + p2*Math.pow(tra/100, 4);
+
+  var xn = tcla/100, xf = xn, hc = hcf, n = 0;
+  for(n = 0; n < 150; n++){
+    xf = (xf + xn)/2;
+    var hcn = 2.38*Math.pow(Math.abs(100*xf - taa), 0.25);
+    hc = hcf > hcn ? hcf : hcn;
+    var xn2 = (p5 + p4*hc - p2*Math.pow(xf, 4))/(100 + p3*hc);
+    if(Math.abs(xn2 - xf) <= 0.00015){ xn = xn2; break; }
+    xn = xn2;
+  }
+  if(n >= 150) return null;
+
+  var tcl = 100*xn - 273;
+  var hl1 = 3.05e-3*(5733 - 6.99*mw - pa);
+  var hl2 = mw > 58.15 ? 0.42*(mw - 58.15) : 0;
+  var hl3 = 1.7e-5*m*(5867 - pa);
+  var hl4 = 0.0014*m*(34 - ta);
+  var hl5 = 3.96*fcl*(Math.pow(xn, 4) - Math.pow(tra/100, 4));
+  var hl6 = fcl*hc*(tcl - ta);
+  var ts = 0.303*Math.exp(-0.036*m) + 0.028;
+  return { pmv: ts*(mw - hl1 - hl2 - hl3 - hl4 - hl5 - hl6), tcl: tcl, hc: hc, fcl: fcl };
+}
+
+function ppd(v){
+  if(v === null) return 100;
+  return 100 - 95*Math.exp(-0.03353*Math.pow(v,4) - 0.2179*Math.pow(v,2));
+}
+
+function draughtRate(tal, val, tu){
+  var v = Math.max(val, 0.05);
+  var dr = (34 - tal)*Math.pow(v - 0.05, 0.62)*(0.37*v*tu + 3.14);
+  return Math.min(Math.max(dr, 0), 100);
+}
+
+function resultingT(tp, tr, v){
+  if(v <= 0.2) return (tp + tr)/2;
+  return 0.6*tp + 0.4*tr;
+}
+
+var CATS = {
+  A: { ppd: 6,  pmv: 0.2, dr: 10, dtv: 2, floor: [19,29] },
+  B: { ppd: 10, pmv: 0.5, dr: 20, dtv: 3, floor: [19,29] },
+  C: { ppd: 15, pmv: 0.7, dr: 30, dtv: 4, floor: [17,31] }
+};
+var ORDER = ['A','B','C'];
+
+function catByComfort(v){
+  if(v === null) return null;
+  var a = Math.abs(v);
+  for(var i=0;i<3;i++){ var c = ORDER[i]; if(a < CATS[c].pmv && ppd(v) < CATS[c].ppd) return c; }
+  return null;
+}
+function catByDraught(dr){
+  for(var i=0;i<3;i++){ var c = ORDER[i]; if(dr < CATS[c].dr) return c; }
+  return null;
+}
+
+var SENS = [
+  [ 2.5, 'жарко'], [ 1.5, 'тепло'], [ 0.5, 'немного тепло'],
+  [-0.5, 'нейтрально'], [-1.5, 'немного прохладно'], [-2.5, 'прохладно']
+];
+function sensation(v){
+  if(v === null) return '—';
+  for(var i=0;i<SENS.length;i++) if(v >= SENS[i][0]) return SENS[i][1];
+  return 'холодно';
+}
+
+/* ------------------------------------------------------------- оформление */
+function nf(x, d){
+  if(x === null || x === undefined || !isFinite(x)) return '—';
+  return x.toFixed(d).replace('.', ',');
+}
+function sf(x, d){
+  if(x === null || !isFinite(x)) return '—';
+  return (x >= 0 ? '+' : '−') + Math.abs(x).toFixed(d).replace('.', ',');
+}
+
+/* ------------------------------------------------------------------ ввод */
+var el = {};
+['ta','v','dtr','rh','tu','met','clo','cat'].forEach(function(id){ el[id] = document.getElementById(id); });
+
+// поправка приложения A ГОСТ Р ИСО 7730-2009 (п. A.2):
+// v_ar = v + 0,3·(M − 1) при M > 1 мет; при M ≤ 1 мет добавка равна нулю
+function vAr(v, met){ return v + (met > 1 ? 0.3*(met - 1) : 0); }
+
+function readInputs(){
+  var ta = parseFloat(el.ta.value);
+  var v  = parseFloat(el.v.value);
+  var met = parseFloat(el.met.value);
+  return {
+    ta: ta,
+    tr: ta + parseFloat(el.dtr.value),
+    dtr: parseFloat(el.dtr.value),
+    v: v,
+    v_ar: vAr(v, met),
+    rh: parseFloat(el.rh.value),
+    tu: parseFloat(el.tu.value),
+    met: met,
+    clo: parseFloat(el.clo.value),
+    cat: el.cat.value
+  };
+}
+
+/* ------------------------------ 2D-диаграмма t–φ ---------------------- */
+var CV = document.getElementById('cv');
+var CTX = CV.getContext('2d');
+
+// диапазон температуры на диаграмме — скользящий: между T(PMV=-1,5) и T(PMV=+1,5)
+// при текущих met/clo/dtr/v и φ=50 %. Это делает ширину зон A/B/C стабильной
+// на диаграмме независимо от активности и одежды.
+var PMV_RANGE = 1.5;               // край диаграммы: |PMV| = PMV_RANGE
+var T0 = 18, T1 = 30;              // подставляется динамически перед рендером
+var H0 = 10, H1 = 100;
+
+// поиск t, при которой PMV = target, бинарным поиском в широком диапазоне.
+// PMV монотонно возрастает по t при фиксированных прочих параметрах.
+function tOfPMV(target, met, clo, dtr, v, phi){
+  var lo = -20, hi = 60;
+  for(var i=0;i<60;i++){
+    var mid = (lo + hi)/2;
+    var v_ar = vAr(v, met);
+    var res = pmv(mid, mid + dtr, v_ar, phi, met, clo, 0);
+    var pv = res ? res.pmv : null;
+    if(pv === null) return null;
+    if(pv > target) hi = mid; else lo = mid;
+    if(hi - lo < 0.02) break;
+  }
+  return (lo + hi)/2;
+}
+var PAD = { l: 96, r: 26, t: 22, b: 84 };
+
+var FILL = {
+  A: [63,143,94], B: [143,191,90], C: [227,196,105],
+  X: [201,112,95]
+};
+
+/* --------------- проекция и координаты плоскости --------------------- */
+function plotRect(){
+  return { x: PAD.l, y: PAD.t, w: CV.width - PAD.l - PAD.r, h: CV.height - PAD.t - PAD.b };
+}
+function tx(t){ var r = plotRect(); return r.x + (t - T0)/(T1 - T0)*r.w; }
+function ph(phi){ var r = plotRect(); return r.y + r.h - (phi - H0)/(H1 - H0)*r.h; }
+function xToT(px){ var r = plotRect(); return T0 + (px - r.x)/r.w*(T1 - T0); }
+function yToPhi(py){ var r = plotRect(); return H0 + (r.y + r.h - py)/r.h*(H1 - H0); }
+
+/* ----------------------------- рендер 2D ------------------------------ */
+function drawDiagram(inp){
+  // подстраиваем ось T под фиксированный диапазон PMV: [-PMV_RANGE, +PMV_RANGE]
+  // при текущих met/clo/dtr/v и φ=50 %. Так зоны A/B/C сохраняют ширину
+  // на диаграмме, красное — узкие полосы у краёв.
+  var t_lo = tOfPMV(-PMV_RANGE, inp.met, inp.clo, inp.dtr, inp.v, 50);
+  var t_hi = tOfPMV(+PMV_RANGE, inp.met, inp.clo, inp.dtr, inp.v, 50);
+  if(t_lo === null || t_hi === null || t_hi - t_lo < 2){
+    // фолбэк на случай, если бинарный поиск не сошёлся
+    T0 = 18; T1 = 30;
+  } else {
+    T0 = Math.floor(t_lo);
+    T1 = Math.ceil(t_hi);
+    if(T1 - T0 < 4) T1 = T0 + 4;                  // минимальный диапазон
+  }
+
+  var css = getComputedStyle(document.body);
+  var inkCol = css.color;
+  CTX.fillStyle = css.getPropertyValue('--input-bg') || '#fdfcfa';
+  CTX.fillRect(0, 0, CV.width, CV.height);
+
+  var r = plotRect();
+  var STEP = 3;                                        // шаг заливки, пикс
+  var nx = Math.ceil(r.w/STEP), ny = Math.ceil(r.h/STEP);
+  var pmvGrid = new Float64Array((nx+1)*(ny+1));
+
+  // заливка: для каждой ячейки считаем PMV, находим категорию с учётом DR
+  for(var j=0; j<=ny; j++){
+    var phi = H0 + (H1 - H0)*(1 - j/ny);
+    for(var i=0; i<=nx; i++){
+      var t = T0 + (T1 - T0)*(i/nx);
+      var v_ar = vAr(inp.v, inp.met);
+      var res = pmv(t, t + inp.dtr, v_ar, phi, inp.met, inp.clo, 0);
+      var pv = res ? res.pmv : NaN;
+      pmvGrid[j*(nx+1) + i] = pv;
+
+      var cc = catByComfort(pv);
+      var col;
+      if(cc === null){
+        col = FILL.X;
+      } else {
+        var cd = catByDraught(draughtRate(t, inp.v, inp.tu));
+        // категория достигается только когда оба ограничения удовлетворены;
+        // если хоть одно вне A/B/C — ячейка красная (та же логика, что в плитке)
+        var worst = (cd === null) ? null :
+                    (ORDER.indexOf(cc) > ORDER.indexOf(cd) ? cc : cd);
+        col = worst === null ? FILL.X : FILL[worst];
+      }
+      CTX.fillStyle = 'rgba(' + col[0] + ',' + col[1] + ',' + col[2] + ',0.72)';
+      CTX.fillRect(r.x + i*STEP - STEP/2, r.y + j*STEP - STEP/2, STEP + 1, STEP + 1);
+    }
+  }
+
+  // обрезаем края
+  CTX.save();
+  CTX.fillStyle = css.getPropertyValue('--input-bg') || '#fdfcfa';
+  CTX.fillRect(0, 0, r.x, CV.height);
+  CTX.fillRect(r.x + r.w, 0, CV.width - r.x - r.w, CV.height);
+  CTX.fillRect(0, 0, CV.width, r.y);
+  CTX.fillRect(0, r.y + r.h, CV.width, CV.height - r.y - r.h);
+  CTX.restore();
+
+  // изолинии PMV: -0,5; 0; +0,5 (marching squares)
+  CTX.strokeStyle = 'rgba(255,255,255,.95)';
+  CTX.lineWidth = 2.2;
+  [-0.5, 0, 0.5].forEach(function(lev){
+    CTX.beginPath();
+    for(var j2=0; j2<ny; j2++){
+      for(var i2=0; i2<nx; i2++){
+        var a = pmvGrid[j2*(nx+1)+i2],     b = pmvGrid[j2*(nx+1)+i2+1];
+        var c = pmvGrid[(j2+1)*(nx+1)+i2+1], d = pmvGrid[(j2+1)*(nx+1)+i2];
+        if(isNaN(a)||isNaN(b)||isNaN(c)||isNaN(d)) continue;
+        var x0 = r.x + i2*STEP, y0 = r.y + j2*STEP;
+        var pts = [];
+        function edge(v1, v2, x1, y1, x2, y2){
+          if((v1 - lev)*(v2 - lev) < 0){
+            var f = (lev - v1)/(v2 - v1);
+            pts.push([x1 + (x2 - x1)*f, y1 + (y2 - y1)*f]);
+          }
+        }
+        edge(a, b, x0, y0, x0+STEP, y0);
+        edge(b, c, x0+STEP, y0, x0+STEP, y0+STEP);
+        edge(c, d, x0+STEP, y0+STEP, x0, y0+STEP);
+        edge(d, a, x0, y0+STEP, x0, y0);
+        if(pts.length >= 2){
+          CTX.moveTo(pts[0][0], pts[0][1]);
+          CTX.lineTo(pts[1][0], pts[1][1]);
+        }
+      }
+    }
+    CTX.stroke();
+  });
+
+  // сетка и ось X (температура)
+  CTX.strokeStyle = css.getPropertyValue('--grid') || '#999';
+  CTX.lineWidth = 1;
+  CTX.fillStyle = inkCol;
+  CTX.font = '20px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
+  CTX.textAlign = 'center'; CTX.textBaseline = 'top';
+  // адаптивный шаг подписей по T: ~7 меток на оси
+  var tStep = (T1 - T0) <= 10 ? 1 : ((T1 - T0) <= 20 ? 2 : ((T1 - T0) <= 40 ? 5 : 10));
+  var tStart = Math.ceil(T0 / tStep) * tStep;
+  for(var t2=tStart; t2<=T1; t2+=tStep){
+    var X = tx(t2);
+    CTX.globalAlpha = .30; CTX.beginPath();
+    CTX.moveTo(X, r.y); CTX.lineTo(X, r.y + r.h); CTX.stroke();
+    CTX.globalAlpha = 1;
+    CTX.fillText(String(t2), X, r.y + r.h + 8);
+  }
+  CTX.textAlign = 'right'; CTX.textBaseline = 'middle';
+  for(var k=H0; k<=H1; k+=10){
+    var Y = ph(k);
+    CTX.globalAlpha = .30; CTX.beginPath();
+    CTX.moveTo(r.x, Y); CTX.lineTo(r.x + r.w, Y); CTX.stroke();
+    CTX.globalAlpha = 1;
+    CTX.fillText(String(k), r.x - 10, Y);
+  }
+  CTX.strokeStyle = inkCol; CTX.globalAlpha = .55;
+  CTX.strokeRect(r.x, r.y, r.w, r.h);
+  CTX.globalAlpha = 1;
+
+  CTX.textAlign = 'center'; CTX.textBaseline = 'alphabetic';
+  CTX.font = 'bold 22px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
+  CTX.fillText('температура воздуха tₐ, °C', r.x + r.w/2, CV.height - 22);
+  CTX.save();
+  CTX.translate(30, r.y + r.h/2); CTX.rotate(-Math.PI/2);
+  CTX.fillText('относительная влажность φ, %', 0, 0);
+  CTX.restore();
+
+  // подписи ощущений по шкале ГОСТ Р ИСО 7730-2009, таблица 1
+  CTX.font = 'bold 20px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
+  CTX.fillStyle = 'rgba(28,27,25,.72)';
+  CTX.textAlign = 'left'; CTX.textBaseline = 'middle';
+  function labelAtPMV(pmvVal, text, yFrac){
+    var jj = Math.round(ny * yFrac);
+    for(var ii=1; ii<nx; ii++){
+      var a = pmvGrid[jj*(nx+1)+ii-1], b = pmvGrid[jj*(nx+1)+ii];
+      if(!isNaN(a) && !isNaN(b) && (a - pmvVal)*(b - pmvVal) < 0){
+        var xx = r.x + (ii - 0.5)*STEP;
+        var yy = r.y + jj*STEP;
+        CTX.fillText(text, xx + 12, yy);
+        return true;
+      }
+    }
+    return false;
+  }
+  labelAtPMV(-1.4, 'холодно',    0.30);
+  labelAtPMV(-0.1, 'комфорт',    0.50);
+  labelAtPMV( 1.4, 'жарко',      0.30);
+
+  // гигиенические границы относительной влажности:
+  // ГОСТ 30494-2011 табл. 1 и СанПиН 1.2.3685-21 табл. 5.27, жилые помещения,
+  // холодный период: допустимая φ не более 60 %; нижний край диапазона 30 %.
+  CTX.strokeStyle = 'rgba(28,27,25,.55)';
+  CTX.lineWidth = 1.5;
+  CTX.setLineDash([8, 6]);
+  [30, 60].forEach(function(phiLim){
+    if(phiLim < H0 || phiLim > H1) return;
+    var Y = ph(phiLim);
+    CTX.beginPath(); CTX.moveTo(r.x, Y); CTX.lineTo(r.x + r.w, Y); CTX.stroke();
+  });
+  CTX.setLineDash([]);
+  CTX.font = 'italic 15px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
+  CTX.fillStyle = 'rgba(28,27,25,.72)';
+  CTX.textAlign = 'left'; CTX.textBaseline = 'top';
+  if(60 <= H1) CTX.fillText('φ > 60 % — вне гигиенической нормы (жилая, холодный период; ГОСТ 30494 табл. 1, СанПиН 1.2.3685-21 табл. 5.27)', r.x + 12, ph(60) + 6);
+  CTX.textBaseline = 'bottom';
+  if(30 >= H0) CTX.fillText('φ < 30 % — вне гигиенической нормы (жилая, холодный период; СанПиН 1.2.3685-21 табл. 5.27)', r.x + 12, ph(30) - 6);
+
+  // текущая точка
+  var inRangeT = inp.ta >= T0 && inp.ta <= T1;
+  var inRangeH = inp.rh >= H0 && inp.rh <= H1;
+  var X2 = tx(inp.ta), Y2 = ph(inp.rh);
+  if(inRangeT && inRangeH){
+    CTX.lineWidth = 4;
+    CTX.strokeStyle = 'rgba(0,0,0,.85)';
+    CTX.beginPath(); CTX.arc(X2, Y2, 14, 0, 2*Math.PI); CTX.stroke();
+    CTX.strokeStyle = 'rgba(255,255,255,.98)';
+    CTX.lineWidth = 2;
+    CTX.beginPath(); CTX.arc(X2, Y2, 14, 0, 2*Math.PI); CTX.stroke();
+    CTX.beginPath(); CTX.arc(X2, Y2, 3.5, 0, 2*Math.PI);
+    CTX.fillStyle = 'rgba(255,255,255,.98)'; CTX.fill();
+  } else {
+    // прижимаем маркер к границе плота, стрелка наружу
+    var Xc = Math.max(r.x, Math.min(r.x + r.w, X2));
+    var Yc = Math.max(r.y, Math.min(r.y + r.h, Y2));
+    CTX.lineWidth = 3;
+    CTX.setLineDash([6, 4]);
+    CTX.strokeStyle = 'rgba(0,0,0,.7)';
+    CTX.beginPath(); CTX.arc(Xc, Yc, 12, 0, 2*Math.PI); CTX.stroke();
+    CTX.setLineDash([]);
+    CTX.font = 'bold 15px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
+    CTX.fillStyle = 'rgba(28,27,25,.85)';
+    CTX.textAlign = (X2 > r.x + r.w) ? 'right' : (X2 < r.x ? 'left' : 'center');
+    CTX.textBaseline = (Y2 > r.y + r.h) ? 'bottom' : (Y2 < r.y ? 'top' : 'middle');
+    var msg = 'точка вне диапазона диаграммы (t=' + nf(inp.ta,1) + '°, φ=' + nf(inp.rh,0) + '%)';
+    CTX.fillText(msg, Xc + (X2 > r.x + r.w ? -14 : (X2 < r.x ? 14 : 0)),
+                       Yc + (Y2 > r.y + r.h ? -14 : (Y2 < r.y ? 14 : 0)));
+  }
+}
+
+/* --------------------- клик по канвасу переносит точку ---------------- */
+(function(){
+  function toCanvasCoord(evt){
+    var rect = CV.getBoundingClientRect();
+    var x = (evt.clientX - rect.left) * (CV.width / rect.width);
+    var y = (evt.clientY - rect.top)  * (CV.height / rect.height);
+    return { x: x, y: y };
+  }
+  function setFromXY(x, y){
+    var r = plotRect();
+    if(x < r.x || x > r.x + r.w || y < r.y || y > r.y + r.h) return;
+    var t = xToT(x);
+    var phi = yToPhi(y);
+    if(t < T0) t = T0; if(t > T1) t = T1;
+    if(phi < H0) phi = H0; if(phi > H1) phi = H1;
+    document.getElementById('ta').value = t;
+    document.getElementById('rh').value = Math.round(phi);
+    render();
+  }
+  CV.style.cursor = 'crosshair';
+  CV.addEventListener('click', function(e){ var p = toCanvasCoord(e); setFromXY(p.x, p.y); });
+})();
+
+/* ------------------------------------------------------------------ вывод */
+function row(name, got, lim, ok){
+  var cls = ok === null ? 'na' : (ok ? 'pass' : 'fail');
+  var txt = ok === null ? 'не оценивается' : (ok ? 'выполнен' : 'не выполнен');
+  return '<tr><td>' + name + '</td><td class="num">' + got +
+         '</td><td class="num">' + lim + '</td><td class="' + cls + '">' + txt + '</td></tr>';
+}
+
+function render(){
+  var inp = readInputs();
+
+  document.getElementById('ta_v').textContent  = nf(inp.ta, 1);
+  document.getElementById('v_v').textContent   = nf(inp.v, 2);
+  document.getElementById('var_v').textContent = nf(inp.v_ar, 2);
+  document.getElementById('dtr_v').textContent = sf(inp.dtr, 1);
+  document.getElementById('rh_v').textContent  = nf(inp.rh, 0);
+  document.getElementById('tu_v').textContent  = nf(inp.tu, 0);
+
+  var res = pmv(inp.ta, inp.tr, inp.v_ar, inp.rh, inp.met, inp.clo, 0);
+  var pv  = res ? res.pmv : null;
+  var pd  = ppd(pv);
+  var dr  = draughtRate(inp.ta, inp.v, inp.tu);
+  var tsu = resultingT(inp.ta, inp.tr, inp.v);
+
+  var cc = catByComfort(pv), cd = catByDraught(dr);
+  // категория достигается только когда оба ограничения удовлетворены;
+  // «худшая из двух» = категория с большим индексом в ORDER
+  var overall = (cc === null || cd === null) ? null :
+    (ORDER.indexOf(cc) > ORDER.indexOf(cd) ? cc : cd);
+
+  document.getElementById('o_pmv').textContent  = sf(pv, 2);
+  document.getElementById('o_sens').textContent = sensation(pv);
+  document.getElementById('o_ppd').innerHTML    = nf(pd, 1) + '<span class="u"> %</span>';
+  document.getElementById('o_dr').innerHTML     = nf(dr, 1) + '<span class="u"> %</span>';
+  document.getElementById('o_tsu').innerHTML    = nf(tsu, 1) + '<span class="u"> °C</span>';
+  document.getElementById('o_tcl').innerHTML    = (res ? nf(res.tcl, 1) : '—') + '<span class="u"> °C</span>';
+
+  var badge;
+  if(overall !== null){
+    badge = '<span class="badge b-' + overall.toLowerCase() + '">' + overall + '</span>';
+  } else if(cc === null && cd !== null){
+    badge = '<span class="badge b-x">вне A/B/C по PMV/PPD</span>';
+  } else if(cc !== null && cd === null){
+    badge = '<span class="badge b-x">вне A/B/C по DR (сквозняк)</span>';
+  } else {
+    badge = '<span class="badge b-x">вне A/B/C</span>';
+  }
+  document.getElementById('o_cat').innerHTML = badge;
+
+  var C = CATS[inp.cat], html = '';
+  html += row('PMV — прогнозируемая средняя оценка', sf(pv, 2),
+              '±' + nf(C.pmv, 1), pv === null ? null : Math.abs(pv) < C.pmv);
+  html += row('PPD — недовольных теплом в целом, %', nf(pd, 1),
+              '&lt; ' + nf(C.ppd, 0), pv === null ? null : pd < C.ppd);
+  html += row('DR — недовольных сквозняком, %', nf(dr, 1),
+              '&lt; ' + nf(C.dr, 0), dr < C.dr);
+  html += row('Δt воздуха по вертикали (1,1 и 0,1 м), °C', '—',
+              '&lt; ' + nf(C.dtv, 0), null);
+  html += row('Температура поверхности пола, °C', '—',
+              nf(C.floor[0], 0) + '…' + nf(C.floor[1], 0), null);
+  html += row('Асимметрия теплового излучения, °C', '—', 'табл. A.4', null);
+  document.querySelector('#checks tbody').innerHTML = html;
+
+  var warn = [];
+  if(inp.ta < 20 || inp.ta > 26)
+    warn.push('температура ' + nf(inp.ta,1) + ' °C вне диапазона 20…26 °C, для которого задана модель сквозняка');
+  if(inp.v >= 0.5)
+    warn.push('скорость ' + nf(inp.v,2) + ' м/с достигает границы применимости модели сквозняка (менее 0,5 м/с)');
+  if(inp.met > 1.2)
+    warn.push('при активности выше 1,2 мет чувствительность к сквозняку меньше — DR завышен');
+  if(res === null)
+    warn.push('итерация по температуре поверхности одежды не сошлась за 150 повторений — PMV не определён');
+  document.getElementById('lim').innerHTML = warn.length
+    ? '<b>Оговорки к текущей точке:</b> ' + warn.join('; ') + '.'
+    : 'Текущая точка лежит в пределах применимости использованных зависимостей.';
+
+  drawDiagram(inp);
+}
+
+['ta','v','dtr','rh','tu','met','clo','cat'].forEach(function(id){
+  el[id].addEventListener('input', render);
+  el[id].addEventListener('change', render);
+});
+
+/* ---------------------------------------------------------------- тема */
+var btn = document.getElementById('theme');
+btn.addEventListener('click', function(){
+  var cur = document.documentElement.getAttribute('data-theme');
+  var next = cur === 'dark' ? 'light' : (cur === 'light' ? null : 'dark');
+  if(next) document.documentElement.setAttribute('data-theme', next);
+  else document.documentElement.removeAttribute('data-theme');
+  render();
+});
+if(window.matchMedia){
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  if(mq.addEventListener) mq.addEventListener('change', render);
+}
+
+render();
+</script>
+</body>
+</html>
