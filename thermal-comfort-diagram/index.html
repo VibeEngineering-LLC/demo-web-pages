@@ -324,11 +324,15 @@
   </div>
 
   <div class="legend fullwidth">
-    <b>Цвета:</b>
-    <span><i style="background:#3f8f5e"></i>категория A</span>
-    <span><i style="background:#8fbf5a"></i>категория B</span>
-    <span><i style="background:#e3c469"></i>категория C</span>
-    <span><i style="background:#c9705f"></i>вне A/B/C</span>
+    <b>Заливка — PPD (% недовольных):</b>
+    <span><i style="background:#3f8f5e"></i>5&nbsp;% (PMV=0)</span>
+    <span><i style="background:#8fbf5a"></i>10&nbsp;%</span>
+    <span><i style="background:#c9d05f"></i>15&nbsp;%</span>
+    <span><i style="background:#e3c469"></i>25&nbsp;%</span>
+    <span><i style="background:#dc915a"></i>50&nbsp;%</span>
+    <span><i style="background:#b23e37"></i>≥&nbsp;80&nbsp;%</span>
+    &nbsp;<b>Контуры категорий по PMV (ГОСТ Р ИСО 7730-2009):</b>
+    <span>A (|PMV|&lt;0,2), B (&lt;0,5), C (&lt;0,7)</span>
     <span>— белый маркер: рабочая точка (t, φ); клик по канве переносит её. Общие поля (t, φ, v, Δ<i>t</i><sub>r</sub>, met, clo) синхронизируются с диаграммой ASHRAE ниже.</span>
   </div>
 
@@ -467,10 +471,15 @@
   </div>
 
   <div class="legend fullwidth">
-    <b>Цвета:</b>
-    <span><i style="background:#8fbf5a"></i>compliance (−0,5 &lt; PMV &lt; +0,5)</span>
-    <span><i style="background:#c9705f"></i>вне зоны</span>
-    <span>— белый маркер: точка (t, φ). Клик по канве меняет её и на верхней диаграмме тоже.</span>
+    <b>Заливка — PPD (% недовольных):</b>
+    <span><i style="background:#3f8f5e"></i>5&nbsp;% (PMV=0)</span>
+    <span><i style="background:#8fbf5a"></i>10&nbsp;%</span>
+    <span><i style="background:#c9d05f"></i>15&nbsp;%</span>
+    <span><i style="background:#e3c469"></i>25&nbsp;%</span>
+    <span><i style="background:#dc915a"></i>50&nbsp;%</span>
+    <span><i style="background:#b23e37"></i>≥&nbsp;80&nbsp;%</span>
+    &nbsp;<b>Контур:</b>
+    <span>линия compliance ASHRAE 55 = граница |PMV|=0,5 (PPD≈10&nbsp;%). Клик по канве переносит рабочую точку и на верхнюю диаграмму.</span>
   </div>
 
   <div class="ldi">
@@ -1086,9 +1095,42 @@ function xToT(px){ var r = plotRect(); return T0 + (px - r.x)/r.w*(T1 - T0); }
 function yToPhi(py){ var r = plotRect(); return H0 + (r.y + r.h - py)/r.h*(H1 - H0); }
 
 /* ----------------------------- рендер 2D ------------------------------ */
-// mode: 'gost' — заливка по A/B/C с учётом DR, штрихи гигиены 30/60 %.
-//       'ashrae' — заливка по compliance PMV ±0,5 (одна зелёная полоса),
-//                  штриховая w=0,010 г/г (не compliance).
+// Заливка обеих диаграмм — по критерию удовлетворённости (PPD, %).
+// Категории и compliance-зоны — контурными линиями по PMV.
+// Отличия по mode: 'gost' — линии A/B/C + штрихи гигиены 30/60 %;
+//                  'ashrae' — линия compliance (±0,5), без штрихов гигиены.
+
+// Градиентная заливка PPD → RGB. Опорные точки:
+//  PPD =   5 % (минимум, PMV=0)  → тёмно-зелёный
+//  PPD =  10 % (граница B/compliance) → светло-зелёный
+//  PPD =  15 % (граница C)  → жёлто-зелёный
+//  PPD =  25 %              → жёлтый
+//  PPD =  50 %              → оранжевый
+//  PPD = 100 %              → тёмно-красный
+var PPD_STOPS = [
+  [ 5, [ 63, 143,  94]],
+  [10, [143, 191,  90]],
+  [15, [201, 208,  95]],
+  [25, [227, 196, 105]],
+  [50, [220, 145,  90]],
+  [100,[178,  62,  55]]
+];
+function ppdColor(pd){
+  if(isNaN(pd) || pd === null) return [201, 112, 95];
+  if(pd <= PPD_STOPS[0][0]) return PPD_STOPS[0][1];
+  for(var k = 1; k < PPD_STOPS.length; k++){
+    if(pd <= PPD_STOPS[k][0]){
+      var a = PPD_STOPS[k-1], b = PPD_STOPS[k];
+      var t = (pd - a[0]) / (b[0] - a[0]);
+      return [
+        Math.round(a[1][0] + (b[1][0] - a[1][0]) * t),
+        Math.round(a[1][1] + (b[1][1] - a[1][1]) * t),
+        Math.round(a[1][2] + (b[1][2] - a[1][2]) * t)
+      ];
+    }
+  }
+  return PPD_STOPS[PPD_STOPS.length-1][1];
+}
 function drawDiagram(inp, mode){
   // подстраиваем ось T под фиксированный диапазон PMV: [-PMV_RANGE, +PMV_RANGE]
   // при текущих met/clo/dtr/v и φ=50 %. Так зоны A/B/C сохраняют ширину
@@ -1128,24 +1170,10 @@ function drawDiagram(inp, mode){
       var pv = res ? res.pmv : NaN;
       pmvGrid[j*(nx+1) + i] = pv;
 
-      var col;
-      if(mode === 'ashrae'){
-        // одна зона compliance: |PMV| < 0,5 → зелёный, иначе красный
-        if(isNaN(pv)) col = FILL.X;
-        else col = (Math.abs(pv) < 0.5) ? FILL.B : FILL.X;
-      } else {
-        // 'gost': категории A/B/C с учётом DR
-        var cc = catByComfort(pv);
-        if(cc === null){
-          col = FILL.X;
-        } else {
-          var cd = catByDraught(draughtRate(t, inp.v, inp.tu));
-          var worst = (cd === null) ? null :
-                      (ORDER.indexOf(cc) > ORDER.indexOf(cd) ? cc : cd);
-          col = worst === null ? FILL.X : FILL[worst];
-        }
-      }
-      CTX.fillStyle = 'rgba(' + col[0] + ',' + col[1] + ',' + col[2] + ',0.72)';
+      // единая заливка по критерию удовлетворённости — PPD (%)
+      var pd = ppd(pv);
+      var col = ppdColor(pd);
+      CTX.fillStyle = 'rgba(' + col[0] + ',' + col[1] + ',' + col[2] + ',0.78)';
       CTX.fillRect(r.x + i*STEP - STEP/2, r.y + j*STEP - STEP/2, STEP + 1, STEP + 1);
     }
   }
@@ -1159,13 +1187,13 @@ function drawDiagram(inp, mode){
   CTX.fillRect(0, r.y + r.h, CV.width, CV.height - r.y - r.h);
   CTX.restore();
 
-  // изолинии PMV: -0,5; 0; +0,5 (marching squares).
-  // На диаграмме ASHRAE ±0,5 дублирует границу compliance-заливки — оставляем
-  // только нулевую изолинию (нейтральная температура).
-  CTX.strokeStyle = 'rgba(255,255,255,.95)';
-  CTX.lineWidth = 2.2;
-  var isoLevels = (mode === 'ashrae') ? [0] : [-0.5, 0, 0.5];
-  isoLevels.forEach(function(lev){
+  // контурные линии категорий по PMV (marching squares).
+  // ГОСТ Р ИСО 7730-2009 табл. A.1: A=±0,2 (PPD<6%), B=±0,5 (PPD<10%), C=±0,7 (PPD<15%).
+  // ASHRAE 55-2023 compliance = |PMV|<0,5 = граница B.
+  // Плюс нулевая изолиния — нейтральная температура.
+  function drawIso(lev, style, width){
+    CTX.strokeStyle = style;
+    CTX.lineWidth = width;
     CTX.beginPath();
     for(var j2=0; j2<ny; j2++){
       for(var i2=0; i2<nx; i2++){
@@ -1191,7 +1219,48 @@ function drawDiagram(inp, mode){
       }
     }
     CTX.stroke();
-  });
+  }
+  // нулевая линия — тонкая пунктирная, обе диаграммы
+  CTX.setLineDash([4, 4]);
+  drawIso(0, 'rgba(255,255,255,.75)', 1.5);
+  CTX.setLineDash([]);
+  if(mode === 'gost'){
+    // три категории ГОСТ, разные толщины для различимости
+    drawIso(-0.2, 'rgba(0,0,0,.85)', 2.6);   // A внешн. лев.
+    drawIso( 0.2, 'rgba(0,0,0,.85)', 2.6);   // A внешн. прав.
+    drawIso(-0.5, 'rgba(0,0,0,.75)', 2.2);   // B
+    drawIso( 0.5, 'rgba(0,0,0,.75)', 2.2);
+    drawIso(-0.7, 'rgba(0,0,0,.65)', 1.8);   // C
+    drawIso( 0.7, 'rgba(0,0,0,.65)', 1.8);
+  } else {
+    // ASHRAE compliance ±0,5 — жирная контурная линия
+    drawIso(-0.5, 'rgba(0,0,0,.85)', 2.6);
+    drawIso( 0.5, 'rgba(0,0,0,.85)', 2.6);
+  }
+
+  // подписи категорий возле линий, на строке φ=50 %.
+  // Найдём t, где PMV=lev при φ=50 %, и подпишем над линией.
+  CTX.font = 'bold 15px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
+  CTX.fillStyle = 'rgba(0,0,0,.85)';
+  CTX.textAlign = 'center'; CTX.textBaseline = 'middle';
+  function labelIso(lev, text){
+    var t_at = tOfPMV(lev, inp.met, inp.clo, dtrDiag, inp.v, 50);
+    if(t_at === null || t_at < T0 || t_at > T1) return;
+    var xx = tx(t_at), yy = ph(50);
+    // фон под подпись — читаемость
+    var m = CTX.measureText(text);
+    CTX.fillStyle = 'rgba(255,255,255,.85)';
+    CTX.fillRect(xx - m.width/2 - 4, yy - 10, m.width + 8, 20);
+    CTX.fillStyle = 'rgba(0,0,0,.85)';
+    CTX.fillText(text, xx, yy);
+  }
+  if(mode === 'gost'){
+    labelIso(-0.7, 'C'); labelIso(0.7, 'C');
+    labelIso(-0.5, 'B'); labelIso(0.5, 'B');
+    labelIso(-0.2, 'A'); labelIso(0.2, 'A');
+  } else {
+    labelIso(-0.5, 'compliance'); labelIso(0.5, 'compliance');
+  }
 
   // сетка и ось X (температура)
   CTX.strokeStyle = css.getPropertyValue('--grid') || '#999';
