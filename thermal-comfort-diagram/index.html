@@ -342,6 +342,39 @@
   ГОСТ Р ИСО 7730-2009: смешанная вентиляция — Tu около <b>40 %</b> (значение по
   умолчанию), вытесняющая или без искусственной вентиляции — <b>ниже</b>. Величина
   Tu входит только в расчёт DR и на PMV/PPD не влияет.</p>
+
+  <div class="ldi">
+    <div class="ldi-title">Локальный дискомфорт — измеренные значения (для оценки категорий по ГОСТ Р ИСО 7730-2009; синхронизируется с блоком в секции ASHRAE)</div>
+    <div class="ldi-section">
+      <div class="ldi-subtitle">По ГОСТ Р ИСО 7730-2009 табл. A.1—A.3 (пороги Δt, t<sub>floor</sub>, асимметрии для категории A/B/C)</div>
+      <div class="ldi-grid">
+        <div class="ldi-cell">
+          <label for="dtv">Δt воздуха голова↔лодыжки, °C
+            <span class="hint">(при более тёплом верхе; 0 — не задано)</span></label>
+          <input type="number" id="dtv" min="0" max="10" step="0.1" value="0" inputmode="decimal">
+        </div>
+        <div class="ldi-cell">
+          <label for="tfloor">Температура пола <i>t</i><sub>floor</sub>, °C
+            <span class="hint">(для сидящих с контактом стоп; 0 — не задано)</span></label>
+          <input type="number" id="tfloor" min="0" max="45" step="0.5" value="0" inputmode="decimal">
+        </div>
+        <div class="ldi-cell">
+          <label for="rasym_type">Радиантная асимметрия — тип</label>
+          <select id="rasym_type">
+            <option value="none" selected>не задана</option>
+            <option value="ceilW">потолок теплее пола</option>
+            <option value="ceilC">потолок холоднее пола</option>
+            <option value="wallW">стена теплее воздуха</option>
+            <option value="wallC">стена холоднее воздуха</option>
+          </select>
+        </div>
+        <div class="ldi-cell">
+          <label for="rasym">Модуль |Δt<sub>r</sub>|, °C</label>
+          <input type="number" id="rasym" min="0" max="40" step="0.5" value="0" inputmode="decimal">
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section class="card wide">
@@ -475,13 +508,43 @@
         </div>
       </div>
     </div>
+
+    <div class="ldi-section">
+      <div class="ldi-subtitle">Локальный дискомфорт — применяется при <i>I</i><sub>cl</sub>&lt;0,7 и M&lt;1,3 (синхронизируется с блоком в секции ГОСТ)</div>
+      <div class="ldi-grid">
+        <div class="ldi-cell">
+          <label for="dtv_a">Δt воздуха голова↔лодыжки, °C
+            <span class="hint">(при более тёплом верхе; 0 — не задано)</span></label>
+          <input type="number" id="dtv_a" min="0" max="10" step="0.1" value="0" inputmode="decimal">
+        </div>
+        <div class="ldi-cell">
+          <label for="tfloor_a">Температура пола <i>t</i><sub>floor</sub>, °C
+            <span class="hint">(для сидящих с контактом стоп; 0 — не задано)</span></label>
+          <input type="number" id="tfloor_a" min="0" max="45" step="0.5" value="0" inputmode="decimal">
+        </div>
+        <div class="ldi-cell">
+          <label for="rasym_type_a">Радиантная асимметрия — тип</label>
+          <select id="rasym_type_a">
+            <option value="none" selected>не задана</option>
+            <option value="ceilW">потолок теплее пола</option>
+            <option value="ceilC">потолок холоднее пола</option>
+            <option value="wallW">стена теплее воздуха</option>
+            <option value="wallC">стена холоднее воздуха</option>
+          </select>
+        </div>
+        <div class="ldi-cell">
+          <label for="rasym_a">Модуль |Δt<sub>r</sub>|, °C</label>
+          <input type="number" id="rasym_a" min="0" max="40" step="0.5" value="0" inputmode="decimal">
+        </div>
+      </div>
+    </div>
   </div>
 
   <p class="hint fullwidth">
     <b>Как читать плитку «Соответствие ASHRAE 55-2023» ниже.</b> Плитка учитывает
     зону compliance по PMV и все <i>заданные</i> критерии локального дискомфорта
     (Ankle&nbsp;Air&nbsp;Speed, вертикальный градиент, температуру пола,
-    радиантную асимметрию — из блока «Локальный дискомфорт» ниже). Если поля
+    радиантную асимметрию — из блока «Локальный дискомфорт» в этой же секции выше). Если поля
     локальных критериев оставлены нулевыми, они не оцениваются, и плитка
     сообщает об этом явно. <b>Плитка «Адаптивная модель»</b> учитывает только
     два поля выше и <i>t</i><sub>o</sub>; при отсутствии активного механического
@@ -501,40 +564,6 @@
     <div class="tile"><div class="k">Адаптивная модель ASHRAE §5.4</div><div class="v" id="ad_ok">—</div><div class="u"><span id="ad_lower">—</span>…<span id="ad_upper">—</span> °C; 80 % acceptability</div></div>
     <div class="tile"><div class="k">Результирующая температура</div><div class="v" id="o_tsu">—<span class="u"> °C</span></div><div class="u">t<sub>su</sub>, ГОСТ 30494-2011</div></div>
     <div class="tile"><div class="k">Температура поверхности одежды</div><div class="v" id="o_tcl">—<span class="u"> °C</span></div><div class="u">t<sub>cl</sub>, промежуточная величина</div></div>
-  </div>
-
-  <div class="ldi">
-    <div class="ldi-title">Локальный дискомфорт — общие измерения (используются обеими методиками; 0 или «не задана» — не оценивается)</div>
-
-    <div class="ldi-section">
-      <div class="ldi-subtitle">Применяется при <i>I</i><sub>cl</sub>&lt;0,7 и M&lt;1,3</div>
-      <div class="ldi-grid">
-        <div class="ldi-cell">
-          <label for="dtv">Δt воздуха голова↔лодыжки, °C
-            <span class="hint">(при более тёплом верхе)</span></label>
-          <input type="number" id="dtv" min="0" max="10" step="0.1" value="0" inputmode="decimal">
-        </div>
-        <div class="ldi-cell">
-          <label for="tfloor">Температура пола <i>t</i><sub>floor</sub>, °C
-            <span class="hint">(для сидящих с контактом стоп)</span></label>
-          <input type="number" id="tfloor" min="0" max="45" step="0.5" value="0" inputmode="decimal">
-        </div>
-        <div class="ldi-cell">
-          <label for="rasym_type">Радиантная асимметрия — тип</label>
-          <select id="rasym_type">
-            <option value="none" selected>не задана</option>
-            <option value="ceilW">потолок теплее пола</option>
-            <option value="ceilC">потолок холоднее пола</option>
-            <option value="wallW">стена теплее воздуха</option>
-            <option value="wallC">стена холоднее воздуха</option>
-          </select>
-        </div>
-        <div class="ldi-cell">
-          <label for="rasym">Модуль |Δt<sub>r</sub>|, °C</label>
-          <input type="number" id="rasym" min="0" max="40" step="0.5" value="0" inputmode="decimal">
-        </div>
-      </div>
-    </div>
   </div>
 
   <div class="tblwrap">
@@ -958,11 +987,14 @@ function sf(x, d){
 var el = {};
 ['ta','v','dtr','rh','tu','met','clo','cat','dtv','tfloor','rasym','rasym_type',
  'solar_on','solar_dt','tpma','to_meas',
- 'ta_a','v_a','dtr_a','rh_a','met_a','clo_a'].forEach(function(id){ el[id] = document.getElementById(id); });
+ 'ta_a','v_a','dtr_a','rh_a','met_a','clo_a',
+ 'dtv_a','tfloor_a','rasym_a','rasym_type_a'].forEach(function(id){ el[id] = document.getElementById(id); });
 
 // пары ГОСТ ↔ ASHRAE (общие входы синхронизируются двусторонне)
 var SYNC_PAIRS = [['ta','ta_a'], ['rh','rh_a'], ['v','v_a'],
-                  ['dtr','dtr_a'], ['met','met_a'], ['clo','clo_a']];
+                  ['dtr','dtr_a'], ['met','met_a'], ['clo','clo_a'],
+                  ['dtv','dtv_a'], ['tfloor','tfloor_a'],
+                  ['rasym','rasym_a'], ['rasym_type','rasym_type_a']];
 function pushMainToMirror(){
   SYNC_PAIRS.forEach(function(p){ el[p[1]].value = el[p[0]].value; });
 }
@@ -1521,7 +1553,8 @@ function render(){
   el[id].addEventListener('change', render);
 });
 // зеркальные поля секции ASHRAE: копируем в основные и рендерим обе диаграммы
-['ta_a','v_a','dtr_a','rh_a','met_a','clo_a'].forEach(function(id){
+['ta_a','v_a','dtr_a','rh_a','met_a','clo_a',
+ 'dtv_a','tfloor_a','rasym_a','rasym_type_a'].forEach(function(id){
   var h = function(){ pushMirrorToMain(); render(); };
   el[id].addEventListener('input', h);
   el[id].addEventListener('change', h);
