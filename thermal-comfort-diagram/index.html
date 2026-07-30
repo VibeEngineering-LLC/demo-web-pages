@@ -93,6 +93,28 @@
   .pass{color:var(--ok-ink); font-weight:700}
   .fail{color:var(--bad-ink); font-weight:700}
   .na{color:var(--muted)}
+  tr.grp td{background:var(--panel-2, rgba(0,0,0,.04)); padding-top:10px; padding-bottom:10px; font-size:14px}
+  .ldi{margin:12px 0; padding:12px; border:1px solid var(--line); border-radius:8px}
+  .ldi-title{font-weight:700; margin-bottom:12px; font-size:14px}
+  .ldi-section{padding:10px 0; border-top:1px dashed var(--line)}
+  .ldi-section:first-of-type{border-top:none; padding-top:0}
+  .ldi-subtitle{font-size:13px; font-weight:600; color:var(--muted); margin-bottom:8px}
+  .ldi-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:10px}
+  .ldi-grid.two{grid-template-columns:1fr 1fr}
+  .ldi-cell{display:flex; flex-direction:column; gap:4px}
+  .ldi-cell label{font-size:13px; font-weight:600; display:flex; flex-direction:column; gap:2px}
+  .ldi-cell label .hint{font-weight:400; font-size:11px; color:var(--muted)}
+  .ldi-cell input[type=number], .ldi-cell select{padding:6px 8px; border:1px solid var(--line); border-radius:6px; font-size:14px; background:transparent; color:inherit}
+  .ldi-cell input[type=checkbox]{margin-right:6px; transform:translateY(2px)}
+  @media (max-width: 720px){ .ldi-grid, .ldi-grid.two{grid-template-columns:1fr 1fr} }
+  .adapt{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:12px 0}
+  .adapt-input{display:flex; flex-direction:column; gap:6px; padding:12px; border:1px solid var(--line); border-radius:8px}
+  .adapt-input label{font-size:14px; font-weight:600}
+  .adapt-input label .hint{display:block; font-weight:400; font-size:12px; color:var(--muted); margin-top:2px}
+  .adapt-input input[type=range]{width:100%}
+  .adapt-cur{font-family:var(--mono,monospace); font-size:18px; font-weight:700; text-align:center}
+  .adapt-out{grid-column:1/-1; display:grid; grid-template-columns:repeat(3, 1fr); gap:12px}
+  @media (max-width: 720px){ .adapt, .adapt-out{grid-template-columns:1fr} }
   .tblwrap{overflow-x:auto}
   code{font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     background:var(--input-bg); border:1px solid var(--line); border-radius:5px; padding:1px 5px}
@@ -197,6 +219,24 @@
 
 <section class="card wide">
   <h2>Диаграмма комфорта: температура и относительная влажность</h2>
+  <p class="hint fullwidth" style="margin:-4px 0 12px 0">
+    Диаграмма совмещает <b>ГОСТ Р ИСО 7730-2009</b> (идентичен ISO 7730:2005) и
+    <b>ANSI/ASHRAE Standard 55-2023</b> в аналитической части. Обе методики
+    используют одну и ту же PMV-модель Фангера, поэтому границы по общему
+    комфорту численно совпадают: <b>категория&nbsp;B ГОСТ = зона compliance
+    ASHRAE 55</b> (−0,5&nbsp;&lt; PMV &lt;&nbsp;+0,5, дословно из Addendum&nbsp;h
+    к 55-2020, свободно опубликован ASHRAE). Различия: у ГОСТ три категории
+    (A/B/C), у ASHRAE — одна зона соответствия; локальные критерии считаются
+    по-разному; адаптивная модель ASHRAE — отдельная методика (см. блок ниже
+    с полями ввода). <b>Границы по влажности задаёт только ГОСТ/СанПиН</b>;
+    ASHRAE 55 своих численных границ на влажность не задаёт — см. открытый
+    обзор <a href="https://cbe.berkeley.edu/research/comfort/" rel="noopener nofollow">CBE&nbsp;Berkeley</a>
+    и de&nbsp;Dear&nbsp;R.J. et&nbsp;al. «Progress in thermal comfort research
+    over the last twenty years», Indoor&nbsp;Air 23(6):442—461, 2013 (DOI:
+    <a href="https://doi.org/10.1111/ina.12046" rel="noopener nofollow">10.1111/ina.12046</a>).
+    Синяя штриховая на диаграмме — изолиния влагосодержания <i>w</i>&nbsp;=&nbsp;0,010&nbsp;г/г
+    (условие иллюстративного рисунка стандарта, не compliance-граница).
+  </p>
   <div class="diagwrap">
     <div class="plot">
       <canvas id="cv" width="1200" height="900"></canvas>
@@ -323,10 +363,80 @@
     <div class="tile"><div class="k">PMV</div><div class="v" id="o_pmv">—</div><div class="u" id="o_sens">—</div></div>
     <div class="tile"><div class="k">PPD</div><div class="v" id="o_ppd">—<span class="u"> %</span></div><div class="u">недовольных теплом в целом</div></div>
     <div class="tile"><div class="k">DR — подвижность</div><div class="v" id="o_dr">—<span class="u"> %</span></div><div class="u">недовольных подвижностью воздуха</div></div>
-    <div class="tile"><div class="k">Достигнутая категория</div><div class="v" id="o_cat">—</div><div class="u">по PMV, PPD и DR</div></div>
+    <div class="tile"><div class="k">Достигнутая категория ГОСТ</div><div class="v" id="o_cat">—</div><div class="u">по PMV, PPD и DR (ГОСТ Р ИСО 7730-2009)</div></div>
+    <div class="tile"><div class="k">Соответствие ASHRAE 55-2023 §5.3</div><div class="v" id="o_ash">—</div><div class="u">аналитический метод: PMV ±0,5 + локальные</div></div>
+    <div class="tile"><div class="k">Адаптивная модель ASHRAE §5.4</div><div class="v" id="ad_ok">—</div><div class="u"><span id="ad_lower">—</span>…<span id="ad_upper">—</span> °C; 80 % acceptability</div></div>
     <div class="tile"><div class="k">Результирующая температура</div><div class="v" id="o_tsu">—<span class="u"> °C</span></div><div class="u">t<sub>su</sub>, ГОСТ 30494-2011</div></div>
     <div class="tile"><div class="k">Температура поверхности одежды</div><div class="v" id="o_tcl">—<span class="u"> °C</span></div><div class="u">t<sub>cl</sub>, промежуточная величина</div></div>
   </div>
+
+  <div class="ldi">
+    <div class="ldi-title">Дополнительные входы ASHRAE 55-2023 (опционально; 0 или «не задана» — не оценивается)</div>
+
+    <div class="ldi-section">
+      <div class="ldi-subtitle">Локальный дискомфорт — применяется при <i>I</i><sub>cl</sub>&lt;0,7 и M&lt;1,3</div>
+      <div class="ldi-grid">
+        <div class="ldi-cell">
+          <label for="dtv">Δt воздуха голова↔лодыжки, °C
+            <span class="hint">(при более тёплом верхе)</span></label>
+          <input type="number" id="dtv" min="0" max="10" step="0.1" value="0" inputmode="decimal">
+        </div>
+        <div class="ldi-cell">
+          <label for="tfloor">Температура пола <i>t</i><sub>floor</sub>, °C
+            <span class="hint">(для сидящих с контактом стоп)</span></label>
+          <input type="number" id="tfloor" min="0" max="45" step="0.5" value="0" inputmode="decimal">
+        </div>
+        <div class="ldi-cell">
+          <label for="rasym_type">Радиантная асимметрия — тип</label>
+          <select id="rasym_type">
+            <option value="none" selected>не задана</option>
+            <option value="ceilW">потолок теплее пола</option>
+            <option value="ceilC">потолок холоднее пола</option>
+            <option value="wallW">стена теплее воздуха</option>
+            <option value="wallC">стена холоднее воздуха</option>
+          </select>
+        </div>
+        <div class="ldi-cell">
+          <label for="rasym">Модуль |Δt<sub>r</sub>|, °C</label>
+          <input type="number" id="rasym" min="0" max="40" step="0.5" value="0" inputmode="decimal">
+        </div>
+      </div>
+    </div>
+
+    <div class="ldi-section">
+      <div class="ldi-subtitle">Поправка на прямую солнечную радиацию (§ 5.3.3)</div>
+      <div class="ldi-grid two">
+        <div class="ldi-cell">
+          <label for="solar_on">
+            <input type="checkbox" id="solar_on"> Учитывать поправку солнца
+            <span class="hint">(корректирует средневзвешенную радиационную температуру от коротковолновой доли прямого солнца)</span>
+          </label>
+        </div>
+        <div class="ldi-cell">
+          <label for="solar_dt">Приращение MRT от солнца Δ<i>t</i><sub>r,sw</sub>, °C
+            <span class="hint">(типично 0—10 °C; из ERF / прил. C)</span></label>
+          <input type="number" id="solar_dt" min="0" max="20" step="0.1" value="0" inputmode="decimal">
+        </div>
+      </div>
+    </div>
+
+    <div class="ldi-section">
+      <div class="ldi-subtitle">Адаптивная модель (§ 5.4) — для естественно проветриваемых помещений</div>
+      <div class="ldi-grid two">
+        <div class="ldi-cell">
+          <label for="tpma"><i>t</i><sub>pma out</sub> — скользящая средняя наружная, °C
+            <span class="hint">(область применимости: 10—33,5)</span></label>
+          <input type="number" id="tpma" min="10" max="33.5" step="0.1" value="20" inputmode="decimal">
+        </div>
+        <div class="ldi-cell">
+          <label for="to_meas">Операт. температура помещения <i>t</i><sub>o</sub>, °C
+            <span class="hint">(если не задана — берётся <i>t</i><sub>a</sub> сверху)</span></label>
+          <input type="number" id="to_meas" min="0" max="40" step="0.1" value="0" inputmode="decimal">
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="tblwrap">
     <table id="checks">
       <thead><tr><th>Критерий требуемой категории</th><th>Расчёт</th><th>Граница</th><th>Итог</th></tr></thead>
@@ -396,6 +506,37 @@ t_su = 0,6·t_p + 0,4·t_r          при 0,2 &lt; v ≤ 0,6 м/с</div>
   <p class="hint">Таблицы A.1—A.3 ГОСТ Р ИСО 7730-2009. Разность температур по вертикали
   и температура пола на диаграмме не рассчитываются — они не следуют из заданных здесь
   величин и проверяются отдельно.</p>
+
+  <h3>Локальный дискомфорт по ASHRAE 55-2023</h3>
+  <p>Раздел применяется, только когда <i>I</i><sub>cl</sub> &lt; 0,7 кло <b>и</b>
+  M &lt; 1,3 мет. Уровень лодыжек — 0,1 м от пола, уровень головы —
+  1,1 м для сидящих, 1,7 м для стоящих. Классический показатель DR из ISO 7730
+  в требованиях 55-2023 не используется — вместо него введены четыре отдельных
+  критерия.</p>
+
+  <div class="formula">V_ankle &lt; 0,35·TS + 0,39                    [TS = PMV, м/с]
+ΔT (голова↔лодыжки) &lt; 7,82 − 0,87·(TS − 1,91)²   [°C/м]
+Температура пола: 19 °C ≤ t_floor ≤ 29 °C
+Радиантная асимметрия:
+  потолок теплее пола  &lt; 5 °C
+  потолок холоднее пола &lt; 14 °C
+  стена теплее воздуха &lt; 23 °C
+  стена холоднее воздуха &lt; 10 °C</div>
+  <p class="hint">Формула вертикального градиента добавлена свободно опубликованным
+  Addendum a к 55-2020 (ashrae.org). Формулы Ankle Air Speed и Vertical Gradient
+  настроены на нейтрально-тёплую сторону теплового ощущения (TS ≥ 0). При TS &lt; 0
+  предельная скорость на уровне лодыжек становится нефизической (≤ 0,1 м/с) —
+  критерий не оценивается.</p>
+
+  <h3>Адаптивная модель ASHRAE 55-2023</h3>
+  <div class="formula">t_o_upper = 0,31·t_pma_out + 21,3   [80 % приемлемости, °C]
+t_o_lower = 0,31·t_pma_out + 14,3   [80 % приемлемости, °C]</div>
+  <p class="hint">Область применимости: только естественно проветриваемые помещения,
+  в которых окнами управляют сами находящиеся внутри люди, без активного
+  механического отопления и охлаждения; M = 1,0—1,5 мет; <i>I</i><sub>cl</sub> в
+  диапазоне не уже 0,5—1,0 кло; <i>t</i><sub>pma out</sub> строго между 10 и
+  33,5 °C. Локальный дискомфорт, <i>I</i><sub>cl</sub>, M, влажность и скорость
+  воздуха в модель уже включены — отдельно не оцениваются.</p>
 </section>
 
 <section class="card">
@@ -715,7 +856,8 @@ function sf(x, d){
 
 /* ------------------------------------------------------------------ ввод */
 var el = {};
-['ta','v','dtr','rh','tu','met','clo','cat'].forEach(function(id){ el[id] = document.getElementById(id); });
+['ta','v','dtr','rh','tu','met','clo','cat','dtv','tfloor','rasym','rasym_type',
+ 'solar_on','solar_dt','tpma','to_meas'].forEach(function(id){ el[id] = document.getElementById(id); });
 
 // поправка приложения A ГОСТ Р ИСО 7730-2009 (п. A.2):
 // v_ar = v + 0,3·(M − 1) при M > 1 мет; при M ≤ 1 мет добавка равна нулю
@@ -735,9 +877,26 @@ function readInputs(){
     tu: parseFloat(el.tu.value),
     met: met,
     clo: parseFloat(el.clo.value),
-    cat: el.cat.value
+    cat: el.cat.value,
+    // локальный дискомфорт — измеренные значения; 0 = не задано / не оценивать
+    dtv: parseFloat(el.dtv.value) || 0,
+    tfloor: parseFloat(el.tfloor.value) || 0,
+    rasym: parseFloat(el.rasym.value) || 0,
+    rasym_type: el.rasym_type.value,
+    solar_on: el.solar_on.checked,
+    solar_dt: parseFloat(el.solar_dt.value) || 0,
+    tpma: parseFloat(el.tpma.value),
+    to_meas: parseFloat(el.to_meas.value) || 0   // 0 → взять ta
   };
 }
+
+// пределы радиантной асимметрии (ASHRAE 55-2023 табл. 5-10) — °C
+var RASYM_LIM = {
+  ceilW: {lim: 5,  label: 'потолок теплее пола'},
+  ceilC: {lim: 14, label: 'потолок холоднее пола'},
+  wallW: {lim: 23, label: 'стена теплее воздуха'},
+  wallC: {lim: 10, label: 'стена холоднее воздуха'}
+};
 
 /* ------------------------------ 2D-диаграмма t–φ ---------------------- */
 var CV = document.getElementById('cv');
@@ -950,6 +1109,36 @@ function drawDiagram(inp){
   CTX.textBaseline = 'bottom';
   if(30 >= H0) CTX.fillText('φ < 30 % — вне гигиенической нормы (жилая, холодный период; СанПиН 1.2.3685-21 табл. 5.27)', r.x + 12, ph(30) - 6);
 
+  // изолиния влагосодержания w = 0,010 г/г — типичное условие иллюстративного
+  // рисунка ASHRAE 55 (не compliance). φ(t) = 100 · p_v / p_ws(t),
+  // где p_v = w·p_atm/(0,622+w) = 1,6033 кПа при w=0,010; p_ws — по формуле, что и в PMV.
+  var PV_W010 = 1.6033;   // кПа
+  CTX.strokeStyle = 'rgba(64,110,180,.55)';
+  CTX.lineWidth = 1.5;
+  CTX.setLineDash([2, 4]);
+  CTX.beginPath();
+  var firstPt = true, lastInside = false, labelPt = null;
+  for(var xi = 0; xi <= r.w; xi += 3){
+    var tt = T0 + (T1 - T0) * (xi / r.w);
+    var phi_w = 100 * PV_W010 / pSatKPa(tt);
+    if(phi_w < H0 || phi_w > H1){ lastInside = false; continue; }
+    var xx = r.x + xi;
+    var yy = ph(phi_w);
+    if(!lastInside){ CTX.moveTo(xx, yy); lastInside = true; }
+    else CTX.lineTo(xx, yy);
+    if(labelPt === null && xi > r.w * 0.55) labelPt = {x: xx, y: yy};
+    firstPt = false;
+  }
+  CTX.stroke();
+  CTX.setLineDash([]);
+  if(labelPt){
+    CTX.font = 'italic 13px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
+    CTX.fillStyle = 'rgba(64,110,180,.85)';
+    CTX.textAlign = 'left'; CTX.textBaseline = 'bottom';
+    CTX.fillText('w = 0,010 г/г — типичное условие иллюстративных диаграмм ASHRAE 55 (не compliance)',
+                 labelPt.x + 6, labelPt.y - 4);
+  }
+
   // текущая точка
   var inRangeT = inp.ta >= T0 && inp.ta <= T1;
   var inRangeH = inp.rh >= H0 && inp.rh <= H1;
@@ -1023,7 +1212,10 @@ function render(){
   document.getElementById('rh_v').textContent  = nf(inp.rh, 0);
   document.getElementById('tu_v').textContent  = nf(inp.tu, 0);
 
-  var res = pmv(inp.ta, inp.tr, inp.v_ar, inp.rh, inp.met, inp.clo, 0);
+  // поправка на прямую солнечную радиацию (ASHRAE 55-2023 §5.3.3):
+  // если включена — MRT увеличивается на Δt_r,sw (короткая волна от прямого солнца)
+  var trEff = inp.tr + (inp.solar_on ? inp.solar_dt : 0);
+  var res = pmv(inp.ta, trEff, inp.v_ar, inp.rh, inp.met, inp.clo, 0);
   var pv  = res ? res.pmv : null;
   var pd  = ppd(pv);
   var dr  = draughtRate(inp.ta, inp.v, inp.tu);
@@ -1055,18 +1247,130 @@ function render(){
   document.getElementById('o_cat').innerHTML = badge;
 
   var C = CATS[inp.cat], html = '';
+
+  // --- локальные критерии — общий вход ---
+  var dtvGiven    = inp.dtv > 0;
+  var tfloorGiven = inp.tfloor > 0;
+  var rasymGiven  = inp.rasym > 0 && inp.rasym_type !== 'none';
+  var rasymLim    = rasymGiven ? RASYM_LIM[inp.rasym_type] : null;
+
+  html += '<tr class="grp"><td colspan="4"><b>ГОСТ Р ИСО 7730-2009</b> — требуемая категория ' + inp.cat + '</td></tr>';
   html += row('PMV — прогнозируемая средняя оценка', sf(pv, 2),
               '±' + nf(C.pmv, 1), pv === null ? null : Math.abs(pv) < C.pmv);
   html += row('PPD — недовольных теплом в целом, %', nf(pd, 1),
               '&lt; ' + nf(C.ppd, 0), pv === null ? null : pd < C.ppd);
   html += row('DR — недовольных подвижностью воздуха, %', nf(dr, 1),
               '&lt; ' + nf(C.dr, 0), dr < C.dr);
-  html += row('Δt воздуха по вертикали (1,1 и 0,1 м), °C', '—',
-              '&lt; ' + nf(C.dtv, 0), null);
-  html += row('Температура поверхности пола, °C', '—',
-              nf(C.floor[0], 0) + '…' + nf(C.floor[1], 0), null);
-  html += row('Асимметрия теплового излучения, °C', '—', 'табл. A.4', null);
+  html += row('Δt воздуха по вертикали (1,1 и 0,1 м), °C',
+              dtvGiven ? nf(inp.dtv, 1) : '—',
+              '&lt; ' + nf(C.dtv, 0),
+              dtvGiven ? (inp.dtv < C.dtv) : null);
+  html += row('Температура поверхности пола, °C',
+              tfloorGiven ? nf(inp.tfloor, 1) : '—',
+              nf(C.floor[0], 0) + '…' + nf(C.floor[1], 0),
+              tfloorGiven ? (inp.tfloor >= C.floor[0] && inp.tfloor <= C.floor[1]) : null);
+  html += row('Асимметрия теплового излучения, °C',
+              rasymGiven ? (RASYM_LIM[inp.rasym_type].label + ': ' + nf(inp.rasym, 1)) : '—',
+              'табл. A.4 ГОСТ Р ИСО 7730-2009', null);
+
+  // --- ASHRAE 55-2023 ---
+  // применимость аналитического метода: 1.0 ≤ met ≤ 4.0, 0.0 ≤ clo ≤ 1.5
+  // (Addendum b к 55-2020 дословно: «metabolic rates between 1.0 and 4.0 met,
+  // clothing insulation Icl between 0.0 and 1.5 clo»)
+  var ashApp = (inp.met >= 1.0 && inp.met <= 4.0 && inp.clo >= 0.0 && inp.clo <= 1.5);
+  var pmvOK = (pv === null) ? null : (Math.abs(pv) < 0.5);
+  // локальный дискомфорт применяется только при clo<0.7 И met<1.3 (п. 5.3.5.1)
+  var localApp = (inp.clo < 0.7 && inp.met < 1.3);
+  // Ankle Air Speed limit (п. 5.3.5.3): V_ankle < 0.35·TS + 0.39, TS=PMV, м/с
+  // при отрицательных PMV лимит становится ≤ 0,1 м/с — формула теряет физический смысл
+  // (модель настроена на нейтрально-тёплую сторону). В таком случае — не оцениваем.
+  var vAnkleLim = (pv === null) ? null : (0.35 * pv + 0.39);
+  var vAnkleUsable = (vAnkleLim !== null && vAnkleLim > 0.1);
+  var vAnkleOK = (!vAnkleUsable || !localApp) ? null : (inp.v < vAnkleLim);
+  // Vertical Gradient (п. 5.3.5.4): ΔT < 7.82 − 0.87·(PMV − 1.91)² [°C/м]
+  // Проверено по прямой сверке с Addendum a к 55-2020 и раздельным вариантом
+  // для °F/ft: ΔT[°F/ft] < 4.29 − 0.48·(TS − 1.91)² — совпадает после перевода
+  // единиц (1 °C/m = 0.549 °F/ft), 7.82·0.549 = 4.29; 0.87·0.549 = 0.48.
+  var vgLim = (pv === null) ? null : (7.82 - 0.87 * Math.pow(pv - 1.91, 2));
+  var vgUsable = (vgLim !== null && isFinite(vgLim) && vgLim > 0 && localApp);
+  var vgOK = (!vgUsable || !dtvGiven) ? null : (inp.dtv < vgLim);
+  // Floor 19—29 °C (п. 5.3.5.5)
+  var floorOK = (!localApp || !tfloorGiven) ? null : (inp.tfloor >= 19 && inp.tfloor <= 29);
+  // Radiant asymmetry (п. 5.3.5.2, табл. 5-10)
+  var raOK = (!localApp || !rasymGiven) ? null : (inp.rasym < rasymLim.lim);
+
+  html += '<tr class="grp"><td colspan="4"><b>ANSI/ASHRAE Standard 55-2023</b> — аналитический метод</td></tr>';
+  html += row('PMV compliance: −0,5 &lt; PMV &lt; +0,5',
+              ashApp ? sf(pv, 2) : 'вне области применимости',
+              '|PMV| &lt; 0,5', ashApp ? pmvOK : null);
+  html += row('Ankle Air Speed: V &lt; 0,35·PMV + 0,39, м/с',
+              nf(inp.v, 2),
+              vAnkleUsable ? ('&lt; ' + nf(vAnkleLim, 2))
+                           : (localApp ? 'PMV ≤ −0,83 — формула теряет смысл' : 'не применяется при clo≥0,7 или met≥1,3'),
+              vAnkleOK);
+  html += row('Вертикальный градиент t: ΔT &lt; 7,82 − 0,87·(PMV−1,91)², °C/м',
+              dtvGiven ? nf(inp.dtv, 1) : '—',
+              vgUsable ? ('&lt; ' + nf(vgLim, 2))
+                       : (localApp ? 'PMV вне области формулы' : 'не применяется при clo≥0,7 или met≥1,3'),
+              vgOK);
+  html += row('Температура пола, °C',
+              tfloorGiven ? nf(inp.tfloor, 1) : '—',
+              '19…29',
+              floorOK);
+  html += row('Радиантная асимметрия, °C',
+              rasymGiven ? (rasymLim.label + ': ' + nf(inp.rasym, 1)) : '—',
+              rasymGiven ? ('&lt; ' + nf(rasymLim.lim, 0))
+                         : 'потолок ↑&lt;5, ↓&lt;14; стена ↑&lt;23, ↓&lt;10',
+              raOK);
   document.querySelector('#checks tbody').innerHTML = html;
+
+  // плитка соответствия ASHRAE — учитывает ВСЕ применимые и заданные локальные проверки
+  var ashBadge;
+  var localChecks = [
+    {name: 'Ankle Air Speed', ok: vAnkleOK},
+    {name: 'вертикальный градиент', ok: vgOK},
+    {name: 'температура пола', ok: floorOK},
+    {name: 'радиантная асимметрия', ok: raOK}
+  ];
+  var localFailed = localChecks.filter(function(c){ return c.ok === false; });
+  var localEvalCount = localChecks.filter(function(c){ return c.ok !== null; }).length;
+
+  if(!ashApp){
+    ashBadge = '<span class="badge b-x">вне применимости (met вне 1,0—4,0 или clo вне 0,0—1,5)</span>';
+  } else if(pmvOK === null){
+    ashBadge = '<span class="badge b-x">PMV не определён</span>';
+  } else if(!pmvOK){
+    ashBadge = '<span class="badge b-x">не соответствует по PMV</span>';
+  } else if(!localApp){
+    ashBadge = '<span class="badge b-b">соответствует по PMV; локальные критерии не применяются (clo≥0,7 или met≥1,3)</span>';
+  } else if(localFailed.length){
+    ashBadge = '<span class="badge b-x">не соответствует (' + localFailed.map(function(c){return c.name;}).join('; ') + ')</span>';
+  } else if(localEvalCount === 0){
+    ashBadge = '<span class="badge b-b">соответствует по PMV; локальные критерии не заданы</span>';
+  } else {
+    ashBadge = '<span class="badge b-a">соответствует по PMV и ' + localEvalCount + ' заданным локальным критериям</span>';
+  }
+  document.getElementById('o_ash').innerHTML = ashBadge;
+
+  // --- Адаптивная модель (§ 5.4) ---
+  var tpma = inp.tpma;
+  var to   = inp.to_meas > 0 ? inp.to_meas : inp.ta;   // если не задана — берём ta
+  // строгие неравенства по § 5.4.1.d (Addendum e к 55-2020 не меняет этих порогов;
+  // формулировка стандарта: «greater than 10°C and less than 33.5°C»)
+  var adApp = (tpma > 10 && tpma < 33.5);
+  var adUpper = 0.31 * tpma + 21.3;
+  var adLower = 0.31 * tpma + 14.3;
+  document.getElementById('ad_upper').textContent = adApp ? nf(adUpper, 1) : '—';
+  document.getElementById('ad_lower').textContent = adApp ? nf(adLower, 1) : '—';
+  var adBadge;
+  if(!adApp){
+    adBadge = '<span class="badge b-x">t<sub>pma out</sub> вне 10—33,5 °C</span>';
+  } else if(to >= adLower && to <= adUpper){
+    adBadge = '<span class="badge b-a">соответствует (t<sub>o</sub>=' + nf(to,1) + ' °C)</span>';
+  } else {
+    adBadge = '<span class="badge b-x">не соответствует (t<sub>o</sub>=' + nf(to,1) + ' °C)</span>';
+  }
+  document.getElementById('ad_ok').innerHTML = adBadge;
 
   var warn = [];
   if(inp.ta < 20 || inp.ta > 26)
@@ -1084,7 +1388,9 @@ function render(){
   drawDiagram(inp);
 }
 
-['ta','v','dtr','rh','tu','met','clo','cat'].forEach(function(id){
+['ta','v','dtr','rh','tu','met','clo','cat',
+ 'dtv','tfloor','rasym','rasym_type',
+ 'solar_on','solar_dt','tpma','to_meas'].forEach(function(id){
   el[id].addEventListener('input', render);
   el[id].addEventListener('change', render);
 });
