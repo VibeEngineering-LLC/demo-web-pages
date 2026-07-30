@@ -5,172 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Диаграмма теплового комфорта — PMV/PPD, подвижность воздуха, результирующая температура</title>
 <meta name="description" content="Интерактивная диаграмма теплового комфорта: подвижность воздуха в рабочей зоне, температура, влажность, активность, одежда. Расчёт PMV и PPD по ГОСТ Р ИСО 7730-2009, категории A/B/C, оценка риска от подвижности воздуха DR, результирующая температура по ГОСТ 30494-2011.">
-<style>
-  :root{
-    --bg:#f7f6f3; --card:#ffffff; --ink:#1c1b19; --muted:#605c54;
-    --line:#e3e0d8; --accent:#4a6b8a; --accent-ink:#2c4a63;
-    --ok-bg:#e8f3ea; --ok-ink:#1f6b3a; --ok-line:#bcdcc5;
-    --bad-bg:#fbeaea; --bad-ink:#9a2b2b; --bad-line:#eec6c6;
-    --wait-bg:#fbf3e2; --wait-ink:#8a6420; --wait-line:#ecd9ad;
-    --input-bg:#fdfcfa; --grid:#cfcbc1;
-  }
-  @media (prefers-color-scheme:dark){
-    :root{
-      --bg:#1a1917; --card:#232220; --ink:#ece9e3; --muted:#a7a299;
-      --line:#38352f; --accent:#89aecb; --accent-ink:#a9c6df;
-      --ok-bg:#1c2e22; --ok-ink:#7fce9a; --ok-line:#2f5138;
-      --bad-bg:#33201f; --bad-ink:#e79a9a; --bad-line:#5a3230;
-      --wait-bg:#312a1a; --wait-ink:#e2c079; --wait-line:#584a2c;
-      --input-bg:#1c1b19; --grid:#4a463f;
-    }
-  }
-  :root[data-theme="dark"]{
-    --bg:#1a1917; --card:#232220; --ink:#ece9e3; --muted:#a7a299;
-    --line:#38352f; --accent:#89aecb; --accent-ink:#a9c6df;
-    --ok-bg:#1c2e22; --ok-ink:#7fce9a; --ok-line:#2f5138;
-    --bad-bg:#33201f; --bad-ink:#e79a9a; --bad-line:#5a3230;
-    --wait-bg:#312a1a; --wait-ink:#e2c079; --wait-line:#584a2c;
-    --input-bg:#1c1b19; --grid:#4a463f;
-  }
-  :root[data-theme="light"]{
-    --bg:#f7f6f3; --card:#ffffff; --ink:#1c1b19; --muted:#605c54;
-    --line:#e3e0d8; --accent:#4a6b8a; --accent-ink:#2c4a63;
-    --ok-bg:#e8f3ea; --ok-ink:#1f6b3a; --ok-line:#bcdcc5;
-    --bad-bg:#fbeaea; --bad-ink:#9a2b2b; --bad-line:#eec6c6;
-    --wait-bg:#fbf3e2; --wait-ink:#8a6420; --wait-line:#ecd9ad;
-    --input-bg:#fdfcfa; --grid:#cfcbc1;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0; background:var(--bg); color:var(--ink);
-    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    -webkit-font-smoothing:antialiased;
-  }
-  .wrap{max-width:1360px; margin:0 auto; padding:32px 20px 64px}
-  header h1{font-size:26px; line-height:1.25; margin:0 0 8px}
-  header .sub{color:var(--muted); font-size:15px; margin:0 0 4px}
-  .card{
-    background:var(--card); border:1px solid var(--line); border-radius:14px;
-    padding:22px; margin:22px 0;
-  }
-  h2{font-size:18px; margin:0 0 14px}
-  h3{font-size:15px; margin:20px 0 8px}
-  p{margin:0 0 12px; text-align:justify; hyphens:auto; -webkit-hyphens:auto}
-  .legend.fullwidth{margin-top:14px}
-  .hint.fullwidth{margin-top:8px; text-align:justify; hyphens:auto}
-  .card p, .card li{text-align:justify; hyphens:auto; -webkit-hyphens:auto}
-  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px 20px}
-  .grid3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px 20px}
-  @media (max-width:620px){.grid,.grid3{grid-template-columns:1fr}}
-  label{display:block; font-size:12.5px; color:var(--muted); margin:0 0 5px; font-weight:600;
-    text-transform:uppercase; letter-spacing:.03em}
-  input[type=range]{width:100%; accent-color:var(--accent)}
-  select,input[type=number]{
-    width:100%; padding:9px 11px; font-size:15px; color:var(--ink);
-    background:var(--input-bg); border:1px solid var(--line); border-radius:9px;
-    font-variant-numeric:tabular-nums;
-  }
-  select:focus,input:focus{outline:2px solid var(--accent); outline-offset:1px; border-color:var(--accent)}
-  .val{font-variant-numeric:tabular-nums; font-weight:700; color:var(--accent-ink)}
-  .hint{font-size:12.5px; color:var(--muted); margin:5px 0 0}
-  .res{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin:0 0 14px}
-  .tile{border:1px solid var(--line); border-radius:11px; padding:12px 14px; background:var(--input-bg)}
-  .tile .k{font-size:11.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); font-weight:600}
-  .tile .v{font-size:23px; font-weight:700; font-variant-numeric:tabular-nums; line-height:1.2; margin-top:3px}
-  .tile .u{font-size:12.5px; color:var(--muted); font-weight:400}
-  .badge{display:inline-block; padding:3px 10px; border-radius:999px; font-size:13px; font-weight:700; border:1px solid}
-  .b-a{background:var(--ok-bg); color:var(--ok-ink); border-color:var(--ok-line)}
-  .b-b{background:var(--wait-bg); color:var(--wait-ink); border-color:var(--wait-line)}
-  .b-c{background:var(--wait-bg); color:var(--wait-ink); border-color:var(--wait-line)}
-  .b-x{background:var(--bad-bg); color:var(--bad-ink); border-color:var(--bad-line)}
-  canvas{display:block; width:100%; height:auto; border-radius:10px; border:1px solid var(--line)}
-  .legend{display:flex; flex-wrap:wrap; gap:8px 16px; font-size:13px; color:var(--muted); margin:12px 0 0}
-  .legend i{display:inline-block; width:13px; height:13px; border-radius:3px; vertical-align:-2px; margin-right:5px; border:1px solid rgba(0,0,0,.15)}
-  table{width:100%; border-collapse:collapse; font-size:14px}
-  th,td{text-align:left; padding:7px 9px; border-bottom:1px solid var(--line); vertical-align:top}
-  th{font-size:12px; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); font-weight:600}
-  td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
-  .pass{color:var(--ok-ink); font-weight:700}
-  .fail{color:var(--bad-ink); font-weight:700}
-  .na{color:var(--muted)}
-  tr.grp td{background:var(--panel-2, rgba(0,0,0,.04)); padding-top:10px; padding-bottom:10px; font-size:14px}
-  .ldi{margin:12px 0; padding:12px; border:1px solid var(--line); border-radius:8px}
-  .ldi-title{font-weight:700; margin-bottom:12px; font-size:14px}
-  .ldi-section{padding:10px 0; border-top:1px dashed var(--line)}
-  .ldi-section:first-of-type{border-top:none; padding-top:0}
-  .ldi-subtitle{font-size:13px; font-weight:600; color:var(--muted); margin-bottom:8px}
-  .ldi-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:10px}
-  .ldi-grid.two{grid-template-columns:1fr 1fr}
-  .ldi-cell{display:flex; flex-direction:column; gap:4px}
-  .ldi-cell label{font-size:13px; font-weight:600; display:block;
-    text-transform:none; letter-spacing:0; color:inherit; line-height:1.35}
-  .ldi-cell label .hint{display:block; font-weight:400; font-size:11px;
-    color:var(--muted); text-transform:none; letter-spacing:0; margin-top:2px}
-  .ldi-cell input[type=number], .ldi-cell select{padding:6px 8px; border:1px solid var(--line); border-radius:6px; font-size:14px; background:transparent; color:inherit}
-  .ldi-cell input[type=checkbox]{margin-right:6px; transform:translateY(2px)}
-  @media (max-width: 720px){ .ldi-grid, .ldi-grid.two{grid-template-columns:1fr 1fr} }
-  .tblwrap{overflow-x:auto}
-  code{font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    background:var(--input-bg); border:1px solid var(--line); border-radius:5px; padding:1px 5px}
-  .formula{background:var(--input-bg); border:1px solid var(--line); border-radius:9px;
-    padding:12px 14px; margin:10px 0; font:13.5px/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    overflow-x:auto; white-space:pre}
-  .note{background:var(--wait-bg); border:1px solid var(--wait-line); color:var(--wait-ink);
-    border-radius:10px; padding:12px 14px; margin:14px 0; font-size:14px}
-  .note b{color:inherit}
-  a{color:var(--accent-ink)}
-  ul{margin:0 0 12px; padding-left:22px}
-  li{margin:0 0 6px}
-  .lvl{font-size:12px; font-weight:700; padding:1px 6px; border-radius:5px; border:1px solid}
-  .lvl-ok{background:var(--ok-bg); color:var(--ok-ink); border-color:var(--ok-line)}
-  .lvl-bib{background:var(--wait-bg); color:var(--wait-ink); border-color:var(--wait-line)}
-  footer{color:var(--muted); font-size:13px; margin-top:28px; border-top:1px solid var(--line); padding-top:16px}
-  .themebtn{position:fixed; top:12px; right:12px; padding:6px 11px; font-size:13px;
-    background:var(--card); color:var(--ink); border:1px solid var(--line);
-    border-radius:8px; cursor:pointer}
-
-  /* макет: канвас слева, ручки справа (5 range сверху + 3 select снизу) */
-  .diagwrap{display:flex; flex-direction:row; align-items:flex-start; gap:14px; flex-wrap:wrap}
-  .diagwrap > .plot{flex:1 1 640px; min-width:0}
-  .plot-two{display:flex; flex-direction:row; gap:12px; flex-wrap:wrap}
-  .plot-two .canvas-fig{flex:1 1 300px; min-width:0; margin:0; display:flex; flex-direction:column; gap:6px}
-  .plot-two .canvas-fig figcaption{font-size:12px; color:var(--muted); font-weight:600; line-height:1.35}
-  @media (max-width: 900px){ .plot-two{flex-direction:column} }
-  .sidebar{flex:0 0 auto; width:520px;
-           display:flex; flex-direction:column; gap:8px;
-           background:var(--input-bg); border:1px solid var(--line); border-radius:10px;
-           padding:10px}
-  .srow{display:grid; gap:6px}
-  .srow.ranges{grid-template-columns:repeat(5, 1fr)}
-  .srow.selects{grid-template-columns:1fr}
-  @media (max-width:1180px){ .sidebar{width:100%} }
-  @media (max-width:640px){
-    .srow.ranges{grid-template-columns:repeat(3, 1fr)}
-    .srow.selects{grid-template-columns:1fr}
-  }
-  .vslot{display:flex; flex-direction:column; align-items:center; gap:4px;
-         padding:8px 6px; border:1px solid var(--line); border-radius:8px;
-         background:var(--card); min-width:0}
-  .vslot .lab{font-size:11px; color:var(--muted); font-weight:600; text-transform:uppercase;
-              letter-spacing:.03em; text-align:center; line-height:1.25; min-height:2.4em}
-  .vslot .cur{font-size:16px; font-weight:700; color:var(--accent-ink);
-              font-variant-numeric:tabular-nums; line-height:1.1; text-align:center; min-height:1.2em}
-  .vslot .track{display:flex; align-items:center; gap:5px; height:130px}
-  .vslot .track .scale{display:flex; flex-direction:column; justify-content:space-between;
-                       height:100%; font-size:10px; color:var(--muted);
-                       font-variant-numeric:tabular-nums; text-align:left}
-  .vslot input[type=range][orient=vertical], .vslot input[type=range].vert{
-    -webkit-appearance:slider-vertical; appearance:slider-vertical;
-    writing-mode:vertical-lr; direction:rtl;
-    height:100%; width:24px; margin:0; accent-color:var(--accent);
-  }
-  .vslot select{width:100%; padding:6px 8px; font-size:13px;
-                background:var(--card); color:var(--ink); border:1px solid var(--line);
-                border-radius:6px}
-  .vslot.sel{justify-content:flex-start}
-  .vslot.sel .track{display:none}
-  .vslot.sel select{margin-top:auto; margin-bottom:auto}
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <button class="themebtn" id="theme" type="button">Тема</button>
@@ -228,6 +63,17 @@
     met, clo) синхронизируются со второй диаграммой ниже. Клик по канве
     переносит рабочую точку на обе.
   </p>
+
+  <div class="presets" role="group" aria-label="Типовые сценарии">
+    <span class="presets-label">Типовой сценарий:</span>
+    <button type="button" class="preset-btn" data-preset="office">Офис</button>
+    <button type="button" class="preset-btn" data-preset="sleep">Сон</button>
+    <button type="button" class="preset-btn" data-preset="sport">Спорт</button>
+    <button type="button" class="preset-btn" data-preset="home">Дом, отдых</button>
+    <button type="button" class="preset-btn" data-preset="restaurant">Ресторан, кафе</button>
+    <span class="hint" style="margin-left:4px">— подставляет met/clo/v сценария и температуру, дающую PMV≈0 при φ=50&nbsp;%</span>
+  </div>
+
   <div class="diagwrap">
     <div class="plot">
       <figure class="canvas-fig">
@@ -324,6 +170,9 @@
   </div>
 
   <div class="legend fullwidth">
+    <label style="font-weight:600; margin-right:8px">
+      <input type="checkbox" id="lines_gost" checked> Показывать линии нормативов
+    </label>
     <b>Заливка — PPD (% недовольных):</b>
     <span><i style="background:#3f8f5e"></i>5&nbsp;% (PMV=0)</span>
     <span><i style="background:#8fbf5a"></i>10&nbsp;%</span>
@@ -471,6 +320,9 @@
   </div>
 
   <div class="legend fullwidth">
+    <label style="font-weight:600; margin-right:8px">
+      <input type="checkbox" id="lines_ash" checked> Показывать линии нормативов
+    </label>
     <b>Заливка — PPD (% недовольных):</b>
     <span><i style="background:#3f8f5e"></i>5&nbsp;% (PMV=0)</span>
     <span><i style="background:#8fbf5a"></i>10&nbsp;%</span>
@@ -997,7 +849,8 @@ var el = {};
 ['ta','v','dtr','rh','tu','met','clo','cat','dtv','tfloor','rasym','rasym_type',
  'solar_on','solar_dt','tpma','to_meas',
  'ta_a','v_a','dtr_a','rh_a','met_a','clo_a',
- 'dtv_a','tfloor_a','rasym_a','rasym_type_a'].forEach(function(id){ el[id] = document.getElementById(id); });
+ 'dtv_a','tfloor_a','rasym_a','rasym_type_a',
+ 'lines_gost','lines_ash'].forEach(function(id){ el[id] = document.getElementById(id); });
 
 // пары ГОСТ ↔ ASHRAE (общие входы синхронизируются двусторонне)
 var SYNC_PAIRS = [['ta','ta_a'], ['rh','rh_a'], ['v','v_a'],
@@ -1146,7 +999,7 @@ function badnessFromPPD(pd){
   }
   return 1;
 }
-function drawDiagram(inp, mode){
+function drawDiagram(inp, mode, showLines){
   // подстраиваем ось T под фиксированный диапазон PMV: [-PMV_RANGE, +PMV_RANGE]
   // при текущих met/clo/dtr/v и φ=50 %. Так зоны A/B/C сохраняют ширину
   // на диаграмме, красное — узкие полосы у краёв.
@@ -1243,46 +1096,50 @@ function drawDiagram(inp, mode){
     }
     CTX.stroke();
   }
-  // нулевая линия — тонкая пунктирная, обе диаграммы
-  CTX.setLineDash([4, 4]);
-  drawIso(0, 'rgba(255,255,255,.75)', 1.5);
-  CTX.setLineDash([]);
-  if(mode === 'gost'){
-    // три категории ГОСТ, разные толщины для различимости
-    drawIso(-0.2, 'rgba(0,0,0,.85)', 2.6);   // A внешн. лев.
-    drawIso( 0.2, 'rgba(0,0,0,.85)', 2.6);   // A внешн. прав.
-    drawIso(-0.5, 'rgba(0,0,0,.75)', 2.2);   // B
-    drawIso( 0.5, 'rgba(0,0,0,.75)', 2.2);
-    drawIso(-0.7, 'rgba(0,0,0,.65)', 1.8);   // C
-    drawIso( 0.7, 'rgba(0,0,0,.65)', 1.8);
-  } else {
-    // ASHRAE compliance ±0,5 — жирная контурная линия
-    drawIso(-0.5, 'rgba(0,0,0,.85)', 2.6);
-    drawIso( 0.5, 'rgba(0,0,0,.85)', 2.6);
-  }
+  // Контурные линии нормативов (нулевая изолиния, категории A/B/C или
+  // compliance ASHRAE) — отключаемые переключателем «Показывать линии».
+  if(showLines){
+    // нулевая линия — тонкая пунктирная, обе диаграммы
+    CTX.setLineDash([4, 4]);
+    drawIso(0, 'rgba(255,255,255,.75)', 1.5);
+    CTX.setLineDash([]);
+    if(mode === 'gost'){
+      // три категории ГОСТ, разные толщины для различимости
+      drawIso(-0.2, 'rgba(0,0,0,.85)', 2.6);   // A внешн. лев.
+      drawIso( 0.2, 'rgba(0,0,0,.85)', 2.6);   // A внешн. прав.
+      drawIso(-0.5, 'rgba(0,0,0,.75)', 2.2);   // B
+      drawIso( 0.5, 'rgba(0,0,0,.75)', 2.2);
+      drawIso(-0.7, 'rgba(0,0,0,.65)', 1.8);   // C
+      drawIso( 0.7, 'rgba(0,0,0,.65)', 1.8);
+    } else {
+      // ASHRAE compliance ±0,5 — жирная контурная линия
+      drawIso(-0.5, 'rgba(0,0,0,.85)', 2.6);
+      drawIso( 0.5, 'rgba(0,0,0,.85)', 2.6);
+    }
 
-  // подписи категорий возле линий, на строке φ=50 %.
-  // Найдём t, где PMV=lev при φ=50 %, и подпишем над линией.
-  CTX.font = 'bold 15px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
-  CTX.fillStyle = 'rgba(0,0,0,.85)';
-  CTX.textAlign = 'center'; CTX.textBaseline = 'middle';
-  function labelIso(lev, text){
-    var t_at = tOfPMV(lev, inp.met, inp.clo, dtrDiag, inp.v, 50);
-    if(t_at === null || t_at < T0 || t_at > T1) return;
-    var xx = tx(t_at), yy = ph(50);
-    // фон под подпись — читаемость
-    var m = CTX.measureText(text);
-    CTX.fillStyle = 'rgba(255,255,255,.85)';
-    CTX.fillRect(xx - m.width/2 - 4, yy - 10, m.width + 8, 20);
+    // подписи категорий возле линий, на строке φ=50 %.
+    // Найдём t, где PMV=lev при φ=50 %, и подпишем над линией.
+    CTX.font = 'bold 15px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
     CTX.fillStyle = 'rgba(0,0,0,.85)';
-    CTX.fillText(text, xx, yy);
-  }
-  if(mode === 'gost'){
-    labelIso(-0.7, 'C'); labelIso(0.7, 'C');
-    labelIso(-0.5, 'B'); labelIso(0.5, 'B');
-    labelIso(-0.2, 'A'); labelIso(0.2, 'A');
-  } else {
-    labelIso(-0.5, 'compliance'); labelIso(0.5, 'compliance');
+    CTX.textAlign = 'center'; CTX.textBaseline = 'middle';
+    var labelIso = function(lev, text){
+      var t_at = tOfPMV(lev, inp.met, inp.clo, dtrDiag, inp.v, 50);
+      if(t_at === null || t_at < T0 || t_at > T1) return;
+      var xx = tx(t_at), yy = ph(50);
+      // фон под подпись — читаемость
+      var m = CTX.measureText(text);
+      CTX.fillStyle = 'rgba(255,255,255,.85)';
+      CTX.fillRect(xx - m.width/2 - 4, yy - 10, m.width + 8, 20);
+      CTX.fillStyle = 'rgba(0,0,0,.85)';
+      CTX.fillText(text, xx, yy);
+    };
+    if(mode === 'gost'){
+      labelIso(-0.7, 'C'); labelIso(0.7, 'C');
+      labelIso(-0.5, 'B'); labelIso(0.5, 'B');
+      labelIso(-0.2, 'A'); labelIso(0.2, 'A');
+    } else {
+      labelIso(-0.5, 'compliance'); labelIso(0.5, 'compliance');
+    }
   }
 
   // сетка и ось X (температура)
@@ -1321,69 +1178,55 @@ function drawDiagram(inp, mode){
   CTX.fillText('относительная влажность φ, %', 0, 0);
   CTX.restore();
 
-  // подписи ощущений по шкале ГОСТ Р ИСО 7730-2009, таблица 1
+  // Надписи ощущений — по расположению как на референсной схематической
+  // диаграмме психрометрического комфорта: «холодно» слева и «жарко» справа
+  // по центру высоты; «влажно» сверху и «сухо» снизу по центру ширины;
+  // «комфортно» в центре зоны. Все — чёрным текстом с белым halo для
+  // читаемости на любом участке цветовой заливки.
   CTX.font = 'bold 20px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
-  CTX.fillStyle = 'rgba(28,27,25,.72)';
-  CTX.textAlign = 'left'; CTX.textBaseline = 'middle';
-  function labelAtPMV(pmvVal, text, yFrac){
-    var jj = Math.round(ny * yFrac);
-    for(var ii=1; ii<nx; ii++){
-      var a = pmvGrid[jj*(nx+1)+ii-1], b = pmvGrid[jj*(nx+1)+ii];
-      if(!isNaN(a) && !isNaN(b) && (a - pmvVal)*(b - pmvVal) < 0){
-        var xx = r.x + (ii - 0.5)*STEP;
-        var yy = r.y + jj*STEP;
-        CTX.fillText(text, xx + 12, yy);
-        return true;
-      }
-    }
-    return false;
-  }
-  labelAtPMV(-1.4, 'холодно',    0.30);
-  labelAtPMV(-0.1, 'комфорт',    0.50);
-  labelAtPMV( 1.4, 'жарко',      0.30);
-
-  // Оверлей влажностного дискомфорта — плавные градиенты сверху (сыро) и снизу
-  // (сухо). Диапазон комфорта 30—60 % — нейтральный; за его пределами непрозрачность
-  // растёт линейно, обозначая усиливающийся нетермальный дискомфорт.
-  // На ГОСТ-диаграмме границы 30/60 % опираются на ГОСТ 30494-2011 табл. 1 и
-  // СанПиН 1.2.3685-21 табл. 5.27 (жилая комната, холодный период). На ASHRAE-
-  // диаграмме те же границы приводятся как ориентир общей инженерной практики —
-  // сам стандарт ASHRAE 55 численных границ по влажности не задаёт.
-  var hiLim = 60, loLim = 30, hiEnd = 100, loEnd = 10;
-
-  // Градиент по φ уже включён в per-pixel заливку выше (mix PPD → красный вне
-  // диапазона 30—60 %), полупрозрачные оверлеи здесь не нужны — дают «грязь».
-
-  // крупные надписи «сухо» / «влажно» по центру соответствующих зон
-  CTX.font = 'bold 22px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
-  CTX.fillStyle = 'rgba(255,255,255,.95)';
   CTX.textAlign = 'center'; CTX.textBaseline = 'middle';
-  var wetY = ph((hiLim + hiEnd) / 2);
-  var dryY = ph((loLim + loEnd) / 2);
-  if(hiLim < H1) CTX.fillText('влажно', r.x + r.w * 0.15, wetY);
-  if(loLim > H0) CTX.fillText('сухо',   r.x + r.w * 0.15, dryY);
+  function labelHalo(text, xx, yy, size){
+    CTX.font = 'bold ' + (size || 20) + 'px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
+    CTX.lineWidth = 4;
+    CTX.strokeStyle = 'rgba(255,255,255,.9)';
+    CTX.strokeText(text, xx, yy);
+    CTX.fillStyle = 'rgba(15,15,15,.92)';
+    CTX.fillText(text, xx, yy);
+  }
+  labelHalo('холодно',   r.x + r.w * 0.08, r.y + r.h * 0.50, 20);
+  labelHalo('жарко',     r.x + r.w * 0.92, r.y + r.h * 0.50, 20);
+  labelHalo('комфортно', r.x + r.w * 0.50, r.y + r.h * 0.50, 20);
+  labelHalo('влажно',    r.x + r.w * 0.50, r.y + r.h * 0.08, 22);
+  labelHalo('сухо',      r.x + r.w * 0.50, r.y + r.h * 0.92, 22);
 
-  // тонкие штриховые границы 30/60 % с подписями
-  CTX.strokeStyle = 'rgba(28,27,25,.55)';
-  CTX.lineWidth = 1.5;
-  CTX.setLineDash([8, 6]);
-  [30, 60].forEach(function(phiLim){
-    if(phiLim < H0 || phiLim > H1) return;
-    var Y = ph(phiLim);
-    CTX.beginPath(); CTX.moveTo(r.x, Y); CTX.lineTo(r.x + r.w, Y); CTX.stroke();
-  });
-  CTX.setLineDash([]);
-  CTX.font = 'italic 15px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
-  CTX.fillStyle = 'rgba(28,27,25,.85)';
-  CTX.textAlign = 'left'; CTX.textBaseline = 'top';
-  if(mode === 'gost'){
-    if(60 <= H1) CTX.fillText('φ > 60 % — сырость (вне гигиенической нормы: ГОСТ 30494, СанПиН 1.2.3685-21; жилая, холодный период)', r.x + 12, ph(60) + 6);
-    CTX.textBaseline = 'bottom';
-    if(30 >= H0) CTX.fillText('φ < 30 % — сухость (вне гигиенической нормы: СанПиН 1.2.3685-21; жилая, холодный период)', r.x + 12, ph(30) - 6);
-  } else {
-    if(60 <= H1) CTX.fillText('φ > 60 % — сырость (общая инженерная практика; сам ASHRAE 55 границ по влажности не задаёт)', r.x + 12, ph(60) + 6);
-    CTX.textBaseline = 'bottom';
-    if(30 >= H0) CTX.fillText('φ < 30 % — сухость (общая инженерная практика; сам ASHRAE 55 границ по влажности не задаёт)', r.x + 12, ph(30) - 6);
+  // Границы гигиенического диапазона влажности 30/60 % — отключаемые
+  // переключателем «Показывать линии», как и контуры категорий/compliance.
+  // На ГОСТ-диаграмме границы опираются на ГОСТ 30494-2011 табл. 1 и
+  // СанПиН 1.2.3685-21 табл. 5.27 (жилая комната, холодный период). На
+  // ASHRAE-диаграмме те же границы приводятся как ориентир общей инженерной
+  // практики — сам стандарт ASHRAE 55 численных границ по влажности не задаёт.
+  if(showLines){
+    CTX.strokeStyle = 'rgba(28,27,25,.55)';
+    CTX.lineWidth = 1.5;
+    CTX.setLineDash([8, 6]);
+    [30, 60].forEach(function(phiLim){
+      if(phiLim < H0 || phiLim > H1) return;
+      var Y = ph(phiLim);
+      CTX.beginPath(); CTX.moveTo(r.x, Y); CTX.lineTo(r.x + r.w, Y); CTX.stroke();
+    });
+    CTX.setLineDash([]);
+    CTX.font = 'italic 15px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
+    CTX.fillStyle = 'rgba(28,27,25,.85)';
+    CTX.textAlign = 'left'; CTX.textBaseline = 'top';
+    if(mode === 'gost'){
+      if(60 <= H1) CTX.fillText('φ > 60 % — вне гигиенической нормы: ГОСТ 30494, СанПиН 1.2.3685-21; жилая, холодный период', r.x + 12, ph(60) + 6);
+      CTX.textBaseline = 'bottom';
+      if(30 >= H0) CTX.fillText('φ < 30 % — вне гигиенической нормы: СанПиН 1.2.3685-21; жилая, холодный период', r.x + 12, ph(30) - 6);
+    } else {
+      if(60 <= H1) CTX.fillText('φ > 60 % — общая инженерная практика; сам ASHRAE 55 границ по влажности не задаёт', r.x + 12, ph(60) + 6);
+      CTX.textBaseline = 'bottom';
+      if(30 >= H0) CTX.fillText('φ < 30 % — общая инженерная практика; сам ASHRAE 55 границ по влажности не задаёт', r.x + 12, ph(30) - 6);
+    }
   }
 
   // текущая точка
@@ -1652,13 +1495,14 @@ function render(){
     ? '<b>Оговорки к текущей точке:</b> ' + warn.join('; ') + '.'
     : 'Текущая точка лежит в пределах применимости использованных зависимостей.';
 
-  setActive(CV_GOST); drawDiagram(inp, 'gost');
-  setActive(CV_ASH);  drawDiagram(inp, 'ashrae');
+  setActive(CV_GOST); drawDiagram(inp, 'gost', el.lines_gost.checked);
+  setActive(CV_ASH);  drawDiagram(inp, 'ashrae', el.lines_ash.checked);
 }
 
 ['ta','v','dtr','rh','tu','met','clo','cat',
  'dtv','tfloor','rasym','rasym_type',
- 'solar_on','solar_dt','tpma','to_meas'].forEach(function(id){
+ 'solar_on','solar_dt','tpma','to_meas',
+ 'lines_gost','lines_ash'].forEach(function(id){
   el[id].addEventListener('input', render);
   el[id].addEventListener('change', render);
 });
@@ -1683,6 +1527,42 @@ if(window.matchMedia){
   var mq = window.matchMedia('(prefers-color-scheme: dark)');
   if(mq.addEventListener) mq.addEventListener('change', render);
 }
+
+/* --------------------------------------------------- пресеты сценариев */
+// Значения met/clo — по таблицам ГОСТ Р ИСО 7730-2009 приложение B (уровни
+// двигательной активности) и приложение C (термоизоляция типовых комплектов
+// одежды); подвижность воздуха — типичные условия сценария. Температура не
+// хранится в пресете — вычисляется как t, при которой PMV=0 (нейтрально)
+// для заданных met/clo/v при φ=50 %, чтобы сценарий всегда попадал в центр
+// зоны комфорта независимо от прочих настроек.
+// met/clo — строки, совпадающие ДОСЛОВНО с value= у соответствующих <option>:
+// select.value = 1.0 (число) приводится к «1», а не «1.0», и опция не находится.
+var PRESETS = {
+  office:     { met: '1.2', clo: '1.0',  v: 0.15, dtr: 0 },   // офис, сидя, костюм
+  sleep:      { met: '0.8', clo: '1.5',  v: 0.0,  dtr: 0 },   // сон, лёжа, под одеялом
+  sport:      { met: '3.0', clo: '0.25', v: 0.3,  dtr: 0 },   // тренировка, лёгкая одежда
+  home:       { met: '1.0', clo: '0.5',  v: 0.1,  dtr: 0 },   // дом, отдых, лёгкая одежда
+  restaurant: { met: '1.0', clo: '1.0',  v: 0.1,  dtr: 0 }    // ресторан/кафе, сидя, нарядно
+};
+function applyPreset(name){
+  var p = PRESETS[name];
+  if(!p) return;
+  el.met.value = p.met;
+  el.clo.value = p.clo;
+  el.v.value = p.v;
+  el.dtr.value = p.dtr;
+  var metNum = parseFloat(p.met), cloNum = parseFloat(p.clo);
+  var tNeutral = tOfPMV(0, metNum, cloNum, p.dtr, p.v, 50);
+  if(tNeutral !== null){
+    tNeutral = Math.max(10, Math.min(38, tNeutral));
+    el.ta.value = tNeutral.toFixed(1);
+  }
+  el.rh.value = 50;
+  render();
+}
+document.querySelectorAll('.preset-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){ applyPreset(btn.getAttribute('data-preset')); });
+});
 
 render();
 </script>
