@@ -215,33 +215,24 @@
 
 
 <section class="card wide">
-  <h2>Диаграммы комфорта: ГОСТ Р ИСО 7730-2009 и ANSI/ASHRAE Standard 55-2023</h2>
+  <h2>Диаграмма ГОСТ Р ИСО 7730-2009</h2>
   <p class="hint fullwidth" style="margin:-4px 0 12px 0">
-    Слева — <b>ГОСТ Р ИСО 7730-2009</b> (идентичен ISO 7730:2005): три категории
-    A/B/C по PMV/PPD с учётом DR; штриховые 30/60&nbsp;% — гигиенические границы
-    жилой комнаты в холодный период (ГОСТ 30494-2011, СанПиН 1.2.3685-21).
-    Справа — <b>ANSI/ASHRAE Standard 55-2023</b>, аналитический метод: одна зона
-    compliance (−0,5&nbsp;&lt; PMV &lt;&nbsp;+0,5, дословно из свободного
-    Addendum&nbsp;h к 55-2020). Численных границ по влажности стандарт не задаёт
-    — см. открытый обзор <a href="https://cbe.berkeley.edu/research/comfort/" rel="noopener nofollow">CBE&nbsp;Berkeley</a>
-    и de&nbsp;Dear&nbsp;R.J. et&nbsp;al. «Progress in thermal comfort research
-    over the last twenty years», Indoor&nbsp;Air 23(6):442—461, 2013 (DOI:
-    <a href="https://doi.org/10.1111/ina.12046" rel="noopener nofollow">10.1111/ina.12046</a>).
-    Обе диаграммы работают на одной PMV-модели Фангера — общие входы
-    (температура, влажность, скорость воздуха, Δ<i>t</i><sub>r</sub>, met,
-    clo) синхронизируют обе; специфичные (Tu для DR ГОСТ, категория A/B/C,
-    поправка на солнечную радиацию, адаптивная модель) — в общих полях ниже.
-    Клик по любой диаграмме переносит рабочую точку на обе.
+    Идентичен ISO 7730:2005. Три категории A/B/C по PMV/PPD с учётом DR
+    (draught rate — вероятностный процент недовольных подвижностью воздуха,
+    формула&nbsp;(6) стандарта). Штриховые 30&nbsp;% и 60&nbsp;% —
+    <b>гигиенические</b> границы для <b>жилой комнаты в холодный период
+    года</b> по <b>ГОСТ 30494-2011, табл.&nbsp;1</b> и <b>СанПиН 1.2.3685-21,
+    табл.&nbsp;5.27</b> (для тёплого периода и других типов помещений границы
+    другие; полосы категорий по PMV/PPD влажность включают слабо, поэтому идут
+    почти вертикально). Общие с ASHRAE входы (t, φ, v, Δ<i>t</i><sub>r</sub>,
+    met, clo) синхронизируются со второй диаграммой ниже. Клик по канве
+    переносит рабочую точку на обе.
   </p>
   <div class="diagwrap">
-    <div class="plot plot-two">
+    <div class="plot">
       <figure class="canvas-fig">
-        <figcaption>ГОСТ Р ИСО 7730-2009 — категории A/B/C, штрихи 30/60 % (гигиена РФ)</figcaption>
+        <figcaption>ГОСТ Р ИСО 7730-2009 — категории A/B/C с учётом DR; штрихи 30/60 % — гигиена жилой комнаты в холодный период (ГОСТ 30494 / СанПиН 1.2.3685-21)</figcaption>
         <canvas id="cv_gost" width="1200" height="900"></canvas>
-      </figure>
-      <figure class="canvas-fig">
-        <figcaption>ANSI/ASHRAE Standard 55-2023 — одна зона compliance (−0,5&nbsp;&lt; PMV &lt;&nbsp;+0,5); численных границ по влажности стандарт не задаёт</figcaption>
-        <canvas id="cv_ash" width="1200" height="900"></canvas>
       </figure>
     </div>
 
@@ -333,24 +324,13 @@
   </div>
 
   <div class="legend fullwidth">
-    <b>ГОСТ (левая):</b>
+    <b>Цвета:</b>
     <span><i style="background:#3f8f5e"></i>категория A</span>
     <span><i style="background:#8fbf5a"></i>категория B</span>
     <span><i style="background:#e3c469"></i>категория C</span>
     <span><i style="background:#c9705f"></i>вне A/B/C</span>
-    &nbsp;&nbsp;<b>ASHRAE 55 (правая):</b>
-    <span><i style="background:#8fbf5a"></i>compliance</span>
-    <span><i style="background:#c9705f"></i>вне зоны</span>
-    <span>— белый маркер: точка (t, φ). Кликните любую диаграмму — точка переносится на обе.</span>
+    <span>— белый маркер: рабочая точка (t, φ); клик по канве переносит её. Общие поля (t, φ, v, Δ<i>t</i><sub>r</sub>, met, clo) синхронизируются с диаграммой ASHRAE ниже.</span>
   </div>
-  <p class="hint fullwidth">Полосы категорий заданы моделью PMV/PPD (ГОСТ Р ИСО 7730-2009):
-  влажность в неё входит слабо, поэтому категории идут почти вертикально. Штриховые
-  линии на 30 % и 60 % — <b>гигиенические</b> границы для <b>жилой комнаты в холодный
-  период года</b> по <b>ГОСТ 30494-2011, табл. 1</b> (верхняя граница «не более 60 %»)
-  и <b>СанПиН 1.2.3685-21, табл. 5.27</b> (диапазон «60–30 %»). Для тёплого периода и
-  других типов помещений границы иные. Внутри «комфорта» по PMV точка может лежать вне
-  этих границ — тогда общий комфорт достигнут, а гигиенический норматив по влажности —
-  нет.</p>
 
   <p class="hint fullwidth"><b>Про ползунок «Tu — турбулентность».</b> Скорость воздуха
   в помещении не постоянная: она пульсирует вокруг своего среднего значения. Показатель
@@ -362,6 +342,152 @@
   ГОСТ Р ИСО 7730-2009: смешанная вентиляция — Tu около <b>40 %</b> (значение по
   умолчанию), вытесняющая или без искусственной вентиляции — <b>ниже</b>. Величина
   Tu входит только в расчёт DR и на PMV/PPD не влияет.</p>
+</section>
+
+<section class="card wide">
+  <h2>Диаграмма ANSI/ASHRAE Standard 55-2023</h2>
+  <p class="hint fullwidth" style="margin:-4px 0 12px 0">
+    Аналитический метод (Addendum&nbsp;h к 55-2020, свободно на ashrae.org):
+    одна зона compliance <b>−0,5&nbsp;&lt; PMV &lt;&nbsp;+0,5</b>. Применяется
+    при <b>1,0&nbsp;≤ met&nbsp;≤&nbsp;4,0</b> и <b>0,0&nbsp;≤ clo&nbsp;≤&nbsp;1,5</b>
+    (Addendum&nbsp;b). При скорости воздуха более 0,10&nbsp;м/с (20&nbsp;fpm)
+    в стандарте применяется поправка на <i>elevated air speed</i> через
+    SET-модель (Addendum&nbsp;c; на диаграмме здесь не реализована).
+    <b>Численных границ по влажности стандарт не задаёт</b> — см. открытый
+    обзор <a href="https://cbe.berkeley.edu/research/comfort/" rel="noopener nofollow">CBE&nbsp;Berkeley</a>
+    и de&nbsp;Dear&nbsp;R.J. et&nbsp;al. «Progress in thermal comfort research
+    over the last twenty years», Indoor&nbsp;Air 23(6):442—461, 2013 (DOI:
+    <a href="https://doi.org/10.1111/ina.12046" rel="noopener nofollow">10.1111/ina.12046</a>).
+    Общие с ГОСТ поля (t, φ, v, Δ<i>t</i><sub>r</sub>, met, clo) синхронизируются
+    с верхней диаграммой; специфичные (солнце, адаптивная модель) — только здесь.
+  </p>
+  <div class="diagwrap">
+    <div class="plot">
+      <figure class="canvas-fig">
+        <figcaption>ANSI/ASHRAE Standard 55-2023 — одна зона compliance (−0,5&nbsp;&lt; PMV &lt;&nbsp;+0,5); границ по влажности стандарт не задаёт</figcaption>
+        <canvas id="cv_ash" width="1200" height="900"></canvas>
+      </figure>
+    </div>
+
+    <aside class="sidebar">
+      <div class="srow ranges">
+        <div class="vslot">
+          <div class="lab">Температура</div>
+          <div class="cur"><span id="ta_v_a">24,0</span> °C</div>
+          <div class="track">
+            <input type="range" id="ta_a" orient="vertical" class="vert" min="10" max="38" step="0.2" value="24">
+            <div class="scale"><span>38</span><span>24</span><span>10</span></div>
+          </div>
+        </div>
+        <div class="vslot">
+          <div class="lab">Влажность</div>
+          <div class="cur"><span id="rh_v_a">50</span> %</div>
+          <div class="track">
+            <input type="range" id="rh_a" orient="vertical" class="vert" min="10" max="100" step="1" value="50">
+            <div class="scale"><span>100</span><span>50</span><span>10</span></div>
+          </div>
+        </div>
+        <div class="vslot">
+          <div class="lab">Подвижность воздуха</div>
+          <div class="cur"><span id="v_v_a">0,15</span> м/с</div>
+          <div class="track">
+            <input type="range" id="v_a" orient="vertical" class="vert" min="0" max="0.6" step="0.01" value="0.15">
+            <div class="scale"><span>0,6</span><span>0,3</span><span>0</span></div>
+          </div>
+        </div>
+        <div class="vslot">
+          <div class="lab">Δt<sub>r</sub> = t<sub>r</sub> − t<sub>a</sub></div>
+          <div class="cur"><span id="dtr_v_a">+0,0</span> °C</div>
+          <div class="track">
+            <input type="range" id="dtr_a" orient="vertical" class="vert" min="-8" max="8" step="0.2" value="0">
+            <div class="scale"><span>+8</span><span>0</span><span>−8</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="srow selects">
+        <div class="vslot sel">
+          <div class="lab">Активность</div>
+          <select id="met_a">
+            <option value="0.8">0,8 мет — покой, лёжа (вне ASHRAE 55)</option>
+            <option value="1.0" selected>1,0 мет — сидя</option>
+            <option value="1.2">1,2 мет — офис</option>
+            <option value="1.4">1,4 мет — стоя, лёгкая</option>
+            <option value="1.6">1,6 мет — средняя</option>
+            <option value="2.0">2,0 мет — ходьба</option>
+            <option value="3.0">3,0 мет — тяжёлая</option>
+          </select>
+        </div>
+        <div class="vslot sel">
+          <div class="lab">Одежда</div>
+          <select id="clo_a">
+            <option value="0">0 кло — без одежды</option>
+            <option value="0.25">0,25 кло — лёгкая</option>
+            <option value="0.5" selected>0,50 кло — летний комплект</option>
+            <option value="0.75">0,75 кло — рубашка, брюки</option>
+            <option value="1.0">1,00 кло — костюм</option>
+            <option value="1.5">1,50 кло — тёплый комплект</option>
+          </select>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="legend fullwidth">
+    <b>Цвета:</b>
+    <span><i style="background:#8fbf5a"></i>compliance (−0,5 &lt; PMV &lt; +0,5)</span>
+    <span><i style="background:#c9705f"></i>вне зоны</span>
+    <span>— белый маркер: точка (t, φ). Клик по канве меняет её и на верхней диаграмме тоже.</span>
+  </div>
+
+  <div class="ldi">
+    <div class="ldi-title">Специфичные входы ASHRAE 55-2023 (опционально; 0 или «не задана» — не оценивается)</div>
+
+    <div class="ldi-section">
+      <div class="ldi-subtitle">Поправка на прямую солнечную радиацию (ERF-модель, изменения в коде — Addendum&nbsp;d к 55-2020, свободно на ashrae.org)</div>
+      <div class="ldi-grid two">
+        <div class="ldi-cell">
+          <label for="solar_on">
+            <input type="checkbox" id="solar_on"> Учитывать поправку солнца
+            <span class="hint">(упрощение: сдвигает среднюю радиационную температуру на заданную величину; полный ERF-калькулятор здесь не реализован)</span>
+          </label>
+        </div>
+        <div class="ldi-cell">
+          <label for="solar_dt">Приращение MRT от солнца Δ<i>t</i><sub>r,sw</sub>, °C
+            <span class="hint">(типично 0—10 °C для нагретых прямым солнцем сидящих людей у окна)</span></label>
+          <input type="number" id="solar_dt" min="0" max="20" step="0.1" value="0" inputmode="decimal">
+        </div>
+      </div>
+    </div>
+
+    <div class="ldi-section">
+      <div class="ldi-subtitle">Адаптивная модель ASHRAE 55 — только для естественно проветриваемых помещений</div>
+      <div class="ldi-grid two">
+        <div class="ldi-cell">
+          <label for="tpma"><i>t</i><sub>pma&nbsp;out</sub> — скользящая средняя наружная температура, °C
+            <span class="hint">(арифметическое среднее среднесуточных наружных температур за 7—30 предшествующих дней; область применимости: строго 10 &lt; <i>t</i><sub>pma&nbsp;out</sub> &lt; 33,5 °C)</span></label>
+          <input type="number" id="tpma" min="10" max="33.5" step="0.1" value="20" inputmode="decimal">
+        </div>
+        <div class="ldi-cell">
+          <label for="to_meas">Операт. температура помещения <i>t</i><sub>o</sub>, °C
+            <span class="hint">(если не задана — берётся <i>t</i><sub>a</sub> сверху; условия адаптивной модели: без активного отопления/охлаждения; met 1,0—1,5; clo в диапазоне не уже 0,5—1,0)</span></label>
+          <input type="number" id="to_meas" min="0" max="40" step="0.1" value="0" inputmode="decimal">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="hint fullwidth">
+    <b>Как читать плитку «Соответствие ASHRAE 55-2023» ниже.</b> Плитка учитывает
+    зону compliance по PMV и все <i>заданные</i> критерии локального дискомфорта
+    (Ankle&nbsp;Air&nbsp;Speed, вертикальный градиент, температуру пола,
+    радиантную асимметрию — из блока «Локальный дискомфорт» ниже). Если поля
+    локальных критериев оставлены нулевыми, они не оцениваются, и плитка
+    сообщает об этом явно. <b>Плитка «Адаптивная модель»</b> учитывает только
+    два поля выше и <i>t</i><sub>o</sub>; при отсутствии активного механического
+    отопления/охлаждения и естественном проветривании — этот метод
+    предпочтительнее аналитического.
+  </p>
 </section>
 
 <section class="card">
@@ -378,10 +504,10 @@
   </div>
 
   <div class="ldi">
-    <div class="ldi-title">Дополнительные входы ASHRAE 55-2023 (опционально; 0 или «не задана» — не оценивается)</div>
+    <div class="ldi-title">Локальный дискомфорт — общие измерения (используются обеими методиками; 0 или «не задана» — не оценивается)</div>
 
     <div class="ldi-section">
-      <div class="ldi-subtitle">Локальный дискомфорт — применяется при <i>I</i><sub>cl</sub>&lt;0,7 и M&lt;1,3</div>
+      <div class="ldi-subtitle">Применяется при <i>I</i><sub>cl</sub>&lt;0,7 и M&lt;1,3</div>
       <div class="ldi-grid">
         <div class="ldi-cell">
           <label for="dtv">Δt воздуха голова↔лодыжки, °C
@@ -406,39 +532,6 @@
         <div class="ldi-cell">
           <label for="rasym">Модуль |Δt<sub>r</sub>|, °C</label>
           <input type="number" id="rasym" min="0" max="40" step="0.5" value="0" inputmode="decimal">
-        </div>
-      </div>
-    </div>
-
-    <div class="ldi-section">
-      <div class="ldi-subtitle">Поправка на прямую солнечную радиацию (§ 5.3.3)</div>
-      <div class="ldi-grid two">
-        <div class="ldi-cell">
-          <label for="solar_on">
-            <input type="checkbox" id="solar_on"> Учитывать поправку солнца
-            <span class="hint">(корректирует средневзвешенную радиационную температуру от коротковолновой доли прямого солнца)</span>
-          </label>
-        </div>
-        <div class="ldi-cell">
-          <label for="solar_dt">Приращение MRT от солнца Δ<i>t</i><sub>r,sw</sub>, °C
-            <span class="hint">(типично 0—10 °C; из ERF / прил. C)</span></label>
-          <input type="number" id="solar_dt" min="0" max="20" step="0.1" value="0" inputmode="decimal">
-        </div>
-      </div>
-    </div>
-
-    <div class="ldi-section">
-      <div class="ldi-subtitle">Адаптивная модель ASHRAE 55 — для естественно проветриваемых помещений</div>
-      <div class="ldi-grid two">
-        <div class="ldi-cell">
-          <label for="tpma"><i>t</i><sub>pma out</sub> — скользящая средняя наружная, °C
-            <span class="hint">(область применимости: 10—33,5)</span></label>
-          <input type="number" id="tpma" min="10" max="33.5" step="0.1" value="20" inputmode="decimal">
-        </div>
-        <div class="ldi-cell">
-          <label for="to_meas">Операт. температура помещения <i>t</i><sub>o</sub>, °C
-            <span class="hint">(если не задана — берётся <i>t</i><sub>a</sub> сверху)</span></label>
-          <input type="number" id="to_meas" min="0" max="40" step="0.1" value="0" inputmode="decimal">
         </div>
       </div>
     </div>
@@ -864,7 +957,18 @@ function sf(x, d){
 /* ------------------------------------------------------------------ ввод */
 var el = {};
 ['ta','v','dtr','rh','tu','met','clo','cat','dtv','tfloor','rasym','rasym_type',
- 'solar_on','solar_dt','tpma','to_meas'].forEach(function(id){ el[id] = document.getElementById(id); });
+ 'solar_on','solar_dt','tpma','to_meas',
+ 'ta_a','v_a','dtr_a','rh_a','met_a','clo_a'].forEach(function(id){ el[id] = document.getElementById(id); });
+
+// пары ГОСТ ↔ ASHRAE (общие входы синхронизируются двусторонне)
+var SYNC_PAIRS = [['ta','ta_a'], ['rh','rh_a'], ['v','v_a'],
+                  ['dtr','dtr_a'], ['met','met_a'], ['clo','clo_a']];
+function pushMainToMirror(){
+  SYNC_PAIRS.forEach(function(p){ el[p[1]].value = el[p[0]].value; });
+}
+function pushMirrorToMain(){
+  SYNC_PAIRS.forEach(function(p){ el[p[0]].value = el[p[1]].value; });
+}
 
 // поправка приложения A ГОСТ Р ИСО 7730-2009 (п. A.2):
 // v_ar = v + 0,3·(M − 1) при M > 1 мет; при M ≤ 1 мет добавка равна нулю
@@ -978,13 +1082,17 @@ function drawDiagram(inp, mode){
   var nx = Math.ceil(r.w/STEP), ny = Math.ceil(r.h/STEP);
   var pmvGrid = new Float64Array((nx+1)*(ny+1));
 
-  // заливка: для каждой ячейки считаем PMV, находим категорию с учётом DR
+  // заливка: для каждой ячейки считаем PMV, находим категорию с учётом DR.
+  // На диаграмме ASHRAE к среднeрадиационной температуре прибавляется поправка
+  // от прямого солнца (если включена), чтобы визуальная заливка совпадала с
+  // плиткой соответствия ASHRAE.
+  var dtrDiag = inp.dtr + ((mode === 'ashrae' && inp.solar_on) ? inp.solar_dt : 0);
   for(var j=0; j<=ny; j++){
     var phi = H0 + (H1 - H0)*(1 - j/ny);
     for(var i=0; i<=nx; i++){
       var t = T0 + (T1 - T0)*(i/nx);
       var v_ar = vAr(inp.v, inp.met);
-      var res = pmv(t, t + inp.dtr, v_ar, phi, inp.met, inp.clo, 0);
+      var res = pmv(t, t + dtrDiag, v_ar, phi, inp.met, inp.clo, 0);
       var pv = res ? res.pmv : NaN;
       pmvGrid[j*(nx+1) + i] = pv;
 
@@ -1207,36 +1315,48 @@ function row(name, got, lim, ok){
 }
 
 function render(){
+  pushMainToMirror();   // основные поля → зеркало секции ASHRAE перед чтением
   var inp = readInputs();
 
   document.getElementById('ta_v').textContent  = nf(inp.ta, 1);
+  document.getElementById('ta_v_a').textContent = nf(inp.ta, 1);
   document.getElementById('v_v').textContent   = nf(inp.v, 2);
+  document.getElementById('v_v_a').textContent = nf(inp.v, 2);
   document.getElementById('var_v').textContent = nf(inp.v_ar, 2);
   document.getElementById('dtr_v').textContent = sf(inp.dtr, 1);
+  document.getElementById('dtr_v_a').textContent = sf(inp.dtr, 1);
   document.getElementById('rh_v').textContent  = nf(inp.rh, 0);
+  document.getElementById('rh_v_a').textContent = nf(inp.rh, 0);
   document.getElementById('tu_v').textContent  = nf(inp.tu, 0);
 
-  // поправка на прямую солнечную радиацию (ASHRAE 55-2023 §5.3.3):
-  // если включена — MRT увеличивается на Δt_r,sw (короткая волна от прямого солнца)
-  var trEff = inp.tr + (inp.solar_on ? inp.solar_dt : 0);
-  var res = pmv(inp.ta, trEff, inp.v_ar, inp.rh, inp.met, inp.clo, 0);
-  var pv  = res ? res.pmv : null;
-  var pd  = ppd(pv);
-  var dr  = draughtRate(inp.ta, inp.v, inp.tu);
-  var tsu = resultingT(inp.ta, inp.tr, inp.v);
+  // Считаем два PMV раздельно:
+  //   pv_g — по ГОСТ Р ИСО 7730-2009: солнечной поправки в ГОСТ нет, MRT = tr.
+  //   pv_a — по ASHRAE 55: при включённой поправке ERF-модели MRT смещается
+  //   на Δt_r,sw (короткая волна от прямого солнца).
+  var trAsh = inp.tr + (inp.solar_on ? inp.solar_dt : 0);
+  var res_g = pmv(inp.ta, inp.tr, inp.v_ar, inp.rh, inp.met, inp.clo, 0);
+  var res_a = (inp.solar_on && inp.solar_dt > 0)
+              ? pmv(inp.ta, trAsh, inp.v_ar, inp.rh, inp.met, inp.clo, 0)
+              : res_g;
+  var pv_g = res_g ? res_g.pmv : null;
+  var pv   = pv_g;                 // основная (ГОСТ-совместимая) величина
+  var pv_a = res_a ? res_a.pmv : null;
+  var pd   = ppd(pv_g);
+  var dr   = draughtRate(inp.ta, inp.v, inp.tu);
+  var tsu  = resultingT(inp.ta, inp.tr, inp.v);
 
-  var cc = catByComfort(pv), cd = catByDraught(dr);
+  var cc = catByComfort(pv_g), cd = catByDraught(dr);
   // категория достигается только когда оба ограничения удовлетворены;
   // «худшая из двух» = категория с большим индексом в ORDER
   var overall = (cc === null || cd === null) ? null :
     (ORDER.indexOf(cc) > ORDER.indexOf(cd) ? cc : cd);
 
-  document.getElementById('o_pmv').textContent  = sf(pv, 2);
-  document.getElementById('o_sens').textContent = sensation(pv);
+  document.getElementById('o_pmv').textContent  = sf(pv_g, 2);
+  document.getElementById('o_sens').textContent = sensation(pv_g);
   document.getElementById('o_ppd').innerHTML    = nf(pd, 1) + '<span class="u"> %</span>';
   document.getElementById('o_dr').innerHTML     = nf(dr, 1) + '<span class="u"> %</span>';
   document.getElementById('o_tsu').innerHTML    = nf(tsu, 1) + '<span class="u"> °C</span>';
-  document.getElementById('o_tcl').innerHTML    = (res ? nf(res.tcl, 1) : '—') + '<span class="u"> °C</span>';
+  document.getElementById('o_tcl').innerHTML    = (res_g ? nf(res_g.tcl, 1) : '—') + '<span class="u"> °C</span>';
 
   var badge;
   if(overall !== null){
@@ -1282,21 +1402,22 @@ function render(){
   // (Addendum b к 55-2020 дословно: «metabolic rates between 1.0 and 4.0 met,
   // clothing insulation Icl between 0.0 and 1.5 clo»)
   var ashApp = (inp.met >= 1.0 && inp.met <= 4.0 && inp.clo >= 0.0 && inp.clo <= 1.5);
-  var pmvOK = (pv === null) ? null : (Math.abs(pv) < 0.5);
+  // ASHRAE-часть работает по pv_a (с солнечной поправкой, если включена)
+  var pmvOK = (pv_a === null) ? null : (Math.abs(pv_a) < 0.5);
   // раздел локального дискомфорта ASHRAE 55 применяется только при
   // clo < 0.7 И met < 1.3 (порог из открытых материалов ASHRAE)
   var localApp = (inp.clo < 0.7 && inp.met < 1.3);
   // Ankle Air Speed: V_ankle < 0.35·TS + 0.39, TS=PMV, м/с.
   // При отрицательных PMV лимит становится ≤ 0.1 м/с — формула теряет
   // физический смысл (настроена на нейтрально-тёплую сторону).
-  var vAnkleLim = (pv === null) ? null : (0.35 * pv + 0.39);
+  var vAnkleLim = (pv_a === null) ? null : (0.35 * pv_a + 0.39);
   var vAnkleUsable = (vAnkleLim !== null && vAnkleLim > 0.1);
   var vAnkleOK = (!vAnkleUsable || !localApp) ? null : (inp.v < vAnkleLim);
   // Вертикальный градиент: ΔT < 7.82 − 0.87·(PMV − 1.91)² [°C/м].
   // Проверено сверкой с Addendum a к 55-2020 (свободно на ashrae.org) и с
   // раздельным вариантом стандарта в °F/ft: ΔT[°F/ft] < 4.29 − 0.48·(TS − 1.91)²
   // — совпадает после перевода единиц (1 °C/m = 0.549 °F/ft).
-  var vgLim = (pv === null) ? null : (7.82 - 0.87 * Math.pow(pv - 1.91, 2));
+  var vgLim = (pv_a === null) ? null : (7.82 - 0.87 * Math.pow(pv_a - 1.91, 2));
   var vgUsable = (vgLim !== null && isFinite(vgLim) && vgLim > 0 && localApp);
   var vgOK = (!vgUsable || !dtvGiven) ? null : (inp.dtv < vgLim);
   // Температура пола: 19—29 °C
@@ -1306,7 +1427,7 @@ function render(){
 
   html += '<tr class="grp"><td colspan="4"><b>ANSI/ASHRAE Standard 55-2023</b> — аналитический метод</td></tr>';
   html += row('PMV compliance: −0,5 &lt; PMV &lt; +0,5',
-              ashApp ? sf(pv, 2) : 'вне области применимости',
+              ashApp ? sf(pv_a, 2) + (inp.solar_on && inp.solar_dt > 0 ? ' (с солнечной поправкой)' : '') : 'вне области применимости',
               '|PMV| &lt; 0,5', ashApp ? pmvOK : null);
   html += row('Ankle Air Speed: V &lt; 0,35·PMV + 0,39, м/с',
               nf(inp.v, 2),
@@ -1383,7 +1504,7 @@ function render(){
     warn.push('скорость ' + nf(inp.v,2) + ' м/с достигает границы применимости модели DR (менее 0,5 м/с)');
   if(inp.met > 1.2)
     warn.push('при активности выше 1,2 мет чувствительность к подвижности воздуха меньше — DR завышен');
-  if(res === null)
+  if(res_g === null)
     warn.push('итерация по температуре поверхности одежды не сошлась за 150 повторений — PMV не определён');
   document.getElementById('lim').innerHTML = warn.length
     ? '<b>Оговорки к текущей точке:</b> ' + warn.join('; ') + '.'
@@ -1398,6 +1519,12 @@ function render(){
  'solar_on','solar_dt','tpma','to_meas'].forEach(function(id){
   el[id].addEventListener('input', render);
   el[id].addEventListener('change', render);
+});
+// зеркальные поля секции ASHRAE: копируем в основные и рендерим обе диаграммы
+['ta_a','v_a','dtr_a','rh_a','met_a','clo_a'].forEach(function(id){
+  var h = function(){ pushMirrorToMain(); render(); };
+  el[id].addEventListener('input', h);
+  el[id].addEventListener('change', h);
 });
 
 /* ---------------------------------------------------------------- тема */
