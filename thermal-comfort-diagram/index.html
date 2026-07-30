@@ -1100,36 +1100,51 @@ function yToPhi(py){ var r = plotRect(); return H0 + (r.y + r.h - py)/r.h*(H1 - 
 // Отличия по mode: 'gost' — линии A/B/C + штрихи гигиены 30/60 %;
 //                  'ashrae' — линия compliance (±0,5), без штрихов гигиены.
 
-// Градиентная заливка PPD → RGB. Опорные точки:
-//  PPD =   5 % (минимум, PMV=0)  → тёмно-зелёный
-//  PPD =  10 % (граница B/compliance) → светло-зелёный
-//  PPD =  15 % (граница C)  → жёлто-зелёный
-//  PPD =  25 %              → жёлтый
-//  PPD =  50 %              → оранжевый
-//  PPD = 100 %              → тёмно-красный
-var PPD_STOPS = [
-  [ 5, [ 63, 143,  94]],
-  [10, [143, 191,  90]],
-  [15, [201, 208,  95]],
-  [25, [227, 196, 105]],
-  [50, [220, 145,  90]],
-  [100,[178,  62,  55]]
+// Единая шкала дискомфорта 0..1 («badness»), тепловой и влажностный вклад
+// combынируются евклидовой суммой — так изолинии заливки становятся
+// замкнутыми (концентрическими) вокруг зелёного центра комфорта, а не
+// независимыми полосами по каждой оси отдельно.
+//
+// badness = 0   → тёмно-зелёный (комфорт, PMV=0, φ в норме)
+// badness = 1   → тёмно-красный (тепловой ИЛИ гигиенический дискомфорт)
+var BADNESS_STOPS = [
+  [0.00, [ 63, 143,  94]],
+  [0.20, [143, 191,  90]],
+  [0.40, [201, 208,  95]],
+  [0.60, [227, 196, 105]],
+  [0.80, [220, 145,  90]],
+  [1.00, [178,  62,  55]]
 ];
-function ppdColor(pd){
-  if(isNaN(pd) || pd === null) return [201, 112, 95];
-  if(pd <= PPD_STOPS[0][0]) return PPD_STOPS[0][1];
-  for(var k = 1; k < PPD_STOPS.length; k++){
-    if(pd <= PPD_STOPS[k][0]){
-      var a = PPD_STOPS[k-1], b = PPD_STOPS[k];
-      var t = (pd - a[0]) / (b[0] - a[0]);
+function colorFromBadness(b){
+  b = Math.max(0, Math.min(1, b));
+  if(b <= BADNESS_STOPS[0][0]) return BADNESS_STOPS[0][1];
+  for(var k = 1; k < BADNESS_STOPS.length; k++){
+    if(b <= BADNESS_STOPS[k][0]){
+      var a = BADNESS_STOPS[k-1], c = BADNESS_STOPS[k];
+      var t = (b - a[0]) / (c[0] - a[0]);
       return [
-        Math.round(a[1][0] + (b[1][0] - a[1][0]) * t),
-        Math.round(a[1][1] + (b[1][1] - a[1][1]) * t),
-        Math.round(a[1][2] + (b[1][2] - a[1][2]) * t)
+        Math.round(a[1][0] + (c[1][0] - a[1][0]) * t),
+        Math.round(a[1][1] + (c[1][1] - a[1][1]) * t),
+        Math.round(a[1][2] + (c[1][2] - a[1][2]) * t)
       ];
     }
   }
-  return PPD_STOPS[PPD_STOPS.length-1][1];
+  return BADNESS_STOPS[BADNESS_STOPS.length-1][1];
+}
+// Тепловой вклад: PPD (%) → badness 0..1 по тем же опорным точкам, что были
+// у прежней шкалы PPD_STOPS (5/10/15/25/50/100 %), но нормированным на 0..1.
+var PPD_BREAKS = [5, 10, 15, 25, 50, 100];
+function badnessFromPPD(pd){
+  if(isNaN(pd) || pd === null) return 1;
+  if(pd <= PPD_BREAKS[0]) return 0;
+  for(var k = 1; k < PPD_BREAKS.length; k++){
+    if(pd <= PPD_BREAKS[k]){
+      var a = PPD_BREAKS[k-1], c = PPD_BREAKS[k];
+      var frac = (pd - a) / (c - a);
+      return (k - 1) * 0.2 + frac * 0.2;
+    }
+  }
+  return 1;
 }
 function drawDiagram(inp, mode){
   // подстраиваем ось T под фиксированный диапазон PMV: [-PMV_RANGE, +PMV_RANGE]
@@ -1170,30 +1185,17 @@ function drawDiagram(inp, mode){
       var pv = res ? res.pmv : NaN;
       pmvGrid[j*(nx+1) + i] = pv;
 
-      // единая заливка по критерию удовлетворённости — PPD (%).
-      // За пределами гигиенического диапазона влажности (30—60 %) цвет плавно
-      // сдвигается к чистому красному — без наложения полупрозрачных слоёв,
-      // чтобы избежать «грязного» смешения на уже красных краях PPD.
+      // Единая заливка: тепловой вклад (PPD) и влажностный вклад (отклонение φ
+      // от диапазона 30—60 %) объединяются евклидовой суммой в одну badness
+      // 0..1 — так изолинии заливки становятся концентрическими кольцами
+      // вокруг зелёного центра, а не крестом из двух независимых полос.
       var pd = ppd(pv);
-      var col = ppdColor(pd);
-      var wH = 0;                                     // вес красного оверлея
-      if(phi > 60) wH = Math.min(1, (phi - 60) / 40); // 60→0, 100→1
-      else if(phi < 30) wH = Math.min(1, (30 - phi) / 20); // 30→0, 10→1
-      if(wH > 0){
-        // трёхточечный градиент: PPD → жёлтый → красный, чтобы промежуточный
-        // переход шёл через насыщенный жёлтый (без «оливкового» провала при
-        // прямой RGB-интерполяции зелёного к красному).
-        var YEL = [227, 196, 105];
-        var RED = [178,  62,  55];
-        var stop = (wH < 0.5)
-          ? [col[0] + (YEL[0] - col[0]) * (wH*2),
-             col[1] + (YEL[1] - col[1]) * (wH*2),
-             col[2] + (YEL[2] - col[2]) * (wH*2)]
-          : [YEL[0] + (RED[0] - YEL[0]) * ((wH-0.5)*2),
-             YEL[1] + (RED[1] - YEL[1]) * ((wH-0.5)*2),
-             YEL[2] + (RED[2] - YEL[2]) * ((wH-0.5)*2)];
-        col = [Math.round(stop[0]), Math.round(stop[1]), Math.round(stop[2])];
-      }
+      var bt = badnessFromPPD(pd);
+      var bh = 0;
+      if(phi > 60) bh = Math.min(1, (phi - 60) / 40);       // 60→0, 100→1
+      else if(phi < 30) bh = Math.min(1, (30 - phi) / 20);  // 30→0, 10→1
+      var bCombined = Math.min(1, Math.sqrt(bt*bt + bh*bh));
+      var col = colorFromBadness(bCombined);
       CTX.fillStyle = 'rgba(' + col[0] + ',' + col[1] + ',' + col[2] + ',0.85)';
       CTX.fillRect(r.x + i*STEP - STEP/2, r.y + j*STEP - STEP/2, STEP + 1, STEP + 1);
     }
