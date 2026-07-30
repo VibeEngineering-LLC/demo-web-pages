@@ -55,7 +55,10 @@
   }
   h2{font-size:18px; margin:0 0 14px}
   h3{font-size:15px; margin:20px 0 8px}
-  p{margin:0 0 12px}
+  p{margin:0 0 12px; text-align:justify; hyphens:auto; -webkit-hyphens:auto}
+  .legend.fullwidth{margin-top:14px}
+  .hint.fullwidth{margin-top:8px; text-align:justify; hyphens:auto}
+  .card p, .card li{text-align:justify; hyphens:auto; -webkit-hyphens:auto}
   .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px 20px}
   .grid3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px 20px}
   @media (max-width:620px){.grid,.grid3{grid-template-columns:1fr}}
@@ -216,21 +219,6 @@
   <div class="diagwrap">
     <div class="plot">
       <canvas id="cv" width="1200" height="900"></canvas>
-      <div class="legend">
-        <span><i style="background:#3f8f5e"></i>категория A</span>
-        <span><i style="background:#8fbf5a"></i>категория B</span>
-        <span><i style="background:#e3c469"></i>категория C</span>
-        <span><i style="background:#c9705f"></i>вне A/B/C</span>
-        <span>— белый маркер: точка (t, φ). Кликните канвас, чтобы перенести её.</span>
-      </div>
-      <p class="hint" style="margin-top:8px">Полосы категорий заданы моделью PMV/PPD (ГОСТ Р ИСО 7730-2009): влажность
-      в неё входит слабо, поэтому категории идут почти вертикально. Штриховые линии на
-      30 % и 60 % — <b>гигиенические</b> границы для <b>жилой комнаты в холодный период
-      года</b> по <b>ГОСТ 30494-2011, табл. 1</b> (верхняя граница «не более 60 %») и
-      <b>СанПиН 1.2.3685-21, табл. 5.27</b> (диапазон «60–30 %»). Для тёплого периода и
-      других типов помещений границы иные. Внутри «комфорта» по PMV точка может лежать
-      вне этих границ — тогда общий комфорт достигнут, а гигиенический норматив по
-      влажности — нет.</p>
     </div>
 
     <aside class="sidebar">
@@ -319,6 +307,22 @@
       </div>
     </aside>
   </div>
+
+  <div class="legend fullwidth">
+    <span><i style="background:#3f8f5e"></i>категория A</span>
+    <span><i style="background:#8fbf5a"></i>категория B</span>
+    <span><i style="background:#e3c469"></i>категория C</span>
+    <span><i style="background:#c9705f"></i>вне A/B/C</span>
+    <span>— белый маркер: точка (t, φ). Кликните канвас, чтобы перенести её.</span>
+  </div>
+  <p class="hint fullwidth">Полосы категорий заданы моделью PMV/PPD (ГОСТ Р ИСО 7730-2009):
+  влажность в неё входит слабо, поэтому категории идут почти вертикально. Штриховые
+  линии на 30 % и 60 % — <b>гигиенические</b> границы для <b>жилой комнаты в холодный
+  период года</b> по <b>ГОСТ 30494-2011, табл. 1</b> (верхняя граница «не более 60 %»)
+  и <b>СанПиН 1.2.3685-21, табл. 5.27</b> (диапазон «60–30 %»). Для тёплого периода и
+  других типов помещений границы иные. Внутри «комфорта» по PMV точка может лежать вне
+  этих границ — тогда общий комфорт достигнут, а гигиенический норматив по влажности —
+  нет.</p>
 </section>
 
 <section class="card">
