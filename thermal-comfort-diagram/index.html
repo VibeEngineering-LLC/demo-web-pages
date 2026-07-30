@@ -102,19 +102,13 @@
   .ldi-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:10px}
   .ldi-grid.two{grid-template-columns:1fr 1fr}
   .ldi-cell{display:flex; flex-direction:column; gap:4px}
-  .ldi-cell label{font-size:13px; font-weight:600; display:flex; flex-direction:column; gap:2px}
-  .ldi-cell label .hint{font-weight:400; font-size:11px; color:var(--muted)}
+  .ldi-cell label{font-size:13px; font-weight:600; display:block;
+    text-transform:none; letter-spacing:0; color:inherit; line-height:1.35}
+  .ldi-cell label .hint{display:block; font-weight:400; font-size:11px;
+    color:var(--muted); text-transform:none; letter-spacing:0; margin-top:2px}
   .ldi-cell input[type=number], .ldi-cell select{padding:6px 8px; border:1px solid var(--line); border-radius:6px; font-size:14px; background:transparent; color:inherit}
   .ldi-cell input[type=checkbox]{margin-right:6px; transform:translateY(2px)}
   @media (max-width: 720px){ .ldi-grid, .ldi-grid.two{grid-template-columns:1fr 1fr} }
-  .adapt{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:12px 0}
-  .adapt-input{display:flex; flex-direction:column; gap:6px; padding:12px; border:1px solid var(--line); border-radius:8px}
-  .adapt-input label{font-size:14px; font-weight:600}
-  .adapt-input label .hint{display:block; font-weight:400; font-size:12px; color:var(--muted); margin-top:2px}
-  .adapt-input input[type=range]{width:100%}
-  .adapt-cur{font-family:var(--mono,monospace); font-size:18px; font-weight:700; text-align:center}
-  .adapt-out{grid-column:1/-1; display:grid; grid-template-columns:repeat(3, 1fr); gap:12px}
-  @media (max-width: 720px){ .adapt, .adapt-out{grid-template-columns:1fr} }
   .tblwrap{overflow-x:auto}
   code{font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     background:var(--input-bg); border:1px solid var(--line); border-radius:5px; padding:1px 5px}
@@ -138,7 +132,10 @@
   /* макет: канвас слева, ручки справа (5 range сверху + 3 select снизу) */
   .diagwrap{display:flex; flex-direction:row; align-items:flex-start; gap:14px; flex-wrap:wrap}
   .diagwrap > .plot{flex:1 1 640px; min-width:0}
-  canvas#cv{background:var(--input-bg); border:1px solid var(--line); border-radius:10px; width:100%; height:auto; display:block}
+  .plot-two{display:flex; flex-direction:row; gap:12px; flex-wrap:wrap}
+  .plot-two .canvas-fig{flex:1 1 300px; min-width:0; margin:0; display:flex; flex-direction:column; gap:6px}
+  .plot-two .canvas-fig figcaption{font-size:12px; color:var(--muted); font-weight:600; line-height:1.35}
+  @media (max-width: 900px){ .plot-two{flex-direction:column} }
   .sidebar{flex:0 0 auto; width:520px;
            display:flex; flex-direction:column; gap:8px;
            background:var(--input-bg); border:1px solid var(--line); border-radius:10px;
@@ -218,28 +215,34 @@
 
 
 <section class="card wide">
-  <h2>Диаграмма комфорта: температура и относительная влажность</h2>
+  <h2>Диаграммы комфорта: ГОСТ Р ИСО 7730-2009 и ANSI/ASHRAE Standard 55-2023</h2>
   <p class="hint fullwidth" style="margin:-4px 0 12px 0">
-    Диаграмма совмещает <b>ГОСТ Р ИСО 7730-2009</b> (идентичен ISO 7730:2005) и
-    <b>ANSI/ASHRAE Standard 55-2023</b> в аналитической части. Обе методики
-    используют одну и ту же PMV-модель Фангера, поэтому границы по общему
-    комфорту численно совпадают: <b>категория&nbsp;B ГОСТ = зона compliance
-    ASHRAE 55</b> (−0,5&nbsp;&lt; PMV &lt;&nbsp;+0,5, дословно из Addendum&nbsp;h
-    к 55-2020, свободно опубликован ASHRAE). Различия: у ГОСТ три категории
-    (A/B/C), у ASHRAE — одна зона соответствия; локальные критерии считаются
-    по-разному; адаптивная модель ASHRAE — отдельная методика (см. блок ниже
-    с полями ввода). <b>Границы по влажности задаёт только ГОСТ/СанПиН</b>;
-    ASHRAE 55 своих численных границ на влажность не задаёт — см. открытый
-    обзор <a href="https://cbe.berkeley.edu/research/comfort/" rel="noopener nofollow">CBE&nbsp;Berkeley</a>
+    Слева — <b>ГОСТ Р ИСО 7730-2009</b> (идентичен ISO 7730:2005): три категории
+    A/B/C по PMV/PPD с учётом DR; штриховые 30/60&nbsp;% — гигиенические границы
+    жилой комнаты в холодный период (ГОСТ 30494-2011, СанПиН 1.2.3685-21).
+    Справа — <b>ANSI/ASHRAE Standard 55-2023</b>, аналитический метод: одна зона
+    compliance (−0,5&nbsp;&lt; PMV &lt;&nbsp;+0,5, дословно из свободного
+    Addendum&nbsp;h к 55-2020). Численных границ по влажности стандарт не задаёт
+    — см. открытый обзор <a href="https://cbe.berkeley.edu/research/comfort/" rel="noopener nofollow">CBE&nbsp;Berkeley</a>
     и de&nbsp;Dear&nbsp;R.J. et&nbsp;al. «Progress in thermal comfort research
     over the last twenty years», Indoor&nbsp;Air 23(6):442—461, 2013 (DOI:
     <a href="https://doi.org/10.1111/ina.12046" rel="noopener nofollow">10.1111/ina.12046</a>).
-    Синяя штриховая на диаграмме — изолиния влагосодержания <i>w</i>&nbsp;=&nbsp;0,010&nbsp;г/г
-    (условие иллюстративного рисунка стандарта, не compliance-граница).
+    Обе диаграммы работают на одной PMV-модели Фангера — общие входы
+    (температура, влажность, скорость воздуха, Δ<i>t</i><sub>r</sub>, met,
+    clo) синхронизируют обе; специфичные (Tu для DR ГОСТ, категория A/B/C,
+    поправка на солнечную радиацию, адаптивная модель) — в общих полях ниже.
+    Клик по любой диаграмме переносит рабочую точку на обе.
   </p>
   <div class="diagwrap">
-    <div class="plot">
-      <canvas id="cv" width="1200" height="900"></canvas>
+    <div class="plot plot-two">
+      <figure class="canvas-fig">
+        <figcaption>ГОСТ Р ИСО 7730-2009 — категории A/B/C, штрихи 30/60 % (гигиена РФ)</figcaption>
+        <canvas id="cv_gost" width="1200" height="900"></canvas>
+      </figure>
+      <figure class="canvas-fig">
+        <figcaption>ANSI/ASHRAE Standard 55-2023 — одна зона compliance (−0,5&nbsp;&lt; PMV &lt;&nbsp;+0,5); численных границ по влажности стандарт не задаёт</figcaption>
+        <canvas id="cv_ash" width="1200" height="900"></canvas>
+      </figure>
     </div>
 
     <aside class="sidebar">
@@ -295,7 +298,7 @@
         <div class="vslot sel">
           <div class="lab">Активность</div>
           <select id="met">
-            <option value="0.8">0,8 мет — покой, лёжа</option>
+            <option value="0.8">0,8 мет — покой, лёжа (вне области ASHRAE 55)</option>
             <option value="1.0" selected>1,0 мет — сидя</option>
             <option value="1.2">1,2 мет — офис</option>
             <option value="1.4">1,4 мет — стоя, лёгкая</option>
@@ -330,11 +333,15 @@
   </div>
 
   <div class="legend fullwidth">
+    <b>ГОСТ (левая):</b>
     <span><i style="background:#3f8f5e"></i>категория A</span>
     <span><i style="background:#8fbf5a"></i>категория B</span>
     <span><i style="background:#e3c469"></i>категория C</span>
     <span><i style="background:#c9705f"></i>вне A/B/C</span>
-    <span>— белый маркер: точка (t, φ). Кликните канвас, чтобы перенести её.</span>
+    &nbsp;&nbsp;<b>ASHRAE 55 (правая):</b>
+    <span><i style="background:#8fbf5a"></i>compliance</span>
+    <span><i style="background:#c9705f"></i>вне зоны</span>
+    <span>— белый маркер: точка (t, φ). Кликните любую диаграмму — точка переносится на обе.</span>
   </div>
   <p class="hint fullwidth">Полосы категорий заданы моделью PMV/PPD (ГОСТ Р ИСО 7730-2009):
   влажность в неё входит слабо, поэтому категории идут почти вертикально. Штриховые
@@ -421,7 +428,7 @@
     </div>
 
     <div class="ldi-section">
-      <div class="ldi-subtitle">Адаптивная модель (§ 5.4) — для естественно проветриваемых помещений</div>
+      <div class="ldi-subtitle">Адаптивная модель ASHRAE 55 — для естественно проветриваемых помещений</div>
       <div class="ldi-grid two">
         <div class="ldi-cell">
           <label for="tpma"><i>t</i><sub>pma out</sub> — скользящая средняя наружная, °C
@@ -890,7 +897,7 @@ function readInputs(){
   };
 }
 
-// пределы радиантной асимметрии (ASHRAE 55-2023 табл. 5-10) — °C
+// пределы радиантной асимметрии по ASHRAE 55 (совпадают с ISO 7730 табл. A.4) — °C
 var RASYM_LIM = {
   ceilW: {lim: 5,  label: 'потолок теплее пола'},
   ceilC: {lim: 14, label: 'потолок холоднее пола'},
@@ -899,8 +906,10 @@ var RASYM_LIM = {
 };
 
 /* ------------------------------ 2D-диаграмма t–φ ---------------------- */
-var CV = document.getElementById('cv');
-var CTX = CV.getContext('2d');
+var CV_GOST = document.getElementById('cv_gost');
+var CV_ASH  = document.getElementById('cv_ash');
+var CV = null, CTX = null;
+function setActive(cv){ CV = cv; CTX = cv.getContext('2d'); }
 
 // диапазон температуры на диаграмме — скользящий: между T(PMV=-1,5) и T(PMV=+1,5)
 // при текущих met/clo/dtr/v и φ=50 %. Это делает ширину зон A/B/C стабильной
@@ -941,7 +950,10 @@ function xToT(px){ var r = plotRect(); return T0 + (px - r.x)/r.w*(T1 - T0); }
 function yToPhi(py){ var r = plotRect(); return H0 + (r.y + r.h - py)/r.h*(H1 - H0); }
 
 /* ----------------------------- рендер 2D ------------------------------ */
-function drawDiagram(inp){
+// mode: 'gost' — заливка по A/B/C с учётом DR, штрихи гигиены 30/60 %.
+//       'ashrae' — заливка по compliance PMV ±0,5 (одна зелёная полоса),
+//                  штриховая w=0,010 г/г (не compliance).
+function drawDiagram(inp, mode){
   // подстраиваем ось T под фиксированный диапазон PMV: [-PMV_RANGE, +PMV_RANGE]
   // при текущих met/clo/dtr/v и φ=50 %. Так зоны A/B/C сохраняют ширину
   // на диаграмме, красное — узкие полосы у краёв.
@@ -976,17 +988,22 @@ function drawDiagram(inp){
       var pv = res ? res.pmv : NaN;
       pmvGrid[j*(nx+1) + i] = pv;
 
-      var cc = catByComfort(pv);
       var col;
-      if(cc === null){
-        col = FILL.X;
+      if(mode === 'ashrae'){
+        // одна зона compliance: |PMV| < 0,5 → зелёный, иначе красный
+        if(isNaN(pv)) col = FILL.X;
+        else col = (Math.abs(pv) < 0.5) ? FILL.B : FILL.X;
       } else {
-        var cd = catByDraught(draughtRate(t, inp.v, inp.tu));
-        // категория достигается только когда оба ограничения удовлетворены;
-        // если хоть одно вне A/B/C — ячейка красная (та же логика, что в плитке)
-        var worst = (cd === null) ? null :
-                    (ORDER.indexOf(cc) > ORDER.indexOf(cd) ? cc : cd);
-        col = worst === null ? FILL.X : FILL[worst];
+        // 'gost': категории A/B/C с учётом DR
+        var cc = catByComfort(pv);
+        if(cc === null){
+          col = FILL.X;
+        } else {
+          var cd = catByDraught(draughtRate(t, inp.v, inp.tu));
+          var worst = (cd === null) ? null :
+                      (ORDER.indexOf(cc) > ORDER.indexOf(cd) ? cc : cd);
+          col = worst === null ? FILL.X : FILL[worst];
+        }
       }
       CTX.fillStyle = 'rgba(' + col[0] + ',' + col[1] + ',' + col[2] + ',0.72)';
       CTX.fillRect(r.x + i*STEP - STEP/2, r.y + j*STEP - STEP/2, STEP + 1, STEP + 1);
@@ -1002,10 +1019,13 @@ function drawDiagram(inp){
   CTX.fillRect(0, r.y + r.h, CV.width, CV.height - r.y - r.h);
   CTX.restore();
 
-  // изолинии PMV: -0,5; 0; +0,5 (marching squares)
+  // изолинии PMV: -0,5; 0; +0,5 (marching squares).
+  // На диаграмме ASHRAE ±0,5 дублирует границу compliance-заливки — оставляем
+  // только нулевую изолинию (нейтральная температура).
   CTX.strokeStyle = 'rgba(255,255,255,.95)';
   CTX.lineWidth = 2.2;
-  [-0.5, 0, 0.5].forEach(function(lev){
+  var isoLevels = (mode === 'ashrae') ? [0] : [-0.5, 0, 0.5];
+  isoLevels.forEach(function(lev){
     CTX.beginPath();
     for(var j2=0; j2<ny; j2++){
       for(var i2=0; i2<nx; i2++){
@@ -1090,54 +1110,31 @@ function drawDiagram(inp){
   labelAtPMV(-0.1, 'комфорт',    0.50);
   labelAtPMV( 1.4, 'жарко',      0.30);
 
-  // гигиенические границы относительной влажности:
-  // ГОСТ 30494-2011 табл. 1 и СанПиН 1.2.3685-21 табл. 5.27, жилые помещения,
-  // холодный период: допустимая φ не более 60 %; нижний край диапазона 30 %.
-  CTX.strokeStyle = 'rgba(28,27,25,.55)';
-  CTX.lineWidth = 1.5;
-  CTX.setLineDash([8, 6]);
-  [30, 60].forEach(function(phiLim){
-    if(phiLim < H0 || phiLim > H1) return;
-    var Y = ph(phiLim);
-    CTX.beginPath(); CTX.moveTo(r.x, Y); CTX.lineTo(r.x + r.w, Y); CTX.stroke();
-  });
-  CTX.setLineDash([]);
-  CTX.font = 'italic 15px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
-  CTX.fillStyle = 'rgba(28,27,25,.72)';
-  CTX.textAlign = 'left'; CTX.textBaseline = 'top';
-  if(60 <= H1) CTX.fillText('φ > 60 % — вне гигиенической нормы (жилая, холодный период; ГОСТ 30494 табл. 1, СанПиН 1.2.3685-21 табл. 5.27)', r.x + 12, ph(60) + 6);
-  CTX.textBaseline = 'bottom';
-  if(30 >= H0) CTX.fillText('φ < 30 % — вне гигиенической нормы (жилая, холодный период; СанПиН 1.2.3685-21 табл. 5.27)', r.x + 12, ph(30) - 6);
+  // гигиенические границы 30/60 % — только на диаграмме ГОСТ (жилая, холодный
+  // период; ГОСТ 30494-2011 табл. 1 и СанПиН 1.2.3685-21 табл. 5.27).
+  if(mode === 'gost'){
+    CTX.strokeStyle = 'rgba(28,27,25,.55)';
+    CTX.lineWidth = 1.5;
+    CTX.setLineDash([8, 6]);
+    [30, 60].forEach(function(phiLim){
+      if(phiLim < H0 || phiLim > H1) return;
+      var Y = ph(phiLim);
+      CTX.beginPath(); CTX.moveTo(r.x, Y); CTX.lineTo(r.x + r.w, Y); CTX.stroke();
+    });
+    CTX.setLineDash([]);
+    CTX.font = 'italic 15px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
+    CTX.fillStyle = 'rgba(28,27,25,.72)';
+    CTX.textAlign = 'left'; CTX.textBaseline = 'top';
+    if(60 <= H1) CTX.fillText('φ > 60 % — вне гигиенической нормы (жилая, холодный период; ГОСТ 30494, СанПиН 1.2.3685-21)', r.x + 12, ph(60) + 6);
+    CTX.textBaseline = 'bottom';
+    if(30 >= H0) CTX.fillText('φ < 30 % — вне гигиенической нормы (жилая, холодный период; СанПиН 1.2.3685-21)', r.x + 12, ph(30) - 6);
+  }
 
-  // изолиния влагосодержания w = 0,010 г/г — типичное условие иллюстративного
-  // рисунка ASHRAE 55 (не compliance). φ(t) = 100 · p_v / p_ws(t),
-  // где p_v = w·p_atm/(0,622+w) = 1,6033 кПа при w=0,010; p_ws — по формуле, что и в PMV.
-  var PV_W010 = 1.6033;   // кПа
-  CTX.strokeStyle = 'rgba(64,110,180,.55)';
-  CTX.lineWidth = 1.5;
-  CTX.setLineDash([2, 4]);
-  CTX.beginPath();
-  var firstPt = true, lastInside = false, labelPt = null;
-  for(var xi = 0; xi <= r.w; xi += 3){
-    var tt = T0 + (T1 - T0) * (xi / r.w);
-    var phi_w = 100 * PV_W010 / pSatKPa(tt);
-    if(phi_w < H0 || phi_w > H1){ lastInside = false; continue; }
-    var xx = r.x + xi;
-    var yy = ph(phi_w);
-    if(!lastInside){ CTX.moveTo(xx, yy); lastInside = true; }
-    else CTX.lineTo(xx, yy);
-    if(labelPt === null && xi > r.w * 0.55) labelPt = {x: xx, y: yy};
-    firstPt = false;
-  }
-  CTX.stroke();
-  CTX.setLineDash([]);
-  if(labelPt){
-    CTX.font = 'italic 13px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
-    CTX.fillStyle = 'rgba(64,110,180,.85)';
-    CTX.textAlign = 'left'; CTX.textBaseline = 'bottom';
-    CTX.fillText('w = 0,010 г/г — типичное условие иллюстративных диаграмм ASHRAE 55 (не compliance)',
-                 labelPt.x + 6, labelPt.y - 4);
-  }
+  // На диаграмме ASHRAE численных границ по влажности не рисуется:
+  // ASHRAE 55 своих численных границ на влажность не задаёт (аудит перед
+  // публикацией показал: конкретное значение humidity ratio, ранее использованное
+  // как иллюстративная изолиния, восстанавливалось только из платного текста —
+  // нарушение citation-green; снято до нахождения открытого источника).
 
   // текущая точка
   var inRangeT = inp.ta >= T0 && inp.ta <= T1;
@@ -1171,15 +1168,17 @@ function drawDiagram(inp){
   }
 }
 
-/* --------------------- клик по канвасу переносит точку ---------------- */
+/* --------------------- клик по канвасам переносит точку --------------- */
 (function(){
-  function toCanvasCoord(evt){
-    var rect = CV.getBoundingClientRect();
-    var x = (evt.clientX - rect.left) * (CV.width / rect.width);
-    var y = (evt.clientY - rect.top)  * (CV.height / rect.height);
-    return { x: x, y: y };
+  function toCanvasCoord(cv, evt){
+    var rect = cv.getBoundingClientRect();
+    return {
+      x: (evt.clientX - rect.left) * (cv.width / rect.width),
+      y: (evt.clientY - rect.top)  * (cv.height / rect.height)
+    };
   }
-  function setFromXY(x, y){
+  function setFromXY(cv, x, y){
+    setActive(cv);
     var r = plotRect();
     if(x < r.x || x > r.x + r.w || y < r.y || y > r.y + r.h) return;
     var t = xToT(x);
@@ -1190,8 +1189,13 @@ function drawDiagram(inp){
     document.getElementById('rh').value = Math.round(phi);
     render();
   }
-  CV.style.cursor = 'crosshair';
-  CV.addEventListener('click', function(e){ var p = toCanvasCoord(e); setFromXY(p.x, p.y); });
+  [CV_GOST, CV_ASH].forEach(function(cv){
+    cv.style.cursor = 'crosshair';
+    cv.addEventListener('click', function(e){
+      var p = toCanvasCoord(cv, e);
+      setFromXY(cv, p.x, p.y);
+    });
+  });
 })();
 
 /* ------------------------------------------------------------------ вывод */
@@ -1279,24 +1283,25 @@ function render(){
   // clothing insulation Icl between 0.0 and 1.5 clo»)
   var ashApp = (inp.met >= 1.0 && inp.met <= 4.0 && inp.clo >= 0.0 && inp.clo <= 1.5);
   var pmvOK = (pv === null) ? null : (Math.abs(pv) < 0.5);
-  // локальный дискомфорт применяется только при clo<0.7 И met<1.3 (п. 5.3.5.1)
+  // раздел локального дискомфорта ASHRAE 55 применяется только при
+  // clo < 0.7 И met < 1.3 (порог из открытых материалов ASHRAE)
   var localApp = (inp.clo < 0.7 && inp.met < 1.3);
-  // Ankle Air Speed limit (п. 5.3.5.3): V_ankle < 0.35·TS + 0.39, TS=PMV, м/с
-  // при отрицательных PMV лимит становится ≤ 0,1 м/с — формула теряет физический смысл
-  // (модель настроена на нейтрально-тёплую сторону). В таком случае — не оцениваем.
+  // Ankle Air Speed: V_ankle < 0.35·TS + 0.39, TS=PMV, м/с.
+  // При отрицательных PMV лимит становится ≤ 0.1 м/с — формула теряет
+  // физический смысл (настроена на нейтрально-тёплую сторону).
   var vAnkleLim = (pv === null) ? null : (0.35 * pv + 0.39);
   var vAnkleUsable = (vAnkleLim !== null && vAnkleLim > 0.1);
   var vAnkleOK = (!vAnkleUsable || !localApp) ? null : (inp.v < vAnkleLim);
-  // Vertical Gradient (п. 5.3.5.4): ΔT < 7.82 − 0.87·(PMV − 1.91)² [°C/м]
-  // Проверено по прямой сверке с Addendum a к 55-2020 и раздельным вариантом
-  // для °F/ft: ΔT[°F/ft] < 4.29 − 0.48·(TS − 1.91)² — совпадает после перевода
-  // единиц (1 °C/m = 0.549 °F/ft), 7.82·0.549 = 4.29; 0.87·0.549 = 0.48.
+  // Вертикальный градиент: ΔT < 7.82 − 0.87·(PMV − 1.91)² [°C/м].
+  // Проверено сверкой с Addendum a к 55-2020 (свободно на ashrae.org) и с
+  // раздельным вариантом стандарта в °F/ft: ΔT[°F/ft] < 4.29 − 0.48·(TS − 1.91)²
+  // — совпадает после перевода единиц (1 °C/m = 0.549 °F/ft).
   var vgLim = (pv === null) ? null : (7.82 - 0.87 * Math.pow(pv - 1.91, 2));
   var vgUsable = (vgLim !== null && isFinite(vgLim) && vgLim > 0 && localApp);
   var vgOK = (!vgUsable || !dtvGiven) ? null : (inp.dtv < vgLim);
-  // Floor 19—29 °C (п. 5.3.5.5)
+  // Температура пола: 19—29 °C
   var floorOK = (!localApp || !tfloorGiven) ? null : (inp.tfloor >= 19 && inp.tfloor <= 29);
-  // Radiant asymmetry (п. 5.3.5.2, табл. 5-10)
+  // Радиантная асимметрия (пределы совпадают с ISO 7730 табл. A.4)
   var raOK = (!localApp || !rasymGiven) ? null : (inp.rasym < rasymLim.lim);
 
   html += '<tr class="grp"><td colspan="4"><b>ANSI/ASHRAE Standard 55-2023</b> — аналитический метод</td></tr>';
@@ -1352,11 +1357,10 @@ function render(){
   }
   document.getElementById('o_ash').innerHTML = ashBadge;
 
-  // --- Адаптивная модель (§ 5.4) ---
+  // --- Адаптивная модель ASHRAE 55 ---
   var tpma = inp.tpma;
   var to   = inp.to_meas > 0 ? inp.to_meas : inp.ta;   // если не задана — берём ta
-  // строгие неравенства по § 5.4.1.d (Addendum e к 55-2020 не меняет этих порогов;
-  // формулировка стандарта: «greater than 10°C and less than 33.5°C»)
+  // строгие неравенства: 10 < t_pma_out < 33,5 °C
   var adApp = (tpma > 10 && tpma < 33.5);
   var adUpper = 0.31 * tpma + 21.3;
   var adLower = 0.31 * tpma + 14.3;
@@ -1385,7 +1389,8 @@ function render(){
     ? '<b>Оговорки к текущей точке:</b> ' + warn.join('; ') + '.'
     : 'Текущая точка лежит в пределах применимости использованных зависимостей.';
 
-  drawDiagram(inp);
+  setActive(CV_GOST); drawDiagram(inp, 'gost');
+  setActive(CV_ASH);  drawDiagram(inp, 'ashrae');
 }
 
 ['ta','v','dtr','rh','tu','met','clo','cat',
