@@ -1319,31 +1319,54 @@ function drawDiagram(inp, mode){
   labelAtPMV(-0.1, 'комфорт',    0.50);
   labelAtPMV( 1.4, 'жарко',      0.30);
 
-  // гигиенические границы 30/60 % — только на диаграмме ГОСТ (жилая, холодный
-  // период; ГОСТ 30494-2011 табл. 1 и СанПиН 1.2.3685-21 табл. 5.27).
-  if(mode === 'gost'){
-    CTX.strokeStyle = 'rgba(28,27,25,.55)';
-    CTX.lineWidth = 1.5;
-    CTX.setLineDash([8, 6]);
-    [30, 60].forEach(function(phiLim){
-      if(phiLim < H0 || phiLim > H1) return;
-      var Y = ph(phiLim);
-      CTX.beginPath(); CTX.moveTo(r.x, Y); CTX.lineTo(r.x + r.w, Y); CTX.stroke();
-    });
-    CTX.setLineDash([]);
-    CTX.font = 'italic 15px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
-    CTX.fillStyle = 'rgba(28,27,25,.72)';
-    CTX.textAlign = 'left'; CTX.textBaseline = 'top';
-    if(60 <= H1) CTX.fillText('φ > 60 % — вне гигиенической нормы (жилая, холодный период; ГОСТ 30494, СанПиН 1.2.3685-21)', r.x + 12, ph(60) + 6);
-    CTX.textBaseline = 'bottom';
-    if(30 >= H0) CTX.fillText('φ < 30 % — вне гигиенической нормы (жилая, холодный период; СанПиН 1.2.3685-21)', r.x + 12, ph(30) - 6);
+  // Оверлей влажностного дискомфорта — плавные градиенты сверху (сыро) и снизу
+  // (сухо). Диапазон комфорта 30—60 % — нейтральный; за его пределами непрозрачность
+  // растёт линейно, обозначая усиливающийся нетермальный дискомфорт.
+  // На ГОСТ-диаграмме границы 30/60 % опираются на ГОСТ 30494-2011 табл. 1 и
+  // СанПиН 1.2.3685-21 табл. 5.27 (жилая комната, холодный период). На ASHRAE-
+  // диаграмме те же границы приводятся как ориентир общей инженерной практики —
+  // сам стандарт ASHRAE 55 численных границ по влажности не задаёт.
+  var hiLim = 60, loLim = 30, hiEnd = 100, loEnd = 10;
+
+  // верхний градиент — синий (сырость)
+  if(hiLim < H1){
+    var gTop = CTX.createLinearGradient(0, ph(hiEnd), 0, ph(hiLim));
+    gTop.addColorStop(0, 'rgba( 55, 95,180,.45)');
+    gTop.addColorStop(1, 'rgba( 55, 95,180,.00)');
+    CTX.fillStyle = gTop;
+    CTX.fillRect(r.x, ph(hiEnd), r.w, ph(hiLim) - ph(hiEnd));
+  }
+  // нижний градиент — оранжевый (сухость)
+  if(loLim > H0){
+    var gBot = CTX.createLinearGradient(0, ph(loLim), 0, ph(loEnd));
+    gBot.addColorStop(0, 'rgba(200,120, 55,.00)');
+    gBot.addColorStop(1, 'rgba(200,120, 55,.45)');
+    CTX.fillStyle = gBot;
+    CTX.fillRect(r.x, ph(loLim), r.w, ph(loEnd) - ph(loLim));
   }
 
-  // На диаграмме ASHRAE численных границ по влажности не рисуется:
-  // ASHRAE 55 своих численных границ на влажность не задаёт (аудит перед
-  // публикацией показал: конкретное значение humidity ratio, ранее использованное
-  // как иллюстративная изолиния, восстанавливалось только из платного текста —
-  // нарушение citation-green; снято до нахождения открытого источника).
+  // тонкие штриховые границы 30/60 % с подписями
+  CTX.strokeStyle = 'rgba(28,27,25,.55)';
+  CTX.lineWidth = 1.5;
+  CTX.setLineDash([8, 6]);
+  [30, 60].forEach(function(phiLim){
+    if(phiLim < H0 || phiLim > H1) return;
+    var Y = ph(phiLim);
+    CTX.beginPath(); CTX.moveTo(r.x, Y); CTX.lineTo(r.x + r.w, Y); CTX.stroke();
+  });
+  CTX.setLineDash([]);
+  CTX.font = 'italic 15px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
+  CTX.fillStyle = 'rgba(28,27,25,.85)';
+  CTX.textAlign = 'left'; CTX.textBaseline = 'top';
+  if(mode === 'gost'){
+    if(60 <= H1) CTX.fillText('φ > 60 % — сырость (вне гигиенической нормы: ГОСТ 30494, СанПиН 1.2.3685-21; жилая, холодный период)', r.x + 12, ph(60) + 6);
+    CTX.textBaseline = 'bottom';
+    if(30 >= H0) CTX.fillText('φ < 30 % — сухость (вне гигиенической нормы: СанПиН 1.2.3685-21; жилая, холодный период)', r.x + 12, ph(30) - 6);
+  } else {
+    if(60 <= H1) CTX.fillText('φ > 60 % — сырость (общая инженерная практика; сам ASHRAE 55 границ по влажности не задаёт)', r.x + 12, ph(60) + 6);
+    CTX.textBaseline = 'bottom';
+    if(30 >= H0) CTX.fillText('φ < 30 % — сухость (общая инженерная практика; сам ASHRAE 55 границ по влажности не задаёт)', r.x + 12, ph(30) - 6);
+  }
 
   // текущая точка
   var inRangeT = inp.ta >= T0 && inp.ta <= T1;
