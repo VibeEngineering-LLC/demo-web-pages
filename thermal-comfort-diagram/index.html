@@ -1170,10 +1170,24 @@ function drawDiagram(inp, mode){
       var pv = res ? res.pmv : NaN;
       pmvGrid[j*(nx+1) + i] = pv;
 
-      // единая заливка по критерию удовлетворённости — PPD (%)
+      // единая заливка по критерию удовлетворённости — PPD (%).
+      // За пределами гигиенического диапазона влажности (30—60 %) цвет плавно
+      // сдвигается к чистому красному — без наложения полупрозрачных слоёв,
+      // чтобы избежать «грязного» смешения на уже красных краях PPD.
       var pd = ppd(pv);
       var col = ppdColor(pd);
-      CTX.fillStyle = 'rgba(' + col[0] + ',' + col[1] + ',' + col[2] + ',0.78)';
+      var wH = 0;                                     // вес красного оверлея
+      if(phi > 60) wH = Math.min(1, (phi - 60) / 40); // 60→0, 100→1
+      else if(phi < 30) wH = Math.min(1, (30 - phi) / 20); // 30→0, 10→1
+      if(wH > 0){
+        var RED = [178, 62, 55];
+        col = [
+          Math.round(col[0] + (RED[0] - col[0]) * wH),
+          Math.round(col[1] + (RED[1] - col[1]) * wH),
+          Math.round(col[2] + (RED[2] - col[2]) * wH)
+        ];
+      }
+      CTX.fillStyle = 'rgba(' + col[0] + ',' + col[1] + ',' + col[2] + ',0.85)';
       CTX.fillRect(r.x + i*STEP - STEP/2, r.y + j*STEP - STEP/2, STEP + 1, STEP + 1);
     }
   }
@@ -1328,24 +1342,8 @@ function drawDiagram(inp, mode){
   // сам стандарт ASHRAE 55 численных границ по влажности не задаёт.
   var hiLim = 60, loLim = 30, hiEnd = 100, loEnd = 10;
 
-  // Все градиенты дискомфорта — единая шкала «зелёное → красное».
-  // Верхний (сырость) и нижний (сухость) — красный, растущий за пределы
-  // 60/30 %, чтобы читаться в одном ключе с тепловым PPD.
-  var RED_OVERLAY = 'rgba(178, 62, 55,';
-  if(hiLim < H1){
-    var gTop = CTX.createLinearGradient(0, ph(hiEnd), 0, ph(hiLim));
-    gTop.addColorStop(0, RED_OVERLAY + '.55)');
-    gTop.addColorStop(1, RED_OVERLAY + '.00)');
-    CTX.fillStyle = gTop;
-    CTX.fillRect(r.x, ph(hiEnd), r.w, ph(hiLim) - ph(hiEnd));
-  }
-  if(loLim > H0){
-    var gBot = CTX.createLinearGradient(0, ph(loLim), 0, ph(loEnd));
-    gBot.addColorStop(0, RED_OVERLAY + '.00)');
-    gBot.addColorStop(1, RED_OVERLAY + '.55)');
-    CTX.fillStyle = gBot;
-    CTX.fillRect(r.x, ph(loLim), r.w, ph(loEnd) - ph(loLim));
-  }
+  // Градиент по φ уже включён в per-pixel заливку выше (mix PPD → красный вне
+  // диапазона 30—60 %), полупрозрачные оверлеи здесь не нужны — дают «грязь».
 
   // крупные надписи «сухо» / «влажно» по центру соответствующих зон
   CTX.font = 'bold 22px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
