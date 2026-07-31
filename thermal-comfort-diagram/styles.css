@@ -130,7 +130,7 @@ footer{color:var(--muted); font-size:13px; margin-top:28px; border-top:1px solid
   cursor:pointer; transition:background .15s, border-color .15s}
 .preset-btn:hover{background:var(--card); border-color:var(--accent)}
 .preset-btn:active{background:var(--ok-bg)}
-.preset-btn.selected{background:var(--accent); border-color:var(--accent); color:#fff}
+.preset-btn.selected{background:#2c4a63; border-color:#2c4a63; color:#fff}
 
 /* вкладки ГОСТ / ASHRAE */
 .tabbar{display:flex; gap:6px; margin:22px 0 0; border-bottom:1px solid var(--line)}
