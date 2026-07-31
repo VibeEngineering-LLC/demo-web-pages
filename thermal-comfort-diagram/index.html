@@ -1,62 +1,62 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Диаграмма теплового комфорта — PMV/PPD, подвижность воздуха, результирующая температура</title>
+<title data-i18n="doc_title">Диаграмма теплового комфорта — PMV/PPD, подвижность воздуха, результирующая температура</title>
 <meta name="description" content="Интерактивная диаграмма теплового комфорта: подвижность воздуха в рабочей зоне, температура, влажность, активность, одежда. Расчёт PMV и PPD по ГОСТ Р ИСО 7730-2009, категории A/B/C, оценка риска от подвижности воздуха DR, результирующая температура по ГОСТ 30494-2011.">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<button class="themebtn" id="theme" type="button">Тема</button>
+<button class="langbtn" id="langtoggle" type="button">EN</button>
 <div class="wrap">
 
 <header>
-  <h1>Диаграмма теплового комфорта</h1>
-  <p class="sub">Подвижность воздуха в рабочей зоне, температура, влажность, активность человека, одежда — и то, что из них следует: PMV, PPD, категория среды, риск от подвижности воздуха.</p>
+  <h1 data-i18n="h1_title">Диаграмма теплового комфорта</h1>
+  <p class="sub" data-i18n="h1_sub">Подвижность воздуха в рабочей зоне, температура, влажность, активность человека, одежда — и то, что из них следует: PMV, PPD, категория среды, риск от подвижности воздуха.</p>
 </header>
 
 <section class="card">
-  <h2>Суть вопроса</h2>
-  <p>Тепловое ощущение человека определяется не температурой воздуха, а совместным действием
+  <h2 data-i18n="intro_h2">Суть вопроса</h2>
+  <p data-i18n="intro_p1">Тепловое ощущение человека определяется не температурой воздуха, а совместным действием
   <b>шести</b> величин. Четыре относятся к среде — температура воздуха, средняя радиационная
   температура окружающих поверхностей, скорость движения воздуха и влажность. Две относятся к
   человеку — уровень двигательной активности и термоизоляция одежды.</p>
 
-  <p>Отсюда практическое следствие: одна и та же температура воздуха даёт разное ощущение.
+  <p data-i18n="intro_p2">Отсюда практическое следствие: одна и та же температура воздуха даёт разное ощущение.
   При 22 °C в помещении с холодным остеклением радиационная температура ниже температуры
   воздуха, и человек мёрзнет; при той же температуре воздуха и подвижности 0,4 м/с он
   мёрзнет уже от подвижности воздуха. Норматив, задающий только температуру, оставляет ощущение
   неопределённым.</p>
 
-  <p>Для количественной оценки применяют показатель <b>PMV</b> (predicted mean vote,
+  <p data-i18n="intro_p3">Для количественной оценки применяют показатель <b>PMV</b> (predicted mean vote,
   прогнозируемая средняя оценка) — положение среднего ощущения группы людей на семибалльной
   шкале от −3 (холодно) до +3 (жарко), где 0 — нейтрально. Из PMV следует <b>PPD</b>
   (predicted percentage of dissatisfied) — прогнозируемый процент недовольных. Ноль
   недовольных недостижим: даже при PMV = 0 остаётся 5 %, поскольку люди различаются.</p>
 
-  <p>Отдельно рассматривают <b>локальный дискомфорт</b> — недовольство от охлаждения
+  <p data-i18n="intro_p4">Отдельно рассматривают <b>локальный дискомфорт</b> — недовольство от охлаждения
   отдельной части тела при формально нейтральном ощущении в целом. Повышенная подвижность
   воздуха, разность температур между головой и стопами, слишком холодный или тёплый пол,
   асимметрия теплового излучения от холодного окна или тёплого потолка. Проценты недовольных
   по разным видам локального дискомфорта <b>не складываются</b>: один и тот же чувствительный
   к холоду человек попадает в несколько категорий сразу.</p>
 
-  <p>Диаграмма ниже показывает, какая категория среды достигается при заданных активности,
+  <p data-i18n="intro_p5">Диаграмма ниже показывает, какая категория среды достигается при заданных активности,
   одежде, влажности и радиационной температуре — в зависимости от температуры воздуха и его
   подвижности в рабочей зоне. Учитываются оба ограничения: по общему комфорту (PMV и PPD)
   и по подвижности воздуха (DR).</p>
 </section>
 
 
-<div class="tabbar" role="tablist" aria-label="Диаграмма по стандарту">
-  <button type="button" class="tabbtn active" id="tab_gost" data-target="sec_gost" role="tab" aria-selected="true" aria-controls="sec_gost">ГОСТ Р ИСО 7730-2009</button>
-  <button type="button" class="tabbtn" id="tab_ash" data-target="sec_ash" role="tab" aria-selected="false" aria-controls="sec_ash">ANSI/ASHRAE Standard 55-2023</button>
+<div class="tabbar" role="tablist" aria-label="Диаграмма по стандарту" data-i18n-aria="tabbar_aria">
+  <button type="button" class="tabbtn active" id="tab_gost" data-target="sec_gost" role="tab" aria-selected="true" aria-controls="sec_gost" data-i18n="tab_gost_label">ГОСТ Р ИСО 7730-2009</button>
+  <button type="button" class="tabbtn" id="tab_ash" data-target="sec_ash" role="tab" aria-selected="false" aria-controls="sec_ash" data-i18n="tab_ash_label">ANSI/ASHRAE Standard 55-2023</button>
 </div>
 
 <section class="card wide tabpanel active" id="sec_gost" role="tabpanel" aria-labelledby="tab_gost">
-  <h2>Диаграмма ГОСТ Р ИСО 7730-2009</h2>
-  <p class="hint fullwidth" style="margin:-4px 0 12px 0">
+  <h2 data-i18n="gost_h2">Диаграмма ГОСТ Р ИСО 7730-2009</h2>
+  <p class="hint fullwidth" style="margin:-4px 0 12px 0" data-i18n="gost_intro">
     Идентичен ISO 7730:2005. Три категории A/B/C по PMV/PPD с учётом DR
     (draught rate — вероятностный процент недовольных подвижностью воздуха,
     формула&nbsp;(6) стандарта). Штриховые 30&nbsp;% и 60&nbsp;% —
@@ -69,20 +69,20 @@
     переносит рабочую точку на обе вкладки.
   </p>
 
-  <div class="presets" role="group" aria-label="Типовые сценарии">
-    <span class="presets-label">Типовой сценарий:</span>
-    <button type="button" class="preset-btn" data-preset="office">Офис</button>
-    <button type="button" class="preset-btn" data-preset="sleep">Сон</button>
-    <button type="button" class="preset-btn" data-preset="sport">Спорт</button>
-    <button type="button" class="preset-btn" data-preset="home">Дом, отдых</button>
-    <button type="button" class="preset-btn" data-preset="restaurant">Ресторан, кафе</button>
-    <span class="hint" style="margin-left:4px">— подставляет met/clo/v сценария и температуру, дающую PMV≈0 при φ=50&nbsp;%</span>
+  <div class="presets" role="group" aria-label="Типовые сценарии" data-i18n-aria="presets_aria">
+    <span class="presets-label" data-i18n="presets_label">Типовой сценарий:</span>
+    <button type="button" class="preset-btn" data-preset="office" data-i18n="preset_office">Офис</button>
+    <button type="button" class="preset-btn" data-preset="sleep" data-i18n="preset_sleep">Сон</button>
+    <button type="button" class="preset-btn" data-preset="sport" data-i18n="preset_sport">Спорт</button>
+    <button type="button" class="preset-btn" data-preset="home" data-i18n="preset_home">Дом, отдых</button>
+    <button type="button" class="preset-btn" data-preset="restaurant" data-i18n="preset_restaurant">Ресторан, кафе</button>
+    <span class="hint" style="margin-left:4px" data-i18n="presets_hint">— подставляет met/clo/v сценария и температуру, дающую PMV≈0 при φ=50&nbsp;%</span>
   </div>
 
   <div class="diagwrap">
     <div class="plot">
       <figure class="canvas-fig">
-        <figcaption>ГОСТ Р ИСО 7730-2009 — категории A/B/C с учётом DR; штрихи 30/60 % — гигиена жилой комнаты в холодный период (ГОСТ 30494 / СанПиН 1.2.3685-21)</figcaption>
+        <figcaption data-i18n="gost_figcaption">ГОСТ Р ИСО 7730-2009 — категории A/B/C с учётом DR; штрихи 30/60 % — гигиена жилой комнаты в холодный период (ГОСТ 30494 / СанПиН 1.2.3685-21)</figcaption>
         <canvas id="cv_gost" width="1200" height="900"></canvas>
       </figure>
     </div>
@@ -90,7 +90,7 @@
     <aside class="sidebar">
       <div class="srow ranges">
         <div class="vslot">
-          <div class="lab">Температура</div>
+          <div class="lab" data-i18n="lab_temp">Температура</div>
           <div class="cur"><span id="ta_v">24,0</span> °C</div>
           <div class="track">
             <input type="range" id="ta" orient="vertical" class="vert" min="10" max="38" step="0.2" value="24">
@@ -99,7 +99,7 @@
         </div>
 
         <div class="vslot">
-          <div class="lab">Влажность</div>
+          <div class="lab" data-i18n="lab_rh">Влажность</div>
           <div class="cur"><span id="rh_v">50</span> %</div>
           <div class="track">
             <input type="range" id="rh" orient="vertical" class="vert" min="10" max="100" step="1" value="50">
@@ -108,13 +108,13 @@
         </div>
 
         <div class="vslot">
-          <div class="lab">Подвижность воздуха</div>
+          <div class="lab" data-i18n="lab_v">Подвижность воздуха</div>
           <div class="cur"><span id="v_v">0,15</span> м/с</div>
           <div class="track">
             <input type="range" id="v" orient="vertical" class="vert" min="0" max="0.6" step="0.01" value="0.15">
             <div class="scale"><span>0,6</span><span>0,3</span><span>0</span></div>
           </div>
-          <p class="hint" style="margin:6px 0 0; font-size:11px; text-align:center">v<sub>ar</sub> = <span id="var_v">0,15</span> м/с</p>
+          <p class="hint" style="margin:6px 0 0; font-size:11px; text-align:center" data-i18n="lab_var">v<sub>ar</sub> = <span id="var_v">0,15</span> м/с</p>
         </div>
 
         <div class="vslot">
@@ -127,7 +127,7 @@
         </div>
 
         <div class="vslot">
-          <div class="lab">Tu — турбулентность</div>
+          <div class="lab" data-i18n="lab_tu">Tu — турбулентность</div>
           <div class="cur"><span id="tu_v">40</span> %</div>
           <div class="track">
             <input type="range" id="tu" orient="vertical" class="vert" min="10" max="60" step="1" value="40">
@@ -138,36 +138,36 @@
 
       <div class="srow selects">
         <div class="vslot sel">
-          <div class="lab">Активность</div>
+          <div class="lab" data-i18n="lab_met">Активность</div>
           <select id="met">
-            <option value="0.8">0,8 мет — покой, лёжа (вне области ASHRAE 55)</option>
-            <option value="1.0" selected>1,0 мет — сидя</option>
-            <option value="1.2">1,2 мет — офис</option>
-            <option value="1.4">1,4 мет — стоя, лёгкая</option>
-            <option value="1.6">1,6 мет — средняя</option>
-            <option value="2.0">2,0 мет — ходьба</option>
-            <option value="3.0">3,0 мет — тяжёлая</option>
+            <option value="0.8" data-i18n="opt_met_08">0,8 мет — покой, лёжа (вне области ASHRAE 55)</option>
+            <option value="1.0" selected data-i18n="opt_met_10">1,0 мет — сидя</option>
+            <option value="1.2" data-i18n="opt_met_12">1,2 мет — офис</option>
+            <option value="1.4" data-i18n="opt_met_14">1,4 мет — стоя, лёгкая</option>
+            <option value="1.6" data-i18n="opt_met_16">1,6 мет — средняя</option>
+            <option value="2.0" data-i18n="opt_met_20">2,0 мет — ходьба</option>
+            <option value="3.0" data-i18n="opt_met_30">3,0 мет — тяжёлая</option>
           </select>
         </div>
 
         <div class="vslot sel">
-          <div class="lab">Одежда</div>
+          <div class="lab" data-i18n="lab_clo">Одежда</div>
           <select id="clo">
-            <option value="0">0 кло — без одежды</option>
-            <option value="0.25">0,25 кло — лёгкая</option>
-            <option value="0.5" selected>0,50 кло — летний комплект</option>
-            <option value="0.75">0,75 кло — рубашка, брюки</option>
-            <option value="1.0">1,00 кло — костюм</option>
-            <option value="1.5">1,50 кло — тёплый комплект</option>
+            <option value="0" data-i18n="opt_clo_00">0 кло — без одежды</option>
+            <option value="0.25" data-i18n="opt_clo_025">0,25 кло — лёгкая</option>
+            <option value="0.5" selected data-i18n="opt_clo_05">0,50 кло — летний комплект</option>
+            <option value="0.75" data-i18n="opt_clo_075">0,75 кло — рубашка, брюки</option>
+            <option value="1.0" data-i18n="opt_clo_10">1,00 кло — костюм</option>
+            <option value="1.5" data-i18n="opt_clo_15">1,50 кло — тёплый комплект</option>
           </select>
         </div>
 
         <div class="vslot sel">
-          <div class="lab">Требуемая категория</div>
+          <div class="lab" data-i18n="lab_cat">Требуемая категория</div>
           <select id="cat">
-            <option value="A">A — |PMV| &lt; 0,2</option>
-            <option value="B" selected>B — |PMV| &lt; 0,5</option>
-            <option value="C">C — |PMV| &lt; 0,7</option>
+            <option value="A" data-i18n="opt_cat_a">A — |PMV| &lt; 0,2</option>
+            <option value="B" selected data-i18n="opt_cat_b">B — |PMV| &lt; 0,5</option>
+            <option value="C" data-i18n="opt_cat_c">C — |PMV| &lt; 0,7</option>
           </select>
         </div>
       </div>
@@ -176,21 +176,21 @@
 
   <div class="legend fullwidth">
     <label style="font-weight:600; margin-right:8px">
-      <input type="checkbox" id="lines_gost" checked> Показывать линии нормативов
+      <input type="checkbox" id="lines_gost" checked> <span data-i18n="show_lines">Показывать линии нормативов</span>
     </label>
-    <b>Заливка — PPD (% недовольных):</b>
+    <b data-i18n="fill_legend_title">Заливка — PPD (% недовольных):</b>
     <span><i style="background:#3f8f5e"></i>5&nbsp;% (PMV=0)</span>
     <span><i style="background:#8fbf5a"></i>10&nbsp;%</span>
     <span><i style="background:#c9d05f"></i>15&nbsp;%</span>
     <span><i style="background:#e3c469"></i>25&nbsp;%</span>
     <span><i style="background:#dc915a"></i>50&nbsp;%</span>
     <span><i style="background:#b23e37"></i>≥&nbsp;80&nbsp;%</span>
-    &nbsp;<b>Контуры категорий по PMV (ГОСТ Р ИСО 7730-2009):</b>
+    &nbsp;<b data-i18n="gost_contours_title">Контуры категорий по PMV (ГОСТ Р ИСО 7730-2009):</b>
     <span>A (|PMV|&lt;0,2), B (&lt;0,5), C (&lt;0,7)</span>
-    <span>— белый маркер: рабочая точка (t, φ); клик по канве переносит её. Общие поля (t, φ, v, Δ<i>t</i><sub>r</sub>, met, clo) синхронизируются с вкладкой ASHRAE.</span>
+    <span data-i18n="gost_legend_marker">— белый маркер: рабочая точка (t, φ); клик по канве переносит её. Общие поля (t, φ, v, Δ<i>t</i><sub>r</sub>, met, clo) синхронизируются с вкладкой ASHRAE.</span>
   </div>
 
-  <p class="hint fullwidth"><b>Про ползунок «Tu — турбулентность».</b> Скорость воздуха
+  <p class="hint fullwidth" data-i18n="tu_explainer"><b>Про ползунок «Tu — турбулентность».</b> Скорость воздуха
   в помещении не постоянная: она пульсирует вокруг своего среднего значения. Показатель
   <b>Tu</b> — на сколько процентов эти пульсации крупные по сравнению со средней
   скоростью. Иначе — насколько поток «дёрганый». При Tu = 10 % поток ровный
@@ -202,32 +202,32 @@
   Tu входит только в расчёт DR и на PMV/PPD не влияет.</p>
 
   <details class="ldi">
-    <summary class="ldi-title">Локальный дискомфорт — измеренные значения (для оценки категорий по ГОСТ Р ИСО 7730-2009; синхронизируется с блоком в секции ASHRAE)</summary>
+    <summary class="ldi-title" data-i18n="ldi_gost_title">Локальный дискомфорт — измеренные значения (для оценки категорий по ГОСТ Р ИСО 7730-2009; синхронизируется с блоком в секции ASHRAE)</summary>
     <div class="ldi-section">
-      <div class="ldi-subtitle">По ГОСТ Р ИСО 7730-2009 табл. A.1—A.3 (пороги Δt, t<sub>floor</sub>, асимметрии для категории A/B/C)</div>
+      <div class="ldi-subtitle" data-i18n="ldi_gost_subtitle">По ГОСТ Р ИСО 7730-2009 табл. A.1—A.3 (пороги Δt, t<sub>floor</sub>, асимметрии для категории A/B/C)</div>
       <div class="ldi-grid">
         <div class="ldi-cell">
-          <label for="dtv">Δt воздуха голова↔лодыжки, °C
+          <label for="dtv" data-i18n="lab_dtv">Δt воздуха голова↔лодыжки, °C
             <span class="hint">(при более тёплом верхе; 0 — не задано)</span></label>
           <input type="number" id="dtv" min="0" max="10" step="0.1" value="0" inputmode="decimal">
         </div>
         <div class="ldi-cell">
-          <label for="tfloor">Температура пола <i>t</i><sub>floor</sub>, °C
+          <label for="tfloor" data-i18n="lab_tfloor">Температура пола <i>t</i><sub>floor</sub>, °C
             <span class="hint">(для сидящих с контактом стоп; 0 — не задано)</span></label>
           <input type="number" id="tfloor" min="0" max="45" step="0.5" value="0" inputmode="decimal">
         </div>
         <div class="ldi-cell">
-          <label for="rasym_type">Радиантная асимметрия — тип</label>
+          <label for="rasym_type" data-i18n="lab_rasym_type">Радиантная асимметрия — тип</label>
           <select id="rasym_type">
-            <option value="none" selected>не задана</option>
-            <option value="ceilW">потолок теплее пола</option>
-            <option value="ceilC">потолок холоднее пола</option>
-            <option value="wallW">стена теплее воздуха</option>
-            <option value="wallC">стена холоднее воздуха</option>
+            <option value="none" selected data-i18n="opt_rasym_none">не задана</option>
+            <option value="ceilW" data-i18n="opt_rasym_ceilw">потолок теплее пола</option>
+            <option value="ceilC" data-i18n="opt_rasym_ceilc">потолок холоднее пола</option>
+            <option value="wallW" data-i18n="opt_rasym_wallw">стена теплее воздуха</option>
+            <option value="wallC" data-i18n="opt_rasym_wallc">стена холоднее воздуха</option>
           </select>
         </div>
         <div class="ldi-cell">
-          <label for="rasym">Модуль |Δt<sub>r</sub>|, °C</label>
+          <label for="rasym" data-i18n="lab_rasym">Модуль |Δt<sub>r</sub>|, °C</label>
           <input type="number" id="rasym" min="0" max="40" step="0.5" value="0" inputmode="decimal">
         </div>
       </div>
@@ -236,8 +236,8 @@
 </section>
 
 <section class="card wide tabpanel" id="sec_ash" role="tabpanel" aria-labelledby="tab_ash">
-  <h2>Диаграмма ANSI/ASHRAE Standard 55-2023</h2>
-  <p class="hint fullwidth" style="margin:-4px 0 12px 0">
+  <h2 data-i18n="ash_h2">Диаграмма ANSI/ASHRAE Standard 55-2023</h2>
+  <p class="hint fullwidth" style="margin:-4px 0 12px 0" data-i18n="ash_intro">
     Аналитический метод (Addendum&nbsp;h к 55-2020, свободно на ashrae.org):
     одна зона compliance <b>−0,5&nbsp;&lt; PMV &lt;&nbsp;+0,5</b>. Применяется
     при <b>1,0&nbsp;≤ met&nbsp;≤&nbsp;4,0</b> и <b>0,0&nbsp;≤ clo&nbsp;≤&nbsp;1,5</b>
@@ -253,20 +253,20 @@
     с вкладкой ГОСТ; специфичные (солнце, адаптивная модель) — только здесь.
   </p>
 
-  <div class="presets" role="group" aria-label="Типовые сценарии">
-    <span class="presets-label">Типовой сценарий:</span>
-    <button type="button" class="preset-btn" data-preset="office">Офис</button>
-    <button type="button" class="preset-btn" data-preset="sleep">Сон</button>
-    <button type="button" class="preset-btn" data-preset="sport">Спорт</button>
-    <button type="button" class="preset-btn" data-preset="home">Дом, отдых</button>
-    <button type="button" class="preset-btn" data-preset="restaurant">Ресторан, кафе</button>
-    <span class="hint" style="margin-left:4px">— подставляет met/clo/v сценария и температуру, дающую PMV≈0 при φ=50&nbsp;%</span>
+  <div class="presets" role="group" aria-label="Типовые сценарии" data-i18n-aria="presets_aria">
+    <span class="presets-label" data-i18n="presets_label">Типовой сценарий:</span>
+    <button type="button" class="preset-btn" data-preset="office" data-i18n="preset_office">Офис</button>
+    <button type="button" class="preset-btn" data-preset="sleep" data-i18n="preset_sleep">Сон</button>
+    <button type="button" class="preset-btn" data-preset="sport" data-i18n="preset_sport">Спорт</button>
+    <button type="button" class="preset-btn" data-preset="home" data-i18n="preset_home">Дом, отдых</button>
+    <button type="button" class="preset-btn" data-preset="restaurant" data-i18n="preset_restaurant">Ресторан, кафе</button>
+    <span class="hint" style="margin-left:4px" data-i18n="presets_hint">— подставляет met/clo/v сценария и температуру, дающую PMV≈0 при φ=50&nbsp;%</span>
   </div>
 
   <div class="diagwrap">
     <div class="plot">
       <figure class="canvas-fig">
-        <figcaption>ANSI/ASHRAE Standard 55-2023 — одна зона compliance (−0,5&nbsp;&lt; PMV &lt;&nbsp;+0,5); границ по влажности стандарт не задаёт</figcaption>
+        <figcaption data-i18n="ash_figcaption">ANSI/ASHRAE Standard 55-2023 — одна зона compliance (−0,5&nbsp;&lt; PMV &lt;&nbsp;+0,5); границ по влажности стандарт не задаёт</figcaption>
         <canvas id="cv_ash" width="1200" height="900"></canvas>
       </figure>
     </div>
@@ -274,7 +274,7 @@
     <aside class="sidebar">
       <div class="srow ranges">
         <div class="vslot">
-          <div class="lab">Температура</div>
+          <div class="lab" data-i18n="lab_temp">Температура</div>
           <div class="cur"><span id="ta_v_a">24,0</span> °C</div>
           <div class="track">
             <input type="range" id="ta_a" orient="vertical" class="vert" min="10" max="38" step="0.2" value="24">
@@ -282,7 +282,7 @@
           </div>
         </div>
         <div class="vslot">
-          <div class="lab">Влажность</div>
+          <div class="lab" data-i18n="lab_rh">Влажность</div>
           <div class="cur"><span id="rh_v_a">50</span> %</div>
           <div class="track">
             <input type="range" id="rh_a" orient="vertical" class="vert" min="10" max="100" step="1" value="50">
@@ -290,7 +290,7 @@
           </div>
         </div>
         <div class="vslot">
-          <div class="lab">Подвижность воздуха</div>
+          <div class="lab" data-i18n="lab_v">Подвижность воздуха</div>
           <div class="cur"><span id="v_v_a">0,15</span> м/с</div>
           <div class="track">
             <input type="range" id="v_a" orient="vertical" class="vert" min="0" max="0.6" step="0.01" value="0.15">
@@ -309,26 +309,26 @@
 
       <div class="srow selects two">
         <div class="vslot sel">
-          <div class="lab">Активность</div>
+          <div class="lab" data-i18n="lab_met">Активность</div>
           <select id="met_a">
-            <option value="0.8">0,8 мет — покой, лёжа (вне ASHRAE 55)</option>
-            <option value="1.0" selected>1,0 мет — сидя</option>
-            <option value="1.2">1,2 мет — офис</option>
-            <option value="1.4">1,4 мет — стоя, лёгкая</option>
-            <option value="1.6">1,6 мет — средняя</option>
-            <option value="2.0">2,0 мет — ходьба</option>
-            <option value="3.0">3,0 мет — тяжёлая</option>
+            <option value="0.8" data-i18n="opt_met_08_a">0,8 мет — покой, лёжа (вне ASHRAE 55)</option>
+            <option value="1.0" selected data-i18n="opt_met_10">1,0 мет — сидя</option>
+            <option value="1.2" data-i18n="opt_met_12">1,2 мет — офис</option>
+            <option value="1.4" data-i18n="opt_met_14">1,4 мет — стоя, лёгкая</option>
+            <option value="1.6" data-i18n="opt_met_16">1,6 мет — средняя</option>
+            <option value="2.0" data-i18n="opt_met_20">2,0 мет — ходьба</option>
+            <option value="3.0" data-i18n="opt_met_30">3,0 мет — тяжёлая</option>
           </select>
         </div>
         <div class="vslot sel">
-          <div class="lab">Одежда</div>
+          <div class="lab" data-i18n="lab_clo">Одежда</div>
           <select id="clo_a">
-            <option value="0">0 кло — без одежды</option>
-            <option value="0.25">0,25 кло — лёгкая</option>
-            <option value="0.5" selected>0,50 кло — летний комплект</option>
-            <option value="0.75">0,75 кло — рубашка, брюки</option>
-            <option value="1.0">1,00 кло — костюм</option>
-            <option value="1.5">1,50 кло — тёплый комплект</option>
+            <option value="0" data-i18n="opt_clo_00">0 кло — без одежды</option>
+            <option value="0.25" data-i18n="opt_clo_025">0,25 кло — лёгкая</option>
+            <option value="0.5" selected data-i18n="opt_clo_05">0,50 кло — летний комплект</option>
+            <option value="0.75" data-i18n="opt_clo_075">0,75 кло — рубашка, брюки</option>
+            <option value="1.0" data-i18n="opt_clo_10">1,00 кло — костюм</option>
+            <option value="1.5" data-i18n="opt_clo_15">1,50 кло — тёплый комплект</option>
           </select>
         </div>
       </div>
@@ -337,33 +337,33 @@
 
   <div class="legend fullwidth">
     <label style="font-weight:600; margin-right:8px">
-      <input type="checkbox" id="lines_ash" checked> Показывать линии нормативов
+      <input type="checkbox" id="lines_ash" checked> <span data-i18n="show_lines">Показывать линии нормативов</span>
     </label>
-    <b>Заливка — PPD (% недовольных):</b>
+    <b data-i18n="fill_legend_title">Заливка — PPD (% недовольных):</b>
     <span><i style="background:#3f8f5e"></i>5&nbsp;% (PMV=0)</span>
     <span><i style="background:#8fbf5a"></i>10&nbsp;%</span>
     <span><i style="background:#c9d05f"></i>15&nbsp;%</span>
     <span><i style="background:#e3c469"></i>25&nbsp;%</span>
     <span><i style="background:#dc915a"></i>50&nbsp;%</span>
     <span><i style="background:#b23e37"></i>≥&nbsp;80&nbsp;%</span>
-    &nbsp;<b>Контур:</b>
-    <span>линия compliance ASHRAE 55 = граница |PMV|=0,5 (PPD≈10&nbsp;%). Клик по канве переносит рабочую точку и на вкладку ГОСТ.</span>
+    &nbsp;<b data-i18n="ash_contour_title">Контур:</b>
+    <span data-i18n="ash_legend_marker">линия compliance ASHRAE 55 = граница |PMV|=0,5 (PPD≈10&nbsp;%). Клик по канве переносит рабочую точку и на вкладку ГОСТ.</span>
   </div>
 
   <details class="ldi">
-    <summary class="ldi-title">Специфичные входы ASHRAE 55-2023 (опционально; 0 или «не задана» — не оценивается)</summary>
+    <summary class="ldi-title" data-i18n="ldi_ash_title">Специфичные входы ASHRAE 55-2023 (опционально; 0 или «не задана» — не оценивается)</summary>
 
     <div class="ldi-section">
-      <div class="ldi-subtitle">Поправка на прямую солнечную радиацию (ERF-модель, изменения в коде — Addendum&nbsp;d к 55-2020, свободно на ashrae.org)</div>
+      <div class="ldi-subtitle" data-i18n="ldi_solar_subtitle">Поправка на прямую солнечную радиацию (ERF-модель, изменения в коде — Addendum&nbsp;d к 55-2020, свободно на ashrae.org)</div>
       <div class="ldi-grid two">
         <div class="ldi-cell">
           <label for="solar_on">
-            <input type="checkbox" id="solar_on"> Учитывать поправку солнца
-            <span class="hint">(упрощение: сдвигает среднюю радиационную температуру на заданную величину; полный ERF-калькулятор здесь не реализован)</span>
+            <input type="checkbox" id="solar_on"> <span data-i18n="lab_solar_on">Учитывать поправку солнца
+            <span class="hint">(упрощение: сдвигает среднюю радиационную температуру на заданную величину; полный ERF-калькулятор здесь не реализован)</span></span>
           </label>
         </div>
         <div class="ldi-cell">
-          <label for="solar_dt">Приращение MRT от солнца Δ<i>t</i><sub>r,sw</sub>, °C
+          <label for="solar_dt" data-i18n="lab_solar_dt">Приращение MRT от солнца Δ<i>t</i><sub>r,sw</sub>, °C
             <span class="hint">(типично 0—10 °C для нагретых прямым солнцем сидящих людей у окна)</span></label>
           <input type="number" id="solar_dt" min="0" max="20" step="0.1" value="0" inputmode="decimal">
         </div>
@@ -371,15 +371,15 @@
     </div>
 
     <div class="ldi-section">
-      <div class="ldi-subtitle">Адаптивная модель ASHRAE 55 — только для естественно проветриваемых помещений</div>
+      <div class="ldi-subtitle" data-i18n="ldi_adaptive_subtitle">Адаптивная модель ASHRAE 55 — только для естественно проветриваемых помещений</div>
       <div class="ldi-grid two">
         <div class="ldi-cell">
-          <label for="tpma"><i>t</i><sub>pma&nbsp;out</sub> — скользящая средняя наружная температура, °C
+          <label for="tpma" data-i18n="lab_tpma"><i>t</i><sub>pma&nbsp;out</sub> — скользящая средняя наружная температура, °C
             <span class="hint">(арифметическое среднее среднесуточных наружных температур за 7—30 предшествующих дней; область применимости: строго 10 &lt; <i>t</i><sub>pma&nbsp;out</sub> &lt; 33,5 °C)</span></label>
           <input type="number" id="tpma" min="10" max="33.5" step="0.1" value="20" inputmode="decimal">
         </div>
         <div class="ldi-cell">
-          <label for="to_meas">Операт. температура помещения <i>t</i><sub>o</sub>, °C
+          <label for="to_meas" data-i18n="lab_to_meas">Операт. температура помещения <i>t</i><sub>o</sub>, °C
             <span class="hint">(если не задана — берётся <i>t</i><sub>a</sub> сверху; условия адаптивной модели: без активного отопления/охлаждения; met 1,0—1,5; clo в диапазоне не уже 0,5—1,0)</span></label>
           <input type="number" id="to_meas" min="0" max="40" step="0.1" value="0" inputmode="decimal">
         </div>
@@ -387,37 +387,37 @@
     </div>
 
     <div class="ldi-section">
-      <div class="ldi-subtitle">Локальный дискомфорт — применяется при <i>I</i><sub>cl</sub>&lt;0,7 и M&lt;1,3 (синхронизируется с блоком в секции ГОСТ)</div>
+      <div class="ldi-subtitle" data-i18n="ldi_local_ash_subtitle">Локальный дискомфорт — применяется при <i>I</i><sub>cl</sub>&lt;0,7 и M&lt;1,3 (синхронизируется с блоком в секции ГОСТ)</div>
       <div class="ldi-grid">
         <div class="ldi-cell">
-          <label for="dtv_a">Δt воздуха голова↔лодыжки, °C
+          <label for="dtv_a" data-i18n="lab_dtv">Δt воздуха голова↔лодыжки, °C
             <span class="hint">(при более тёплом верхе; 0 — не задано)</span></label>
           <input type="number" id="dtv_a" min="0" max="10" step="0.1" value="0" inputmode="decimal">
         </div>
         <div class="ldi-cell">
-          <label for="tfloor_a">Температура пола <i>t</i><sub>floor</sub>, °C
+          <label for="tfloor_a" data-i18n="lab_tfloor">Температура пола <i>t</i><sub>floor</sub>, °C
             <span class="hint">(для сидящих с контактом стоп; 0 — не задано)</span></label>
           <input type="number" id="tfloor_a" min="0" max="45" step="0.5" value="0" inputmode="decimal">
         </div>
         <div class="ldi-cell">
-          <label for="rasym_type_a">Радиантная асимметрия — тип</label>
+          <label for="rasym_type_a" data-i18n="lab_rasym_type">Радиантная асимметрия — тип</label>
           <select id="rasym_type_a">
-            <option value="none" selected>не задана</option>
-            <option value="ceilW">потолок теплее пола</option>
-            <option value="ceilC">потолок холоднее пола</option>
-            <option value="wallW">стена теплее воздуха</option>
-            <option value="wallC">стена холоднее воздуха</option>
+            <option value="none" selected data-i18n="opt_rasym_none">не задана</option>
+            <option value="ceilW" data-i18n="opt_rasym_ceilw">потолок теплее пола</option>
+            <option value="ceilC" data-i18n="opt_rasym_ceilc">потолок холоднее пола</option>
+            <option value="wallW" data-i18n="opt_rasym_wallw">стена теплее воздуха</option>
+            <option value="wallC" data-i18n="opt_rasym_wallc">стена холоднее воздуха</option>
           </select>
         </div>
         <div class="ldi-cell">
-          <label for="rasym_a">Модуль |Δt<sub>r</sub>|, °C</label>
+          <label for="rasym_a" data-i18n="lab_rasym">Модуль |Δt<sub>r</sub>|, °C</label>
           <input type="number" id="rasym_a" min="0" max="40" step="0.5" value="0" inputmode="decimal">
         </div>
       </div>
     </div>
   </details>
 
-  <p class="hint fullwidth">
+  <p class="hint fullwidth" data-i18n="ash_tile_howto">
     <b>Как читать плитку «Соответствие ASHRAE 55-2023» ниже.</b> Плитка учитывает
     зону compliance по PMV и все <i>заданные</i> критерии локального дискомфорта
     (Ankle&nbsp;Air&nbsp;Speed, вертикальный градиент, температуру пола,
@@ -431,21 +431,21 @@
 </section>
 
 <section class="card">
-  <h2>Результат</h2>
+  <h2 data-i18n="res_h2">Результат</h2>
   <div class="res">
     <div class="tile"><div class="k">PMV</div><div class="v" id="o_pmv">—</div><div class="u" id="o_sens">—</div></div>
-    <div class="tile"><div class="k">PPD</div><div class="v" id="o_ppd">—<span class="u"> %</span></div><div class="u">недовольных теплом в целом</div></div>
-    <div class="tile"><div class="k">DR — подвижность</div><div class="v" id="o_dr">—<span class="u"> %</span></div><div class="u">недовольных подвижностью воздуха</div></div>
-    <div class="tile"><div class="k">Достигнутая категория ГОСТ</div><div class="v" id="o_cat">—</div><div class="u">по PMV, PPD и DR (ГОСТ Р ИСО 7730-2009)</div></div>
-    <div class="tile"><div class="k">Соответствие ASHRAE 55-2023 §5.3</div><div class="v" id="o_ash">—</div><div class="u">аналитический метод: PMV ±0,5 + локальные</div></div>
-    <div class="tile"><div class="k">Адаптивная модель ASHRAE §5.4</div><div class="v" id="ad_ok">—</div><div class="u"><span id="ad_lower">—</span>…<span id="ad_upper">—</span> °C; 80 % acceptability</div></div>
-    <div class="tile"><div class="k">Результирующая температура</div><div class="v" id="o_tsu">—<span class="u"> °C</span></div><div class="u">t<sub>su</sub>, ГОСТ 30494-2011</div></div>
-    <div class="tile"><div class="k">Температура поверхности одежды</div><div class="v" id="o_tcl">—<span class="u"> °C</span></div><div class="u">t<sub>cl</sub>, промежуточная величина</div></div>
+    <div class="tile"><div class="k">PPD</div><div class="v" id="o_ppd">—<span class="u"> %</span></div><div class="u" data-i18n="tile_ppd_u">недовольных теплом в целом</div></div>
+    <div class="tile"><div class="k" data-i18n="tile_dr_k">DR — подвижность</div><div class="v" id="o_dr">—<span class="u"> %</span></div><div class="u" data-i18n="tile_dr_u">недовольных подвижностью воздуха</div></div>
+    <div class="tile"><div class="k" data-i18n="tile_cat_k">Достигнутая категория ГОСТ</div><div class="v" id="o_cat">—</div><div class="u" data-i18n="tile_cat_u">по PMV, PPD и DR (ГОСТ Р ИСО 7730-2009)</div></div>
+    <div class="tile"><div class="k">Соответствие ASHRAE 55-2023 §5.3</div><div class="v" id="o_ash">—</div><div class="u" data-i18n="tile_ash_u">аналитический метод: PMV ±0,5 + локальные</div></div>
+    <div class="tile"><div class="k" data-i18n="tile_ad_k">Адаптивная модель ASHRAE §5.4</div><div class="v" id="ad_ok">—</div><div class="u"><span id="ad_lower">—</span>…<span id="ad_upper">—</span> °C; <span data-i18n="ad_acceptability">80 % приемлемости</span></div></div>
+    <div class="tile"><div class="k" data-i18n="tile_tsu_k">Результирующая температура</div><div class="v" id="o_tsu">—<span class="u"> °C</span></div><div class="u">t<sub>su</sub>, ГОСТ 30494-2011</div></div>
+    <div class="tile"><div class="k" data-i18n="tile_tcl_k">Температура поверхности одежды</div><div class="v" id="o_tcl">—<span class="u"> °C</span></div><div class="u" data-i18n="tile_tcl_u">t<sub>cl</sub>, промежуточная величина</div></div>
   </div>
 
   <div class="tblwrap">
     <table id="checks">
-      <thead><tr><th>Критерий требуемой категории</th><th>Расчёт</th><th>Граница</th><th>Итог</th></tr></thead>
+      <thead><tr><th data-i18n="th_criterion">Критерий требуемой категории</th><th data-i18n="th_calc">Расчёт</th><th data-i18n="th_limit">Граница</th><th data-i18n="th_result">Итог</th></tr></thead>
       <tbody></tbody>
     </table>
   </div>
@@ -453,13 +453,13 @@
 </section>
 
 <section class="card">
-  <h2>Как это считается</h2>
+  <h2 data-i18n="calc_h2">Как это считается</h2>
 
-  <h3>Общий комфорт: PMV и PPD</h3>
-  <p>PMV вычисляется из теплового баланса тела: вырабатываемое тепло минус потери
+  <h3 data-i18n="calc_h3_pmv">Общий комфорт: PMV и PPD</h3>
+  <p data-i18n="calc_pmv_p">PMV вычисляется из теплового баланса тела: вырабатываемое тепло минус потери
   на диффузию через кожу, потоотделение, скрытое и сухое дыхание, излучение и конвекцию.
   Температура поверхности одежды находится итерационно.</p>
-  <div class="formula">PMV = [0,303·exp(−0,036·M) + 0,028] · {(M−W)
+  <div class="formula" data-i18n="formula_pmv">PMV = [0,303·exp(−0,036·M) + 0,028] · {(M−W)
        − 3,05·10⁻³·[5733 − 6,99·(M−W) − p_a]
        − 0,42·[(M−W) − 58,15]
        − 1,7·10⁻⁵·M·(5867 − p_a)
@@ -468,40 +468,40 @@
        − f_cl·h_c·(t_cl − t_a)}
 
 PPD = 100 − 95·exp(−0,03353·PMV⁴ − 0,2179·PMV²)</div>
-  <p class="hint">M — уровень двигательной активности, Вт/м²; W — внешняя механическая работа,
+  <p class="hint" data-i18n="calc_pmv_hint">M — уровень двигательной активности, Вт/м²; W — внешняя механическая работа,
   Вт/м² (принята нулевой); p<sub>a</sub> — парциальное давление водяного пара, Па;
   t<sub>r</sub> — средняя радиационная температура, °C; f<sub>cl</sub> — множитель площади
   поверхности одежды; h<sub>c</sub> — коэффициент теплообмена конвекцией, Вт/(м²·К).
   Формулы (1)—(5) ГОСТ Р ИСО 7730-2009.</p>
 
-  <h3>Подвижность воздуха: показатель DR</h3>
-  <div class="formula">DR = (34 − t_a,l) · (v_a,l − 0,05)^0,62 · (0,37·v_a,l·Tu + 3,14)</div>
-  <p class="hint">Формула (6) ГОСТ Р ИСО 7730-2009 (в стандарте — «модель сквозняка», draught rate).
+  <h3 data-i18n="calc_h3_dr">Подвижность воздуха: показатель DR</h3>
+  <div class="formula" data-i18n="formula_dr">DR = (34 − t_a,l) · (v_a,l − 0,05)^0,62 · (0,37·v_a,l·Tu + 3,14)</div>
+  <p class="hint" data-i18n="calc_dr_hint">Формула (6) ГОСТ Р ИСО 7730-2009 (в стандарте — «модель сквозняка», draught rate).
   При v<sub>a,l</sub> &lt; 0,05 м/с принимается 0,05 м/с; при DR &gt; 100 % принимается 100 %.</p>
 
-  <p><b>Tu — интенсивность турбулентности воздушного потока</b>, %. Мера того,
+  <p data-i18n="calc_tu_p1"><b>Tu — интенсивность турбулентности воздушного потока</b>, %. Мера того,
   насколько скорость воздуха «дёргается» вокруг своего среднего значения: чем больше Tu,
   тем сильнее случайные колебания скорости при той же средней подвижности.
   Одна и та же средняя скорость 0,15 м/с при Tu = 60 % ощущается заметно неприятнее,
   чем при Tu = 10 %.</p>
 
-  <p>По ГОСТ Р ИСО 7730-2009, п. 6.2, Tu — «локальная интенсивность турбулентности,
+  <p data-i18n="calc_tu_p2">По ГОСТ Р ИСО 7730-2009, п. 6.2, Tu — «локальная интенсивность турбулентности,
   от 10 % до 60 %»; если значение неизвестно, допускается принимать <b>40 %</b>.
   По приложению A стандарта: в помещениях со <b>смешанным воздухораспределением</b>
   Tu может изменяться от 30 % до 60 %; в помещениях с <b>системой вытесняющей
   вентиляции</b> или <b>без искусственной вентиляции</b> Tu <b>ниже</b>. На PMV и на
   общий комфорт Tu не влияет — только на DR.</p>
 
-  <h3>Результирующая температура помещения</h3>
-  <div class="formula">t_su = (t_p + t_r) / 2            при v ≤ 0,2 м/с
+  <h3 data-i18n="calc_h3_tsu">Результирующая температура помещения</h3>
+  <div class="formula" data-i18n="formula_tsu">t_su = (t_p + t_r) / 2            при v ≤ 0,2 м/с
 t_su = 0,6·t_p + 0,4·t_r          при 0,2 &lt; v ≤ 0,6 м/с</div>
-  <p class="hint">Формулы (А.1) и (А.2) приложения А (обязательного) ГОСТ 30494-2011.
+  <p class="hint" data-i18n="calc_tsu_hint">Формулы (А.1) и (А.2) приложения А (обязательного) ГОСТ 30494-2011.
   Результирующая температура входит в таблицы микроклимата наравне с температурой воздуха.</p>
 
-  <h3>Категории среды</h3>
+  <h3 data-i18n="calc_h3_cats">Категории среды</h3>
   <div class="tblwrap">
   <table>
-    <thead><tr><th>Категория</th><th>PPD, %</th><th>PMV</th><th>DR, %</th><th>Δt по вертикали, °C</th><th>Температура пола, °C</th></tr></thead>
+    <thead><tr><th data-i18n="th_cat">Категория</th><th data-i18n="th_ppd_pct">PPD, %</th><th>PMV</th><th data-i18n="th_dr_pct">DR, %</th><th data-i18n="th_dtv">Δt по вертикали, °C</th><th data-i18n="th_tfloor">Температура пола, °C</th></tr></thead>
     <tbody>
       <tr><td>A</td><td class="num">&lt; 6</td><td class="num">−0,2…+0,2</td><td class="num">&lt; 10</td><td class="num">&lt; 2</td><td class="num">19…29</td></tr>
       <tr><td>B</td><td class="num">&lt; 10</td><td class="num">−0,5…+0,5</td><td class="num">&lt; 20</td><td class="num">&lt; 3</td><td class="num">19…29</td></tr>
@@ -509,18 +509,18 @@ t_su = 0,6·t_p + 0,4·t_r          при 0,2 &lt; v ≤ 0,6 м/с</div>
     </tbody>
   </table>
   </div>
-  <p class="hint">Таблицы A.1—A.3 ГОСТ Р ИСО 7730-2009. Разность температур по вертикали
+  <p class="hint" data-i18n="calc_cats_hint">Таблицы A.1—A.3 ГОСТ Р ИСО 7730-2009. Разность температур по вертикали
   и температура пола на диаграмме не рассчитываются — они не следуют из заданных здесь
   величин и проверяются отдельно.</p>
 
-  <h3>Локальный дискомфорт по ASHRAE 55-2023</h3>
-  <p>Раздел применяется, только когда <i>I</i><sub>cl</sub> &lt; 0,7 кло <b>и</b>
+  <h3 data-i18n="calc_h3_ash_local">Локальный дискомфорт по ASHRAE 55-2023</h3>
+  <p data-i18n="calc_ash_local_p">Раздел применяется, только когда <i>I</i><sub>cl</sub> &lt; 0,7 кло <b>и</b>
   M &lt; 1,3 мет. Уровень лодыжек — 0,1 м от пола, уровень головы —
   1,1 м для сидящих, 1,7 м для стоящих. Классический показатель DR из ISO 7730
   в требованиях 55-2023 не используется — вместо него введены четыре отдельных
   критерия.</p>
 
-  <div class="formula">V_ankle &lt; 0,35·TS + 0,39                    [TS = PMV, м/с]
+  <div class="formula" data-i18n="formula_ash_local">V_ankle &lt; 0,35·TS + 0,39                    [TS = PMV, м/с]
 ΔT (голова↔лодыжки) &lt; 7,82 − 0,87·(TS − 1,91)²   [°C/м]
 Температура пола: 19 °C ≤ t_floor ≤ 29 °C
 Радиантная асимметрия:
@@ -528,16 +528,16 @@ t_su = 0,6·t_p + 0,4·t_r          при 0,2 &lt; v ≤ 0,6 м/с</div>
   потолок холоднее пола &lt; 14 °C
   стена теплее воздуха &lt; 23 °C
   стена холоднее воздуха &lt; 10 °C</div>
-  <p class="hint">Формула вертикального градиента добавлена свободно опубликованным
+  <p class="hint" data-i18n="calc_ash_local_hint">Формула вертикального градиента добавлена свободно опубликованным
   Addendum a к 55-2020 (ashrae.org). Формулы Ankle Air Speed и Vertical Gradient
   настроены на нейтрально-тёплую сторону теплового ощущения (TS ≥ 0). При TS &lt; 0
   предельная скорость на уровне лодыжек становится нефизической (≤ 0,1 м/с) —
   критерий не оценивается.</p>
 
-  <h3>Адаптивная модель ASHRAE 55-2023</h3>
-  <div class="formula">t_o_upper = 0,31·t_pma_out + 21,3   [80 % приемлемости, °C]
+  <h3 data-i18n="calc_h3_adaptive">Адаптивная модель ASHRAE 55-2023</h3>
+  <div class="formula" data-i18n="formula_adaptive">t_o_upper = 0,31·t_pma_out + 21,3   [80 % приемлемости, °C]
 t_o_lower = 0,31·t_pma_out + 14,3   [80 % приемлемости, °C]</div>
-  <p class="hint">Область применимости: только естественно проветриваемые помещения,
+  <p class="hint" data-i18n="calc_adaptive_hint">Область применимости: только естественно проветриваемые помещения,
   в которых окнами управляют сами находящиеся внутри люди, без активного
   механического отопления и охлаждения; M = 1,0—1,5 мет; <i>I</i><sub>cl</sub> в
   диапазоне не уже 0,5—1,0 кло; <i>t</i><sub>pma out</sub> строго между 10 и
@@ -546,14 +546,14 @@ t_o_lower = 0,31·t_pma_out + 14,3   [80 % приемлемости, °C]</div>
 </section>
 
 <section class="card">
-  <h2>Проверка расчёта</h2>
-  <p>Реализация сверена с таблицей E.2 ГОСТ Р ИСО 7730-2009 (уровень двигательной
+  <h2 data-i18n="verify_h2">Проверка расчёта</h2>
+  <p data-i18n="verify_p">Реализация сверена с таблицей E.2 ГОСТ Р ИСО 7730-2009 (уровень двигательной
   активности 58 Вт/м²): 41 контрольное значение PMV для 0; 0,25; 0,50 и 0,75 кло при
   скоростях движения воздуха 0; 0,10; 0,20; 0,30 и 0,50 м/с. Все 41 сходятся,
   максимальное отклонение <b>0,062 балла PMV</b>. Условия таблиц приложения E:
   t<sub>a</sub> = t<sub>r</sub>, относительная влажность 50 %, внешняя работа 0.</p>
 
-  <div class="note">
+  <div class="note" data-i18n="verify_note">
     <b>Расхождение внутри стандарта, зафиксированное при разборе.</b>
     Печатная формула (4) ГОСТ Р ИСО 7730-2009 задаёт множитель площади поверхности
     одежды как <code>f_cl = 1,05 + 1,645·I_cl</code> при I<sub>cl</sub> &gt; 0,078 м²·К/Вт,
@@ -572,15 +572,15 @@ t_o_lower = 0,31·t_pma_out + 14,3   [80 % приемлемости, °C]</div>
 </section>
 
 <section class="card">
-  <h2>Первоисточники</h2>
-  <p class="hint">Уровень проверки: <span class="lvl lvl-ok">✅</span> — документ открыт,
+  <h2 data-i18n="src_h2">Первоисточники</h2>
+  <p class="hint" data-i18n="src_lvl_hint">Уровень проверки: <span class="lvl lvl-ok">✅</span> — документ открыт,
   формулы и таблицы прочитаны по содержанию, в том числе по изображениям страниц, где
   текстовый слой PDF искажает запись;
   <span class="lvl lvl-bib">📗</span> — реквизиты подтверждены, содержимое не читалось.</p>
 
-  <h3>Использованы в расчёте</h3>
+  <h3 data-i18n="src_h3_used">Использованы в расчёте</h3>
   <ul>
-    <li><span class="lvl lvl-ok">✅</span> <b>ГОСТ Р ИСО 7730-2009.</b> Эргономика термальной
+    <li data-i18n="src_gost7730"><span class="lvl lvl-ok">✅</span> <b>ГОСТ Р ИСО 7730-2009.</b> Эргономика термальной
     среды. Аналитическое определение и интерпретация комфортности теплового режима с
     использованием расчёта показателей PMV и PPD и критериев локального теплового комфорта.
     Утверждён и введён в действие приказом Федерального агентства по техническому
@@ -594,7 +594,7 @@ t_o_lower = 0,31·t_pma_out + 14,3   [80 % приемлемости, °C]</div>
     <a href="https://meganorm.ru/Data2/1/4293820/4293820818.pdf" rel="noopener nofollow">meganorm.ru/Data2/1/4293820/4293820818.pdf</a>
     (обращение 30.07.2026, 43 с.).</li>
 
-    <li><span class="lvl lvl-ok">✅</span> <b>ГОСТ 30494-2011.</b> Межгосударственный
+    <li data-i18n="src_gost30494"><span class="lvl lvl-ok">✅</span> <b>ГОСТ 30494-2011.</b> Межгосударственный
     стандарт. Здания жилые и общественные. Параметры микроклимата в помещениях. Принят
     МНТКС, протокол № 39 от 8 декабря 2011 г. Приказом Федерального агентства по
     техническому регулированию и метрологии от 12 июля 2012 г. № 191-ст введён в действие
@@ -606,14 +606,14 @@ t_o_lower = 0,31·t_pma_out + 14,3   [80 % приемлемости, °C]</div>
     (обращение 30.07.2026, 15 с.).</li>
   </ul>
 
-  <h3>Смежные нормативы (упоминаются в тексте, в расчёт не входят)</h3>
-  <p class="hint">По правилу citation-green уровень ✅ ставится только тем документам, чьи
+  <h3 data-i18n="src_h3_related">Смежные нормативы (упоминаются в тексте, в расчёт не входят)</h3>
+  <p class="hint" data-i18n="src_related_hint">По правилу citation-green уровень ✅ ставится только тем документам, чьи
   формулы или таблицы непосредственно применены в расчётах страницы. Для СанПиН и СП ниже
   на этой странице использованы только реквизиты — их содержательное чтение выполнено
   в рамках отдельного задания контура (реестр `SOURCES.md`), но не под задачу
   этой страницы, поэтому здесь уровень 📗.</p>
   <ul>
-    <li><span class="lvl lvl-bib">📗</span> <b>СанПиН 1.2.3685-21.</b> Гигиенические
+    <li data-i18n="src_sanpin"><span class="lvl lvl-bib">📗</span> <b>СанПиН 1.2.3685-21.</b> Гигиенические
     нормативы и требования к обеспечению безопасности и (или) безвредности для человека
     факторов среды обитания. Постановление Главного государственного санитарного врача
     Российской Федерации от 28.01.2021 № 2, введён в действие с 01.03.2021, срок действия
@@ -625,7 +625,7 @@ t_o_lower = 0,31·t_pma_out + 14,3   [80 % приемлемости, °C]</div>
     <a href="https://meganorm.ru/mega_doc/dop1/81/postanovlenie_glavnogo_gosudarstvennogo_sanitarnogo_vracha_megainfo/0/postanovlenie_glavnogo_gosudarstvennogo_sanitarnogo_vracha.html" rel="noopener nofollow">meganorm.ru → постановление от 28.01.2021 № 2</a>
     (обращение 30.07.2026).</li>
 
-    <li><span class="lvl lvl-bib">📗</span> <b>СП 131.13330.2020</b> «СНиП 23-01-99*
+    <li data-i18n="src_sp131"><span class="lvl lvl-bib">📗</span> <b>СП 131.13330.2020</b> «СНиП 23-01-99*
     Строительная климатология». Приказ Минстроя России от 24 декабря 2020 г. № 859/пр,
     введён с 25 июня 2021 г., пересмотр СП 131.13330.2018; в редакции Изменения № 1
     (приказ от 30.05.2022 № 430/пр) и Изменения № 2 (приказ от 30.06.2023 № 469/пр).
@@ -635,15 +635,15 @@ t_o_lower = 0,31·t_pma_out + 14,3   [80 % приемлемости, °C]</div>
     <a href="https://istkult.ru/upload/medialibrary/998/e6b5nxn6oe3hzau5xni7bpn5aby7t81u/SP-131.13330.2020.-Stroitelnaya-klimatologiya..pdf" rel="noopener nofollow">istkult.ru → СП 131.13330.2020</a>
     (обращение 30.07.2026, 235 с.).</li>
 
-    <li><span class="lvl lvl-bib">📗</span> <b>СП 50.13330.2024</b> «СНиП 23-02-2003
+    <li data-i18n="src_sp50"><span class="lvl lvl-bib">📗</span> <b>СП 50.13330.2024</b> «СНиП 23-02-2003
     Тепловая защита зданий». Приказ Минстроя России от 15 мая 2024 г. № 327/пр, введён с
     16 июня 2024 г., пересмотр СП 50.13330.2012. Формула (5.2) связывает градусо-сутки
     отопительного периода с минимальными значениями оптимальной температуры по ГОСТ 30494.</li>
   </ul>
 
-  <h3>Международный контекст</h3>
+  <h3 data-i18n="src_h3_intl">Международный контекст</h3>
   <ul>
-    <li><span class="lvl lvl-ok">✅</span> <b>ANSI/ASHRAE Standard 55-2023</b> «Thermal
+    <li data-i18n="src_ashrae"><span class="lvl lvl-ok">✅</span> <b>ANSI/ASHRAE Standard 55-2023</b> «Thermal
     Environmental Conditions for Human Occupancy» (заменяет Standard 55-2020). Ниже —
     только то, что подтверждается свободно опубликованными самим ASHRAE материалами
     (Fact Sheet и дополнения a—k к 55-2020, все на ashrae.org).
@@ -654,17 +654,17 @@ t_o_lower = 0,31·t_pma_out + 14,3   [80 % приемлемости, °C]</div>
     значительного большинства (более 80&nbsp;%) находящихся в помещении.
     <br><br>
     <b>Граница зоны комфорта</b> (Addendum&nbsp;h, дословно): «Compliance with
-    Section&nbsp;5.3 is achieved if −0,5&nbsp;&lt;&nbsp;PMV&nbsp;&lt;&nbsp;+0,5 and
+    Section&nbsp;5.3 is achieved if −0.5&nbsp;&lt;&nbsp;PMV&nbsp;&lt;&nbsp;+0.5 and
     the requirements of Sections&nbsp;5.3.5 and 5.3.6 are met». Раздел&nbsp;5.3.5 —
     локальный дискомфорт, 5.3.6 — изменения во времени.
     <br><br>
     <b>Границы применимости</b> (Addendum&nbsp;b к 55-2020, дословно правка
     п.&nbsp;5.2.1.4): «This standard does not apply to occupants whose time-averaged
-    metabolic rate exceeds 4,0&nbsp;met»; там же дословно диапазон использования:
-    «metabolic rates between 1,0 and 4,0&nbsp;met, clothing insulation
-    I<sub>cl</sub> between 0,0 and 1,5&nbsp;clo». Addendum&nbsp;c к 55-2020
+    metabolic rate exceeds 4.0&nbsp;met»; там же дословно диапазон использования:
+    «metabolic rates between 1.0 and 4.0&nbsp;met, clothing insulation
+    I<sub>cl</sub> between 0.0 and 1.5&nbsp;clo». Addendum&nbsp;c к 55-2020
     (дословно): «lower limit of average air speed when using the Elevated Air Speed
-    Comfort Zone Method [понижен] from 0,2&nbsp;m/s to 0,1&nbsp;m/s».
+    Comfort Zone Method [понижен] from 0.2&nbsp;m/s to 0.1&nbsp;m/s».
     <br><br>
     <b>Ключевые изменения от 55-2020</b> (Fact Sheet + одиннадцать дополнений a—k,
     все опубликованы свободно): Addendum&nbsp;a — новый метод оценки локального
@@ -682,13 +682,13 @@ t_o_lower = 0,31·t_pma_out + 14,3   [80 % приемлемости, °C]</div>
     <a href="https://www.ashrae.org/file%20library/technical%20resources/standards%20and%20guidelines/standards%20addenda/55_2020_c_20210430.pdf" rel="noopener nofollow">Addendum&nbsp;c</a>;
     <a href="https://www.ashrae.org/file%20library/technical%20resources/standards%20and%20guidelines/standards%20addenda/55_2020_h_20221230.pdf" rel="noopener nofollow">Addendum&nbsp;h</a>.</li>
 
-    <li><span class="lvl lvl-bib">📗</span> <b>ANSI/ASHRAE Standard 55-2023 — полный текст.</b>
+    <li data-i18n="src_ashrae_full"><span class="lvl lvl-bib">📗</span> <b>ANSI/ASHRAE Standard 55-2023 — полный текст.</b>
     Точные формулировки внутренней структуры (нумерация подразделов, таблицы 5-1
     метаболизма и 5-2 одежды, приложения A—D нормативные и K—M информативные) в
     свободно опубликованных ASHRAE материалах отсутствуют и на этой странице
     цитироваться не могут; распространяются платно ANSI/ASHRAE.</li>
 
-    <li><span class="lvl lvl-ok">✅</span> <b>EN 16798-1:2019</b> «Energy performance of
+    <li data-i18n="src_en16798"><span class="lvl lvl-ok">✅</span> <b>EN 16798-1:2019</b> «Energy performance of
     buildings — Ventilation for buildings — Part&nbsp;1: Indoor environmental input
     parameters…» (заменил EN&nbsp;15251:2007). По слайдам B.&nbsp;W.&nbsp;Olesen
     (председатель CEN/TC&nbsp;156 на дату слайдов, AIVC workshop&nbsp;2023) и
@@ -708,14 +708,14 @@ t_o_lower = 0,31·t_pma_out + 14,3   [80 % приемлемости, °C]</div>
     <a href="https://www.aivc.org/system/files/02-02-04%20Bjarne%20Olesen%20AIVC%20workshop%20ISO%2017772.pdf" rel="noopener nofollow">Olesen B.&nbsp;W. AIVC workshop&nbsp;2023 (PDF, 38&nbsp;слайдов)</a>;
     <a href="https://www.rehva.eu/rehva-journal/chapter/european-standardisation-on-thermal-environment" rel="noopener nofollow">REHVA Journal — European standardisation on thermal environment</a>.</li>
 
-    <li><span class="lvl lvl-bib">📗</span> <b>EN 16798-1:2019 — полный текст.</b>
+    <li data-i18n="src_en16798_full"><span class="lvl lvl-bib">📗</span> <b>EN 16798-1:2019 — полный текст.</b>
     Распространяется платно органами по стандартизации CEN, по содержанию целиком не
     читался; операционные температуры по категориям, требования к воздухообмену и
     CO<sub>2</sub> подтверждены двумя вторичными авторитетными источниками (см. выше),
     но не первоисточником напрямую.</li>
   </ul>
 
-  <div class="note">
+  <div class="note" data-i18n="src_completeness_note">
     <b>Оговорка о полноте.</b> Открытые копии по приведённым ссылкам размещены не
     издателем стандарта, а сторонними ресурсами; реквизиты выше — единственное
     достоверное указание на документ. Официальные ресурсы (сайт Минстроя России,
@@ -726,33 +726,33 @@ t_o_lower = 0,31·t_pma_out + 14,3   [80 % приемлемости, °C]</div>
 </section>
 
 <section class="card">
-  <h2>Границы применимости</h2>
+  <h2 data-i18n="limits_h2">Границы применимости</h2>
   <ul>
-    <li>Модель сквозняка (формула 6) задана для локальной температуры воздуха от 20 до
+    <li data-i18n="limits_li1">Модель сквозняка (формула 6) задана для локальной температуры воздуха от 20 до
     26 °C, скорости движения воздуха менее 0,5 м/с и интенсивности турбулентности от 10
     до 60 %. Применяется к людям со слабой физической активностью, преимущественно в позе
     сидя, с температурной чувствительностью, близкой к нейтральной, и для прогнозирования
     сквозняка в области шеи. На уровне рук и стоп модель может завысить результат.
     Чувствительность к сквозняку меньше при активности выше 1,2 мет.</li>
-    <li>Значения PD по разным видам локального дискомфорта не аддитивны — складывать их
+    <li data-i18n="limits_li2">Значения PD по разным видам локального дискомфорта не аддитивны — складывать их
     нельзя.</li>
-    <li>Приложение А ГОСТ 30494-2011 определено до скорости движения воздуха 0,6 м/с.</li>
-    <li>Проверка соответствия категории A (−0,2 &lt; PMV &lt; +0,2) по прямым измерениям
+    <li data-i18n="limits_li3">Приложение А ГОСТ 30494-2011 определено до скорости движения воздуха 0,6 м/с.</li>
+    <li data-i18n="limits_li4">Проверка соответствия категории A (−0,2 &lt; PMV &lt; +0,2) по прямым измерениям
     затруднена точностью аппаратуры — оговорка самого стандарта; вместо этого проверка
     может основываться на диапазоне эквивалентной температуры.</li>
-    <li>Соответствие таблицам ГОСТ 30494-2011 не равнозначно попаданию в категорию A или B
+    <li data-i18n="limits_li5">Соответствие таблицам ГОСТ 30494-2011 не равнозначно попаданию в категорию A или B
     по ГОСТ Р ИСО 7730-2009: табличный диапазон задан без учёта активности и одежды. Пункт
     2.6 ГОСТ 30494-2011 определяет оптимальные параметры как обеспечивающие ощущение
     комфорта не менее чем у 80 % людей, то есть допускает до 20 % недовольных — это слабее
     всех трёх категорий по ГОСТ Р ИСО 7730-2009, включая наименее строгую C (PPD &lt; 15 %).</li>
-    <li>Уровень двигательной активности и термоизоляция одежды — проектные допущения, а не
+    <li data-i18n="limits_li6">Уровень двигательной активности и термоизоляция одежды — проектные допущения, а не
     нормируемые величины. При ссылке на достигнутую категорию их следует называть явно.</li>
-    <li>Страница даёт оценку по перечисленным зависимостям и не заменяет проектный расчёт
+    <li data-i18n="limits_li7">Страница даёт оценку по перечисленным зависимостям и не заменяет проектный расчёт
     систем отопления, вентиляции и кондиционирования.</li>
   </ul>
 </section>
 
-<footer>
+<footer data-i18n="footer_text">
   Расчёт выполняется в браузере, данные никуда не передаются. Десятичный разделитель —
   запятая (ГОСТ 8.417). Страница самодостаточна: внешних скриптов и шрифтов не подключает.
   <br>VibeEngineering-LLC · контур «Строительная климатология» · 30.07.2026
@@ -840,25 +840,142 @@ function catByDraught(dr){
   return null;
 }
 
-var SENS = [
-  [ 2.5, 'жарко'], [ 1.5, 'тепло'], [ 0.5, 'немного тепло'],
-  [-0.5, 'нейтрально'], [-1.5, 'немного прохладно'], [-2.5, 'прохладно']
-];
 function sensation(v){
   if(v === null) return '—';
-  for(var i=0;i<SENS.length;i++) if(v >= SENS[i][0]) return SENS[i][1];
-  return 'холодно';
+  var sens = T[LANG].sens;
+  for(var i=0;i<sens.length;i++) if(v >= sens[i][0]) return sens[i][1];
+  return T[LANG].sensCold;
 }
 
 /* ------------------------------------------------------------- оформление */
+var LANG = localStorage.getItem('tcd_lang') || 'ru';
 function nf(x, d){
   if(x === null || x === undefined || !isFinite(x)) return '—';
-  return x.toFixed(d).replace('.', ',');
+  var s = x.toFixed(d);
+  return LANG === 'ru' ? s.replace('.', ',') : s;
 }
 function sf(x, d){
   if(x === null || !isFinite(x)) return '—';
-  return (x >= 0 ? '+' : '−') + Math.abs(x).toFixed(d).replace('.', ',');
+  var s = Math.abs(x).toFixed(d);
+  if(LANG === 'ru') s = s.replace('.', ',');
+  return (x >= 0 ? '+' : '−') + s;
 }
+
+/* ---------------------------------------------- словарь динамических строк */
+// Статический текст переведён через data-i18n (см. ниже applyLang()); здесь —
+// только строки, которые собираются в JS при каждом render()/drawDiagram().
+var T = {
+  ru: {
+    sens: [[2.5,'жарко'],[1.5,'тепло'],[0.5,'немного тепло'],[-0.5,'нейтрально'],[-1.5,'немного прохладно'],[-2.5,'прохладно']],
+    sensCold: 'холодно',
+    rasym: {ceilW:'потолок теплее пола', ceilC:'потолок холоднее пола', wallW:'стена теплее воздуха', wallC:'стена холоднее воздуха'},
+    axisT: 'температура воздуха tₐ, °C',
+    axisPhi: 'относительная влажность φ, %',
+    labelCold: 'холодно', labelHot: 'жарко', labelComfort: 'комфортно', labelHumid: 'влажно', labelDry: 'сухо',
+    outOfRange: function(t,phi){ return 'точка вне диапазона диаграммы (t=' + t + '°, φ=' + phi + '%)'; },
+    hygHighGost: 'φ > 60 % — вне гигиенической нормы: ГОСТ 30494, СанПиН 1.2.3685-21; жилая, холодный период',
+    hygLowGost: 'φ < 30 % — вне гигиенической нормы: СанПиН 1.2.3685-21; жилая, холодный период',
+    hygHighAsh: 'φ > 60 % — общая инженерная практика; сам ASHRAE 55 границ по влажности не задаёт',
+    hygLowAsh: 'φ < 30 % — общая инженерная практика; сам ASHRAE 55 границ по влажности не задаёт',
+    compliance: 'compliance',
+    notEval: 'не оценивается', passed: 'выполнен', failed: 'не выполнен',
+    rowGostGroup: function(cat){ return '<b>ГОСТ Р ИСО 7730-2009</b> — требуемая категория ' + cat; },
+    rowAshGroup: '<b>ANSI/ASHRAE Standard 55-2023</b> — аналитический метод',
+    row_pmv_name: 'PMV — прогнозируемая средняя оценка',
+    row_ppd_name: 'PPD — недовольных теплом в целом, %',
+    row_dr_name: 'DR — недовольных подвижностью воздуха, %',
+    row_dtv_name: 'Δt воздуха по вертикали (1,1 и 0,1 м), °C',
+    row_floor_name: 'Температура поверхности пола, °C',
+    row_rasym_name: 'Асимметрия теплового излучения, °C',
+    row_rasym_lim: 'табл. A.4 ГОСТ Р ИСО 7730-2009',
+    row_ash_pmv_name: 'PMV compliance: −0,5 &lt; PMV &lt; +0,5',
+    row_ash_pmv_outofscope: 'вне области применимости',
+    row_ash_pmv_solar: ' (с солнечной поправкой)',
+    row_ankle_name: 'Ankle Air Speed: V &lt; 0,35·PMV + 0,39, м/с',
+    row_ankle_scopeerr: 'PMV ≤ −0,83 — формула теряет смысл',
+    row_notapplicable: 'не применяется при clo≥0,7 или met≥1,3',
+    row_vg_name: 'Вертикальный градиент t: ΔT &lt; 7,82 − 0,87·(PMV−1,91)², °C/м',
+    row_vg_scopeerr: 'PMV вне области формулы',
+    row_floor_ash_name: 'Температура пола, °C',
+    row_rasym_ash_name: 'Радиантная асимметрия, °C',
+    row_rasym_ash_lim: 'потолок ↑&lt;5, ↓&lt;14; стена ↑&lt;23, ↓&lt;10',
+    ash_localnames: {ankle:'Ankle Air Speed', vg:'вертикальный градиент', floor:'температура пола', rasym:'радиантная асимметрия'},
+    ash_badge_outofscope: 'вне применимости (met вне 1,0—4,0 или clo вне 0,0—1,5)',
+    ash_badge_pmvUndef: 'PMV не определён',
+    ash_badge_pmvFail: 'не соответствует по PMV',
+    ash_badge_localNA: 'соответствует по PMV; локальные критерии не применяются (clo≥0,7 или met≥1,3)',
+    ash_badge_fail: function(names){ return 'не соответствует (' + names + ')'; },
+    ash_badge_localNotSet: 'соответствует по PMV; локальные критерии не заданы',
+    ash_badge_ok: function(n){ return 'соответствует по PMV и ' + n + ' заданным локальным критериям'; },
+    cat_x_ppd: 'вне A/B/C по PMV/PPD',
+    cat_x_dr: 'вне A/B/C по DR (подвижность воздуха)',
+    cat_x: 'вне A/B/C',
+    ad_outrange: 't<sub>pma out</sub> вне 10—33,5 °C',
+    ad_ok: function(t){ return 'соответствует (t<sub>o</sub>=' + t + ' °C)'; },
+    ad_fail: function(t){ return 'не соответствует (t<sub>o</sub>=' + t + ' °C)'; },
+    warn_temp: function(t){ return 'температура ' + t + ' °C вне диапазона 20…26 °C, для которого задана модель DR'; },
+    warn_v: function(v){ return 'скорость ' + v + ' м/с достигает границы применимости модели DR (менее 0,5 м/с)'; },
+    warn_met: 'при активности выше 1,2 мет чувствительность к подвижности воздуха меньше — DR завышен',
+    warn_noconverge: 'итерация по температуре поверхности одежды не сошлась за 150 повторений — PMV не определён',
+    warn_prefix: 'Оговорки к текущей точке:',
+    warn_none: 'Текущая точка лежит в пределах применимости использованных зависимостей.'
+  },
+  en: {
+    sens: [[2.5,'hot'],[1.5,'warm'],[0.5,'slightly warm'],[-0.5,'neutral'],[-1.5,'slightly cool'],[-2.5,'cool']],
+    sensCold: 'cold',
+    rasym: {ceilW:'ceiling warmer than floor', ceilC:'ceiling cooler than floor', wallW:'wall warmer than air', wallC:'wall cooler than air'},
+    axisT: 'air temperature tₐ, °C',
+    axisPhi: 'relative humidity φ, %',
+    labelCold: 'cold', labelHot: 'hot', labelComfort: 'comfortable', labelHumid: 'humid', labelDry: 'dry',
+    outOfRange: function(t,phi){ return 'point outside chart range (t=' + t + '°, φ=' + phi + '%)'; },
+    hygHighGost: 'φ > 60% — outside hygienic range: GOST 30494, SanPiN 1.2.3685-21; dwelling, cold period',
+    hygLowGost: 'φ < 30% — outside hygienic range: SanPiN 1.2.3685-21; dwelling, cold period',
+    hygHighAsh: 'φ > 60% — general engineering practice; ASHRAE 55 itself sets no humidity limits',
+    hygLowAsh: 'φ < 30% — general engineering practice; ASHRAE 55 itself sets no humidity limits',
+    compliance: 'compliance',
+    notEval: 'not evaluated', passed: 'met', failed: 'not met',
+    rowGostGroup: function(cat){ return '<b>GOST R ISO 7730-2009</b> — required category ' + cat; },
+    rowAshGroup: '<b>ANSI/ASHRAE Standard 55-2023</b> — analytical method',
+    row_pmv_name: 'PMV — predicted mean vote',
+    row_ppd_name: 'PPD — dissatisfied with overall thermal comfort, %',
+    row_dr_name: 'DR — dissatisfied with draught, %',
+    row_dtv_name: 'Vertical air Δt (1.1 and 0.1 m), °C',
+    row_floor_name: 'Floor surface temperature, °C',
+    row_rasym_name: 'Radiant asymmetry, °C',
+    row_rasym_lim: 'Table A.4 GOST R ISO 7730-2009',
+    row_ash_pmv_name: 'PMV compliance: −0.5 &lt; PMV &lt; +0.5',
+    row_ash_pmv_outofscope: 'outside applicability range',
+    row_ash_pmv_solar: ' (with solar correction)',
+    row_ankle_name: 'Ankle Air Speed: V &lt; 0.35·PMV + 0.39, m/s',
+    row_ankle_scopeerr: 'PMV ≤ −0.83 — formula loses meaning',
+    row_notapplicable: 'not applicable at clo≥0.7 or met≥1.3',
+    row_vg_name: 'Vertical temperature gradient: ΔT &lt; 7.82 − 0.87·(PMV−1.91)², °C/m',
+    row_vg_scopeerr: 'PMV outside formula range',
+    row_floor_ash_name: 'Floor temperature, °C',
+    row_rasym_ash_name: 'Radiant asymmetry, °C',
+    row_rasym_ash_lim: 'ceiling ↑&lt;5, ↓&lt;14; wall ↑&lt;23, ↓&lt;10',
+    ash_localnames: {ankle:'Ankle Air Speed', vg:'vertical gradient', floor:'floor temperature', rasym:'radiant asymmetry'},
+    ash_badge_outofscope: 'outside applicability (met outside 1.0—4.0 or clo outside 0.0—1.5)',
+    ash_badge_pmvUndef: 'PMV undefined',
+    ash_badge_pmvFail: 'fails PMV compliance',
+    ash_badge_localNA: 'meets PMV; local criteria not applicable (clo≥0.7 or met≥1.3)',
+    ash_badge_fail: function(names){ return 'fails (' + names + ')'; },
+    ash_badge_localNotSet: 'meets PMV; local criteria not set',
+    ash_badge_ok: function(n){ return 'meets PMV and ' + n + ' set local criteria'; },
+    cat_x_ppd: 'outside A/B/C by PMV/PPD',
+    cat_x_dr: 'outside A/B/C by DR (draught)',
+    cat_x: 'outside A/B/C',
+    ad_outrange: 't<sub>pma out</sub> outside 10—33.5 °C',
+    ad_ok: function(t){ return 'meets (t<sub>o</sub>=' + t + ' °C)'; },
+    ad_fail: function(t){ return 'fails (t<sub>o</sub>=' + t + ' °C)'; },
+    warn_temp: function(t){ return 'temperature ' + t + ' °C outside 20…26 °C range for which the DR model is defined'; },
+    warn_v: function(v){ return 'velocity ' + v + ' m/s reaches the DR model applicability limit (below 0.5 m/s)'; },
+    warn_met: 'at activity above 1.2 met, draught sensitivity is lower — DR is overestimated',
+    warn_noconverge: 'clothing surface temperature iteration did not converge in 150 steps — PMV undefined',
+    warn_prefix: 'Caveats for the current point:',
+    warn_none: 'The current point lies within the applicability range of the relationships used.'
+  }
+};
 // красит весь виджет-плитку по статусу (a/b/c — норма/предупреждение, x — не соответствует)
 function setTileStatus(elId, status){
   var node = document.getElementById(elId);
@@ -920,12 +1037,14 @@ function readInputs(){
 }
 
 // пределы радиантной асимметрии по ASHRAE 55 (совпадают с ISO 7730 табл. A.4) — °C
+// подписи (label) — из T[LANG].rasym, чтобы переключались с языком
 var RASYM_LIM = {
-  ceilW: {lim: 5,  label: 'потолок теплее пола'},
-  ceilC: {lim: 14, label: 'потолок холоднее пола'},
-  wallW: {lim: 23, label: 'стена теплее воздуха'},
-  wallC: {lim: 10, label: 'стена холоднее воздуха'}
+  ceilW: {lim: 5},
+  ceilC: {lim: 14},
+  wallW: {lim: 23},
+  wallC: {lim: 10}
 };
+function rasymLabel(key){ return T[LANG].rasym[key]; }
 
 /* ------------------------------ 2D-диаграмма t–φ ---------------------- */
 var CV_GOST = document.getElementById('cv_gost');
@@ -1162,7 +1281,7 @@ function drawDiagram(inp, mode, showLines){
       labelIso(-0.5, 'B'); labelIso(0.5, 'B');
       labelIso(-0.2, 'A'); labelIso(0.2, 'A');
     } else {
-      labelIso(-0.5, 'compliance'); labelIso(0.5, 'compliance');
+      labelIso(-0.5, T[LANG].compliance); labelIso(0.5, T[LANG].compliance);
     }
   }
 
@@ -1196,10 +1315,10 @@ function drawDiagram(inp, mode, showLines){
 
   CTX.textAlign = 'center'; CTX.textBaseline = 'alphabetic';
   CTX.font = 'bold 22px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
-  CTX.fillText('температура воздуха tₐ, °C', r.x + r.w/2, CV.height - 22);
+  CTX.fillText(T[LANG].axisT, r.x + r.w/2, CV.height - 22);
   CTX.save();
   CTX.translate(30, r.y + r.h/2); CTX.rotate(-Math.PI/2);
-  CTX.fillText('относительная влажность φ, %', 0, 0);
+  CTX.fillText(T[LANG].axisPhi, 0, 0);
   CTX.restore();
 
   // Надписи ощущений — по расположению как на референсной схематической
@@ -1217,11 +1336,11 @@ function drawDiagram(inp, mode, showLines){
     CTX.fillStyle = 'rgba(15,15,15,.92)';
     CTX.fillText(text, xx, yy);
   }
-  labelHalo('холодно',   r.x + r.w * 0.08, r.y + r.h * 0.50, 20);
-  labelHalo('жарко',     r.x + r.w * 0.92, r.y + r.h * 0.50, 20);
-  labelHalo('комфортно', r.x + r.w * 0.50, r.y + r.h * 0.50, 20);
-  labelHalo('влажно',    r.x + r.w * 0.50, r.y + r.h * 0.08, 22);
-  labelHalo('сухо',      r.x + r.w * 0.50, r.y + r.h * 0.92, 22);
+  labelHalo(T[LANG].labelCold,     r.x + r.w * 0.08, r.y + r.h * 0.50, 20);
+  labelHalo(T[LANG].labelHot,      r.x + r.w * 0.92, r.y + r.h * 0.50, 20);
+  labelHalo(T[LANG].labelComfort,  r.x + r.w * 0.50, r.y + r.h * 0.50, 20);
+  labelHalo(T[LANG].labelHumid,    r.x + r.w * 0.50, r.y + r.h * 0.08, 22);
+  labelHalo(T[LANG].labelDry,      r.x + r.w * 0.50, r.y + r.h * 0.92, 22);
 
   // Границы гигиенического диапазона влажности 30/60 % — отключаемые
   // переключателем «Показывать линии», как и контуры категорий/compliance.
@@ -1243,13 +1362,13 @@ function drawDiagram(inp, mode, showLines){
     CTX.fillStyle = 'rgba(28,27,25,.85)';
     CTX.textAlign = 'left'; CTX.textBaseline = 'top';
     if(mode === 'gost'){
-      if(60 <= H1) CTX.fillText('φ > 60 % — вне гигиенической нормы: ГОСТ 30494, СанПиН 1.2.3685-21; жилая, холодный период', r.x + 12, ph(60) + 6);
+      if(60 <= H1) CTX.fillText(T[LANG].hygHighGost, r.x + 12, ph(60) + 6);
       CTX.textBaseline = 'bottom';
-      if(30 >= H0) CTX.fillText('φ < 30 % — вне гигиенической нормы: СанПиН 1.2.3685-21; жилая, холодный период', r.x + 12, ph(30) - 6);
+      if(30 >= H0) CTX.fillText(T[LANG].hygLowGost, r.x + 12, ph(30) - 6);
     } else {
-      if(60 <= H1) CTX.fillText('φ > 60 % — общая инженерная практика; сам ASHRAE 55 границ по влажности не задаёт', r.x + 12, ph(60) + 6);
+      if(60 <= H1) CTX.fillText(T[LANG].hygHighAsh, r.x + 12, ph(60) + 6);
       CTX.textBaseline = 'bottom';
-      if(30 >= H0) CTX.fillText('φ < 30 % — общая инженерная практика; сам ASHRAE 55 границ по влажности не задаёт', r.x + 12, ph(30) - 6);
+      if(30 >= H0) CTX.fillText(T[LANG].hygLowAsh, r.x + 12, ph(30) - 6);
     }
   }
 
@@ -1279,7 +1398,7 @@ function drawDiagram(inp, mode, showLines){
     CTX.fillStyle = 'rgba(28,27,25,.85)';
     CTX.textAlign = (X2 > r.x + r.w) ? 'right' : (X2 < r.x ? 'left' : 'center');
     CTX.textBaseline = (Y2 > r.y + r.h) ? 'bottom' : (Y2 < r.y ? 'top' : 'middle');
-    var msg = 'точка вне диапазона диаграммы (t=' + nf(inp.ta,1) + '°, φ=' + nf(inp.rh,0) + '%)';
+    var msg = T[LANG].outOfRange(nf(inp.ta,1), nf(inp.rh,0));
     CTX.fillText(msg, Xc + (X2 > r.x + r.w ? -14 : (X2 < r.x ? 14 : 0)),
                        Yc + (Y2 > r.y + r.h ? -14 : (Y2 < r.y ? 14 : 0)));
   }
@@ -1318,7 +1437,7 @@ function drawDiagram(inp, mode, showLines){
 /* ------------------------------------------------------------------ вывод */
 function row(name, got, lim, ok){
   var cls = ok === null ? 'na' : (ok ? 'pass' : 'fail');
-  var txt = ok === null ? 'не оценивается' : (ok ? 'выполнен' : 'не выполнен');
+  var txt = ok === null ? T[LANG].notEval : (ok ? T[LANG].passed : T[LANG].failed);
   return '<tr><td>' + name + '</td><td class="num">' + got +
          '</td><td class="num">' + lim + '</td><td class="' + cls + '">' + txt + '</td></tr>';
 }
@@ -1367,18 +1486,19 @@ function render(){
   document.getElementById('o_tsu').innerHTML    = nf(tsu, 1) + '<span class="u"> °C</span>';
   document.getElementById('o_tcl').innerHTML    = (res_g ? nf(res_g.tcl, 1) : '—') + '<span class="u"> °C</span>';
 
+  var t = T[LANG];
   var badge, catStatus;
   if(overall !== null){
     badge = '<span class="badge b-' + overall.toLowerCase() + '">' + overall + '</span>';
     catStatus = overall.toLowerCase();
   } else if(cc === null && cd !== null){
-    badge = '<span class="badge b-x">вне A/B/C по PMV/PPD</span>';
+    badge = '<span class="badge b-x">' + t.cat_x_ppd + '</span>';
     catStatus = 'x';
   } else if(cc !== null && cd === null){
-    badge = '<span class="badge b-x">вне A/B/C по DR (подвижность воздуха)</span>';
+    badge = '<span class="badge b-x">' + t.cat_x_dr + '</span>';
     catStatus = 'x';
   } else {
-    badge = '<span class="badge b-x">вне A/B/C</span>';
+    badge = '<span class="badge b-x">' + t.cat_x + '</span>';
     catStatus = 'x';
   }
   document.getElementById('o_cat').innerHTML = badge;
@@ -1392,24 +1512,24 @@ function render(){
   var rasymGiven  = inp.rasym > 0 && inp.rasym_type !== 'none';
   var rasymLim    = rasymGiven ? RASYM_LIM[inp.rasym_type] : null;
 
-  html += '<tr class="grp"><td colspan="4"><b>ГОСТ Р ИСО 7730-2009</b> — требуемая категория ' + inp.cat + '</td></tr>';
-  html += row('PMV — прогнозируемая средняя оценка', sf(pv, 2),
+  html += '<tr class="grp"><td colspan="4">' + t.rowGostGroup(inp.cat) + '</td></tr>';
+  html += row(t.row_pmv_name, sf(pv, 2),
               '±' + nf(C.pmv, 1), pv === null ? null : Math.abs(pv) < C.pmv);
-  html += row('PPD — недовольных теплом в целом, %', nf(pd, 1),
+  html += row(t.row_ppd_name, nf(pd, 1),
               '&lt; ' + nf(C.ppd, 0), pv === null ? null : pd < C.ppd);
-  html += row('DR — недовольных подвижностью воздуха, %', nf(dr, 1),
+  html += row(t.row_dr_name, nf(dr, 1),
               '&lt; ' + nf(C.dr, 0), dr < C.dr);
-  html += row('Δt воздуха по вертикали (1,1 и 0,1 м), °C',
+  html += row(t.row_dtv_name,
               dtvGiven ? nf(inp.dtv, 1) : '—',
               '&lt; ' + nf(C.dtv, 0),
               dtvGiven ? (inp.dtv < C.dtv) : null);
-  html += row('Температура поверхности пола, °C',
+  html += row(t.row_floor_name,
               tfloorGiven ? nf(inp.tfloor, 1) : '—',
               nf(C.floor[0], 0) + '…' + nf(C.floor[1], 0),
               tfloorGiven ? (inp.tfloor >= C.floor[0] && inp.tfloor <= C.floor[1]) : null);
-  html += row('Асимметрия теплового излучения, °C',
-              rasymGiven ? (RASYM_LIM[inp.rasym_type].label + ': ' + nf(inp.rasym, 1)) : '—',
-              'табл. A.4 ГОСТ Р ИСО 7730-2009', null);
+  html += row(t.row_rasym_name,
+              rasymGiven ? (rasymLabel(inp.rasym_type) + ': ' + nf(inp.rasym, 1)) : '—',
+              t.row_rasym_lim, null);
 
   // --- ASHRAE 55-2023 ---
   // применимость аналитического метода: 1.0 ≤ met ≤ 4.0, 0.0 ≤ clo ≤ 1.5
@@ -1439,63 +1559,62 @@ function render(){
   // Радиантная асимметрия (пределы совпадают с ISO 7730 табл. A.4)
   var raOK = (!localApp || !rasymGiven) ? null : (inp.rasym < rasymLim.lim);
 
-  html += '<tr class="grp"><td colspan="4"><b>ANSI/ASHRAE Standard 55-2023</b> — аналитический метод</td></tr>';
-  html += row('PMV compliance: −0,5 &lt; PMV &lt; +0,5',
-              ashApp ? sf(pv_a, 2) + (inp.solar_on && inp.solar_dt > 0 ? ' (с солнечной поправкой)' : '') : 'вне области применимости',
-              '|PMV| &lt; 0,5', ashApp ? pmvOK : null);
-  html += row('Ankle Air Speed: V &lt; 0,35·PMV + 0,39, м/с',
+  html += '<tr class="grp"><td colspan="4">' + t.rowAshGroup + '</td></tr>';
+  html += row(t.row_ash_pmv_name,
+              ashApp ? sf(pv_a, 2) + (inp.solar_on && inp.solar_dt > 0 ? t.row_ash_pmv_solar : '') : t.row_ash_pmv_outofscope,
+              '|PMV| &lt; ' + nf(0.5, 1), ashApp ? pmvOK : null);
+  html += row(t.row_ankle_name,
               nf(inp.v, 2),
               vAnkleUsable ? ('&lt; ' + nf(vAnkleLim, 2))
-                           : (localApp ? 'PMV ≤ −0,83 — формула теряет смысл' : 'не применяется при clo≥0,7 или met≥1,3'),
+                           : (localApp ? t.row_ankle_scopeerr : t.row_notapplicable),
               vAnkleOK);
-  html += row('Вертикальный градиент t: ΔT &lt; 7,82 − 0,87·(PMV−1,91)², °C/м',
+  html += row(t.row_vg_name,
               dtvGiven ? nf(inp.dtv, 1) : '—',
               vgUsable ? ('&lt; ' + nf(vgLim, 2))
-                       : (localApp ? 'PMV вне области формулы' : 'не применяется при clo≥0,7 или met≥1,3'),
+                       : (localApp ? t.row_vg_scopeerr : t.row_notapplicable),
               vgOK);
-  html += row('Температура пола, °C',
+  html += row(t.row_floor_ash_name,
               tfloorGiven ? nf(inp.tfloor, 1) : '—',
               '19…29',
               floorOK);
-  html += row('Радиантная асимметрия, °C',
-              rasymGiven ? (rasymLim.label + ': ' + nf(inp.rasym, 1)) : '—',
-              rasymGiven ? ('&lt; ' + nf(rasymLim.lim, 0))
-                         : 'потолок ↑&lt;5, ↓&lt;14; стена ↑&lt;23, ↓&lt;10',
+  html += row(t.row_rasym_ash_name,
+              rasymGiven ? (rasymLabel(inp.rasym_type) + ': ' + nf(inp.rasym, 1)) : '—',
+              rasymGiven ? ('&lt; ' + nf(rasymLim.lim, 0)) : t.row_rasym_ash_lim,
               raOK);
   document.querySelector('#checks tbody').innerHTML = html;
 
   // плитка соответствия ASHRAE — учитывает ВСЕ применимые и заданные локальные проверки
   var ashBadge;
   var localChecks = [
-    {name: 'Ankle Air Speed', ok: vAnkleOK},
-    {name: 'вертикальный градиент', ok: vgOK},
-    {name: 'температура пола', ok: floorOK},
-    {name: 'радиантная асимметрия', ok: raOK}
+    {name: t.ash_localnames.ankle, ok: vAnkleOK},
+    {name: t.ash_localnames.vg, ok: vgOK},
+    {name: t.ash_localnames.floor, ok: floorOK},
+    {name: t.ash_localnames.rasym, ok: raOK}
   ];
   var localFailed = localChecks.filter(function(c){ return c.ok === false; });
   var localEvalCount = localChecks.filter(function(c){ return c.ok !== null; }).length;
 
   var ashStatus;
   if(!ashApp){
-    ashBadge = '<span class="badge b-x">вне применимости (met вне 1,0—4,0 или clo вне 0,0—1,5)</span>';
+    ashBadge = '<span class="badge b-x">' + t.ash_badge_outofscope + '</span>';
     ashStatus = 'x';
   } else if(pmvOK === null){
-    ashBadge = '<span class="badge b-x">PMV не определён</span>';
+    ashBadge = '<span class="badge b-x">' + t.ash_badge_pmvUndef + '</span>';
     ashStatus = 'x';
   } else if(!pmvOK){
-    ashBadge = '<span class="badge b-x">не соответствует по PMV</span>';
+    ashBadge = '<span class="badge b-x">' + t.ash_badge_pmvFail + '</span>';
     ashStatus = 'x';
   } else if(!localApp){
-    ashBadge = '<span class="badge b-b">соответствует по PMV; локальные критерии не применяются (clo≥0,7 или met≥1,3)</span>';
+    ashBadge = '<span class="badge b-b">' + t.ash_badge_localNA + '</span>';
     ashStatus = 'b';
   } else if(localFailed.length){
-    ashBadge = '<span class="badge b-x">не соответствует (' + localFailed.map(function(c){return c.name;}).join('; ') + ')</span>';
+    ashBadge = '<span class="badge b-x">' + t.ash_badge_fail(localFailed.map(function(c){return c.name;}).join('; ')) + '</span>';
     ashStatus = 'x';
   } else if(localEvalCount === 0){
-    ashBadge = '<span class="badge b-b">соответствует по PMV; локальные критерии не заданы</span>';
+    ashBadge = '<span class="badge b-b">' + t.ash_badge_localNotSet + '</span>';
     ashStatus = 'b';
   } else {
-    ashBadge = '<span class="badge b-a">соответствует по PMV и ' + localEvalCount + ' заданным локальным критериям</span>';
+    ashBadge = '<span class="badge b-a">' + t.ash_badge_ok(localEvalCount) + '</span>';
     ashStatus = 'a';
   }
   document.getElementById('o_ash').innerHTML = ashBadge;
@@ -1512,13 +1631,13 @@ function render(){
   document.getElementById('ad_lower').textContent = adApp ? nf(adLower, 1) : '—';
   var adBadge, adStatus;
   if(!adApp){
-    adBadge = '<span class="badge b-x">t<sub>pma out</sub> вне 10—33,5 °C</span>';
+    adBadge = '<span class="badge b-x">' + t.ad_outrange + '</span>';
     adStatus = 'x';
   } else if(to >= adLower && to <= adUpper){
-    adBadge = '<span class="badge b-a">соответствует (t<sub>o</sub>=' + nf(to,1) + ' °C)</span>';
+    adBadge = '<span class="badge b-a">' + t.ad_ok(nf(to,1)) + '</span>';
     adStatus = 'a';
   } else {
-    adBadge = '<span class="badge b-x">не соответствует (t<sub>o</sub>=' + nf(to,1) + ' °C)</span>';
+    adBadge = '<span class="badge b-x">' + t.ad_fail(nf(to,1)) + '</span>';
     adStatus = 'x';
   }
   document.getElementById('ad_ok').innerHTML = adBadge;
@@ -1526,16 +1645,16 @@ function render(){
 
   var warn = [];
   if(inp.ta < 20 || inp.ta > 26)
-    warn.push('температура ' + nf(inp.ta,1) + ' °C вне диапазона 20…26 °C, для которого задана модель DR');
+    warn.push(t.warn_temp(nf(inp.ta,1)));
   if(inp.v >= 0.5)
-    warn.push('скорость ' + nf(inp.v,2) + ' м/с достигает границы применимости модели DR (менее 0,5 м/с)');
+    warn.push(t.warn_v(nf(inp.v,2)));
   if(inp.met > 1.2)
-    warn.push('при активности выше 1,2 мет чувствительность к подвижности воздуха меньше — DR завышен');
+    warn.push(t.warn_met);
   if(res_g === null)
-    warn.push('итерация по температуре поверхности одежды не сошлась за 150 повторений — PMV не определён');
+    warn.push(t.warn_noconverge);
   document.getElementById('lim').innerHTML = warn.length
-    ? '<b>Оговорки к текущей точке:</b> ' + warn.join('; ') + '.'
-    : 'Текущая точка лежит в пределах применимости использованных зависимостей.';
+    ? '<b>' + t.warn_prefix + '</b> ' + warn.join('; ') + '.'
+    : t.warn_none;
 
   setActive(CV_GOST); drawDiagram(inp, 'gost', el.lines_gost.checked);
   setActive(CV_ASH);  drawDiagram(inp, 'ashrae', el.lines_ash.checked);
@@ -1557,18 +1676,203 @@ function render(){
 });
 
 /* ---------------------------------------------------------------- тема */
-var btn = document.getElementById('theme');
-btn.addEventListener('click', function(){
-  var cur = document.documentElement.getAttribute('data-theme');
-  var next = cur === 'dark' ? 'light' : (cur === 'light' ? null : 'dark');
-  if(next) document.documentElement.setAttribute('data-theme', next);
-  else document.documentElement.removeAttribute('data-theme');
-  render();
-});
+// Ручного переключателя темы больше нет (см. ниже — на его месте RU/EN);
+// тема следует системной настройке prefers-color-scheme автоматически.
 if(window.matchMedia){
   var mq = window.matchMedia('(prefers-color-scheme: dark)');
   if(mq.addEventListener) mq.addEventListener('change', render);
 }
+
+/* ------------------------------------------------------------ язык RU/EN */
+// I18N_EN — только английские варианты; русский берётся живьём из исходного
+// HTML при первом проходе и кэшируется в RU_CACHE, поэтому RU-версия не
+// дублируется в JS и не может разойтись со статической разметкой страницы.
+var RU_CACHE = {};
+var RU_TITLE, RU_DESC;
+// Английский перевод всего статичного текста, помеченного data-i18n="ключ" в
+// HTML. Ключи, где текст совпадает в обоих языках (например, названия
+// стандартов), сюда намеренно не включены — для них используется RU_CACHE.
+var I18N_EN = {
+doc_title: "Thermal Comfort Diagram — PMV/PPD, Air Speed, Resulting Temperature",
+meta_description: "Interactive thermal comfort diagram: air speed in the occupied zone, temperature, humidity, activity, clothing. PMV and PPD per GOST R ISO 7730-2009, categories A/B/C, draught risk assessment (DR), resulting temperature per GOST 30494-2011.",
+h1_title: "Thermal Comfort Diagram",
+h1_sub: "Air speed in the occupied zone, temperature, humidity, human activity, clothing — and what follows from them: PMV, PPD, environment category, draught risk.",
+intro_h2: "The essence of the problem",
+intro_p1: 'A person’s thermal sensation is determined not by air temperature alone but by the joint effect of <b>six</b> quantities. Four relate to the environment — air temperature, the mean radiant temperature of surrounding surfaces, air speed, and humidity. Two relate to the person — metabolic rate and clothing insulation.',
+intro_p2: 'The practical consequence: the same air temperature can produce a different sensation. At 22 °C in a room with cold glazing, the radiant temperature is lower than the air temperature and the person feels cold; at the same air temperature but with an air speed of 0.4 m/s, the person feels cold from the draught instead. A requirement that specifies only temperature leaves the sensation undetermined.',
+intro_p3: 'For quantitative assessment the <b>PMV</b> index (predicted mean vote) is used — the position of a group’s mean thermal sensation on a seven-point scale from −3 (cold) to +3 (hot), where 0 is neutral. PMV yields <b>PPD</b> (predicted percentage of dissatisfied). Zero dissatisfied is unattainable: even at PMV = 0, 5% remain dissatisfied because people differ.',
+intro_p4: '<b>Local discomfort</b> is considered separately — dissatisfaction from the cooling of a single body part while the overall sensation is formally neutral. Elevated air speed, a head-to-ankle temperature difference, too cold or too warm a floor, radiant asymmetry from a cold window or a warm ceiling. Percentages of dissatisfied for different types of local discomfort <b>do not add up</b>: the same cold-sensitive person can fall into several categories at once.',
+intro_p5: 'The diagram below shows which environment category is achieved for the given activity, clothing, humidity, and radiant temperature — as a function of air temperature and air speed in the occupied zone. Both constraints are taken into account: overall comfort (PMV and PPD) and draught (DR).',
+tabbar_aria: "Diagram by standard",
+presets_aria: "Typical scenarios",
+ad_acceptability: "80% acceptability",
+tab_gost_label: "GOST R ISO 7730-2009",
+gost_h2: "GOST R ISO 7730-2009 diagram",
+gost_intro: 'Identical to ISO 7730:2005. Three categories A/B/C by PMV/PPD, accounting for DR (draught rate — the probabilistic percentage dissatisfied with air speed, the standard’s formula&nbsp;(6)). The dashed 30&nbsp;% and 60&nbsp;% lines are <b>hygienic</b> limits for a <b>dwelling room in the cold period</b> per <b>GOST 30494-2011, Table&nbsp;1</b> and <b>SanPiN 1.2.3685-21, Table&nbsp;5.27</b> (limits differ for the warm period and other room types; the PMV/PPD category bands include humidity only weakly, so they run nearly vertical). Inputs shared with ASHRAE (t, φ, v, Δ<i>t</i><sub>r</sub>, met, clo) are synchronised with the ASHRAE tab. Clicking the canvas moves the working point on both tabs.',
+presets_label: "Typical scenario:",
+preset_office: "Office",
+preset_sleep: "Sleep",
+preset_sport: "Sport",
+preset_home: "Home, leisure",
+preset_restaurant: "Restaurant, café",
+presets_hint: "— sets the scenario’s met/clo/v and the temperature giving PMV≈0 at φ=50&nbsp;%",
+gost_figcaption: "GOST R ISO 7730-2009 — categories A/B/C accounting for DR; 30/60% dashes — dwelling-room hygiene limits, cold period (GOST 30494 / SanPiN 1.2.3685-21)",
+lab_temp: "Temperature",
+lab_rh: "Humidity",
+lab_v: "Air speed",
+lab_var: 'v<sub>ar</sub> = <span id="var_v">0.15</span> m/s',
+lab_tu: "Tu — turbulence",
+lab_met: "Activity",
+opt_met_08: "0.8 met — resting, lying (outside ASHRAE 55 range)",
+opt_met_10: "1.0 met — seated",
+opt_met_12: "1.2 met — office",
+opt_met_14: "1.4 met — standing, light work",
+opt_met_16: "1.6 met — moderate work",
+opt_met_20: "2.0 met — walking",
+opt_met_30: "3.0 met — heavy work",
+opt_met_08_a: "0.8 met — resting, lying (outside ASHRAE 55)",
+lab_clo: "Clothing",
+opt_clo_00: "0 clo — nude",
+opt_clo_025: "0.25 clo — light",
+opt_clo_05: "0.50 clo — summer outfit",
+opt_clo_075: "0.75 clo — shirt, trousers",
+opt_clo_10: "1.00 clo — suit",
+opt_clo_15: "1.50 clo — warm outfit",
+lab_cat: "Required category",
+opt_cat_a: "A — |PMV| &lt; 0.2",
+opt_cat_b: "B — |PMV| &lt; 0.5",
+opt_cat_c: "C — |PMV| &lt; 0.7",
+show_lines: "Show standard lines",
+fill_legend_title: "Fill — PPD (% dissatisfied):",
+gost_contours_title: "PMV category contours (GOST R ISO 7730-2009):",
+gost_legend_marker: "— white marker: working point (t, φ); click the canvas to move it. Fields shared with ASHRAE (t, φ, v, Δ<i>t</i><sub>r</sub>, met, clo) are synchronised with the ASHRAE tab.",
+tu_explainer: '<b>About the “Tu — turbulence” slider.</b> Room air speed is not constant: it fluctuates around its mean value. The <b>Tu</b> index is how large these fluctuations are, in percent, relative to the mean speed — in other words, how “jittery” the flow is. At Tu = 10% the flow is smooth (displacement ventilation from below, laminar jets). At Tu = 60% the flow is irregular (near supply grilles, a partly open window). The same mean air speed of 0.15 m/s feels noticeably more unpleasant at Tu = 60% than at Tu = 10%. Per GOST R ISO 7730-2009: mixing ventilation — Tu around <b>40%</b> (the default value); displacement ventilation or no mechanical ventilation — <b>lower</b>. Tu enters only the DR calculation and does not affect PMV/PPD.',
+ldi_gost_title: "Local discomfort — measured values (for GOST R ISO 7730-2009 category assessment; synchronised with the block in the ASHRAE section)",
+ldi_gost_subtitle: 'Per GOST R ISO 7730-2009 Tables A.1—A.3 (Δt, t<sub>floor</sub>, asymmetry thresholds for category A/B/C)',
+lab_dtv: 'Head↔ankle air Δt, °C <span class="hint">(warmer at the top; 0 — not set)</span>',
+lab_tfloor: 'Floor temperature <i>t</i><sub>floor</sub>, °C <span class="hint">(for seated occupants with foot contact; 0 — not set)</span>',
+lab_rasym_type: "Radiant asymmetry — type",
+opt_rasym_none: "not set",
+opt_rasym_ceilw: "ceiling warmer than floor",
+opt_rasym_ceilc: "ceiling cooler than floor",
+opt_rasym_wallw: "wall warmer than air",
+opt_rasym_wallc: "wall cooler than air",
+lab_rasym: 'Magnitude |Δt<sub>r</sub>|, °C',
+ash_h2: "ANSI/ASHRAE Standard 55-2023 diagram",
+ash_intro: 'Analytical method (Addendum&nbsp;h to 55-2020, freely available at ashrae.org): a single compliance zone <b>−0.5&nbsp;&lt; PMV &lt;&nbsp;+0.5</b>. Applicable for <b>1.0&nbsp;≤ met&nbsp;≤&nbsp;4.0</b> and <b>0.0&nbsp;≤ clo&nbsp;≤&nbsp;1.5</b> (Addendum&nbsp;b). At air speeds above 0.10&nbsp;m/s (20&nbsp;fpm) the standard applies an <i>elevated air speed</i> correction via the SET model (Addendum&nbsp;c; not implemented in this diagram). <b>The standard sets no numerical humidity limits</b> — see the open review by <a href="https://cbe.berkeley.edu/research/comfort/" rel="noopener nofollow">CBE&nbsp;Berkeley</a> and de&nbsp;Dear&nbsp;R.J. et&nbsp;al., “Progress in thermal comfort research over the last twenty years,” Indoor&nbsp;Air 23(6):442—461, 2013 (DOI: <a href="https://doi.org/10.1111/ina.12046" rel="noopener nofollow">10.1111/ina.12046</a>). Fields shared with GOST (t, φ, v, Δ<i>t</i><sub>r</sub>, met, clo) are synchronised with the GOST tab; ASHRAE-specific ones (solar, adaptive model) are here only.',
+ash_figcaption: "ANSI/ASHRAE Standard 55-2023 — a single compliance zone (−0.5&nbsp;&lt; PMV &lt;&nbsp;+0.5); the standard sets no humidity limits",
+ash_contour_title: "Contour:",
+ash_legend_marker: "the ASHRAE 55 compliance line = the |PMV|=0.5 boundary (PPD≈10&nbsp;%). Clicking the canvas also moves the working point on the GOST tab.",
+ldi_ash_title: "ASHRAE 55-2023-specific inputs (optional; 0 or “not set” — not evaluated)",
+ldi_solar_subtitle: "Direct solar radiation correction (ERF model; code changes — Addendum&nbsp;d to 55-2020, freely available at ashrae.org)",
+lab_solar_on: 'Apply solar correction <span class="hint">(simplification: shifts the mean radiant temperature by a set amount; a full ERF calculator is not implemented here)</span>',
+lab_solar_dt: 'Solar MRT increment Δ<i>t</i><sub>r,sw</sub>, °C <span class="hint">(typically 0—10 °C for seated occupants near a window heated by direct sun)</span>',
+ldi_adaptive_subtitle: "ASHRAE 55 adaptive model — naturally ventilated spaces only",
+lab_tpma: '<i>t</i><sub>pma&nbsp;out</sub> — prevailing mean outdoor temperature, °C <span class="hint">(arithmetic mean of daily mean outdoor temperatures over the preceding 7—30 days; applicability: strictly 10 &lt; <i>t</i><sub>pma&nbsp;out</sub> &lt; 33.5 °C)</span>',
+lab_to_meas: 'Room operative temperature <i>t</i><sub>o</sub>, °C <span class="hint">(if not set — <i>t</i><sub>a</sub> above is used; adaptive-model conditions: no active heating/cooling; met 1.0—1.5; clo within a range no narrower than 0.5—1.0)</span>',
+ldi_local_ash_subtitle: 'Local discomfort — applies at <i>I</i><sub>cl</sub>&lt;0.7 and M&lt;1.3 (synchronised with the block in the GOST section)',
+ash_tile_howto: '<b>How to read the “ASHRAE 55-2023 compliance” tile below.</b> The tile accounts for the PMV compliance zone and all <i>set</i> local-discomfort criteria (Ankle&nbsp;Air&nbsp;Speed, vertical gradient, floor temperature, radiant asymmetry — from the “Local discomfort” block in this same section above). If the local-criteria fields are left at zero, they are not evaluated and the tile states this explicitly. The <b>“Adaptive model” tile</b> uses only the two fields above and <i>t</i><sub>o</sub>; in the absence of active mechanical heating/cooling and with natural ventilation, this method is preferable to the analytical one.',
+res_h2: "Result",
+tile_ppd_u: "dissatisfied with overall thermal comfort",
+tile_dr_k: "DR — draught",
+tile_dr_u: "dissatisfied with air speed (draught)",
+tile_cat_k: "Category achieved (GOST)",
+tile_cat_u: "by PMV, PPD and DR (GOST R ISO 7730-2009)",
+tile_ash_u: "analytical method: PMV ±0.5 + local criteria",
+tile_ad_k: "ASHRAE adaptive model §5.4",
+tile_tsu_k: "Resulting temperature",
+tile_tcl_k: "Clothing surface temperature",
+tile_tcl_u: 't<sub>cl</sub>, intermediate value',
+th_criterion: "Criterion for required category",
+th_calc: "Calculated",
+th_limit: "Limit",
+th_result: "Result",
+calc_h2: "How this is calculated",
+calc_h3_pmv: "Overall comfort: PMV and PPD",
+calc_pmv_p: "PMV is computed from the body’s heat balance: heat produced minus losses by skin diffusion, sweating, latent and sensible respiration, radiation, and convection. The clothing surface temperature is found iteratively.",
+formula_pmv: "PMV = [0.303·exp(−0.036·M) + 0.028] · {(M−W)\n       − 3.05·10⁻³·[5733 − 6.99·(M−W) − p_a]\n       − 0.42·[(M−W) − 58.15]\n       − 1.7·10⁻⁵·M·(5867 − p_a)\n       − 0.0014·M·(34 − t_a)\n       − 3.96·10⁻⁸·f_cl·[(t_cl+273)⁴ − (t_r+273)⁴]\n       − f_cl·h_c·(t_cl − t_a)}\n\nPPD = 100 − 95·exp(−0.03353·PMV⁴ − 0.2179·PMV²)",
+calc_pmv_hint: 'M — metabolic rate, W/m²; W — external mechanical work, W/m² (taken as zero); p<sub>a</sub> — water vapour partial pressure, Pa; t<sub>r</sub> — mean radiant temperature, °C; f<sub>cl</sub> — clothing area factor; h<sub>c</sub> — convective heat transfer coefficient, W/(m²·K). Formulas (1)—(5) of GOST R ISO 7730-2009.',
+calc_h3_dr: "Air speed: the DR index",
+formula_dr: "DR = (34 − t_a,l) · (v_a,l − 0.05)^0.62 · (0.37·v_a,l·Tu + 3.14)",
+calc_dr_hint: 'Formula (6) of GOST R ISO 7730-2009 (the standard’s “draught model,” draught rate). At v<sub>a,l</sub> &lt; 0.05 m/s, 0.05 m/s is used; at DR &gt; 100%, 100% is used.',
+calc_tu_p1: '<b>Tu — the turbulence intensity of the airflow</b>, %. A measure of how much air speed “jitters” around its mean value: the higher Tu, the stronger the random speed fluctuations at the same mean air speed. The same mean speed of 0.15 m/s feels noticeably more unpleasant at Tu = 60% than at Tu = 10%.',
+calc_tu_p2: 'Per GOST R ISO 7730-2009, clause 6.2, Tu is “the local turbulence intensity, from 10% to 60%”; if unknown, <b>40%</b> may be assumed. Per the standard’s Annex A: in rooms with <b>mixing air distribution</b> Tu may range from 30% to 60%; in rooms with a <b>displacement ventilation system</b> or <b>no mechanical ventilation</b>, Tu is <b>lower</b>. Tu does not affect PMV or overall comfort — only DR.',
+calc_h3_tsu: "Resulting room temperature",
+formula_tsu: "t_su = (t_p + t_r) / 2            at v ≤ 0.2 m/s\nt_su = 0.6·t_p + 0.4·t_r          at 0.2 &lt; v ≤ 0.6 m/s",
+calc_tsu_hint: "Formulas (A.1) and (A.2) of Annex A (normative) of GOST 30494-2011. The resulting temperature appears in the microclimate tables on an equal footing with air temperature.",
+calc_h3_cats: "Environment categories",
+th_cat: "Category",
+th_dtv: "Vertical Δt, °C",
+th_tfloor: "Floor temperature, °C",
+calc_cats_hint: "Tables A.1—A.3 of GOST R ISO 7730-2009. The vertical temperature difference and floor temperature are not calculated on the diagram — they do not follow from the quantities set here and are checked separately.",
+calc_h3_ash_local: "Local discomfort per ASHRAE 55-2023",
+calc_ash_local_p: 'This section applies only when <i>I</i><sub>cl</sub> &lt; 0.7 clo <b>and</b> M &lt; 1.3 met. Ankle level is 0.1 m above the floor, head level is 1.1 m for seated and 1.7 m for standing occupants. The classic DR index from ISO 7730 is not used in the 55-2023 requirements — four separate criteria are introduced instead.',
+formula_ash_local: "V_ankle &lt; 0.35·TS + 0.39                    [TS = PMV, m/s]\nΔT (head↔ankle) &lt; 7.82 − 0.87·(TS − 1.91)²   [°C/m]\nFloor temperature: 19 °C ≤ t_floor ≤ 29 °C\nRadiant asymmetry:\n  ceiling warmer than floor  &lt; 5 °C\n  ceiling cooler than floor &lt; 14 °C\n  wall warmer than air &lt; 23 °C\n  wall cooler than air &lt; 10 °C",
+calc_ash_local_hint: "The vertical gradient formula was added by the freely published Addendum a to 55-2020 (ashrae.org). The Ankle Air Speed and Vertical Gradient formulas are tuned for the neutral-to-warm side of thermal sensation (TS ≥ 0). At TS &lt; 0 the ankle-level speed limit becomes unphysical (≤ 0.1 m/s) — the criterion is not evaluated.",
+calc_h3_adaptive: "ASHRAE 55-2023 adaptive model",
+formula_adaptive: "t_o_upper = 0.31·t_pma_out + 21.3   [80% acceptability, °C]\nt_o_lower = 0.31·t_pma_out + 14.3   [80% acceptability, °C]",
+calc_adaptive_hint: 'Applicability: naturally ventilated spaces only, where occupants control the windows themselves, with no active mechanical heating or cooling; M = 1.0—1.5 met; <i>I</i><sub>cl</sub> within a range no narrower than 0.5—1.0 clo; <i>t</i><sub>pma out</sub> strictly between 10 and 33.5 °C. Local discomfort, <i>I</i><sub>cl</sub>, M, humidity, and air speed are already built into the model — they are not evaluated separately.',
+verify_h2: "Calculation verification",
+verify_p: 'The implementation has been checked against Table E.2 of GOST R ISO 7730-2009 (metabolic rate 58 W/m²): 41 reference PMV values for 0, 0.25, 0.50, and 0.75 clo at air speeds of 0, 0.10, 0.20, 0.30, and 0.50 m/s. All 41 match, with a maximum deviation of <b>0.062 PMV points</b>. Conditions of the Annex E tables: t<sub>a</sub> = t<sub>r</sub>, relative humidity 50%, external work 0.',
+verify_note: '<b>A discrepancy within the standard, found during analysis.</b> The printed formula (4) of GOST R ISO 7730-2009 gives the clothing area factor as <code>f_cl = 1.05 + 1.645·I_cl</code> for I<sub>cl</sub> &gt; 0.078 m²·K/W, whereas the program listing in Annex D of the same standard contains <code>FCL = 1.05 + .645 * ICL</code>. The discrepancy is resolved in favour of the listing on two independent grounds. First, continuity: at the branch point I<sub>cl</sub> = 0.078 the first branch gives 1.1006, the second with coefficient 0.645 gives 1.1003 (the function is continuous), while with coefficient 1.645 it gives 1.1783 — a 7% jump; the clothing area factor cannot change discontinuously under a continuous change in insulation. Second, agreement with Table E.2: on rows where this branch applies (0.75 clo), deviations with coefficient 0.645 range from −0.022 to +0.014 — the same order as on rows where the branch does not apply at all; with coefficient 1.645 they are systematically offset, ranging from −0.198 to −0.063. This page’s calculation uses coefficient <b>0.645</b>.',
+src_h2: "Primary sources",
+src_lvl_hint: 'Verification level: <span class="lvl lvl-ok">✅</span> — document opened, formulas and tables read from the actual content, including from page images where the PDF text layer is corrupted; <span class="lvl lvl-bib">📗</span> — bibliographic details confirmed, content not read.',
+src_h3_used: "Used in the calculation",
+src_gost7730: '<span class="lvl lvl-ok">✅</span> <b>GOST R ISO 7730-2009.</b> Ergonomics of the thermal environment. Analytical determination and interpretation of thermal comfort using calculation of the PMV and PPD indices and local thermal comfort criteria. Approved and brought into effect by Order of the Federal Agency for Technical Regulation and Metrology No. 573-st of 7 December 2009. First introduced. Publication: Standartinform, Moscow, 2011. The standard is <b>identical (IDT)</b> to the international standard <b>ISO 7730:2005</b> “Ergonomics of the thermal environment — Analytical determination and interpretation of thermal comfort using calculation of the PMV and PPD indices and local thermal comfort criteria.” Formulas (1)—(6), Table 1, A.1—A.4, the Annex D listing, and the Annex E tables were used.\n    <br>Open copy:\n    <a href="https://meganorm.ru/Data2/1/4293820/4293820818.pdf" rel="noopener nofollow">meganorm.ru/Data2/1/4293820/4293820818.pdf</a>\n    (accessed 30 July 2026, 43 pp.).',
+src_gost30494: '<span class="lvl lvl-ok">✅</span> <b>GOST 30494-2011.</b> Interstate standard. Residential and public buildings. Indoor microclimate parameters. Adopted by the Interstate Council for Standardization, Metrology and Certification, Minutes No. 39 of 8 December 2011. Brought into effect as a national standard of the Russian Federation from 1 January 2013 by Order of the Federal Agency for Technical Regulation and Metrology No. 191-st of 12 July 2012. Supersedes GOST 30494-96. Publication: Standartinform, Moscow, 2013. Clauses 2.5, 2.6, 4.4—4.7, 6.5—6.9, Table 1, and Annexes A and B (both normative) were used.\n    <br>Open copy:\n    <a href="https://files.stroyinf.ru/Data2/1/4293788/4293788520.pdf" rel="noopener nofollow">files.stroyinf.ru/Data2/1/4293788/4293788520.pdf</a>\n    (accessed 30 July 2026, 15 pp.).',
+src_h3_related: "Related regulations (mentioned in the text, not part of the calculation)",
+src_related_hint: "Under the citation-green rule, level ✅ is assigned only to documents whose formulas or tables are directly used in this page’s calculations. For the SanPiN and SP documents below, only bibliographic details are used on this page — their content was read as part of a separate project task (registry `SOURCES.md`), not for this page’s task, hence level 📗 here.",
+src_sanpin: '<span class="lvl lvl-bib">📗</span> <b>SanPiN 1.2.3685-21.</b> Hygienic standards and requirements for ensuring the safety and/or harmlessness of environmental factors for humans. Resolution of the Chief State Sanitary Physician of the Russian Federation No. 2 of 28.01.2021, in effect from 01.03.2021, valid until 01.03.2027; as amended by resolutions No. 24 of 30.12.2022, No. 12 of 16.12.2024, No. 2 of 17.03.2025, No. 17 of 22.09.2025, and No. 19 of 24.12.2025. Tables 5.27 and 5.28 set the optimal and permissible indoor microclimate parameters for residential and public buildings (including resulting temperature).\n    <br>Open copy:\n    <a href="https://meganorm.ru/mega_doc/dop1/81/postanovlenie_glavnogo_gosudarstvennogo_sanitarnogo_vracha_megainfo/0/postanovlenie_glavnogo_gosudarstvennogo_sanitarnogo_vracha.html" rel="noopener nofollow">meganorm.ru → Resolution No. 2 of 28.01.2021</a>\n    (accessed 30 July 2026).',
+src_sp131: '<span class="lvl lvl-bib">📗</span> <b>SP 131.13330.2020</b> “SNiP 23-01-99* Construction Climatology.” Order of the Ministry of Construction of Russia No. 859/pr of 24 December 2020, in effect from 25 June 2021, a revision of SP 131.13330.2018; as amended by Amendment No. 1 (Order No. 430/pr of 30.05.2022) and Amendment No. 2 (Order No. 469/pr of 30.06.2023). Table 3.1 sets the coldest five-day period temperature at 0.92 probability, which GOST 30494-2011 refers to when selecting the microclimate table row.\n    <br>Open copy:\n    <a href="https://istkult.ru/upload/medialibrary/998/e6b5nxn6oe3hzau5xni7bpn5aby7t81u/SP-131.13330.2020.-Stroitelnaya-klimatologiya..pdf" rel="noopener nofollow">istkult.ru → SP 131.13330.2020</a>\n    (accessed 30 July 2026, 235 pp.).',
+src_sp50: '<span class="lvl lvl-bib">📗</span> <b>SP 50.13330.2024</b> “SNiP 23-02-2003 Thermal Protection of Buildings.” Order of the Ministry of Construction of Russia No. 327/pr of 15 May 2024, in effect from 16 June 2024, a revision of SP 50.13330.2012. Formula (5.2) relates heating-period degree-days to the minimum optimal-temperature values per GOST 30494.',
+src_h3_intl: "International context",
+src_ashrae: '<span class="lvl lvl-ok">✅</span> <b>ANSI/ASHRAE Standard 55-2023</b> “Thermal Environmental Conditions for Human Occupancy” (supersedes Standard 55-2020). Below is only what is confirmed by materials freely published by ASHRAE itself (the Fact Sheet and Addenda a—k to 55-2020, all at ashrae.org).\n    <br><br>\n    <b>Purpose of the standard</b> (Fact Sheet, verbatim): to specify combinations of environmental factors (temperature, thermal radiation, humidity, air speed) and personal factors (metabolic rate and clothing) that provide thermal satisfaction to a significant majority (more than 80&nbsp;%) of occupants.\n    <br><br>\n    <b>Comfort-zone boundary</b> (Addendum&nbsp;h, verbatim): “Compliance with Section&nbsp;5.3 is achieved if −0.5&nbsp;&lt;&nbsp;PMV&nbsp;&lt;&nbsp;+0.5 and the requirements of Sections&nbsp;5.3.5 and 5.3.6 are met.” Section&nbsp;5.3.5 is local discomfort, 5.3.6 is temporal variations.\n    <br><br>\n    <b>Applicability limits</b> (Addendum&nbsp;b to 55-2020, verbatim amendment to clause&nbsp;5.2.1.4): “This standard does not apply to occupants whose time-averaged metabolic rate exceeds 4.0&nbsp;met”; the same addendum states the usable range verbatim: “metabolic rates between 1.0 and 4.0&nbsp;met, clothing insulation I<sub>cl</sub> between 0.0 and 1.5&nbsp;clo.” Addendum&nbsp;c to 55-2020 (verbatim): “lower limit of average air speed when using the Elevated Air Speed Comfort Zone Method [lowered] from 0.2&nbsp;m/s to 0.1&nbsp;m/s.”\n    <br><br>\n    <b>Key changes from 55-2020</b> (Fact Sheet plus eleven addenda a—k, all freely published): Addendum&nbsp;a — a new method for assessing local discomfort from the head-to-ankle vertical temperature gradient; Addendum&nbsp;b — raising the upper metabolic-rate limit from 2.0 to 4.0&nbsp;met (alignment with ISO&nbsp;7730); Addendum&nbsp;c — lowering the lower air-speed limit from 0.2 to 0.1&nbsp;m/s; Addendum&nbsp;h — a new definition of “comfort zone” and removal of the separate Elevated Air Speed Comfort Zone method; consolidation of assessment methods down to two — standard and adaptive.\n    <br><br>\n    Legal open sources (read from actual content, all at ashrae.org):\n    <a href="https://www.ashrae.org/file%20library/about/government%20affairs/advocacy%20toolkit/virtual%20packet/standard-55-fact-sheet.pdf" rel="noopener nofollow">Fact&nbsp;Sheet</a>;\n    <a href="https://www.ashrae.org/file%20library/technical%20resources/standards%20and%20guidelines/standards%20addenda/55_2020_a_20210430.pdf" rel="noopener nofollow">Addendum&nbsp;a</a>;\n    <a href="https://www.ashrae.org/file%20library/technical%20resources/standards%20and%20guidelines/standards%20addenda/55_2020_b_20210430.pdf" rel="noopener nofollow">Addendum&nbsp;b</a>;\n    <a href="https://www.ashrae.org/file%20library/technical%20resources/standards%20and%20guidelines/standards%20addenda/55_2020_c_20210430.pdf" rel="noopener nofollow">Addendum&nbsp;c</a>;\n    <a href="https://www.ashrae.org/file%20library/technical%20resources/standards%20and%20guidelines/standards%20addenda/55_2020_h_20221230.pdf" rel="noopener nofollow">Addendum&nbsp;h</a>.',
+src_ashrae_full: '<span class="lvl lvl-bib">📗</span> <b>ANSI/ASHRAE Standard 55-2023 — full text.</b> The exact internal structure (subsection numbering, Table 5-1 metabolic rates and 5-2 clothing, normative Annexes A—D and informative K—M) is absent from the freely published ASHRAE materials and cannot be cited on this page; it is distributed for a fee by ANSI/ASHRAE.',
+src_en16798: '<span class="lvl lvl-ok">✅</span> <b>EN 16798-1:2019</b> “Energy performance of buildings — Ventilation for buildings — Part&nbsp;1: Indoor environmental input parameters…” (superseded EN&nbsp;15251:2007). Per slides by B.&nbsp;W.&nbsp;Olesen (chair of CEN/TC&nbsp;156 at the time of the slides, AIVC workshop&nbsp;2023) and REHVA&nbsp;Journal materials (two independent sources, cross-checked) the standard sets four indoor-environment categories by PMV/PPD: I: −0.2&nbsp;&lt; PMV&nbsp;&lt;&nbsp;+0.2 (PPD&nbsp;&lt;&nbsp;6&nbsp;%); II: −0.5&nbsp;&lt; PMV&nbsp;&lt;&nbsp;+0.5 (PPD&nbsp;&lt;&nbsp;10&nbsp;%); III: −0.7&nbsp;&lt; PMV&nbsp;&lt;&nbsp;+0.7 (PPD&nbsp;&lt;&nbsp;15&nbsp;%); IV: −1.0&nbsp;&lt; PMV&nbsp;&lt;&nbsp;+1.0 (PPD&nbsp;&lt;&nbsp;25&nbsp;%). The PMV boundaries of categories&nbsp;I—III numerically match categories A/B/C of GOST R ISO 7730-2009 (I&nbsp;≡&nbsp;A, II&nbsp;≡&nbsp;B, III&nbsp;≡&nbsp;C). Category&nbsp;IV of EN&nbsp;16798-1 (low expected acceptability) has no counterpart in GOST R ISO 7730-2009; the standard itself often gives its PMV range asymmetrically (“outside range I—III”) rather than symmetrically as ±1.0 — the value given here follows Olesen 2023 and requires checking against the standard’s full text.\n    <br>Legal open sources (read from actual content):\n    <a href="https://www.aivc.org/system/files/02-02-04%20Bjarne%20Olesen%20AIVC%20workshop%20ISO%2017772.pdf" rel="noopener nofollow">Olesen B.&nbsp;W., AIVC workshop&nbsp;2023 (PDF, 38&nbsp;slides)</a>;\n    <a href="https://www.rehva.eu/rehva-journal/chapter/european-standardisation-on-thermal-environment" rel="noopener nofollow">REHVA Journal — European standardisation on thermal environment</a>.',
+src_en16798_full: '<span class="lvl lvl-bib">📗</span> <b>EN 16798-1:2019 — full text.</b> Distributed for a fee by CEN standardization bodies; not read in full; category operative temperatures, ventilation requirements, and CO<sub>2</sub> requirements are confirmed by two authoritative secondary sources (see above), but not directly by the primary source.',
+src_completeness_note: '<b>Completeness disclaimer.</b> The open copies at the links above are hosted by third-party resources, not by the publisher of the standard; the bibliographic details above are the only reliable identification of the document. Official resources (the Ministry of Construction of Russia website, <code>docs.cntd.ru</code>) were not accessible from the working network at the time this page was prepared, so the composition of amendments was checked against the content of the copies obtained, rather than against registries kept by publishers.',
+limits_h2: "Applicability limits",
+limits_li1: "The draught model (formula 6) is defined for a local air temperature of 20 to 26 °C, air speed below 0.5 m/s, and turbulence intensity of 10 to 60%. It applies to people with light physical activity, mostly seated, with thermal sensitivity close to neutral, and for predicting draught in the neck region. At the level of the hands and feet the model may overestimate the result. Draught sensitivity is lower at activity levels above 1.2 met.",
+limits_li2: "PD values for different types of local discomfort are not additive — they must not be summed.",
+limits_li3: "Annex A of GOST 30494-2011 is defined up to an air speed of 0.6 m/s.",
+limits_li4: "Verifying compliance with category A (−0.2 &lt; PMV &lt; +0.2) by direct measurement is difficult due to instrument accuracy — a caveat of the standard itself; verification may instead be based on the equivalent-temperature range.",
+limits_li5: "Compliance with the GOST 30494-2011 tables is not equivalent to falling within category A or B of GOST R ISO 7730-2009: the tabulated range is set without regard to activity or clothing. Clause 2.6 of GOST 30494-2011 defines optimal parameters as providing a sense of comfort to at least 80% of people, i.e. allowing up to 20% dissatisfied — weaker than all three GOST R ISO 7730-2009 categories, including the least strict, C (PPD &lt; 15%).",
+limits_li6: "Metabolic rate and clothing insulation are design assumptions, not regulated quantities. When referencing the category achieved, they should be stated explicitly.",
+limits_li7: "This page provides an assessment based on the relationships listed and does not replace the design calculation of heating, ventilation, and air conditioning systems.",
+footer_text: 'The calculation runs in the browser; no data is transmitted anywhere. Decimal separator: point (comma in the Russian version, per GOST 8.417). The page is self-contained: it loads no external scripts or fonts.\n  <br>VibeEngineering-LLC · Construction Climatology track · 30 July 2026'
+};
+var RU_ARIA_CACHE = {};
+function applyLang(lang){
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var k = el.getAttribute('data-i18n');
+    if(!(k in RU_CACHE)) RU_CACHE[k] = el.innerHTML;
+    if(lang === 'en' && I18N_EN[k] !== undefined) el.innerHTML = I18N_EN[k];
+    else el.innerHTML = RU_CACHE[k];
+  });
+  // отдельная ветка — перевод атрибута aria-label, не innerHTML (иначе стирает детей)
+  document.querySelectorAll('[data-i18n-aria]').forEach(function(el){
+    var k = el.getAttribute('data-i18n-aria');
+    if(!(k in RU_ARIA_CACHE)) RU_ARIA_CACHE[k] = el.getAttribute('aria-label');
+    el.setAttribute('aria-label', (lang === 'en' && I18N_EN[k] !== undefined) ? I18N_EN[k] : RU_ARIA_CACHE[k]);
+  });
+  if(RU_TITLE === undefined) RU_TITLE = document.title;
+  document.title = (lang === 'en' && I18N_EN.doc_title) ? I18N_EN.doc_title : RU_TITLE;
+  var descEl = document.querySelector('meta[name="description"]');
+  if(descEl){
+    if(RU_DESC === undefined) RU_DESC = descEl.getAttribute('content');
+    descEl.setAttribute('content', (lang === 'en' && I18N_EN.meta_description)
+      ? I18N_EN.meta_description : RU_DESC);
+  }
+  document.documentElement.lang = lang;
+  document.documentElement.setAttribute('data-lang', lang);
+  LANG = lang;
+  localStorage.setItem('tcd_lang', lang);
+  document.getElementById('langtoggle').textContent = lang === 'ru' ? 'EN' : 'RU';
+  render();
+}
+document.getElementById('langtoggle').addEventListener('click', function(){
+  applyLang(LANG === 'ru' ? 'en' : 'ru');
+});
 
 /* --------------------------------------------------------------- вкладки */
 document.querySelectorAll('.tabbtn').forEach(function(tabBtn){
@@ -1620,7 +1924,7 @@ document.querySelectorAll('.preset-btn').forEach(function(btn){
   btn.addEventListener('click', function(){ applyPreset(btn.getAttribute('data-preset')); });
 });
 
-render();
+applyLang(LANG);
 </script>
 </body>
 </html>
