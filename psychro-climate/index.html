@@ -1,0 +1,1264 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-i18n="doc_title">i-d диаграмма влажного воздуха и климатические параметры для проектирования</title>
+<meta name="description" content="Интерактивная i-d диаграмма: нагрев, охлаждение с осушением, увлажнение, адиабатическое охлаждение, смешение потоков. Климатические параметры холодного и тёплого периодов по СП 131.13330.2020 и градусо-сутки отопительного периода.">
+<link rel="stylesheet" href="styles.css">
+
+<button class="langbtn" id="langtoggle" type="button">EN</button>
+
+<h1 data-i18n="h1">i-d диаграмма и климат для проектирования</h1>
+<p class="lede" data-i18n="lede">Состояние влажного воздуха, процессы его обработки в приточной установке
+и расчётные климатические параметры места строительства — в одном расчёте.</p>
+
+<section class="card">
+  <h2 data-i18n="h2_intro">Суть вопроса</h2>
+  <p data-i18n="intro_p1">Состояние влажного воздуха задаётся двумя независимыми величинами при известном
+  барометрическом давлении. Остальные — влагосодержание, энтальпия, относительная влажность,
+  температура точки росы, температура по влажному термометру, плотность — из них вычисляются.
+  Диаграмма <i>i–d</i> связывает эти величины графически: каждая точка плоскости отвечает одному
+  состоянию воздуха, а процесс его обработки — отрезку между двумя точками.</p>
+  <p data-i18n="intro_p2">Практическое следствие: тип процесса определяет направление отрезка.
+  Нагрев в поверхностном воздухонагревателе идёт при постоянном влагосодержании — вертикально вверх.
+  Адиабатическое увлажнение идёт при постоянной энтальпии — вдоль линии <i>J</i> = const.
+  Охлаждение ниже температуры точки росы сопровождается выпадением влаги, и отрезок ломается к
+  кривой насыщения. Отсюда следуют и мощность аппарата, и расход влаги.</p>
+  <p data-i18n="intro_p3">Вторая часть расчёта — расчётные параметры наружного воздуха. Они не
+  выбираются произвольно: температура наиболее холодной пятидневки обеспеченностью 0,92 задаёт
+  расчётный режим отопления, параметры тёплого периода — режим охлаждения, а продолжительность и
+  средняя температура отопительного периода дают градусо-сутки, от которых зависит требуемое
+  сопротивление теплопередаче ограждений.</p>
+</section>
+
+<div class="tabbar" role="tablist" data-i18n-aria="tabbar_aria" aria-label="Разделы расчёта">
+  <button type="button" class="tabbtn active" id="tab_proc" data-target="sec_proc" role="tab" aria-selected="true" aria-controls="sec_proc" data-i18n="tab_proc_label">Процессы обработки воздуха</button>
+  <button type="button" class="tabbtn" id="tab_clim" data-target="sec_clim" role="tab" aria-selected="false" aria-controls="sec_clim" data-i18n="tab_clim_label">Климат места строительства</button>
+  <button type="button" class="tabbtn" id="tab_method" data-target="sec_method" role="tab" aria-selected="false" aria-controls="sec_method" data-i18n="tab_method_label">Как это считается</button>
+  <button type="button" class="tabbtn" id="tab_src" data-target="sec_src" role="tab" aria-selected="false" aria-controls="sec_src" data-i18n="tab_src_label">Первоисточники</button>
+  <button type="button" class="tabbtn" id="tab_limits" data-target="sec_limits" role="tab" aria-selected="false" aria-controls="sec_limits" data-i18n="tab_limits_label">Границы применимости</button>
+</div>
+
+<section class="card wide tabpanel active" id="sec_proc" role="tabpanel" aria-labelledby="tab_proc">
+  <h2 data-i18n="proc_h2">Процессы обработки воздуха на i-d диаграмме</h2>
+  <p data-i18n="proc_intro">Задаётся начальная точка 1 (температура, относительная влажность, расход)
+  и процесс. Точка 2 и энергетические величины вычисляются. Клик по диаграмме переносит точку 1.
+  Все зависимости — на вкладке «Как это считается».</p>
+
+  <div class="presets" data-i18n-aria="presets_aria" aria-label="Типовые процессы">
+    <span class="presets-label" data-i18n="presets_label">Типовой процесс:</span>
+    <button type="button" class="preset-btn" data-preset="winter_heat" data-i18n="preset_winter_heat">Зима: нагрев наружного</button>
+    <button type="button" class="preset-btn" data-preset="winter_adiab" data-i18n="preset_winter_adiab">Зима: адиабатическое увлажнение</button>
+    <button type="button" class="preset-btn" data-preset="summer_cool" data-i18n="preset_summer_cool">Лето: охлаждение с осушением</button>
+    <button type="button" class="preset-btn" data-preset="steam" data-i18n="preset_steam">Паровое увлажнение</button>
+    <button type="button" class="preset-btn" data-preset="mix" data-i18n="preset_mix">Смешение с рециркуляцией</button>
+  </div>
+
+  <div class="row">
+    <aside class="sidebar">
+      <div class="ldi-grid two">
+        <div class="ldi-cell">
+          <label for="t1" data-i18n="lab_t1">Температура т. 1 <i>t</i><sub>1</sub>, °C</label>
+          <input type="number" id="t1" min="-60" max="60" step="0.1" value="-26" inputmode="decimal">
+        </div>
+        <div class="ldi-cell">
+          <label for="phi1" data-i18n="lab_phi1">Относительная влажность т. 1 φ<sub>1</sub>, %</label>
+          <input type="number" id="phi1" min="1" max="100" step="1" value="84" inputmode="decimal">
+        </div>
+        <div class="ldi-cell">
+          <label for="L1" data-i18n="lab_L1">Расход воздуха <i>L</i><sub>1</sub>, м³/ч</label>
+          <input type="number" id="L1" min="1" max="200000" step="100" value="3000" inputmode="decimal">
+        </div>
+        <div class="ldi-cell">
+          <label for="pb" data-i18n="lab_pb">Барометрическое давление <i>p</i><sub>б</sub>, мм рт. ст.
+            <span class="hint">(нормальная атмосфера — 760 мм рт. ст.)</span></label>
+          <input type="number" id="pb" min="500" max="820" step="0.5" value="760" inputmode="decimal">
+        </div>
+      </div>
+
+      <div class="ldi-grid" style="grid-template-columns:1fr; margin-top:10px">
+        <div class="ldi-cell">
+          <label for="proc" data-i18n="lab_proc">Процесс</label>
+          <select id="proc">
+            <option value="heat" selected data-i18n="opt_proc_heat">Нагрев (d = const)</option>
+            <option value="cool" data-i18n="opt_proc_cool">Охлаждение (возможно с осушением)</option>
+            <option value="humid" data-i18n="opt_proc_humid">Изотермическое увлажнение (t = const)</option>
+            <option value="adiab" data-i18n="opt_proc_adiab">Адиабатическое охлаждение (J = const)</option>
+            <option value="dehum" data-i18n="opt_proc_dehum">Осушение (J = const)</option>
+            <option value="mix" data-i18n="opt_proc_mix">Смешение двух потоков</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="ldi-grid two" id="paramrow" style="margin-top:10px">
+        <div class="ldi-cell" id="slot_t2">
+          <label for="t2" data-i18n="lab_t2">Температура т. 2 <i>t</i><sub>2</sub>, °C</label>
+          <input type="number" id="t2" min="-60" max="80" step="0.1" value="18" inputmode="decimal">
+        </div>
+        <div class="ldi-cell" id="slot_tcool">
+          <label for="tcool" data-i18n="lab_tcool">Температура поверхности охладителя <i>t</i><sub>охл</sub>, °C
+            <span class="hint">(точка росы охладителя; типично 5—10 °C)</span></label>
+          <input type="number" id="tcool" min="-15" max="30" step="0.1" value="7" inputmode="decimal">
+        </div>
+        <div class="ldi-cell" id="slot_phi2">
+          <label for="phi2" data-i18n="lab_phi2">Относительная влажность т. 2 φ<sub>2</sub>, %</label>
+          <input type="number" id="phi2" min="1" max="100" step="1" value="60" inputmode="decimal">
+        </div>
+        <div class="ldi-cell" id="slot_t1b">
+          <label for="t1b" data-i18n="lab_t1b">Температура 2-го потока, °C</label>
+          <input type="number" id="t1b" min="-60" max="60" step="0.1" value="20" inputmode="decimal">
+        </div>
+        <div class="ldi-cell" id="slot_phi1b">
+          <label for="phi1b" data-i18n="lab_phi1b">Относительная влажность 2-го потока, %</label>
+          <input type="number" id="phi1b" min="1" max="100" step="1" value="50" inputmode="decimal">
+        </div>
+        <div class="ldi-cell" id="slot_L1b">
+          <label for="L1b" data-i18n="lab_L1b">Расход 2-го потока, м³/ч</label>
+          <input type="number" id="L1b" min="1" max="200000" step="100" value="3000" inputmode="decimal">
+        </div>
+      </div>
+    </aside>
+
+    <div class="canvaswrap">
+      <p class="cap" data-i18n="proc_cap">i-d диаграмма влажного воздуха: линии φ = const, изотермы,
+      линии J = const; отрезок 1→2 — заданный процесс</p>
+      <canvas id="cv_id" width="1200" height="900"></canvas>
+    </div>
+  </div>
+
+  <div class="legend fullwidth">
+    <label style="font-weight:600; margin-right:8px">
+      <input type="checkbox" id="lines_id" checked> <span data-i18n="show_lines">Показывать сетку изотерм и J = const</span>
+    </label>
+    <span><i style="background:#4a6b8a"></i><span data-i18n="leg_phi">линии φ = const (100 % — кривая насыщения)</span></span>
+    <span><i style="background:#b23e37"></i><span data-i18n="leg_proc">отрезок процесса 1→2</span></span>
+    <span data-i18n="leg_marker">— белый маркер: точка 1; клик по диаграмме переносит её.</span>
+  </div>
+
+  <div class="res" id="res_proc"></div>
+
+  <table class="tbl" id="tbl_proc"></table>
+
+  <p class="hint fullwidth" id="proc_warn"></p>
+</section>
+
+<section class="card wide tabpanel" id="sec_clim" role="tabpanel" aria-labelledby="tab_clim">
+  <h2 data-i18n="clim_h2">Климатические параметры места строительства</h2>
+  <p data-i18n="clim_intro">Значения приведены по СП 131.13330.2020 (таблицы 3.1 и 4.1) для
+  выбранного пункта. Градусо-сутки отопительного периода вычисляются по формуле (5.2)
+  СП 50.13330.2024. Расчётная температура внутреннего воздуха задаётся отдельно — она зависит от
+  назначения помещения и принимается по минимальным значениям оптимальной температуры
+  ГОСТ 30494-2011.</p>
+
+  <div class="ldi-grid two" style="margin:0 0 16px">
+    <div class="ldi-cell">
+      <label for="city" data-i18n="lab_city">Пункт строительства</label>
+      <select id="city"></select>
+    </div>
+    <div class="ldi-cell">
+      <label for="tin" data-i18n="lab_tin">Расчётная температура внутреннего воздуха <i>t</i><sub>в</sub>, °C
+        <span class="hint">(по ГОСТ 30494-2011; жилая комната — 20 °C, угловая — 22 °C)</span></label>
+      <input type="number" id="tin" min="12" max="30" step="0.5" value="20" inputmode="decimal">
+    </div>
+  </div>
+
+  <div class="res" id="res_clim"></div>
+
+  <table class="tbl" id="tbl_clim"></table>
+
+  <div class="presets" style="margin-top:16px">
+    <button type="button" class="preset-btn" id="btn_to_diagram" data-i18n="btn_to_diagram">Перенести наружный воздух на i-d диаграмму</button>
+  </div>
+  <p class="hint" id="clim_transfer_hint" data-i18n="clim_transfer_hint">Кнопка ставит точку 1 в
+  температуру наиболее холодной пятидневки обеспеченностью 0,92 и среднюю месячную относительную
+  влажность наиболее холодного месяца, после чего открывает вкладку процессов. Оговорка: эти две
+  величины взяты из разных граф таблицы 3.1 и относятся к разным периодам осреднения — влажность
+  дана как средняя за месяц, а не как наблюдённая при расчётной температуре пятидневки. Такое
+  сочетание принято в проектной практике, но самостоятельным расчётным параметром СП
+  131.13330.2020 не является; получаемое влагосодержание — производная величина без нормативного
+  статуса.</p>
+
+  <p class="hint fullwidth" id="clim_note"></p>
+</section>
+
+<section class="card wide tabpanel" id="sec_method" role="tabpanel" aria-labelledby="tab_method">
+  <h2 data-i18n="h2_method">Как это считается</h2>
+
+  <h3 data-i18n="h3_psychro">Состояние влажного воздуха</h3>
+  <p data-i18n="m_p1">Давление насыщенного водяного пара принято по эмпирической зависимости
+  расчётного файла контура; первоисточник в нём не указан. Поверочная точка: при <i>t</i> = 100 °C
+  зависимость даёт 101 373 Па против 101 325 Па по определению нормальной атмосферы (отклонение
+  0,05 %).</p>
+  <div class="formula" data-i18n="f_psat">p_н = 10^[(156 + 8,12·t) / (236 + t)] · 133,322        [Па]</div>
+  <div class="formula" data-i18n="f_d">d = 622 · (φ/100 · p_н) / (p_б − φ/100 · p_н)           [г/кг сух. возд.]</div>
+  <div class="formula" data-i18n="f_J">J = c_в·t + (2500 + 1,8068·t) · d/1000                  [кДж/кг сух. возд.]</div>
+  <div class="formula" data-i18n="f_rho">ρ = 353 / (273,15 + t)                                  [кг/м³]</div>
+  <p data-i18n="m_p2">Здесь <i>c</i><sub>в</sub> — теплоёмкость сухого воздуха, принята 1,01 кДж/(кг·°C);
+  2500 кДж/кг — удельная теплота парообразования при 0 °C; 1,8068 кДж/(кг·°C) — теплоёмкость водяного
+  пара. Плотность вычисляется без учёта барометрического давления и влагосодержания — допущение
+  исходного файла; при <i>p</i><sub>б</sub>, заметно отличном от 101 кПа, переход «объёмный расход ↔
+  массовый расход» несёт погрешность порядка процента.</p>
+
+  <h3 data-i18n="h3_proc">Процессы</h3>
+  <p data-i18n="m_p3">Нагрев идёт при <i>d</i> = const, изотермическое увлажнение — при
+  <i>t</i> = const, адиабатическое охлаждение и осушение — при <i>J</i> = const. Охлаждение
+  разветвляется: если влагосодержание насыщенного воздуха при температуре поверхности охладителя не
+  ниже влагосодержания исходного воздуха, влага не выпадает и процесс идёт при <i>d</i> = const;
+  иначе конечная точка лежит на хорде к точке (<i>t</i><sub>охл</sub>, φ = 100 %).</p>
+  <div class="formula" data-i18n="f_Q">Нагрев:               Q = ρ(t₁) · c_в · L · Δt / 3600     [кВт]
+Прочие процессы:      Q = (J₂ − J₁) · G / 3600            [кВт]</div>
+  <p data-i18n="m_p_Q">Две записи не эквивалентны: первая учитывает только явную теплоту и применима
+  там, где влагосодержание не меняется, то есть при нагреве. В процессах с изменением
+  влагосодержания тепловой поток считается по разности энтальпий — так учитывается и скрытая
+  теплота выпавшей или внесённой влаги. Так же устроен и исходный расчётный файл.</p>
+  <div class="formula" data-i18n="f_W">W = G · (d₂ − d₁) / 1000                                [кг/ч]</div>
+  <div class="formula" data-i18n="f_eps">ε = (J₂ − J₁) / [(d₂ − d₁)/1000]                        [кДж/кг влаги]</div>
+  <p data-i18n="m_p4">Смешение выполняется по массовым расходам. Объёмный расход смеси при φ &lt; 100 %
+  принимается арифметической суммой объёмных расходов — допущение исходного файла, погрешность около
+  0,02 %. Если точка смеси выходит за кривую насыщения, она переносится на φ = 100 % с выделением
+  конденсата.</p>
+
+  <h3 data-i18n="h3_gsop">Градусо-сутки отопительного периода</h3>
+  <div class="formula" data-i18n="f_gsop">ГСОП = (t_в − t_от) · z_от                              [(°C·сут)/год]</div>
+  <p data-i18n="m_p5">Формула (5.2) СП 50.13330.2024. Здесь <i>t</i><sub>в</sub> — расчётная температура
+  внутреннего воздуха, °C; <i>t</i><sub>от</sub> — средняя температура отопительного периода со средней
+  суточной температурой воздуха не выше 8 °C, °C; <i>z</i><sub>от</sub> — продолжительность того же
+  периода, сут. От ГСОП зависит базовое требуемое сопротивление теплопередаче ограждающих конструкций
+  по таблице 3 того же свода правил.</p>
+</section>
+
+<section class="card wide tabpanel" id="sec_src" role="tabpanel" aria-labelledby="tab_src">
+  <h2 data-i18n="h2_src">Первоисточники</h2>
+  <p class="hint" data-i18n="src_levels">Уровень проверки: ✅ — документ открыт, формулы и таблицы
+  прочитаны по содержанию; 📗 — реквизиты подтверждены, содержимое не читалось.</p>
+  <ul>
+    <li data-i18n="src_sp131">✅ <b>СП 131.13330.2020</b> «СНиП 23-01-99* Строительная климатология».
+    Приказ Минстроя России от 24 декабря 2020 г. № 859/пр, введён с 25 июня 2021 г., пересмотр
+    СП 131.13330.2018; в редакции Изменения № 1 (приказ от 30.05.2022 № 430/пр) и Изменения № 2
+    (приказ от 30.06.2023 № 469/пр). Использованы таблицы 3.1 (холодный период) и 4.1 (тёплый период).
+    Значения по 41 пункту прочитаны постранично по консолидированному тексту с отметкой сохранения
+    06.12.2024; номера страниц в столбце «Источник» — печатные номера этого текста. Более поздних
+    изменений в использованном экземпляре нет.</li>
+    <li data-i18n="src_sp50">✅ <b>СП 50.13330.2024</b> «СНиП 23-02-2003 Тепловая защита зданий».
+    Приказ Минстроя России от 15 мая 2024 г. № 327/пр, введён с 16 июня 2024 г., пересмотр
+    СП 50.13330.2012. Использована формула (5.2) — градусо-сутки отопительного периода.</li>
+    <li data-i18n="src_gost30494">✅ <b>ГОСТ 30494-2011</b> «Здания жилые и общественные. Параметры
+    микроклимата в помещениях». Принят МНТКС, протокол № 39 от 8 декабря 2011 г.; введён в действие
+    приказом Росстандарта от 12 июля 2012 г. № 191-ст с 1 января 2013 г. Взамен ГОСТ 30494-96.
+    Использована таблица 1 — оптимальные значения температуры внутреннего воздуха.</li>
+    <li data-i18n="src_book">Расчётное ядро психрометрики воспроизводит рабочую книгу контура
+    «Processes_in_HVAC» и сверено с её рабочим примером: 23 величины из 23, расхождений нет.
+    Первоисточник эмпирической зависимости давления насыщения в самой книге не указан — это
+    зафиксировано на вкладке «Границы применимости» как ограничение, а не как ссылка на норматив.</li>
+  </ul>
+</section>
+
+<section class="card wide tabpanel" id="sec_limits" role="tabpanel" aria-labelledby="tab_limits">
+  <h2 data-i18n="h2_limits">Границы применимости</h2>
+  <ul>
+    <li data-i18n="lim_1">Зависимость для давления насыщения проверена в точке 100 °C с отклонением
+    0,05 %; вне диапазона примерно от −60 до +80 °C не применялась и здесь не используется.</li>
+    <li data-i18n="lim_2">Плотность вычисляется без учёта барометрического давления и влагосодержания
+    (допущение исходной книги). Поле <i>p</i><sub>б</sub> влияет на влагосодержание и
+    относительную влажность, но не на плотность и, следовательно, не на переход между объёмным и
+    массовым расходами.</li>
+    <li data-i18n="lim_3">Температура по влажному термометру вычисляется перебором от 0,1 °C —
+    ограничение исходной книги; для более холодного воздуха величина не выводится.</li>
+    <li data-i18n="lim_4">Охлаждение с осушением моделируется хордой к точке росы охладителя. Это
+    инженерное приближение: действительный процесс в поверхностном охладителе зависит от его
+    конструкции, схемы движения теплоносителя и коэффициента обводного потока.</li>
+    <li data-i18n="lim_5">Климатические параметры приведены для курируемого списка пунктов и не
+    заменяют полную таблицу СП 131.13330.2020. Для пункта, отсутствующего в списке, значения следует
+    брать непосредственно из свода правил.</li>
+    <li data-i18n="lim_6">Страница даёт оценку по перечисленным зависимостям и не заменяет проектный
+    расчёт систем отопления, вентиляции и кондиционирования.</li>
+  </ul>
+</section>
+
+<p class="hint" data-i18n="footer_note">Расчёт выполняется в браузере, данные никуда не передаются.
+Десятичный разделитель — запятая (ГОСТ 8.417). Страница самодостаточна: внешних скриптов и шрифтов
+не подключает.</p>
+
+<footer data-i18n="footer">VibeEngineering-LLC · контур «Строительная климатология» · 31.07.2026</footer>
+
+<script>
+/* ============================ психрометрическое ядро =====================
+   Перенос scripts/hvac_psychro.py контура (задание З-003) без изменения
+   зависимостей и порядка округления. Единицы: t [°C], phi [%],
+   d [г/кг сух. возд.], J [кДж/кг сух. возд.], pb [Па], L [м³/ч], G [кг/ч],
+   Q [кВт], W [кг/ч], rho [кг/м³], eps [кДж/кг влаги].
+
+   ЕДИНСТВЕННОЕ намеренное отличие от исходного модуля: t_wet()/t_dew() там
+   при выходе искомой величины за нижнюю границу перебора возвращают саму
+   границу (0,1 °C или −60 °C) как если бы это было вычисленное значение.
+   Здесь в этом случае возвращается null («—» на экране) — иначе на публичной
+   странице упор цикла отображался бы как реальная температура. См. также
+   пояснение lim_3 на вкладке «Границы применимости».
+======================================================================== */
+var C_AIR = 1.01;          // теплоёмкость сухого воздуха, кДж/(кг·°C)
+var R_VAP = 1.8068;        // теплоёмкость водяного пара, кДж/(кг·°C)
+var R_0   = 2500.0;        // теплота парообразования при 0 °C, кДж/кг
+var MM_HG = 133.322;       // Па в 1 мм рт. ст.
+
+// Округление half-up — VBA WorksheetFunction.Round, не банковское.
+// Округляется ДЕСЯТИЧНАЯ запись числа, как Decimal(repr(x)) в Python: умножение
+// на 10^n в двоичной плавающей точке даёт иной результат на значениях вида
+// 7,5249999999999995 (двоичное произведение попадает ровно на 752,5 и уходит
+// вверх, тогда как десятичная запись лежит ниже половины и должна уйти вниз).
+function _incDec(s){
+  var a = s.split(''), i = a.length - 1;
+  while(i >= 0){
+    if(a[i] === '9'){ a[i] = '0'; i--; }
+    else { a[i] = String(Number(a[i]) + 1); return a.join(''); }
+  }
+  return '1' + a.join('');
+}
+function rnd(x, n){
+  if(x === null || x === undefined || !isFinite(x)) return null;
+  var neg = (x < 0);
+  var s = Math.abs(x).toString();
+  if(s.indexOf('e') >= 0 || s.indexOf('E') >= 0){      // очень большие/малые
+    var f = Number(Math.abs(x).toFixed(n));
+    return neg ? -f : f;
+  }
+  var dot = s.indexOf('.');
+  var ip = (dot < 0) ? s : s.slice(0, dot);
+  var fp = (dot < 0) ? '' : s.slice(dot + 1);
+  if(fp.length <= n) return x;                          // округлять нечего
+  var digits = ip + fp.slice(0, n);
+  if(fp.charAt(n) >= '5') digits = _incDec(digits);     // half-up от нуля
+  var res;
+  if(n === 0){ res = Number(digits); }
+  else {
+    while(digits.length <= n) digits = '0' + digits;
+    res = Number(digits.slice(0, digits.length - n) + '.' + digits.slice(digits.length - n));
+  }
+  return neg ? -res : res;
+}
+function p_sat(t){ return Math.pow(10, (156 + 8.12*t)/(236 + t)) * MM_HG; }
+function d_by_t_phi(pb, t, phi){
+  var pn = p_sat(t);
+  return 622*(phi/100*pn)/(pb - phi/100*pn);
+}
+function d_by_J_t(J, t){ return 1000*(J - C_AIR*t)/(R_VAP*t + R_0); }
+function J_by_t_d(t, d){ return C_AIR*t + (R_0 + R_VAP*t)*(d/1000); }
+function J_by_t_phi(t, phi, pb){ return J_by_t_d(t, d_by_t_phi(pb, t, phi)); }
+function phi_by_t_d(pb, d, t){
+  var pn = p_sat(t);
+  return 100*pb*d/(pn*(622 + d));
+}
+function phi_by_t_J(pb, J, t){ return phi_by_t_d(pb, d_by_J_t(J, t), t); }
+function rho_air(t){ return 353/(273.15 + t); }
+// Массовый расход по НЕокруглённой плотности с округлением результата до целых
+// (так в исходном модуле). Свойство Point.G, наоборот, считается по округлённой
+// плотности и не округляется — асимметрия исходника сохранена намеренно.
+function mass_flow(L, t){ return rnd(L*rho_air(t), 0); }
+function heat_flux(L, dt, t_ref){ return rho_air(t_ref)*C_AIR*L*dt/3600; }
+function t_by_J_d(J, d){ return (J - R_0*(d/1000))/(C_AIR + R_VAP*(d/1000)); }
+
+// температура по энтальпии и влажности — перебор, как в исходной книге
+function t_by_J_phi(J, phi, pb){
+  function ceilStep(x, s){ return Math.ceil(x/s - 1e-12)*s; }
+  for(var t = -60; t <= 80 + 1e-9; t += 0.001){
+    var d1 = d_by_J_t(J, t), d2 = d_by_t_phi(pb, t, phi);
+    if(Math.abs(ceilStep(d1, 0.05) - ceilStep(d2, 0.05)) < 1e-9) return rnd(t, 2);
+  }
+  return null;
+}
+// температура по влажности и влагосодержанию — перебор с шагом 0,01
+function t_by_phi_d(phi, d, pb){
+  var target = (100*pb*d/phi)/(622 + d);
+  for(var t = -60; t <= 80 + 1e-9; t += 0.01){ if(p_sat(t) > target) return t; }
+  return null;
+}
+// Температура точки росы — та же зависимость при phi = 100 %. Если условие
+// выполняется уже на первом шаге, искомое значение лежит НЕ ВЫШЕ нижней границы
+// перебора: возвращать саму границу значило бы выдавать упор цикла за результат.
+function t_dew(d, pb){
+  if(!(d > 0)) return null;
+  var t = t_by_phi_d(100, d, pb);
+  if(t === null || t <= -60 + 1e-9) return null;
+  return rnd(t, 2);
+}
+// Температура по влажному термометру — перебор от 0,1 °C (ограничение исходной
+// книги). Совпадение на первом же шаге означает, что действительное значение
+// лежит ниже 0,1 °C, то есть вне области применимости, и не выводится.
+function t_wet(t, pb, J){
+  var first = true;
+  for(var tv = 0.1; tv <= t + 1e-12; tv += 0.01){
+    if(phi_by_t_d(pb, d_by_J_t(J, tv), tv) < 100) return first ? null : rnd(tv, 2);
+    first = false;
+  }
+  return null;
+}
+
+/* ------------------------------------------------------------ точка ----
+   Порядок округления повторяет класс Point исходного модуля: d, phi и J
+   округляются до 2 знаков, rho — до 3, и последующие величины считаются уже
+   по округлённым. Массовый расход G берётся по ОКРУГЛЁННОЙ плотности; функция
+   mass_flow (нужна только при смешении) наоборот считает по неокруглённой и
+   округляет результат. Расхождение намеренное — так в исходнике.           */
+function makePoint(pb, opts){
+  var p = {pb: pb, L: (opts.L === undefined ? null : opts.L)};
+  if(opts.t !== undefined && opts.phi !== undefined){
+    p.t = opts.t; p.phi = opts.phi;
+    p.d = rnd(d_by_t_phi(pb, p.t, p.phi), 2);
+    p.J = rnd(J_by_t_d(p.t, p.d), 2);
+  } else if(opts.t !== undefined && opts.d !== undefined){
+    p.t = opts.t; p.d = opts.d;
+    p.phi = rnd(phi_by_t_d(pb, p.d, p.t), 2);
+    p.J = rnd(J_by_t_d(p.t, p.d), 2);
+  } else if(opts.t !== undefined && opts.J !== undefined){
+    p.t = opts.t; p.J = opts.J;
+    p.phi = rnd(phi_by_t_J(pb, p.J, p.t), 2);
+    p.d = rnd(d_by_J_t(p.J, p.t), 2);
+  } else if(opts.J !== undefined && opts.d !== undefined){
+    p.J = opts.J; p.d = opts.d;
+    p.t = rnd(t_by_J_d(p.J, p.d), 2);
+    p.phi = rnd(phi_by_t_J(pb, p.J, p.t), 2);
+  } else if(opts.J !== undefined && opts.phi !== undefined){
+    p.J = opts.J; p.phi = opts.phi;
+    p.t = t_by_J_phi(p.J, p.phi, pb);
+    p.d = rnd(d_by_J_t(p.J, p.t), 2);
+  } else if(opts.phi !== undefined && opts.d !== undefined){
+    p.phi = opts.phi; p.d = opts.d;
+    p.t = t_by_phi_d(p.phi, p.d, pb);
+    p.J = rnd(J_by_t_d(p.t, p.d), 2);
+  } else {
+    throw new Error('точка не определена');
+  }
+  if(p.t === null || !isFinite(p.t)) throw new Error('точка не определена');
+  p.rho = rnd(rho_air(p.t), 3);
+  p.G = (p.L === null) ? null : p.L*p.rho;
+  return p;
+}
+// В исходном модуле G — вычисляемое свойство (L·rho). После присвоения нового
+// объёмного расхода массовый пересчитывается, а не сохраняется прежним.
+function setL(p, L){ p.L = L; p.G = (L === null) ? null : L*p.rho; return p; }
+
+/* --------------------------------------------------------- процессы ---- */
+function proc_heat(p1, t2){
+  var G = p1.G;
+  var p2 = makePoint(p1.pb, {t: t2, d: p1.d});
+  setL(p2, rnd(G/p2.rho, 0));
+  return {p2: p2, Q: rnd(heat_flux(p1.L, t2 - p1.t, p1.t), 2), W: 0};
+}
+function proc_cool(p1, t_cool, t2){
+  var G = p1.G;
+  var d_surf = rnd(d_by_t_phi(p1.pb, t_cool, 100), 2);
+  var dry = d_surf >= p1.d, p2;
+  if(dry){
+    p2 = makePoint(p1.pb, {t: t2, d: p1.d});
+  } else {
+    var J3 = J_by_t_phi(t_cool, 100, p1.pb);
+    var J2 = rnd(p1.J + (J3 - p1.J)*((t2 - p1.t)/(t_cool - p1.t)), 1);
+    if(phi_by_t_J(p1.pb, J2, t2) > 100) p2 = makePoint(p1.pb, {t: t2, phi: 100});
+    else p2 = makePoint(p1.pb, {t: t2, J: J2});
+  }
+  setL(p2, rnd(G/p2.rho, 0));
+  return {p2: p2, Q: -rnd((p1.J - p2.J)*G/3600, 2), W: -rnd((p1.d - p2.d)*G/1000, 2), dry: dry};
+}
+function proc_humidify(p1, phi2){
+  var G = p1.G;
+  var p2 = makePoint(p1.pb, {t: p1.t, phi: phi2});
+  setL(p2, p1.L);
+  return {p2: p2, Q: rnd((p2.J - p1.J)*G/3600, 2), W: rnd(G*(p2.d - p1.d)/1000, 2)};
+}
+function proc_adiabatic(p1, phi2){
+  var G = p1.G;
+  var p2 = makePoint(p1.pb, {J: p1.J, phi: phi2});
+  setL(p2, rnd(G/p2.rho, 0));
+  return {p2: p2, Q: 0, W: rnd(G*(p2.d - p1.d)/1000, 2)};
+}
+function proc_dehumidify(p1, phi2){
+  var G = p1.G;
+  var p2 = makePoint(p1.pb, {J: p1.J, phi: phi2});
+  setL(p2, rnd(G/p2.rho, 0));
+  return {p2: p2, Q: 0, W: rnd(G*(p2.d - p1.d)/1000, 2)};
+}
+function proc_mix(p1, p1b){
+  var G1 = mass_flow(p1.L, p1.t), G2 = mass_flow(p1b.L, p1b.t), Gs = G1 + G2;
+  var t_m = rnd((G1*p1.t + G2*p1b.t)/Gs, 2);
+  var d_m = rnd((G1*p1.d + G2*p1b.d)/Gs, 2);
+  var J_m = rnd((G1*p1.J + G2*p1b.J)/Gs, 2);
+  var phi_m = phi_by_t_d(p1.pb, d_m, t_m);
+  if(phi_m < 100){
+    var pm = makePoint(p1.pb, {t: t_m, d: d_m});
+    pm.J = J_m; setL(pm, p1.L + p1b.L);
+    return {p2: pm, Q: 0, W: 0};
+  }
+  var t_s = t_by_J_phi(J_m, 100, p1.pb);
+  var pms = makePoint(p1.pb, {t: t_s, d: rnd(d_by_J_t(J_m, t_s), 2)});
+  pms.J = J_m; pms.phi = 100; setL(pms, rnd(Gs/pms.rho, 0));
+  var cond = ((Gs*pms.d) - (G1*p1.d) - (G2*p1b.d))/1000;
+  return {p2: pms, Q: 0, W: rnd(cond, 2), condensed: true};
+}
+function angular_coef(J1, J2, d1, d2){
+  if(d2 === d1) return null;
+  return rnd((J2 - J1)/((d2 - d1)/1000), 0);
+}
+
+/* ============================ форматирование ============================ */
+var LANG = localStorage.getItem('pc_lang') || 'ru';
+function nf(x, dg){
+  if(x === null || x === undefined || !isFinite(x)) return '—';
+  var s = Number(x).toFixed(dg);
+  if(LANG === 'ru') s = s.replace('.', ',');
+  return s.replace(/^-/, '−');       // знак минус, а не дефис
+}
+function sf(x, dg){
+  if(x === null || x === undefined || !isFinite(x)) return '—';
+  var s = Math.abs(x).toFixed(dg);
+  if(LANG === 'ru') s = s.replace('.', ',');
+  return (x >= 0 ? '+' : '−') + s;
+}
+
+/* ============================ словарь динамики ========================== */
+var T = {
+  ru: {
+    tile_t2: 'Температура т. 2', tile_phi2: 'Влажность т. 2', tile_d2: 'Влагосодержание т. 2',
+    tile_Q: 'Тепловой поток', tile_W: 'Влага', tile_eps: 'Угловой коэффициент',
+    sub_t2: 'конечное состояние', sub_phi2: 'относительная, т. 2', sub_d2: 'г/кг сухого воздуха',
+    sub_Q_heat: 'подводится к воздуху', sub_Q_cool: 'снимается с воздуха', sub_Q_zero: 'процесс без теплообмена',
+    sub_W_add: 'вносится в поток', sub_W_rem: 'выпадает из потока', sub_W_zero: 'влагосодержание не меняется',
+    sub_eps: 'кДж на кг влаги', sub_eps_na: 'd = const, не определён',
+    col_par: 'Величина', col_p1: 'Точка 1', col_p2: 'Точка 2', col_unit: 'Ед.',
+    r_t: 'Температура', r_phi: 'Относительная влажность', r_d: 'Влагосодержание',
+    r_J: 'Энтальпия', r_tdew: 'Температура точки росы', r_twet: 'Температура по влажному термометру',
+    r_rho: 'Плотность', r_L: 'Объёмный расход', r_G: 'Массовый расход',
+    warn_dry: 'Влага не выпадает: влагосодержание насыщенного воздуха при температуре поверхности охладителя не ниже влагосодержания исходного воздуха — процесс идёт при d = const.',
+    warn_wet: 'Идёт осушение: конечная точка лежит на хорде к точке росы охладителя (t_охл, φ = 100 %).',
+    warn_cond: 'Точка смеси вышла за кривую насыщения — перенесена на φ = 100 % с выделением конденсата.',
+    warn_heat_down: 'Задана конечная температура ниже начальной — для нагрева это не имеет смысла; тепловой поток получился отрицательным.',
+    warn_cool_up: 'Задана конечная температура выше начальной — для охлаждения это не имеет смысла.',
+    warn_sat: 'Конечная точка вышла за кривую насыщения φ = 100 % — состояние физически не достигается.',
+    warn_adiab_dir: 'Адиабатическое охлаждение идёт с увлажнением: относительная влажность растёт. Задано значение ниже исходного — направление процесса противоположно.',
+    warn_dehum_dir: 'Осушение снижает влагосодержание. Задано значение выше исходного — рассчитано увлажнение при J = const, а не осушение.',
+    warn_clamped: 'Введённое значение выходило за диапазон поля и приведено к его границе: вне этого диапазона использованные зависимости не проверены.',
+    warn_substituted: 'Поле оставлено пустым или содержит нечисловое значение — расчёт ведётся по значению по умолчанию, а не по тому, что показано в поле.',
+    warn_none: '',
+    clim_gsop: 'ГСОП', clim_gsop_sub: '(°C·сут)/год, формула (5.2) СП 50.13330.2024',
+    clim_t5: 'Пятидневка 0,92', clim_t5_sub: 'расчётная для отопления, °C',
+    clim_zot: 'Отопительный период', clim_zot_sub: 'продолжительность, сут',
+    clim_tot: 'Средняя t периода', clim_tot_sub: 'при среднесуточной ≤ 8 °C, °C',
+    ccol_par: 'Параметр', ccol_val: 'Значение', ccol_unit: 'Ед.', ccol_src: 'Источник',
+    c_t_day98: 'Температура наиболее холодных суток, обеспеченностью 0,98',
+    c_t_day92: 'Температура наиболее холодных суток, обеспеченностью 0,92',
+    c_t_5d98: 'Температура наиболее холодной пятидневки, обеспеченностью 0,98',
+    c_t_5d92: 'Температура наиболее холодной пятидневки, обеспеченностью 0,92',
+    c_t_absmin: 'Абсолютная минимальная температура',
+    c_rh_cold: 'Средняя месячная относительная влажность воздуха наиболее холодного месяца',
+    c_zot: 'Продолжительность отопительного периода (≤ 8 °C)',
+    c_tot: 'Средняя температура отопительного периода (≤ 8 °C)',
+    c_t_warm95: 'Температура тёплого периода, обеспеченностью 0,95',
+    c_t_warm98: 'Температура тёплого периода, обеспеченностью 0,98',
+    c_J_warm95: 'Энтальпия тёплого периода, обеспеченностью 0,95',
+    c_rh_warm: 'Средняя месячная относительная влажность воздуха наиболее тёплого месяца',
+    c_gsop: 'Градусо-сутки отопительного периода',
+    u_C: '°C', u_pct: '%', u_day: 'сут', u_kJkg: 'кДж/кг', u_Cday: '(°C·сут)/год',
+    u_kW: 'кВт', u_kgh: 'кг/ч', u_gkg: 'г/кг', u_kgm3: 'кг/м³', u_m3h: 'м³/ч',
+    src_t31: 'СП 131.13330.2020, табл. 3.1', src_t41: 'СП 131.13330.2020, табл. 4.1',
+    src_calc: 'вычислено, СП 50.13330.2024 ф. (5.2)',
+    nodata: 'нет данных', citypage: 'с.',
+    clim_note_ok: 'Значения прочитаны по страницам СП 131.13330.2020, указанным в столбце «Источник» (нумерация — по печатным страницам документа). Энтальпия наружного воздуха тёплого периода в редакции 2020 года не приводится: этот столбец был в СНиП 23-01-99*, в действующем своде правил его нет — при необходимости энтальпия вычисляется по температуре и влажности на вкладке процессов.',
+    clim_note_amended: 'Строка таблицы 3.1 для этого пункта приведена в редакции Изменения № 2 (приказ Минстроя России от 30.06.2023 № 469/пр).',
+    lbl_p1: '1', lbl_p2: '2', ax_d: 'd, г/кг сухого воздуха', ax_t: 't, °C'
+  },
+  en: {
+    tile_t2: 'Temperature, pt. 2', tile_phi2: 'Humidity, pt. 2', tile_d2: 'Moisture content, pt. 2',
+    tile_Q: 'Heat flow', tile_W: 'Moisture', tile_eps: 'Angular coefficient',
+    sub_t2: 'final state', sub_phi2: 'relative, pt. 2', sub_d2: 'g/kg dry air',
+    sub_Q_heat: 'supplied to the air', sub_Q_cool: 'removed from the air', sub_Q_zero: 'process without heat exchange',
+    sub_W_add: 'added to the stream', sub_W_rem: 'condensed out of the stream', sub_W_zero: 'moisture content unchanged',
+    sub_eps: 'kJ per kg of moisture', sub_eps_na: 'd = const, undefined',
+    col_par: 'Quantity', col_p1: 'Point 1', col_p2: 'Point 2', col_unit: 'Unit',
+    r_t: 'Temperature', r_phi: 'Relative humidity', r_d: 'Moisture content',
+    r_J: 'Enthalpy', r_tdew: 'Dew-point temperature', r_twet: 'Wet-bulb temperature',
+    r_rho: 'Density', r_L: 'Volume flow rate', r_G: 'Mass flow rate',
+    warn_dry: 'No condensation: the moisture content of saturated air at the cooler surface temperature is not below that of the incoming air — the process runs at d = const.',
+    warn_wet: 'Dehumidification occurs: the final point lies on the chord towards the cooler dew point (t_cool, φ = 100%).',
+    warn_cond: 'The mixture point fell outside the saturation curve — moved onto φ = 100% with condensate released.',
+    warn_heat_down: 'The final temperature is set below the initial one, which is meaningless for heating; the heat flow came out negative.',
+    warn_cool_up: 'The final temperature is set above the initial one, which is meaningless for cooling.',
+    warn_sat: 'The final point fell outside the φ = 100% saturation curve — this state is not physically attainable.',
+    warn_adiab_dir: 'Adiabatic cooling proceeds with humidification: relative humidity rises. A value below the initial one has been entered — the process direction is reversed.',
+    warn_dehum_dir: 'Dehumidification lowers the moisture content. A value above the initial one has been entered, so humidification at J = const has been computed, not dehumidification.',
+    warn_clamped: 'An entered value fell outside the range of its field and has been brought to the boundary: outside that range the relationships used here have not been verified.',
+    warn_substituted: 'A field has been left empty or holds a non-numeric value — the calculation uses a default, not what the field displays.',
+    warn_none: '',
+    clim_gsop: 'HDD', clim_gsop_sub: '(°C·day)/year, Eq. (5.2) SP 50.13330.2024',
+    clim_t5: 'Coldest 5-day, 0.92', clim_t5_sub: 'heating design value, °C',
+    clim_zot: 'Heating period', clim_zot_sub: 'duration, days',
+    clim_tot: 'Mean t of the period', clim_tot_sub: 'at daily mean ≤ 8 °C, °C',
+    ccol_par: 'Parameter', ccol_val: 'Value', ccol_unit: 'Unit', ccol_src: 'Source',
+    c_t_day98: 'Coldest-day air temperature, 0.98 assurance',
+    c_t_day92: 'Coldest-day air temperature, 0.92 assurance',
+    c_t_5d98: 'Coldest five-day air temperature, 0.98 assurance',
+    c_t_5d92: 'Coldest five-day air temperature, 0.92 assurance',
+    c_t_absmin: 'Absolute minimum air temperature',
+    c_rh_cold: 'Mean monthly relative air humidity of the coldest month',
+    c_zot: 'Heating-period duration (≤ 8 °C)',
+    c_tot: 'Heating-period mean temperature (≤ 8 °C)',
+    c_t_warm95: 'Warm-period air temperature, 0.95 assurance',
+    c_t_warm98: 'Warm-period air temperature, 0.98 assurance',
+    c_J_warm95: 'Warm-period enthalpy, 0.95 assurance',
+    c_rh_warm: 'Mean monthly relative air humidity of the warmest month',
+    c_gsop: 'Heating degree-days',
+    u_C: '°C', u_pct: '%', u_day: 'days', u_kJkg: 'kJ/kg', u_Cday: '(°C·day)/year',
+    u_kW: 'kW', u_kgh: 'kg/h', u_gkg: 'g/kg', u_kgm3: 'kg/m³', u_m3h: 'm³/h',
+    src_t31: 'SP 131.13330.2020, Table 3.1', src_t41: 'SP 131.13330.2020, Table 4.1',
+    src_calc: 'computed, SP 50.13330.2024 Eq. (5.2)',
+    nodata: 'no data', citypage: 'p.',
+    clim_note_ok: 'Values were read from the pages of SP 131.13330.2020 cited in the “Source” column (numbering follows the printed pages of the document). The warm-period outdoor-air enthalpy is not given in the 2020 revision: that column existed in SNiP 23-01-99* but not in the current code — where needed, enthalpy is computed from temperature and humidity on the processes tab.',
+    clim_note_amended: 'The Table 3.1 row for this location is given as amended by Amendment No. 2 (order of the Ministry of Construction of Russia No. 469/pr of 30.06.2023).',
+    lbl_p1: '1', lbl_p2: '2', ax_d: 'd, g/kg dry air', ax_t: 't, °C'
+  }
+};
+
+/* ============================ данные по городам ========================= */
+/* Заполняется из проверенной выборки СП 131.13330.2020 (см. раздел
+   «Первоисточники»). null означает: величина не прочитана по первоисточнику
+   с достаточной уверенностью — подставлять её по памяти недопустимо. */
+var CITIES = [
+  {name:"Архангельск", page_cold:7, page_warm:53, t_cold_day_98:-40, t_cold_day_92:-38, t_cold_5day_98:-37, t_cold_5day_92:-34, t_abs_min:-45, rh_coldest_month:85, z_ot_8:248, t_ot_8:-4.5, t_warm_95:20, t_warm_98:24, rh_warmest_month:73, amended:false},
+  {name:"Астрахань", page_cold:8, page_warm:54, t_cold_day_98:-26, t_cold_day_92:-24, t_cold_5day_98:-22, t_cold_5day_92:-20, t_abs_min:-34, rh_coldest_month:83, z_ot_8:165, t_ot_8:-0.7, t_warm_95:30, t_warm_98:33, rh_warmest_month:56, amended:false},
+  {name:"Барнаул", page_cold:5, page_warm:52, t_cold_day_98:-41, t_cold_day_92:-40, t_cold_5day_98:-39, t_cold_5day_92:-36, t_abs_min:-52, rh_coldest_month:77, z_ot_8:214, t_ot_8:-7.5, t_warm_95:24, t_warm_98:28, rh_warmest_month:67, amended:false},
+  {name:"Владивосток", page_cold:33, page_warm:71, t_cold_day_98:-26, t_cold_day_92:-24, t_cold_5day_98:-24, t_cold_5day_92:-22, t_abs_min:-31, rh_coldest_month:58, z_ot_8:199, t_ot_8:-4.2, t_warm_95:21, t_warm_98:23, rh_warmest_month:85, amended:false},
+  {name:"Волгоград", page_cold:10, page_warm:55, t_cold_day_98:-28, t_cold_day_92:-26, t_cold_5day_98:-24, t_cold_5day_92:-22, t_abs_min:-35, rh_coldest_month:85, z_ot_8:176, t_ot_8:-2.3, t_warm_95:29, t_warm_98:32, rh_warmest_month:50, amended:false},
+  {name:"Воронеж", page_cold:11, page_warm:56, t_cold_day_98:-30, t_cold_day_92:-28, t_cold_5day_98:-26, t_cold_5day_92:-24, t_abs_min:-37, rh_coldest_month:83, z_ot_8:190, t_ot_8:-2.4, t_warm_95:25, t_warm_98:29, rh_warmest_month:68, amended:false},
+  {name:"Екатеринбург", page_cold:40, page_warm:76, t_cold_day_98:-41, t_cold_day_92:-37, t_cold_5day_98:-35, t_cold_5day_92:-32, t_abs_min:-47, rh_coldest_month:76, z_ot_8:220, t_ot_8:-5.5, t_warm_95:23, t_warm_98:26, rh_warmest_month:65, amended:false},
+  {name:"Ижевск", page_cold:44, page_warm:79, t_cold_day_98:-39, t_cold_day_92:-36, t_cold_5day_98:-34, t_cold_5day_92:-31, t_abs_min:-48, rh_coldest_month:83, z_ot_8:219, t_ot_8:-5.6, t_warm_95:23, t_warm_98:28, rh_warmest_month:71, amended:false},
+  {name:"Иркутск", page_cold:15, page_warm:59, t_cold_day_98:-38, t_cold_day_92:-37, t_cold_5day_98:-35, t_cold_5day_92:-33, t_abs_min:-50, rh_coldest_month:79, z_ot_8:233, t_ot_8:-7.6, t_warm_95:22, t_warm_98:26, rh_warmest_month:73, amended:false},
+  {name:"Казань", page_cold:42, page_warm:78, t_cold_day_98:-36, t_cold_day_92:-33, t_cold_5day_98:-32, t_cold_5day_92:-29, t_abs_min:-47, rh_coldest_month:83, z_ot_8:207, t_ot_8:-4.7, t_warm_95:24, t_warm_98:27, rh_warmest_month:68, amended:false},
+  {name:"Калининград", page_cold:16, page_warm:60, t_cold_day_98:-24, t_cold_day_92:-21, t_cold_5day_98:-21, t_cold_5day_92:-18, t_abs_min:-33, rh_coldest_month:86, z_ot_8:188, t_ot_8:1.3, t_warm_95:22, t_warm_98:25, rh_warmest_month:76, amended:false},
+  {name:"Кемерово", page_cold:19, page_warm:62, t_cold_day_98:-45, t_cold_day_92:-43, t_cold_5day_98:-42, t_cold_5day_92:-39, t_abs_min:-50, rh_coldest_month:77, z_ot_8:228, t_ot_8:-7.9, t_warm_95:23, t_warm_98:27, rh_warmest_month:71, amended:false},
+  {name:"Киров", page_cold:20, page_warm:62, t_cold_day_98:-39, t_cold_day_92:-36, t_cold_5day_98:-35, t_cold_5day_92:-32, t_abs_min:-45, rh_coldest_month:84, z_ot_8:223, t_ot_8:-5.0, t_warm_95:21, t_warm_98:25, rh_warmest_month:70, amended:false},
+  {name:"Краснодар", page_cold:22, page_warm:63, t_cold_day_98:-23, t_cold_day_92:-20, t_cold_5day_98:-18, t_cold_5day_92:-15, t_abs_min:-36, rh_coldest_month:81, z_ot_8:146, t_ot_8:2.7, t_warm_95:28, t_warm_98:32, rh_warmest_month:63, amended:false},
+  {name:"Красноярск", page_cold:23, page_warm:65, t_cold_day_98:-41, t_cold_day_92:-39, t_cold_5day_98:-39, t_cold_5day_92:-37, t_abs_min:-53, rh_coldest_month:72, z_ot_8:234, t_ot_8:-6.6, t_warm_95:23, t_warm_98:26, rh_warmest_month:69, amended:false},
+  {name:"Липецк", page_cold:26, page_warm:66, t_cold_day_98:-32, t_cold_day_92:-30, t_cold_5day_98:-28, t_cold_5day_92:-25, t_abs_min:-38, rh_coldest_month:86, z_ot_8:196, t_ot_8:-3.1, t_warm_95:24, t_warm_98:28, rh_warmest_month:68, amended:false},
+  {name:"Махачкала", page_cold:11, page_warm:56, t_cold_day_98:-20, t_cold_day_92:-17, t_cold_5day_98:-15, t_cold_5day_92:-13, t_abs_min:-27, rh_coldest_month:83, z_ot_8:145, t_ot_8:2.8, t_warm_95:27, t_warm_98:29, rh_warmest_month:69, amended:false},
+  {name:"Москва", page_cold:27, page_warm:67, t_cold_day_98:-34, t_cold_day_92:-29, t_cold_5day_98:-29, t_cold_5day_92:-26, t_abs_min:-43, rh_coldest_month:84, z_ot_8:204, t_ot_8:-2.2, t_warm_95:23, t_warm_98:26, rh_warmest_month:72, amended:false},
+  {name:"Мурманск", page_cold:28, page_warm:68, t_cold_day_98:-36, t_cold_day_92:-33, t_cold_5day_98:-31, t_cold_5day_92:-28, t_abs_min:-39, rh_coldest_month:84, z_ot_8:273, t_ot_8:-3.3, t_warm_95:16, t_warm_98:21, rh_warmest_month:74, amended:false},
+  {name:"Нижний Новгород", page_cold:30, page_warm:69, t_cold_day_98:-35, t_cold_day_92:-32, t_cold_5day_98:-30, t_cold_5day_92:-27, t_abs_min:-41, rh_coldest_month:83, z_ot_8:209, t_ot_8:-3.6, t_warm_95:23, t_warm_98:27, rh_warmest_month:72, amended:false},
+  {name:"Новосибирск", page_cold:30, page_warm:69, t_cold_day_98:-44, t_cold_day_92:-41, t_cold_5day_98:-40, t_cold_5day_92:-37, t_abs_min:-50, rh_coldest_month:77, z_ot_8:222, t_ot_8:-7.9, t_warm_95:24, t_warm_98:27, rh_warmest_month:69, amended:false},
+  {name:"Омск", page_cold:31, page_warm:70, t_cold_day_98:-42, t_cold_day_92:-40, t_cold_5day_98:-39, t_cold_5day_92:-36, t_abs_min:-49, rh_coldest_month:77, z_ot_8:216, t_ot_8:-8.1, t_warm_95:24, t_warm_98:27, rh_warmest_month:64, amended:false},
+  {name:"Оренбург", page_cold:31, page_warm:70, t_cold_day_98:-36, t_cold_day_92:-33, t_cold_5day_98:-32, t_cold_5day_92:-29, t_abs_min:-43, rh_coldest_month:79, z_ot_8:195, t_ot_8:-6.0, t_warm_95:28, t_warm_98:32, rh_warmest_month:56, amended:false},
+  {name:"Пенза", page_cold:32, page_warm:70, t_cold_day_98:-34, t_cold_day_92:-31, t_cold_5day_98:-29, t_cold_5day_92:-27, t_abs_min:-43, rh_coldest_month:84, z_ot_8:201, t_ot_8:-3.9, t_warm_95:25, t_warm_98:29, rh_warmest_month:68, amended:false},
+  {name:"Пермь", page_cold:32, page_warm:71, t_cold_day_98:-43, t_cold_day_92:-39, t_cold_5day_98:-38, t_cold_5day_92:-35, t_abs_min:-47, rh_coldest_month:78, z_ot_8:225, t_ot_8:-5.4, t_warm_95:23, t_warm_98:26, rh_warmest_month:68, amended:false},
+  {name:"Петропавловск-Камчатский", page_cold:18, page_warm:61, t_cold_day_98:-22, t_cold_day_92:-20, t_cold_5day_98:-19, t_cold_5day_92:-18, t_abs_min:-32, rh_coldest_month:68, z_ot_8:251, t_ot_8:-1.5, t_warm_95:16, t_warm_98:18, rh_warmest_month:82, amended:false},
+  {name:"Ростов-на-Дону", page_cold:34, page_warm:72, t_cold_day_98:-25, t_cold_day_92:-23, t_cold_5day_98:-21, t_cold_5day_92:-18, t_abs_min:-33, rh_coldest_month:85, z_ot_8:167, t_ot_8:0.0, t_warm_95:27, t_warm_98:31, rh_warmest_month:59, amended:false},
+  {name:"Рязань", page_cold:34, page_warm:72, t_cold_day_98:-32, t_cold_day_92:-30, t_cold_5day_98:-28, t_cold_5day_92:-25, t_abs_min:-41, rh_coldest_month:84, z_ot_8:203, t_ot_8:-3.0, t_warm_95:25, t_warm_98:28, rh_warmest_month:72, amended:false},
+  {name:"Самара", page_cold:35, page_warm:72, t_cold_day_98:-34, t_cold_day_92:-31, t_cold_5day_98:-29, t_cold_5day_92:-27, t_abs_min:-43, rh_coldest_month:83, z_ot_8:196, t_ot_8:-4.7, t_warm_95:25, t_warm_98:29, rh_warmest_month:63, amended:false},
+  {name:"Санкт-Петербург", page_cold:25, page_warm:66, t_cold_day_98:-31, t_cold_day_92:-28, t_cold_5day_98:-27, t_cold_5day_92:-24, t_abs_min:-36, rh_coldest_month:86, z_ot_8:211, t_ot_8:-1.2, t_warm_95:22, t_warm_98:25, rh_warmest_month:71, amended:true},
+  {name:"Саратов", page_cold:35, page_warm:73, t_cold_day_98:-31, t_cold_day_92:-28, t_cold_5day_98:-26, t_cold_5day_92:-24, t_abs_min:-37, rh_coldest_month:83, z_ot_8:189, t_ot_8:-3.2, t_warm_95:27, t_warm_98:30, rh_warmest_month:57, amended:false},
+  {name:"Сочи", page_cold:22, page_warm:64, t_cold_day_98:-6, t_cold_day_92:-4, t_cold_5day_98:-5, t_cold_5day_92:-3, t_abs_min:-13, rh_coldest_month:72, z_ot_8:93, t_ot_8:6.6, t_warm_95:26, t_warm_98:29, rh_warmest_month:79, amended:false},
+  {name:"Томск", page_cold:43, page_warm:78, t_cold_day_98:-44, t_cold_day_92:-43, t_cold_5day_98:-42, t_cold_5day_92:-39, t_abs_min:-55, rh_coldest_month:78, z_ot_8:233, t_ot_8:-7.8, t_warm_95:23, t_warm_98:26, rh_warmest_month:73, amended:false},
+  {name:"Тюмень", page_cold:44, page_warm:79, t_cold_day_98:-44, t_cold_day_92:-41, t_cold_5day_98:-40, t_cold_5day_92:-35, t_abs_min:-50, rh_coldest_month:78, z_ot_8:223, t_ot_8:-6.8, t_warm_95:23, t_warm_98:26, rh_warmest_month:70, amended:false},
+  {name:"Ульяновск", page_cold:44, page_warm:79, t_cold_day_98:-37, t_cold_day_92:-36, t_cold_5day_98:-36, t_cold_5day_92:-33, t_abs_min:-44, rh_coldest_month:84, z_ot_8:205, t_ot_8:-4.5, t_warm_95:24, t_warm_98:28, rh_warmest_month:68, amended:false},
+  {name:"Уфа", page_cold:8, page_warm:54, t_cold_day_98:-41, t_cold_day_92:-39, t_cold_5day_98:-37, t_cold_5day_92:-33, t_abs_min:-49, rh_coldest_month:78, z_ot_8:209, t_ot_8:-5.9, t_warm_95:25, t_warm_98:28, rh_warmest_month:68, amended:false},
+  {name:"Хабаровск", page_cold:46, page_warm:80, t_cold_day_98:-33, t_cold_day_92:-32, t_cold_5day_98:-31, t_cold_5day_92:-29, t_abs_min:-43, rh_coldest_month:72, z_ot_8:204, t_ot_8:-9.5, t_warm_95:25, t_warm_98:27, rh_warmest_month:77, amended:false},
+  {name:"Чебоксары", page_cold:48, page_warm:82, t_cold_day_98:-36, t_cold_day_92:-33, t_cold_5day_98:-32, t_cold_5day_92:-29, t_abs_min:-44, rh_coldest_month:84, z_ot_8:211, t_ot_8:-4.6, t_warm_95:23, t_warm_98:27, rh_warmest_month:68, amended:false},
+  {name:"Челябинск", page_cold:47, page_warm:81, t_cold_day_98:-40, t_cold_day_92:-37, t_cold_5day_98:-36, t_cold_5day_92:-32, t_abs_min:-48, rh_coldest_month:78, z_ot_8:212, t_ot_8:-6.6, t_warm_95:24, t_warm_98:27, rh_warmest_month:68, amended:false},
+  {name:"Якутск", page_cold:39, page_warm:75, t_cold_day_98:-56, t_cold_day_92:-55, t_cold_5day_98:-54, t_cold_5day_92:-52, t_abs_min:-64, rh_coldest_month:76, z_ot_8:252, t_ot_8:-20.6, t_warm_95:23, t_warm_98:27, rh_warmest_month:60, amended:false},
+  {name:"Ярославль", page_cold:49, page_warm:83, t_cold_day_98:-36, t_cold_day_92:-33, t_cold_5day_98:-32, t_cold_5day_92:-29, t_abs_min:-46, rh_coldest_month:85, z_ot_8:215, t_ot_8:-3.5, t_warm_95:22, t_warm_98:26, rh_warmest_month:74, amended:false}
+];
+
+/* ============================ диаграмма i-d ============================= */
+var CV = document.getElementById('cv_id');
+var CTX = CV.getContext('2d');
+var PAD = {l: 78, r: 132, t: 26, b: 66};
+var D0 = 0, D1 = 26;            // влагосодержание, г/кг
+var J0 = -25, J1 = 120;         // энтальпия, кДж/кг
+
+function plotRect(){
+  return {x: PAD.l, y: PAD.t, w: CV.width - PAD.l - PAD.r, h: CV.height - PAD.t - PAD.b};
+}
+// Косоугольная система Рамзина: ось d горизонтальна, линии J = const идут
+// вниз-вправо. Сдвиг подобран так, что изотерма t = 0 °C горизонтальна.
+var SHEAR = 2.5;                // кДж/кг на 1 г/кг — наклон изоэнтальпы
+function px(d){ var r = plotRect(); return r.x + (d - D0)/(D1 - D0)*r.w; }
+function py(J, d){
+  var r = plotRect();
+  var Js = J - SHEAR*d;
+  var Js0 = J0 - SHEAR*D1, Js1 = J1 - SHEAR*D0;
+  return r.y + r.h - (Js - Js0)/(Js1 - Js0)*r.h;
+}
+function ptXY(p){ return {x: px(p.d), y: py(p.J, p.d)}; }
+// обратное преобразование: экранная точка → (d, J)
+function xyToState(sx, sy){
+  var r = plotRect();
+  var d = D0 + (sx - r.x)/r.w*(D1 - D0);
+  var Js0 = J0 - SHEAR*D1, Js1 = J1 - SHEAR*D0;
+  var Js = Js0 + (r.y + r.h - sy)/r.h*(Js1 - Js0);
+  return {d: d, J: Js + SHEAR*d};
+}
+
+function drawDiagram(p1, p2, showGrid){
+  var css = getComputedStyle(document.body);
+  var pb = pbPa();
+  CTX.fillStyle = css.getPropertyValue('--input-bg') || '#fdfcfa';
+  CTX.fillRect(0, 0, CV.width, CV.height);
+  var r = plotRect();
+  var t = T[LANG];
+
+  CTX.save();
+  CTX.beginPath(); CTX.rect(r.x, r.y, r.w, r.h); CTX.clip();
+
+  // линии J = const
+  if(showGrid){
+    CTX.strokeStyle = 'rgba(28,27,25,.13)'; CTX.lineWidth = 1;
+    for(var J = Math.ceil(J0/10)*10; J <= J1; J += 10){
+      CTX.beginPath();
+      CTX.moveTo(px(D0), py(J, D0)); CTX.lineTo(px(D1), py(J, D1));
+      CTX.stroke();
+    }
+    // изотермы
+    CTX.strokeStyle = 'rgba(28,27,25,.20)';
+    for(var tt = -40; tt <= 60; tt += 5){
+      CTX.beginPath();
+      var started = false;
+      for(var dd = D0; dd <= D1 + 1e-9; dd += 0.5){
+        var JJ = J_by_t_d(tt, dd);
+        var X = px(dd), Y = py(JJ, dd);
+        if(!started){ CTX.moveTo(X, Y); started = true; } else CTX.lineTo(X, Y);
+      }
+      CTX.stroke();
+    }
+  }
+
+  // линии phi = const
+  var PHIS = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+  PHIS.forEach(function(phi){
+    CTX.beginPath();
+    CTX.strokeStyle = (phi === 100) ? 'rgba(74,107,138,.95)' : 'rgba(74,107,138,.42)';
+    CTX.lineWidth = (phi === 100) ? 2.6 : 1.2;
+    var started = false;
+    for(var tt = -45; tt <= 65; tt += 0.25){
+      var dd = d_by_t_phi(pb, tt, phi);
+      if(!(isFinite(dd)) || dd < D0 || dd > D1) { started = false; continue; }
+      var JJ = J_by_t_d(tt, dd);
+      var X = px(dd), Y = py(JJ, dd);
+      if(!started){ CTX.moveTo(X, Y); started = true; } else CTX.lineTo(X, Y);
+    }
+    CTX.stroke();
+  });
+  CTX.restore();
+
+  // подписи phi на кривых
+  CTX.font = '13px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
+  CTX.fillStyle = 'rgba(44,74,99,.95)';
+  CTX.textAlign = 'left'; CTX.textBaseline = 'middle';
+  PHIS.forEach(function(phi){
+    for(var tt = 65; tt >= -45; tt -= 0.25){
+      var dd = d_by_t_phi(pb, tt, phi);
+      if(dd > D1 || !isFinite(dd)) continue;
+      var X = px(dd), Y = py(J_by_t_d(tt, dd), dd);
+      if(X > r.x + 4 && X < r.x + r.w - 4 && Y > r.y + 10 && Y < r.y + r.h - 10){
+        if(dd > D1 - 0.6 || Math.abs(X - (r.x + r.w)) < 40){
+          CTX.fillText(phi + ' %', Math.min(X + 6, r.x + r.w + 4), Y);
+          return;
+        }
+      }
+    }
+    // если кривая уходит вверх — подписать у верхней кромки
+    for(var tt2 = -45; tt2 <= 65; tt2 += 0.25){
+      var dd2 = d_by_t_phi(pb, tt2, phi);
+      if(dd2 < D0 || dd2 > D1 || !isFinite(dd2)) continue;
+      var Y2 = py(J_by_t_d(tt2, dd2), dd2);
+      if(Y2 <= r.y + 12){ CTX.fillText(phi + ' %', px(dd2) + 6, r.y + 12); return; }
+    }
+  });
+
+  // рамка и оси
+  CTX.strokeStyle = 'rgba(28,27,25,.55)'; CTX.lineWidth = 1.5;
+  CTX.strokeRect(r.x, r.y, r.w, r.h);
+
+  CTX.fillStyle = css.color;
+  CTX.font = '14px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
+  CTX.textAlign = 'center'; CTX.textBaseline = 'top';
+  for(var dg = 0; dg <= D1; dg += 2){
+    var X = px(dg);
+    CTX.beginPath(); CTX.moveTo(X, r.y + r.h); CTX.lineTo(X, r.y + r.h + 6);
+    CTX.strokeStyle = 'rgba(28,27,25,.55)'; CTX.stroke();
+    CTX.fillText(String(dg), X, r.y + r.h + 10);
+  }
+  CTX.font = '15px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
+  CTX.fillText(t.ax_d, r.x + r.w/2, r.y + r.h + 36);
+
+  // ось температур слева — по пересечению изотерм с левой кромкой d = 0
+  CTX.textAlign = 'right'; CTX.textBaseline = 'middle';
+  CTX.font = '14px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
+  for(var tl = -40; tl <= 60; tl += 10){
+    var Yl = py(J_by_t_d(tl, D0), D0);
+    if(Yl < r.y - 2 || Yl > r.y + r.h + 2) continue;
+    CTX.beginPath(); CTX.moveTo(r.x - 6, Yl); CTX.lineTo(r.x, Yl);
+    CTX.strokeStyle = 'rgba(28,27,25,.55)'; CTX.stroke();
+    CTX.fillText(nf(tl, 0), r.x - 10, Yl);
+  }
+  CTX.save();
+  CTX.translate(r.x - 52, r.y + r.h/2); CTX.rotate(-Math.PI/2);
+  CTX.textAlign = 'center'; CTX.textBaseline = 'middle';
+  CTX.font = '15px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
+  CTX.fillText(t.ax_t, 0, 0);
+  CTX.restore();
+
+  // отрезок процесса
+  if(p1 && p2){
+    var a = ptXY(p1), b = ptXY(p2);
+    CTX.save();
+    CTX.beginPath(); CTX.rect(r.x, r.y, r.w, r.h); CTX.clip();
+    CTX.strokeStyle = 'rgba(178,62,55,.95)'; CTX.lineWidth = 3.5;
+    CTX.beginPath(); CTX.moveTo(a.x, a.y); CTX.lineTo(b.x, b.y); CTX.stroke();
+    // стрелка направления
+    var ang = Math.atan2(b.y - a.y, b.x - a.x);
+    CTX.beginPath();
+    CTX.moveTo(b.x, b.y);
+    CTX.lineTo(b.x - 14*Math.cos(ang - 0.42), b.y - 14*Math.sin(ang - 0.42));
+    CTX.lineTo(b.x - 14*Math.cos(ang + 0.42), b.y - 14*Math.sin(ang + 0.42));
+    CTX.closePath(); CTX.fillStyle = 'rgba(178,62,55,.95)'; CTX.fill();
+    CTX.restore();
+    marker(b.x, b.y, T[LANG].lbl_p2, false);
+  }
+  if(p1){ var a2 = ptXY(p1); marker(a2.x, a2.y, T[LANG].lbl_p1, true); }
+}
+
+function marker(x, y, label, big){
+  var r = plotRect();
+  if(x < r.x - 20 || x > r.x + r.w + 20 || y < r.y - 20 || y > r.y + r.h + 20) return;
+  CTX.lineWidth = 4; CTX.strokeStyle = 'rgba(0,0,0,.85)';
+  CTX.beginPath(); CTX.arc(x, y, big ? 13 : 10, 0, 2*Math.PI); CTX.stroke();
+  CTX.strokeStyle = 'rgba(255,255,255,.98)'; CTX.lineWidth = 2;
+  CTX.beginPath(); CTX.arc(x, y, big ? 13 : 10, 0, 2*Math.PI); CTX.stroke();
+  CTX.beginPath(); CTX.arc(x, y, 3.2, 0, 2*Math.PI);
+  CTX.fillStyle = 'rgba(255,255,255,.98)'; CTX.fill();
+  CTX.font = 'bold 15px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
+  CTX.textAlign = 'left'; CTX.textBaseline = 'bottom';
+  CTX.strokeStyle = 'rgba(255,255,255,.9)'; CTX.lineWidth = 3;
+  CTX.strokeText(label, x + 15, y - 8);
+  CTX.fillStyle = 'rgba(28,27,25,.95)';
+  CTX.fillText(label, x + 15, y - 8);
+}
+
+/* ============================ ввод и вывод ============================== */
+var el = {};
+['t1','phi1','L1','pb','proc','t2','tcool','phi2','t1b','phi1b','L1b',
+ 'lines_id','city','tin'].forEach(function(id){ el[id] = document.getElementById(id); });
+
+function tile(name, val, sub, cls){
+  return '<div class="tile' + (cls ? ' ' + cls : '') + '"><div class="k">' + name +
+         '</div><div class="v">' + val + '</div><div class="u">' + sub + '</div></div>';
+}
+
+// Введённые значения ограничиваются min/max самого поля: браузер не обрезает
+// набранное вручную число, а вне заявленного диапазона зависимости не проверены
+// (см. «Границы применимости»). Пустое/нечисловое поле подставляет запасное
+// значение. Оба случая — обрезка и подстановка — показываются предупреждением,
+// чтобы результат никогда не выглядел как ответ на то, что реально введено.
+var CLAMPED = [], SUBSTITUTED = [];
+function numOr(id, fallback){
+  var node = el[id];
+  var v = parseFloat(node.value);
+  if(!isFinite(v)){
+    if(SUBSTITUTED.indexOf(id) < 0) SUBSTITUTED.push(id);
+    return fallback;
+  }
+  var mn = parseFloat(node.min), mx = parseFloat(node.max), was = v;
+  if(isFinite(mn) && v < mn) v = mn;
+  if(isFinite(mx) && v > mx) v = mx;
+  if(v !== was && CLAMPED.indexOf(id) < 0) CLAMPED.push(id);
+  return v;
+}
+// барометрическое давление вводится в мм рт. ст., в расчёт идёт в паскалях
+function pbPa(){ return numOr('pb', 760)*MM_HG; }
+function readP1(){
+  return makePoint(pbPa(), {t: numOr('t1', 20), phi: clampPhi(numOr('phi1', 50)),
+                            L: Math.max(1, numOr('L1', 3000))});
+}
+function clampPhi(v){ return Math.max(0.1, Math.min(100, v)); }
+
+// какие поля нужны выбранному процессу
+var PROC_SLOTS = {
+  heat:  ['slot_t2'],
+  cool:  ['slot_t2', 'slot_tcool'],
+  humid: ['slot_phi2'],
+  adiab: ['slot_phi2'],
+  dehum: ['slot_phi2'],
+  mix:   ['slot_t1b', 'slot_phi1b', 'slot_L1b']
+};
+function syncSlots(){
+  var need = PROC_SLOTS[el.proc.value] || [];
+  ['slot_t2','slot_tcool','slot_phi2','slot_t1b','slot_phi1b','slot_L1b'].forEach(function(id){
+    document.getElementById(id).style.display = (need.indexOf(id) >= 0) ? '' : 'none';
+  });
+}
+
+function render(){
+  var t = T[LANG];
+  syncSlots();
+  CLAMPED = []; SUBSTITUTED = [];
+
+  var p1, kind = el.proc.value;
+  try { p1 = readP1(); } catch(e){ return; }
+  var pb = p1.pb;
+  var out = null, warn = '';
+
+  try {
+    if(kind === 'heat'){
+      var t2h = numOr('t2', p1.t);
+      out = proc_heat(p1, t2h);
+      if(t2h < p1.t) warn = t.warn_heat_down;
+    } else if(kind === 'cool'){
+      var t2c = numOr('t2', p1.t), tc = numOr('tcool', 7);
+      out = proc_cool(p1, tc, t2c);
+      if(t2c > p1.t) warn = t.warn_cool_up;
+      else warn = out.dry ? t.warn_dry : t.warn_wet;
+    } else if(kind === 'humid'){
+      out = proc_humidify(p1, clampPhi(numOr('phi2', 60)));
+    } else if(kind === 'adiab'){
+      var pa = clampPhi(numOr('phi2', 60));
+      out = proc_adiabatic(p1, pa);
+      if(pa < p1.phi) warn = t.warn_adiab_dir;
+    } else if(kind === 'dehum'){
+      var pd = clampPhi(numOr('phi2', 60));
+      out = proc_dehumidify(p1, pd);
+      if(pd > p1.phi) warn = t.warn_dehum_dir;
+    } else if(kind === 'mix'){
+      var p1b = makePoint(pb, {t: numOr('t1b', 20), phi: clampPhi(numOr('phi1b', 50)),
+                               L: Math.max(1, numOr('L1b', 3000))});
+      out = proc_mix(p1, p1b);
+      if(out.condensed) warn = t.warn_cond;
+    }
+  } catch(e){ out = null; }
+
+  var p2 = out ? out.p2 : null;
+  if(p2 && p2.phi > 100.5) warn = t.warn_sat;
+
+  // плитки
+  var Q = out ? out.Q : null, W = out ? out.W : null;
+  var eps = (p1 && p2) ? angular_coef(p1.J, p2.J, p1.d, p2.d) : null;
+  var qsub = (Q === null || Math.abs(Q) < 1e-9) ? t.sub_Q_zero : (Q > 0 ? t.sub_Q_heat : t.sub_Q_cool);
+  var wsub = (W === null || Math.abs(W) < 1e-9) ? t.sub_W_zero : (W > 0 ? t.sub_W_add : t.sub_W_rem);
+  document.getElementById('res_proc').innerHTML =
+      tile(t.tile_t2, p2 ? nf(p2.t, 1) + ' °C' : '—', t.sub_t2) +
+      tile(t.tile_phi2, p2 ? nf(p2.phi, 1) + ' %' : '—', t.sub_phi2,
+           (p2 && p2.phi > 100.5) ? 't-x' : '') +
+      tile(t.tile_d2, p2 ? nf(p2.d, 2) : '—', t.sub_d2) +
+      tile(t.tile_Q, Q === null ? '—' : sf(Q, 2) + ' ' + t.u_kW, qsub) +
+      tile(t.tile_W, W === null ? '—' : sf(W, 2) + ' ' + t.u_kgh, wsub) +
+      tile(t.tile_eps, eps === null ? '—' : nf(eps, 0), eps === null ? t.sub_eps_na : t.sub_eps);
+
+  // таблица состояний
+  function row2(name, v1, v2, unit){
+    return '<tr><td>' + name + '</td><td class="num">' + v1 + '</td><td class="num">' + v2 +
+           '</td><td class="num">' + unit + '</td></tr>';
+  }
+  var tw1 = t_wet(p1.t, pb, p1.J), tw2 = p2 ? t_wet(p2.t, pb, p2.J) : null;
+  var td1 = t_dew(p1.d, pb), td2 = p2 ? t_dew(p2.d, pb) : null;
+  var html = '<thead><tr><th>' + t.col_par + '</th><th class="num">' + t.col_p1 +
+             '</th><th class="num">' + t.col_p2 + '</th><th class="num">' + t.col_unit +
+             '</th></tr></thead><tbody>';
+  html += row2(t.r_t, nf(p1.t, 2), p2 ? nf(p2.t, 2) : '—', t.u_C);
+  html += row2(t.r_phi, nf(p1.phi, 2), p2 ? nf(p2.phi, 2) : '—', t.u_pct);
+  html += row2(t.r_d, nf(p1.d, 2), p2 ? nf(p2.d, 2) : '—', t.u_gkg);
+  html += row2(t.r_J, nf(p1.J, 2), p2 ? nf(p2.J, 2) : '—', t.u_kJkg);
+  html += row2(t.r_tdew, nf(td1, 2), td2 === null ? '—' : nf(td2, 2), t.u_C);
+  html += row2(t.r_twet, tw1 === null ? '—' : nf(tw1, 2), tw2 === null ? '—' : nf(tw2, 2), t.u_C);
+  html += row2(t.r_rho, nf(p1.rho, 3), p2 ? nf(p2.rho, 3) : '—', t.u_kgm3);
+  html += row2(t.r_L, nf(p1.L, 0), p2 ? nf(p2.L, 0) : '—', t.u_m3h);
+  html += row2(t.r_G, nf(p1.G, 0), p2 ? nf(p2.G, 0) : '—', t.u_kgh);
+  html += '</tbody>';
+  document.getElementById('tbl_proc').innerHTML = html;
+  if(CLAMPED.length) warn = t.warn_clamped + ' ' + warn;
+  if(SUBSTITUTED.length) warn = t.warn_substituted + ' ' + warn;
+  document.getElementById('proc_warn').textContent = warn;
+
+  drawDiagram(p1, p2, el.lines_id.checked);
+}
+
+/* ---------------------------------------------------- вкладка климата --- */
+function fillCitySelect(){
+  var sel = el.city;
+  var keep = sel.value;              // выбор пункта не должен теряться при смене языка
+  sel.innerHTML = '';
+  if(!CITIES.length){
+    var o = document.createElement('option');
+    o.value = ''; o.textContent = T[LANG].nodata;
+    sel.appendChild(o);
+    return;
+  }
+  CITIES.forEach(function(c, i){
+    var o = document.createElement('option');
+    o.value = String(i); o.textContent = c.name;
+    sel.appendChild(o);
+  });
+  if(keep !== '' && keep !== null && CITIES[parseInt(keep, 10)]) sel.value = keep;
+}
+function currentCity(){
+  if(!CITIES.length) return null;
+  var i = parseInt(el.city.value, 10);
+  return isFinite(i) ? CITIES[i] : null;
+}
+function renderClim(){
+  var t = T[LANG], c = currentCity();
+  CLAMPED = []; SUBSTITUTED = [];
+  var tin = numOr('tin', 20);
+  var gsop = (c && c.z_ot_8 !== null && c.t_ot_8 !== null && isFinite(tin))
+             ? rnd((tin - c.t_ot_8)*c.z_ot_8, 0) : null;
+
+  document.getElementById('res_clim').innerHTML =
+    tile(t.clim_gsop, gsop === null ? '—' : nf(gsop, 0), t.clim_gsop_sub) +
+    tile(t.clim_t5, (c && c.t_cold_5day_92 !== null) ? nf(c.t_cold_5day_92, 0) : '—', t.clim_t5_sub) +
+    tile(t.clim_zot, (c && c.z_ot_8 !== null) ? nf(c.z_ot_8, 0) : '—', t.clim_zot_sub) +
+    tile(t.clim_tot, (c && c.t_ot_8 !== null) ? nf(c.t_ot_8, 1) : '—', t.clim_tot_sub);
+
+  function crow(name, val, unit, src, dg){
+    var v = (val === null || val === undefined) ? '—' : nf(val, dg);
+    return '<tr><td>' + name + '</td><td class="num">' + v + '</td><td class="num">' + unit +
+           '</td><td>' + src + '</td></tr>';
+  }
+  var h = '<thead><tr><th>' + t.ccol_par + '</th><th class="num">' + t.ccol_val +
+          '</th><th class="num">' + t.ccol_unit + '</th><th>' + t.ccol_src +
+          '</th></tr></thead><tbody>';
+  if(c){
+    var s31 = t.src_t31 + (c.page_cold ? ', ' + t.citypage + ' ' + c.page_cold : '');
+    var s41 = t.src_t41 + (c.page_warm ? ', ' + t.citypage + ' ' + c.page_warm : '');
+    // Разрядность — по источнику: графы температур обеспеченностей и абсолютного
+    // минимума напечатаны в СП целыми, десятая доля есть только у средней
+    // температуры отопительного периода. Выводить «−34,0» значило бы заявлять
+    // точность, которой в первоисточнике нет.
+    h += crow(t.c_t_day98,  c.t_cold_day_98,  t.u_C, s31, 0);
+    h += crow(t.c_t_day92,  c.t_cold_day_92,  t.u_C, s31, 0);
+    h += crow(t.c_t_5d98,   c.t_cold_5day_98, t.u_C, s31, 0);
+    h += crow(t.c_t_5d92,   c.t_cold_5day_92, t.u_C, s31, 0);
+    h += crow(t.c_t_absmin, c.t_abs_min,      t.u_C, s31, 0);
+    h += crow(t.c_rh_cold,  c.rh_coldest_month, t.u_pct, s31, 0);
+    h += crow(t.c_zot,      c.z_ot_8,         t.u_day, s31, 0);
+    h += crow(t.c_tot,      c.t_ot_8,         t.u_C, s31, 1);
+    h += crow(t.c_t_warm95, c.t_warm_95,      t.u_C, s41, 0);
+    h += crow(t.c_t_warm98, c.t_warm_98,      t.u_C, s41, 0);
+    h += crow(t.c_rh_warm,  c.rh_warmest_month, t.u_pct, s41, 0);
+    h += crow(t.c_gsop,     gsop,             t.u_Cday, t.src_calc, 0);
+  }
+  h += '</tbody>';
+  document.getElementById('tbl_clim').innerHTML = h;
+  document.getElementById('clim_note').textContent =
+    (SUBSTITUTED.length ? t.warn_substituted + ' ' : '') +
+    (CLAMPED.length ? t.warn_clamped + ' ' : '') +
+    t.clim_note_ok + ((c && c.amended) ? ' ' + t.clim_note_amended : '');
+}
+
+document.getElementById('btn_to_diagram').addEventListener('click', function(){
+  var c = currentCity();
+  if(!c || c.t_cold_5day_92 === null) return;
+  el.t1.value = c.t_cold_5day_92;
+  if(c.rh_coldest_month !== null) el.phi1.value = c.rh_coldest_month;
+  document.getElementById('tab_proc').click();
+  render();
+});
+
+/* ---------------------------------------------------------- события ---- */
+['t1','phi1','L1','pb','proc','t2','tcool','phi2','t1b','phi1b','L1b','lines_id']
+.forEach(function(id){
+  el[id].addEventListener('input', render);
+  el[id].addEventListener('change', render);
+});
+['city','tin'].forEach(function(id){
+  el[id].addEventListener('input', renderClim);
+  el[id].addEventListener('change', renderClim);
+});
+
+// клик по диаграмме переносит точку 1
+CV.style.cursor = 'crosshair';
+CV.addEventListener('click', function(evt){
+  var rect = CV.getBoundingClientRect();
+  var sx = (evt.clientX - rect.left)*(CV.width/rect.width);
+  var sy = (evt.clientY - rect.top)*(CV.height/rect.height);
+  var r = plotRect();
+  if(sx < r.x || sx > r.x + r.w || sy < r.y || sy > r.y + r.h) return;
+  var st = xyToState(sx, sy);
+  var tt = t_by_J_d(st.J, st.d);
+  var pp = phi_by_t_d(pbPa(), st.d, tt);
+  if(!isFinite(tt) || !isFinite(pp)) return;
+  pp = clampPhi(pp);
+  tt = Math.max(-60, Math.min(60, tt));
+  el.t1.value = rnd(tt, 1); el.phi1.value = Math.round(pp);
+  clearPresetSelection();
+  render();
+});
+
+/* ---------------------------------------------------------- пресеты ---- */
+// Типовые режимы приточной установки. Значения — инженерные сценарии для
+// демонстрации вида процесса, а не нормативные требования.
+var PRESETS = {
+  winter_heat:  {proc: 'heat',  t1: -26, phi1: 84, L1: 3000, t2: 18},
+  winter_adiab: {proc: 'adiab', t1: 22,  phi1: 15, L1: 3000, phi2: 60},
+  summer_cool:  {proc: 'cool',  t1: 28,  phi1: 55, L1: 3000, t2: 14, tcool: 7},
+  steam:        {proc: 'humid', t1: 20,  phi1: 20, L1: 3000, phi2: 45},
+  mix:          {proc: 'mix',   t1: -26, phi1: 84, L1: 1000, t1b: 20, phi1b: 50, L1b: 3000}
+};
+function applyPreset(name){
+  var p = PRESETS[name];
+  if(!p) return;
+  Object.keys(p).forEach(function(k){ if(el[k]) el[k].value = p[k]; });
+  render();
+  markPresetSelected(name);
+}
+function markPresetSelected(name){
+  document.querySelectorAll('.preset-btn[data-preset]').forEach(function(b){
+    var sel = b.getAttribute('data-preset') === name;
+    b.classList.toggle('selected', sel);
+    b.setAttribute('aria-pressed', sel ? 'true' : 'false');
+  });
+}
+function clearPresetSelection(){
+  document.querySelectorAll('.preset-btn[data-preset]').forEach(function(b){
+    b.classList.remove('selected');
+    b.setAttribute('aria-pressed', 'false');
+  });
+}
+document.querySelectorAll('.preset-btn[data-preset]').forEach(function(btn){
+  btn.setAttribute('aria-pressed', 'false');
+  btn.addEventListener('click', function(){ applyPreset(btn.getAttribute('data-preset')); });
+});
+['t1','phi1','L1','proc','t2','tcool','phi2','t1b','phi1b','L1b'].forEach(function(id){
+  el[id].addEventListener('input', clearPresetSelection);
+  el[id].addEventListener('change', clearPresetSelection);
+});
+
+/* ---------------------------------------------------------- вкладки ---- */
+document.querySelectorAll('.tabbtn').forEach(function(tabBtn){
+  tabBtn.addEventListener('click', function(){
+    document.querySelectorAll('.tabbtn').forEach(function(b){
+      var on = (b === tabBtn);
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    document.querySelectorAll('.tabpanel').forEach(function(sec){
+      sec.classList.toggle('active', sec.id === tabBtn.getAttribute('data-target'));
+    });
+  });
+});
+
+/* ------------------------------------------------------------ язык ----- */
+var RU_CACHE = {}, RU_ARIA_CACHE = {}, RU_TITLE, RU_DESC;
+var I18N_EN = {
+doc_title: "Psychrometric chart and design climate parameters",
+meta_description: "Interactive psychrometric (i-d) chart: heating, cooling with dehumidification, humidification, adiabatic cooling, stream mixing. Cold- and warm-period design climate parameters per SP 131.13330.2020 and heating degree-days.",
+h1: "Psychrometric chart and design climate",
+lede: "The state of moist air, its treatment processes in an air-handling unit, and the design climate parameters of the construction site — in a single calculation.",
+h2_intro: "The essence of the problem",
+intro_p1: 'The state of moist air is defined by two independent quantities at a known barometric pressure. The rest — moisture content, enthalpy, relative humidity, dew-point temperature, wet-bulb temperature, density — follow from them. The <i>i–d</i> chart relates these quantities graphically: every point of the plane corresponds to one state of the air, and a treatment process corresponds to a segment between two points.',
+intro_p2: 'The practical consequence: the type of process determines the direction of the segment. Heating in a surface air heater runs at constant moisture content — vertically upward. Adiabatic humidification runs at constant enthalpy — along a line of <i>J</i> = const. Cooling below the dew point is accompanied by condensation, and the segment breaks towards the saturation curve. Both the capacity of the unit and the moisture rate follow from this.',
+intro_p3: "The second part of the calculation is the design outdoor-air parameters. They are not chosen arbitrarily: the coldest five-day temperature at 0.92 assurance sets the heating design condition, the warm-period parameters set the cooling condition, and the duration and mean temperature of the heating period give the degree-days on which the required thermal resistance of the envelope depends.",
+tabbar_aria: "Calculation sections",
+tab_proc_label: "Air treatment processes",
+tab_clim_label: "Site climate",
+tab_method_label: "How this is calculated",
+tab_src_label: "Primary sources",
+tab_limits_label: "Limits of applicability",
+proc_h2: "Air treatment processes on the i-d chart",
+proc_intro: "The initial point 1 (temperature, relative humidity, flow rate) and the process are specified. Point 2 and the energy quantities are computed. Clicking the chart moves point 1. All relationships are given on the “How this is calculated” tab.",
+presets_aria: "Typical processes",
+presets_label: "Typical process:",
+preset_winter_heat: "Winter: heating outdoor air",
+preset_winter_adiab: "Winter: adiabatic humidification",
+preset_summer_cool: "Summer: cooling with dehumidification",
+preset_steam: "Steam humidification",
+preset_mix: "Mixing with recirculation",
+proc_cap: "Psychrometric chart of moist air: φ = const curves, isotherms, J = const lines; segment 1→2 is the specified process",
+lab_t1: 'Temperature at pt. 1 <i>t</i><sub>1</sub>, °C',
+lab_phi1: 'Relative humidity at pt. 1 φ<sub>1</sub>, %',
+lab_L1: 'Air flow rate <i>L</i><sub>1</sub>, m³/h',
+lab_pb: 'Barometric pressure <i>p</i><sub>b</sub>, mm Hg <span class="hint">(standard atmosphere — 760 mm Hg)</span>',
+lab_proc: "Process",
+opt_proc_heat: "Heating (d = const)",
+opt_proc_cool: "Cooling (dehumidification possible)",
+opt_proc_humid: "Isothermal humidification (t = const)",
+opt_proc_adiab: "Adiabatic cooling (J = const)",
+opt_proc_dehum: "Dehumidification (J = const)",
+opt_proc_mix: "Mixing of two streams",
+lab_t2: 'Temperature at pt. 2 <i>t</i><sub>2</sub>, °C',
+lab_tcool: 'Cooler surface temperature <i>t</i><sub>cool</sub>, °C <span class="hint">(cooler dew point; typically 5—10 °C)</span>',
+lab_phi2: 'Relative humidity at pt. 2 φ<sub>2</sub>, %',
+lab_t1b: "Temperature of the 2nd stream, °C",
+lab_phi1b: "Relative humidity of the 2nd stream, %",
+lab_L1b: "Flow rate of the 2nd stream, m³/h",
+show_lines: "Show the isotherm and J = const grid",
+leg_phi: "φ = const curves (100% is the saturation curve)",
+leg_proc: "process segment 1→2",
+leg_marker: "— white marker: point 1; clicking the chart moves it.",
+clim_h2: "Design climate parameters of the site",
+clim_intro: "Values are given per SP 131.13330.2020 (Tables 3.1 and 4.1) for the selected location. Heating degree-days are computed from Eq. (5.2) of SP 50.13330.2024. The design indoor air temperature is specified separately — it depends on the intended use of the room and is taken from the minimum optimal temperatures of GOST 30494-2011.",
+lab_city: "Construction site",
+lab_tin: 'Design indoor air temperature <i>t</i><sub>in</sub>, °C <span class="hint">(per GOST 30494-2011; living room — 20 °C, corner room — 22 °C)</span>',
+btn_to_diagram: "Transfer the outdoor air to the i-d chart",
+clim_transfer_hint: "The button sets point 1 to the coldest five-day temperature at 0.92 assurance and the mean monthly relative humidity of the coldest month, then opens the processes tab. Caveat: these two quantities come from different columns of Table 3.1 and refer to different averaging periods — the humidity is a monthly mean, not a value observed at the design five-day temperature. Such a pairing is customary in design practice, but it is not itself a design parameter of SP 131.13330.2020; the resulting moisture content is a derived quantity with no normative standing.",
+h2_method: "How this is calculated",
+h3_psychro: "The state of moist air",
+m_p1: "The saturated water-vapour pressure is taken from the empirical relationship of this contour's calculation workbook; the primary source is not stated in it. Check point: at <i>t</i> = 100 °C the relationship gives 101,373 Pa against 101,325 Pa by the definition of the standard atmosphere (a deviation of 0.05%).",
+f_psat: "p_sat = 10^[(156 + 8.12·t) / (236 + t)] · 133.322        [Pa]",
+f_d: "d = 622 · (φ/100 · p_sat) / (p_b − φ/100 · p_sat)         [g/kg dry air]",
+f_J: "J = c_a·t + (2500 + 1.8068·t) · d/1000                    [kJ/kg dry air]",
+f_rho: "ρ = 353 / (273.15 + t)                                    [kg/m³]",
+m_p2: "Here <i>c</i><sub>a</sub> is the specific heat of dry air, taken as 1.01 kJ/(kg·°C); 2500 kJ/kg is the latent heat of vaporisation at 0 °C; 1.8068 kJ/(kg·°C) is the specific heat of water vapour. Density is computed without accounting for barometric pressure or moisture content — an assumption of the source workbook; at <i>p</i><sub>b</sub> noticeably different from 101 kPa, the conversion between volume and mass flow carries an error of the order of one per cent.",
+h3_proc: "Processes",
+m_p3: "Heating runs at <i>d</i> = const, isothermal humidification at <i>t</i> = const, adiabatic cooling and dehumidification at <i>J</i> = const. Cooling branches: if the moisture content of saturated air at the cooler surface temperature is not below that of the incoming air, no condensation occurs and the process runs at <i>d</i> = const; otherwise the final point lies on the chord towards the point (<i>t</i><sub>cool</sub>, φ = 100%).",
+f_Q: "Heating:              Q = ρ(t₁) · c_a · L · Δt / 3600      [kW]\nOther processes:      Q = (J₂ − J₁) · G / 3600             [kW]",
+m_p_Q: "The two expressions are not equivalent: the first accounts only for sensible heat and applies where the moisture content does not change, i.e. to heating. In processes where the moisture content changes, the heat flow is computed from the enthalpy difference, which also accounts for the latent heat of the moisture condensed or added. The source calculation file is built the same way.",
+f_W: "W = G · (d₂ − d₁) / 1000                                  [kg/h]",
+f_eps: "ε = (J₂ − J₁) / [(d₂ − d₁)/1000]                          [kJ/kg of moisture]",
+m_p4: "Mixing is performed by mass flow rates. The volume flow of the mixture at φ &lt; 100% is taken as the arithmetic sum of the volume flows — an assumption of the source workbook, with an error of about 0.02%. If the mixture point falls outside the saturation curve, it is moved onto φ = 100% with condensate released.",
+h3_gsop: "Heating degree-days",
+f_gsop: "HDD = (t_in − t_ht) · z_ht                                [(°C·day)/year]",
+m_p5: "Equation (5.2) of SP 50.13330.2024. Here <i>t</i><sub>in</sub> is the design indoor air temperature, °C; <i>t</i><sub>ht</sub> is the mean temperature of the heating period with a daily mean air temperature not above 8 °C, °C; <i>z</i><sub>ht</sub> is the duration of the same period, days. The base required thermal resistance of the building envelope per Table 3 of the same code depends on the degree-days.",
+h2_src: "Primary sources",
+src_levels: "Verification level: ✅ — the document was opened and its formulas and tables were read by content; 📗 — bibliographic details confirmed, content not read.",
+src_sp131: "✅ <b>SP 131.13330.2020</b> “SNiP 23-01-99* Construction climatology”. Order of the Ministry of Construction of Russia No. 859/pr of 24 December 2020, in force from 25 June 2021, a revision of SP 131.13330.2018; as amended by Amendment No. 1 (order No. 430/pr of 30.05.2022) and Amendment No. 2 (order No. 469/pr of 30.06.2023). Tables 3.1 (cold period) and 4.1 (warm period) were used. Values for the 41 locations were read page by page from the consolidated text saved on 06.12.2024; the page numbers in the “Source” column are the printed numbers of that text. The copy used contains no later amendments.",
+src_sp50: "✅ <b>SP 50.13330.2024</b> “SNiP 23-02-2003 Thermal protection of buildings”. Order of the Ministry of Construction of Russia No. 327/pr of 15 May 2024, in force from 16 June 2024, a revision of SP 50.13330.2012. Equation (5.2) — heating degree-days — was used.",
+src_gost30494: "✅ <b>GOST 30494-2011</b> “Residential and public buildings. Microclimate parameters for indoor enclosures”. Adopted by the Interstate Scientific and Technical Commission, protocol No. 39 of 8 December 2011; put into force by Rosstandart order No. 191-st of 12 July 2012 from 1 January 2013. Supersedes GOST 30494-96. Table 1 — optimal indoor air temperatures — was used.",
+src_book: "The psychrometric calculation core reproduces this contour's “Processes_in_HVAC” workbook and has been checked against its worked example: 23 quantities out of 23, no discrepancies. The primary source of the empirical saturation-pressure relationship is not stated in the workbook itself — this is recorded as a limitation on the “Limits of applicability” tab, not as a reference to a code.",
+h2_limits: "Limits of applicability",
+lim_1: "The saturation-pressure relationship was checked at 100 °C with a deviation of 0.05%; outside roughly −60 to +80 °C it has not been applied and is not used here.",
+lim_2: "Density is computed without accounting for barometric pressure or moisture content (an assumption of the source workbook). The <i>p</i><sub>b</sub> field affects moisture content and relative humidity, but not density and therefore not the conversion between volume and mass flow.",
+lim_3: "The wet-bulb temperature is found by scanning from 0.1 °C — a limitation of the source workbook; for colder air the quantity is not reported.",
+lim_4: "Cooling with dehumidification is modelled by a chord towards the cooler dew point. This is an engineering approximation: the actual process in a surface cooler depends on its construction, the coolant flow arrangement and the bypass factor.",
+lim_5: "Climate parameters are given for a curated list of locations and do not replace the full table of SP 131.13330.2020. For a location absent from the list, values should be taken directly from the code of practice.",
+lim_6: "The page provides an estimate based on the relationships listed and does not replace the design calculation of heating, ventilation and air-conditioning systems.",
+footer_note: "The calculation runs in the browser; no data is transmitted anywhere. The decimal separator is a point in the English version. The page is self-contained: it loads no external scripts or fonts.",
+footer: "VibeEngineering-LLC · “Construction climatology” contour · 31.07.2026"
+};
+
+function applyLang(lang){
+  document.querySelectorAll('[data-i18n]').forEach(function(node){
+    var k = node.getAttribute('data-i18n');
+    if(!(k in RU_CACHE)) RU_CACHE[k] = node.innerHTML;
+    node.innerHTML = (lang === 'en' && I18N_EN[k] !== undefined) ? I18N_EN[k] : RU_CACHE[k];
+  });
+  document.querySelectorAll('[data-i18n-aria]').forEach(function(node){
+    var k = node.getAttribute('data-i18n-aria');
+    if(!(k in RU_ARIA_CACHE)) RU_ARIA_CACHE[k] = node.getAttribute('aria-label');
+    node.setAttribute('aria-label',
+      (lang === 'en' && I18N_EN[k] !== undefined) ? I18N_EN[k] : RU_ARIA_CACHE[k]);
+  });
+  if(RU_TITLE === undefined) RU_TITLE = document.title;
+  document.title = (lang === 'en' && I18N_EN.doc_title) ? I18N_EN.doc_title : RU_TITLE;
+  var descEl = document.querySelector('meta[name="description"]');
+  if(descEl){
+    if(RU_DESC === undefined) RU_DESC = descEl.getAttribute('content');
+    descEl.setAttribute('content',
+      (lang === 'en' && I18N_EN.meta_description) ? I18N_EN.meta_description : RU_DESC);
+  }
+  document.documentElement.lang = lang;
+  document.documentElement.setAttribute('data-lang', lang);
+  LANG = lang;
+  localStorage.setItem('pc_lang', lang);
+  document.getElementById('langtoggle').textContent = (lang === 'ru') ? 'EN' : 'RU';
+  fillCitySelect();
+  render();
+  renderClim();
+}
+document.getElementById('langtoggle').addEventListener('click', function(){
+  applyLang(LANG === 'ru' ? 'en' : 'ru');
+});
+
+fillCitySelect();
+applyLang(LANG);
+</script>
