@@ -264,6 +264,12 @@
     брать непосредственно из свода правил.</li>
     <li data-i18n="lim_6">Страница даёт оценку по перечисленным зависимостям и не заменяет проектный
     расчёт систем отопления, вентиляции и кондиционирования.</li>
+    <li data-i18n="lim_7">Ось влагосодержания диаграммы охватывает 0—30 г/кг — с запасом над жаркими
+    влажными климатами (сценарий 40 °C при 60 % — около 28 г/кг; самая влажная производная точка
+    курируемого списка городов, Сочи, даёт лишь около 20 г/кг), но не над физическим пределом:
+    насыщенный воздух уже при температуре около 32 °C даёт около 30,6 г/кг. Точка за пределами
+    диаграммы не рисуется — вместо
+    неё выводится предупреждение, а значения в таблице остаются верными.</li>
   </ul>
 </section>
 
@@ -694,8 +700,23 @@ var CITIES = [
 var CV = document.getElementById('cv_id');
 var CTX = CV.getContext('2d');
 var PAD = {l: 78, r: 132, t: 26, b: 66};
-var D0 = 0, D1 = 26;            // влагосодержание, г/кг
-var J0 = -25, J1 = 120;         // диапазон линий J = const (сетка), кДж/кг
+// Верхняя граница оси d подобрана не произвольно: 26 г/кг (прежнее значение)
+// уже теснее реальных жарких влажных климатов — расчётный сценарий 40 °C/60%
+// (жаркий влажный летний день) даёт d ≈ 28,3 г/кг по формулам ниже. Самая
+// влажная производная точка курируемого списка городов (Сочи, t_warm_98=29 °C,
+// rh_warmest_month=79 % — см. оговорку в clim_transfer_hint о том, что это не
+// нормативная пара) даёт лишь d ≈ 20,0 г/кг, то есть список тут не ограничение.
+// 30 г/кг оставляет запас над сценарием 40 °C/60 % и всё ещё не пытается
+// вместить физический предел: насыщенный воздух при t ≈ 32 °C уже даёт
+// d ≈ 30,6 г/кг, а мировой рекорд точки росы (35 °C, Дахран, Саудовская
+// Аравия, 8 июля 2003 — Guinness World Records) соответствует d ≈ 36,5 г/кг —
+// такие точки останутся вне диаграммы с честным предупреждением
+// (см. warn_offchart_*), как и раньше для оси температур.
+var D0 = 0, D1 = 30;            // влагосодержание, г/кг
+// J1 поднят вместе с D1: при d=D1=30 у правого верхнего угла (T_AXIS_MAX=40 °C)
+// нужный J = 40,4 + SHEAR·30 = 115,4 кДж/кг — со старым J1=120 запас был лишь
+// ≈4 % (тоньше, чем выглядит на глаз); 130 восстанавливает прежний запас ~12 %.
+var J0 = -25, J1 = 130;         // диапазон линий J = const (сетка), кДж/кг
 
 function plotRect(){
   return {x: PAD.l, y: PAD.t, w: CV.width - PAD.l - PAD.r, h: CV.height - PAD.t - PAD.b};
@@ -1379,6 +1400,7 @@ lim_3: "The wet-bulb temperature is found by scanning from 0.1 °C — a limitat
 lim_4: "Cooling with dehumidification is modelled by a chord towards the cooler dew point. This is an engineering approximation: the actual process in a surface cooler depends on its construction, the coolant flow arrangement and the bypass factor.",
 lim_5: "Climate parameters are given for a curated list of locations and do not replace the full table of SP 131.13330.2020. For a location absent from the list, values should be taken directly from the code of practice.",
 lim_6: "The page provides an estimate based on the relationships listed and does not replace the design calculation of heating, ventilation and air-conditioning systems.",
+lim_7: "The chart's moisture-content axis covers 0—30 g/kg — with margin over hot-humid climates (a 40 °C at 60% scenario gives about 28 g/kg; the most humid derived point of the curated city list, Sochi, gives only about 20 g/kg), but not over the physical limit: saturated air already gives about 30.6 g/kg at roughly 32 °C. A point outside the chart is not drawn — a warning is shown instead, and the values in the table remain correct.",
 footer_note: "The calculation runs in the browser; no data is transmitted anywhere. The decimal separator is a point in the English version. The page is self-contained: it loads no external scripts or fonts.",
 footer: "VibeEngineering-LLC · “Construction climatology” contour · 31.07.2026"
 };
