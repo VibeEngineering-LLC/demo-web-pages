@@ -93,7 +93,7 @@
           <div class="lab" data-i18n="lab_temp">Температура</div>
           <div class="cur"><span id="ta_v">24,0</span> °C</div>
           <div class="track">
-            <input type="range" id="ta" orient="vertical" class="vert" min="10" max="38" step="0.2" value="24">
+            <input type="range" id="ta" orient="vertical" class="vert" min="10" max="38" step="any" value="24">
             <div class="scale"><span>38</span><span>24</span><span>10</span></div>
           </div>
         </div>
@@ -118,7 +118,7 @@
         </div>
 
         <div class="vslot">
-          <div class="lab">Δt<sub>r</sub> = t<sub>r</sub> − t<sub>a</sub></div>
+          <div class="lab" data-i18n="lab_dtr">Δt<sub>r</sub> = t<sub>r</sub> − t<sub>a</sub><sup class="fn-mark">*</sup></div>
           <div class="cur"><span id="dtr_v">+0,0</span> °C</div>
           <div class="track">
             <input type="range" id="dtr" orient="vertical" class="vert" min="-8" max="8" step="0.2" value="0">
@@ -189,6 +189,12 @@
     <span>A (|PMV|&lt;0,2), B (&lt;0,5), C (&lt;0,7)</span>
     <span data-i18n="gost_legend_marker">— белый маркер: рабочая точка (t, φ); клик по канве переносит её. Общие поля (t, φ, v, Δ<i>t</i><sub>r</sub>, met, clo) синхронизируются с вкладкой ASHRAE.</span>
   </div>
+
+  <p class="hint fullwidth" data-i18n="dtr_explainer"><sup>*</sup> <b>Про Δt<sub>r</sub> = t<sub>r</sub> − t<sub>a</sub>.</b> Разница средней
+  радиантной температуры (t<sub>r</sub>) и температуры воздуха (t<sub>a</sub>). Значение выше нуля — стены,
+  потолок или пол теплее воздуха (например, тёплый пол, панельное отопление, нагретое
+  солнцем остекление); ниже нуля — холоднее (холодное остекление, неутеплённая стена).
+  При Δt<sub>r</sub> = 0 радиантная температура равна температуре воздуха.</p>
 
   <p class="hint fullwidth" data-i18n="tu_explainer"><b>Про ползунок «Tu — турбулентность».</b> Скорость воздуха
   в помещении не постоянная: она пульсирует вокруг своего среднего значения. Показатель
@@ -277,7 +283,7 @@
           <div class="lab" data-i18n="lab_temp">Температура</div>
           <div class="cur"><span id="ta_v_a">24,0</span> °C</div>
           <div class="track">
-            <input type="range" id="ta_a" orient="vertical" class="vert" min="10" max="38" step="0.2" value="24">
+            <input type="range" id="ta_a" orient="vertical" class="vert" min="10" max="38" step="any" value="24">
             <div class="scale"><span>38</span><span>24</span><span>10</span></div>
           </div>
         </div>
@@ -298,7 +304,7 @@
           </div>
         </div>
         <div class="vslot">
-          <div class="lab">Δt<sub>r</sub> = t<sub>r</sub> − t<sub>a</sub></div>
+          <div class="lab" data-i18n="lab_dtr">Δt<sub>r</sub> = t<sub>r</sub> − t<sub>a</sub><sup class="fn-mark">*</sup></div>
           <div class="cur"><span id="dtr_v_a">+0,0</span> °C</div>
           <div class="track">
             <input type="range" id="dtr_a" orient="vertical" class="vert" min="-8" max="8" step="0.2" value="0">
@@ -349,6 +355,12 @@
     &nbsp;<b data-i18n="ash_contour_title">Контур:</b>
     <span data-i18n="ash_legend_marker">линия compliance ASHRAE 55 = граница |PMV|=0,5 (PPD≈10&nbsp;%). Клик по канве переносит рабочую точку и на вкладку ГОСТ.</span>
   </div>
+
+  <p class="hint fullwidth" data-i18n="dtr_explainer"><sup>*</sup> <b>Про Δt<sub>r</sub> = t<sub>r</sub> − t<sub>a</sub>.</b> Разница средней
+  радиантной температуры (t<sub>r</sub>) и температуры воздуха (t<sub>a</sub>). Значение выше нуля — стены,
+  потолок или пол теплее воздуха (например, тёплый пол, панельное отопление, нагретое
+  солнцем остекление); ниже нуля — холоднее (холодное остекление, неутеплённая стена).
+  При Δt<sub>r</sub> = 0 радиантная температура равна температуре воздуха.</p>
 
   <details class="ldi">
     <summary class="ldi-title" data-i18n="ldi_ash_title">Специфичные входы ASHRAE 55-2023 (опционально; 0 или «не задана» — не оценивается)</summary>
@@ -1423,6 +1435,7 @@ function drawDiagram(inp, mode, showLines){
     if(phi < H0) phi = H0; if(phi > H1) phi = H1;
     document.getElementById('ta').value = t;
     document.getElementById('rh').value = Math.round(phi);
+    clearPresetSelection();
     render();
   }
   [CV_GOST, CV_ASH].forEach(function(cv){
@@ -1660,6 +1673,10 @@ function render(){
   setActive(CV_ASH);  drawDiagram(inp, 'ashrae', el.lines_ash.checked);
 }
 
+['ta','v','dtr','rh','met','clo'].forEach(function(id){
+  el[id].addEventListener('input', clearPresetSelection);
+  el[id].addEventListener('change', clearPresetSelection);
+});
 ['ta','v','dtr','rh','tu','met','clo','cat',
  'dtv','tfloor','rasym','rasym_type',
  'solar_on','solar_dt','tpma','to_meas',
@@ -1668,6 +1685,10 @@ function render(){
   el[id].addEventListener('change', render);
 });
 // зеркальные поля секции ASHRAE: копируем в основные и рендерим обе диаграммы
+['ta_a','v_a','dtr_a','rh_a','met_a','clo_a'].forEach(function(id){
+  el[id].addEventListener('input', clearPresetSelection);
+  el[id].addEventListener('change', clearPresetSelection);
+});
 ['ta_a','v_a','dtr_a','rh_a','met_a','clo_a',
  'dtv_a','tfloor_a','rasym_a','rasym_type_a'].forEach(function(id){
   var h = function(){ pushMirrorToMain(); render(); };
@@ -1746,6 +1767,7 @@ show_lines: "Show standard lines",
 fill_legend_title: "Fill — PPD (% dissatisfied):",
 gost_contours_title: "PMV category contours (GOST R ISO 7730-2009):",
 gost_legend_marker: "— white marker: working point (t, φ); click the canvas to move it. Fields shared with ASHRAE (t, φ, v, Δ<i>t</i><sub>r</sub>, met, clo) are synchronised with the ASHRAE tab.",
+dtr_explainer: '<sup>*</sup> <b>About Δt<sub>r</sub> = t<sub>r</sub> − t<sub>a</sub>.</b> The difference between mean radiant temperature (t<sub>r</sub>) and air temperature (t<sub>a</sub>). Above zero — walls, ceiling, or floor are warmer than the air (e.g. underfloor heating, panel heating, sun-heated glazing); below zero — colder (cold glazing, an uninsulated wall). At Δt<sub>r</sub> = 0 the radiant temperature equals the air temperature.',
 tu_explainer: '<b>About the “Tu — turbulence” slider.</b> Room air speed is not constant: it fluctuates around its mean value. The <b>Tu</b> index is how large these fluctuations are, in percent, relative to the mean speed — in other words, how “jittery” the flow is. At Tu = 10% the flow is smooth (displacement ventilation from below, laminar jets). At Tu = 60% the flow is irregular (near supply grilles, a partly open window). The same mean air speed of 0.15 m/s feels noticeably more unpleasant at Tu = 60% than at Tu = 10%. Per GOST R ISO 7730-2009: mixing ventilation — Tu around <b>40%</b> (the default value); displacement ventilation or no mechanical ventilation — <b>lower</b>. Tu enters only the DR calculation and does not affect PMV/PPD.',
 ldi_gost_title: "Local discomfort — measured values (for GOST R ISO 7730-2009 category assessment; synchronised with the block in the ASHRAE section)",
 ldi_gost_subtitle: 'Per GOST R ISO 7730-2009 Tables A.1—A.3 (Δt, t<sub>floor</sub>, asymmetry thresholds for category A/B/C)',
@@ -1767,6 +1789,7 @@ ldi_ash_title: "ASHRAE 55-2023-specific inputs (optional; 0 or “not set” —
 ldi_solar_subtitle: "Direct solar radiation correction (ERF model; code changes — Addendum&nbsp;d to 55-2020, freely available at ashrae.org)",
 lab_solar_on: 'Apply solar correction <span class="hint">(simplification: shifts the mean radiant temperature by a set amount; a full ERF calculator is not implemented here)</span>',
 lab_solar_dt: 'Solar MRT increment Δ<i>t</i><sub>r,sw</sub>, °C <span class="hint">(typically 0—10 °C for seated occupants near a window heated by direct sun)</span>',
+lab_dtr: 'Δt<sub>r</sub> = t<sub>r</sub> − t<sub>a</sub><sup class="fn-mark">*</sup>',
 ldi_adaptive_subtitle: "ASHRAE 55 adaptive model — naturally ventilated spaces only",
 lab_tpma: '<i>t</i><sub>pma&nbsp;out</sub> — prevailing mean outdoor temperature, °C <span class="hint">(arithmetic mean of daily mean outdoor temperatures over the preceding 7—30 days; applicability: strictly 10 &lt; <i>t</i><sub>pma&nbsp;out</sub> &lt; 33.5 °C)</span>',
 lab_to_meas: 'Room operative temperature <i>t</i><sub>o</sub>, °C <span class="hint">(if not set — <i>t</i><sub>a</sub> above is used; adaptive-model conditions: no active heating/cooling; met 1.0—1.5; clo within a range no narrower than 0.5—1.0)</span>',
@@ -1919,6 +1942,15 @@ function applyPreset(name){
   }
   el.rh.value = 50;
   render();
+  markPresetSelected(name);
+}
+function markPresetSelected(name){
+  document.querySelectorAll('.preset-btn').forEach(function(b){
+    b.classList.toggle('selected', b.getAttribute('data-preset') === name);
+  });
+}
+function clearPresetSelection(){
+  document.querySelectorAll('.preset-btn.selected').forEach(function(b){ b.classList.remove('selected'); });
 }
 document.querySelectorAll('.preset-btn').forEach(function(btn){
   btn.addEventListener('click', function(){ applyPreset(btn.getAttribute('data-preset')); });
