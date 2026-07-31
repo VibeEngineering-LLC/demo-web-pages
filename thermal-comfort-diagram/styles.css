@@ -167,8 +167,8 @@ footer{color:var(--muted); font-size:13px; margin-top:28px; border-top:1px solid
          background:var(--input-bg); border:1px solid var(--line); border-radius:10px;
          padding:10px}
 .srow{display:grid; gap:6px}
-.srow.ranges{grid-template-columns:repeat(5, 1fr)}
-.srow.selects{grid-template-columns:1fr}
+.srow.ranges{grid-template-columns:repeat(auto-fit, minmax(72px, 1fr))}
+.srow.selects{grid-template-columns:repeat(auto-fit, minmax(160px, 1fr))}
 @media (max-width:1180px){ .sidebar{width:100%} }
 @media (max-width:640px){
   .srow.ranges{grid-template-columns:repeat(3, 1fr)}
