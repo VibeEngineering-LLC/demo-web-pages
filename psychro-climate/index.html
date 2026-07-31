@@ -27,13 +27,16 @@
 
   <div class="presets" data-i18n-aria="presets_aria" aria-label="Типовые процессы">
     <span class="presets-label" data-i18n="presets_label">Типовой процесс:</span>
-    <button type="button" class="preset-btn" data-preset="winter_heat" data-i18n="preset_winter_heat">Зима: нагрев наружного</button>
-    <button type="button" class="preset-btn" data-preset="winter_adiab" data-i18n="preset_winter_adiab">Зима: адиабатическое увлажнение</button>
-    <button type="button" class="preset-btn" data-preset="summer_cool" data-i18n="preset_summer_cool">Лето: охлаждение с осушением</button>
-    <button type="button" class="preset-btn" data-preset="summer_heat" data-i18n="preset_summer_heat">Лето: нагрев после осушения</button>
-    <button type="button" class="preset-btn" data-preset="summer_heat2" data-i18n="preset_summer_heat2">Лето: второй нагрев</button>
+    <span class="preset-sep" data-i18n="pg_winter">Зима</span>
+    <button type="button" class="preset-btn" data-preset="winter_heat" data-i18n="preset_winter_heat">Нагрев наружного</button>
+    <button type="button" class="preset-btn" data-preset="winter_adiab" data-i18n="preset_winter_adiab">Адиабатическое увлажнение</button>
     <button type="button" class="preset-btn" data-preset="steam" data-i18n="preset_steam">Паровое увлажнение</button>
-    <button type="button" class="preset-btn" data-preset="dehum" data-i18n="preset_dehum">Лето: сорбционное осушение</button>
+    <span class="preset-sep" data-i18n="pg_summer">Лето</span>
+    <button type="button" class="preset-btn" data-preset="summer_cool" data-i18n="preset_summer_cool">Охлаждение с осушением</button>
+    <button type="button" class="preset-btn" data-preset="summer_heat" data-i18n="preset_summer_heat">Нагрев после осушения</button>
+    <button type="button" class="preset-btn" data-preset="summer_heat2" data-i18n="preset_summer_heat2">Второй нагрев</button>
+    <button type="button" class="preset-btn" data-preset="dehum" data-i18n="preset_dehum">Сорбционное осушение</button>
+    <span class="preset-sep" data-i18n="pg_other">Общее</span>
     <button type="button" class="preset-btn" data-preset="mix" data-i18n="preset_mix">Смешение с рециркуляцией</button>
   </div>
 
@@ -1365,13 +1368,16 @@ proc_h2: "Air treatment processes on the i-d chart",
 proc_intro: "The initial point 1 (temperature, relative humidity, flow rate) and the process are specified. Point 2 and the energy quantities are computed. Clicking the chart moves point 1. All relationships are given on the “How this is calculated” tab.",
 presets_aria: "Typical processes",
 presets_label: "Typical process:",
-preset_winter_heat: "Winter: heating outdoor air",
-preset_winter_adiab: "Winter: adiabatic humidification",
-preset_summer_cool: "Summer: cooling with dehumidification",
-preset_summer_heat: "Summer: reheat after dehumidification",
-preset_summer_heat2: "Summer: second reheat",
+pg_winter: "Winter",
+pg_summer: "Summer",
+pg_other: "General",
+preset_winter_heat: "Heating outdoor air",
+preset_winter_adiab: "Adiabatic humidification",
+preset_summer_cool: "Cooling with dehumidification",
+preset_summer_heat: "Reheat after dehumidification",
+preset_summer_heat2: "Second reheat",
 preset_steam: "Steam humidification",
-preset_dehum: "Summer: desiccant dehumidification",
+preset_dehum: "Desiccant dehumidification",
 preset_mix: "Mixing with recirculation",
 chain_label: "Process chain:",
 chain_add: "+ add stage to chain",

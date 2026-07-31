@@ -136,6 +136,8 @@ footer{color:var(--muted); font-size:13px; margin-top:28px; border-top:1px solid
 /* панель пресетов типовых сценариев */
 .presets{display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:0 0 14px}
 .presets-label{font-size:13px; font-weight:600; color:var(--muted)}
+.preset-sep{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em;
+  color:var(--accent-ink); margin-left:2px; padding-left:10px; border-left:2px solid var(--line)}
 .preset-btn{padding:7px 14px; font-size:13.5px; font-weight:600; color:var(--accent-ink);
   background:var(--input-bg); border:1px solid var(--line); border-radius:999px;
   cursor:pointer; transition:background .15s, border-color .15s}
