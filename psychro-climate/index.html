@@ -30,7 +30,10 @@
     <button type="button" class="preset-btn" data-preset="winter_heat" data-i18n="preset_winter_heat">Зима: нагрев наружного</button>
     <button type="button" class="preset-btn" data-preset="winter_adiab" data-i18n="preset_winter_adiab">Зима: адиабатическое увлажнение</button>
     <button type="button" class="preset-btn" data-preset="summer_cool" data-i18n="preset_summer_cool">Лето: охлаждение с осушением</button>
+    <button type="button" class="preset-btn" data-preset="summer_heat" data-i18n="preset_summer_heat">Лето: нагрев после осушения</button>
+    <button type="button" class="preset-btn" data-preset="summer_heat2" data-i18n="preset_summer_heat2">Лето: второй нагрев</button>
     <button type="button" class="preset-btn" data-preset="steam" data-i18n="preset_steam">Паровое увлажнение</button>
+    <button type="button" class="preset-btn" data-preset="dehum" data-i18n="preset_dehum">Лето: сорбционное осушение</button>
     <button type="button" class="preset-btn" data-preset="mix" data-i18n="preset_mix">Смешение с рециркуляцией</button>
   </div>
 
@@ -63,7 +66,11 @@
         </div>
       </div>
 
-      <div class="ldi-grid" style="grid-template-columns:1fr; margin-top:10px">
+      <!-- Выбор процесса больше не выведен отдельным полем — он всегда идёт
+           через кнопки «Типовой процесс» сверху (у каждого вида процесса есть
+           своя кнопка); select остаётся в DOM скрытым, потому что вся логика
+           (render, syncSlots, цепочка) читает его value как источник kind. -->
+      <div class="ldi-grid" style="display:none">
         <div class="ldi-cell">
           <label for="proc" data-i18n="lab_proc">Процесс</label>
           <select id="proc">
@@ -558,6 +565,7 @@ var T = {
     warn_substituted: 'Поле оставлено пустым или содержит нечисловое значение — расчёт ведётся по значению по умолчанию, а не по тому, что показано в поле.',
     warn_none: '',
     chain_hint_empty: 'Стадий пока нет — текущий процесс наносится на диаграмму одним отрезком. «Добавить стадию» фиксирует его и продолжает цепочку от точки 2.',
+    chain_lock_hint: 'Поле заблокировано на время сборки цепочки: точка 1 — это точка 2 предыдущей стадии. «Очистить цепочку» разблокирует.',
     chain_warn_broken: 'Точка 1 одной из стадий не совпадает с точкой 2 предыдущей — поле t1/φ1/L1 было изменено вручную после сборки цепочки. Непрерывность потока нарушена, сумма Q и W по цепочке не показана: складывать энергии стадий с разным расходом физически некорректно.',
     warn_offchart_chain: 'Часть точек цепочки вышла за пределы отображаемой области диаграммы (по температуре или по влагосодержанию) и на ней не показана — значения в таблице цепочки верны.',
     chain_col_proc: 'Процесс', chain_col_t1: 't начала, °C', chain_col_t2: 't конца, °C',
@@ -615,6 +623,7 @@ var T = {
     warn_substituted: 'A field has been left empty or holds a non-numeric value — the calculation uses a default, not what the field displays.',
     warn_none: '',
     chain_hint_empty: 'No stages yet — the current process is drawn as a single segment. “Add stage” fixes it and continues the chain from point 2.',
+    chain_lock_hint: 'This field is locked while the chain is being built: point 1 is point 2 of the previous stage. “Clear chain” unlocks it.',
     chain_warn_broken: 'Point 1 of one stage does not match point 2 of the previous one — the t1/φ1/L1 field was edited by hand after the chain was built. Flow continuity is broken, so the chain’s Q and W total is not shown: adding the energy of stages with different flow rates is not physically valid.',
     warn_offchart_chain: 'Some points of the chain fall outside the chart’s displayed area (by temperature or by moisture content) and are not shown on it — the values in the chain table are still correct.',
     chain_col_proc: 'Process', chain_col_t1: 'start t, °C', chain_col_t2: 'end t, °C',
@@ -1042,8 +1051,8 @@ function render(){
       tile(t.tile_phi2, p2 ? nf(p2.phi, 1) + ' %' : '—', t.sub_phi2,
            (p2 && p2.phi > 100.5) ? 't-x' : '') +
       tile(t.tile_d2, p2 ? nf(p2.d, 2) : '—', t.sub_d2) +
-      tile(t.tile_Q, Q === null ? '—' : sf(Q, 2) + ' ' + t.u_kW, qsub) +
-      tile(t.tile_W, W === null ? '—' : sf(W, 2) + ' ' + t.u_kgh, wsub);
+      tile(t.tile_Q, Q === null ? '—' : sf(Q, 1) + ' ' + t.u_kW, qsub) +
+      tile(t.tile_W, W === null ? '—' : sf(W, 1) + ' ' + t.u_kgh, wsub);
 
   // таблица состояний
   function row2(name, v1, v2, unit){
@@ -1084,6 +1093,17 @@ function renderChain(){
   var wrap = document.getElementById('chainwrap');
   var btnAdd = document.getElementById('btn_chain_add');
   btnAdd.disabled = !LAST;
+
+  // Точка 1 цепочки заблокирована для ручного ввода, пока цепочка не пуста:
+  // иначе случайная правка t1/phi1/L1 отрывает следующую стадию от точки 2
+  // предыдущей (в точности сценарий, из-за которого раньше появлялась
+  // «разорванная» диаграмма) — теперь такой разрыв просто недостижим из UI.
+  var lockTitle = CHAIN.length ? t.chain_lock_hint : '';
+  [el.t1, el.phi1, el.L1].forEach(function(node){
+    node.disabled = !!CHAIN.length;
+    node.title = lockTitle;
+  });
+
   if(!CHAIN.length){
     document.getElementById('chain_hint').textContent = t.chain_hint_empty;
     wrap.style.display = 'none';
@@ -1114,14 +1134,14 @@ function renderChain(){
   CHAIN.forEach(function(s, i){
     html += '<tr><td>' + (i + 1) + '→' + (i + 2) + '</td><td>' + stageKindLabel(s.kind) +
             '</td><td class="num">' + nf(s.p1.t, 1) + '</td><td class="num">' + nf(s.p2.t, 1) +
-            '</td><td class="num">' + (s.Q === null ? '—' : sf(s.Q, 2)) +
-            '</td><td class="num">' + (s.W === null ? '—' : sf(s.W, 2)) + '</td></tr>';
+            '</td><td class="num">' + (s.Q === null ? '—' : sf(s.Q, 1)) +
+            '</td><td class="num">' + (s.W === null ? '—' : sf(s.W, 1)) + '</td></tr>';
     if(s.Q !== null){ sumQ += s.Q; hasQ = true; }
     if(s.W !== null){ sumW += s.W; hasW = true; }
   });
   html += '<tr class="chain-total"><td colspan="4">' + t.chain_total + '</td><td class="num">' +
-          (broken || !hasQ ? '—' : sf(sumQ, 2)) + '</td><td class="num">' +
-          (broken || !hasW ? '—' : sf(sumW, 2)) + '</td></tr></tbody>';
+          (broken || !hasQ ? '—' : sf(sumQ, 1)) + '</td><td class="num">' +
+          (broken || !hasW ? '—' : sf(sumW, 1)) + '</td></tr></tbody>';
   document.getElementById('tbl_chain').innerHTML = html;
 }
 document.getElementById('btn_chain_add').addEventListener('click', function(){
@@ -1213,6 +1233,10 @@ function renderClim(){
 }
 
 document.getElementById('btn_to_diagram').addEventListener('click', function(){
+  // Та же блокировка, что у клика по диаграмме (index.html, CV click):
+  // при активной цепочке el.t1/el.phi1 задизейблены для ручного ввода, и эта
+  // кнопка — второй путь, который писал в те же поля в обход блокировки.
+  if(CHAIN.length) return;
   var c = currentCity();
   if(!c || c.t_cold_5day_92 === null) return;
   el.t1.value = c.t_cold_5day_92;
@@ -1235,6 +1259,12 @@ document.getElementById('btn_to_diagram').addEventListener('click', function(){
 // клик по диаграмме переносит точку 1
 CV.style.cursor = 'crosshair';
 CV.addEventListener('click', function(evt){
+  // Пока цепочка не пуста, точка 1 заблокирована для ручного ввода (см.
+  // renderChain()/el.t1.disabled) — клик по диаграмме тоже пишет в el.t1/
+  // el.phi1.value напрямую и должен подчиняться той же блокировке, иначе
+  // это лазейка в обход неё: `disabled` не мешает JS менять .value, только
+  // не даёт открыть само поле для ввода с клавиатуры.
+  if(CHAIN.length) return;
   var rect = CV.getBoundingClientRect();
   var sx = (evt.clientX - rect.left)*(CV.width/rect.width);
   var sy = (evt.clientY - rect.top)*(CV.height/rect.height);
@@ -1258,7 +1288,10 @@ var PRESETS = {
   winter_heat:  {proc: 'heat',  t1: -26, phi1: 84, L1: 3000, t2: 18},
   winter_adiab: {proc: 'adiab', t1: 22,  phi1: 15, L1: 3000, phi2: 60},
   summer_cool:  {proc: 'cool',  t1: 28,  phi1: 55, L1: 3000, t2: 14, tcool: 7},
+  summer_heat:  {proc: 'heat',  t1: 14,  phi1: 95, L1: 3000, t2: 20},
+  summer_heat2: {proc: 'heat',  t1: 20,  phi1: 60, L1: 3000, t2: 24},
   steam:        {proc: 'humid', t1: 20,  phi1: 20, L1: 3000, phi2: 45},
+  dehum:        {proc: 'dehum', t1: 28,  phi1: 75, L1: 3000, phi2: 35},
   mix:          {proc: 'mix',   t1: -26, phi1: 84, L1: 1000, t1b: 20, phi1b: 50, L1b: 3000}
 };
 function applyPreset(name){
@@ -1335,7 +1368,10 @@ presets_label: "Typical process:",
 preset_winter_heat: "Winter: heating outdoor air",
 preset_winter_adiab: "Winter: adiabatic humidification",
 preset_summer_cool: "Summer: cooling with dehumidification",
+preset_summer_heat: "Summer: reheat after dehumidification",
+preset_summer_heat2: "Summer: second reheat",
 preset_steam: "Steam humidification",
+preset_dehum: "Summer: desiccant dehumidification",
 preset_mix: "Mixing with recirculation",
 chain_label: "Process chain:",
 chain_add: "+ add stage to chain",

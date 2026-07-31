@@ -57,6 +57,7 @@ select,input[type=number]{
   font-variant-numeric:tabular-nums;
 }
 select:focus,input:focus{outline:2px solid var(--accent); outline-offset:1px; border-color:var(--accent)}
+input:disabled{opacity:.55; cursor:not-allowed; background:var(--line)}
 .val{font-variant-numeric:tabular-nums; font-weight:700; color:var(--accent-ink)}
 .hint{font-size:12.5px; color:var(--muted); margin:5px 0 0}
 .fn-mark{color:var(--accent-ink); font-weight:700}
@@ -174,7 +175,7 @@ tr.chain-total td{font-weight:700; border-top:2px solid var(--line)}
 .plot-two{display:flex; flex-direction:row; gap:12px; flex-wrap:wrap}
 .plot-two .canvas-fig{flex:1 1 300px; min-width:0}
 @media (max-width: 900px){ .plot-two{flex-direction:column} }
-.sidebar{flex:0 0 auto; width:212px;
+.sidebar{flex:0 0 auto; width:188px;
          display:flex; flex-direction:column; gap:8px;
          background:var(--input-bg); border:1px solid var(--line); border-radius:10px;
          padding:10px}
