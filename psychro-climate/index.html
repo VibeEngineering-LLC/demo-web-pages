@@ -34,6 +34,13 @@
     <button type="button" class="preset-btn" data-preset="mix" data-i18n="preset_mix">Смешение с рециркуляцией</button>
   </div>
 
+  <div class="presets" id="chainbar">
+    <span class="presets-label" data-i18n="chain_label">Цепочка процессов:</span>
+    <button type="button" class="preset-btn" id="btn_chain_add" data-i18n="chain_add">+ добавить стадию в цепочку</button>
+    <button type="button" class="preset-btn" id="btn_chain_clear" data-i18n="chain_clear">Очистить цепочку</button>
+    <span class="hint" id="chain_hint"></span>
+  </div>
+
   <div class="row">
     <aside class="sidebar">
       <div class="ldi-grid two">
@@ -120,6 +127,11 @@
   <table class="tbl" id="tbl_proc"></table>
 
   <p class="hint fullwidth" id="proc_warn"></p>
+
+  <div id="chainwrap" class="fullwidth" style="display:none">
+    <p class="cap" data-i18n="chain_cap">Собранная цепочка процессов: точка 2 каждой стадии становится точкой 1 следующей</p>
+    <table class="tbl" id="tbl_chain"></table>
+  </div>
 </section>
 
 <section class="card wide tabpanel" id="sec_clim" role="tabpanel" aria-labelledby="tab_clim">
@@ -539,6 +551,11 @@ var T = {
     warn_clamped: 'Введённое значение выходило за диапазон поля и приведено к его границе: вне этого диапазона использованные зависимости не проверены.',
     warn_substituted: 'Поле оставлено пустым или содержит нечисловое значение — расчёт ведётся по значению по умолчанию, а не по тому, что показано в поле.',
     warn_none: '',
+    chain_hint_empty: 'Стадий пока нет — текущий процесс наносится на диаграмму одним отрезком. «Добавить стадию» фиксирует его и продолжает цепочку от точки 2.',
+    chain_warn_broken: 'Точка 1 одной из стадий не совпадает с точкой 2 предыдущей — поле t1/φ1/L1 было изменено вручную после сборки цепочки. Непрерывность потока нарушена, сумма Q и W по цепочке не показана: складывать энергии стадий с разным расходом физически некорректно.',
+    warn_offchart_chain: 'Часть точек цепочки вышла за пределы отображаемой области диаграммы (по температуре или по влагосодержанию) и на ней не показана — значения в таблице цепочки верны.',
+    chain_col_proc: 'Процесс', chain_col_t1: 't начала, °C', chain_col_t2: 't конца, °C',
+    chain_col_Q: 'Q, кВт', chain_col_W: 'W, кг/ч', chain_total: 'Сумма по цепочке',
     clim_gsop: 'ГСОП', clim_gsop_sub: '(°C·сут)/год, формула (5.2) СП 50.13330.2024',
     clim_t5: 'Пятидневка 0,92', clim_t5_sub: 'расчётная для отопления, °C',
     clim_zot: 'Отопительный период', clim_zot_sub: 'продолжительность, сут',
@@ -564,7 +581,7 @@ var T = {
     nodata: 'нет данных', citypage: 'с.',
     clim_note_ok: 'Значения прочитаны по страницам СП 131.13330.2020, указанным в столбце «Источник» (нумерация — по печатным страницам документа). Энтальпия наружного воздуха тёплого периода в редакции 2020 года не приводится: этот столбец был в СНиП 23-01-99*, в действующем своде правил его нет — при необходимости энтальпия вычисляется по температуре и влажности на вкладке процессов.',
     clim_note_amended: 'Строка таблицы 3.1 для этого пункта приведена в редакции Изменения № 2 (приказ Минстроя России от 30.06.2023 № 469/пр).',
-    lbl_p1: '1', lbl_p2: '2', ax_d: 'd, г/кг сухого воздуха', ax_t: 't, °C'
+    lbl_p1: '1', ax_d: 'd, г/кг сухого воздуха', ax_t: 't, °C'
   },
   en: {
     tile_t2: 'Temperature, pt. 2', tile_phi2: 'Humidity, pt. 2', tile_d2: 'Moisture content, pt. 2',
@@ -591,6 +608,11 @@ var T = {
     warn_clamped: 'An entered value fell outside the range of its field and has been brought to the boundary: outside that range the relationships used here have not been verified.',
     warn_substituted: 'A field has been left empty or holds a non-numeric value — the calculation uses a default, not what the field displays.',
     warn_none: '',
+    chain_hint_empty: 'No stages yet — the current process is drawn as a single segment. “Add stage” fixes it and continues the chain from point 2.',
+    chain_warn_broken: 'Point 1 of one stage does not match point 2 of the previous one — the t1/φ1/L1 field was edited by hand after the chain was built. Flow continuity is broken, so the chain’s Q and W total is not shown: adding the energy of stages with different flow rates is not physically valid.',
+    warn_offchart_chain: 'Some points of the chain fall outside the chart’s displayed area (by temperature or by moisture content) and are not shown on it — the values in the chain table are still correct.',
+    chain_col_proc: 'Process', chain_col_t1: 'start t, °C', chain_col_t2: 'end t, °C',
+    chain_col_Q: 'Q, kW', chain_col_W: 'W, kg/h', chain_total: 'Chain total',
     clim_gsop: 'HDD', clim_gsop_sub: '(°C·day)/year, Eq. (5.2) SP 50.13330.2024',
     clim_t5: 'Coldest 5-day, 0.92', clim_t5_sub: 'heating design value, °C',
     clim_zot: 'Heating period', clim_zot_sub: 'duration, days',
@@ -616,7 +638,7 @@ var T = {
     nodata: 'no data', citypage: 'p.',
     clim_note_ok: 'Values were read from the pages of SP 131.13330.2020 cited in the “Source” column (numbering follows the printed pages of the document). The warm-period outdoor-air enthalpy is not given in the 2020 revision: that column existed in SNiP 23-01-99* but not in the current code — where needed, enthalpy is computed from temperature and humidity on the processes tab.',
     clim_note_amended: 'The Table 3.1 row for this location is given as amended by Amendment No. 2 (order of the Ministry of Construction of Russia No. 469/pr of 30.06.2023).',
-    lbl_p1: '1', lbl_p2: '2', ax_d: 'd, g/kg dry air', ax_t: 't, °C'
+    lbl_p1: '1', ax_d: 'd, g/kg dry air', ax_t: 't, °C'
   }
 };
 
@@ -828,9 +850,12 @@ function drawDiagram(p1, p2, showGrid){
   CTX.fillText(t.ax_t, 0, 0);
   CTX.restore();
 
-  // отрезок процесса
-  if(p1 && p2){
-    var a = ptXY(p1), b = ptXY(p2);
+  // отрезки процесса: сначала зафиксированные стадии цепочки CHAIN, затем
+  // текущая (ещё не добавленная) стадия p1→p2 — все точки нумеруются сквозно.
+  var segments = CHAIN.map(function(s){ return {p1: s.p1, p2: s.p2}; });
+  if(p1 && p2) segments.push({p1: p1, p2: p2});
+  segments.forEach(function(seg, i){
+    var a = ptXY(seg.p1), b = ptXY(seg.p2);
     CTX.save();
     CTX.beginPath(); CTX.rect(r.x, r.y, r.w, r.h); CTX.clip();
     CTX.strokeStyle = 'rgba(178,62,55,.95)'; CTX.lineWidth = 3.5;
@@ -843,9 +868,10 @@ function drawDiagram(p1, p2, showGrid){
     CTX.lineTo(b.x - 14*Math.cos(ang + 0.42), b.y - 14*Math.sin(ang + 0.42));
     CTX.closePath(); CTX.fillStyle = 'rgba(178,62,55,.95)'; CTX.fill();
     CTX.restore();
-    marker(b.x, b.y, T[LANG].lbl_p2, false);
-  }
-  if(p1){ var a2 = ptXY(p1); marker(a2.x, a2.y, T[LANG].lbl_p1, true); }
+    if(i === 0) marker(a.x, a.y, '1', true);
+    marker(b.x, b.y, String(i + 2), i === segments.length - 1);
+  });
+  if(!segments.length && p1){ var a2 = ptXY(p1); marker(a2.x, a2.y, T[LANG].lbl_p1, true); }
 }
 
 // Точка вне видимого диапазона диаграммы (ось растянута под T_AXIS_MIN..MAX,
@@ -927,6 +953,12 @@ function syncSlots(){
     document.getElementById(id).style.display = (need.indexOf(id) >= 0) ? '' : 'none';
   });
 }
+
+// Цепочка процессов: последовательные стадии на одной диаграмме. CHAIN — уже
+// зафиксированные стадии (кнопкой «добавить»), LAST — текущая, ещё не
+// добавленная стадия, пересчитываемая при каждом render().
+var CHAIN = [];
+var LAST = null;
 
 function render(){
   var t = T[LANG];
@@ -1017,8 +1049,75 @@ function render(){
   if(SUBSTITUTED.length) warn = t.warn_substituted + ' ' + warn;
   document.getElementById('proc_warn').textContent = warn;
 
+  LAST = p2 ? {kind: kind, p1: p1, p2: p2, Q: Q, W: W} : null;
+  renderChain();
   drawDiagram(p1, p2, el.lines_id.checked);
 }
+
+function stageKindLabel(kind){
+  var opt = document.querySelector('#proc option[value="' + kind + '"]');
+  return opt ? opt.textContent : kind;
+}
+function renderChain(){
+  var t = T[LANG];
+  var wrap = document.getElementById('chainwrap');
+  var btnAdd = document.getElementById('btn_chain_add');
+  btnAdd.disabled = !LAST;
+  if(!CHAIN.length){
+    document.getElementById('chain_hint').textContent = t.chain_hint_empty;
+    wrap.style.display = 'none';
+    return;
+  }
+  wrap.style.display = '';
+
+  // Непрерывность потока: точка 1 каждой следующей стадии обязана совпадать
+  // с точкой 2 предыдущей — иначе энергии стадий относятся к разным расходам,
+  // и складывать их в «Сумму по цепочке» физически некорректно. Совпадение
+  // проверяется с запасом на округление переносимых полей (rnd(...,2)).
+  var broken = false;
+  for(var ci = 1; ci < CHAIN.length; ci++){
+    var prev = CHAIN[ci-1].p2, cur = CHAIN[ci].p1;
+    if(Math.abs(prev.t - cur.t) > 0.1 || Math.abs(prev.phi - cur.phi) > 0.1 ||
+       Math.abs((prev.L || 0) - (cur.L || 0)) > 1){ broken = true; break; }
+  }
+  // Точки цепочки вне отображаемого диапазона диаграммы (см. pointOffChart) —
+  // та же логика, что для текущей пары p1/p2, но по всем стадиям сразу.
+  var chainOff = CHAIN.some(function(s){ return pointOffChart(s.p1) || pointOffChart(s.p2); });
+  document.getElementById('chain_hint').textContent =
+    (broken ? t.chain_warn_broken + ' ' : '') + (chainOff ? t.warn_offchart_chain : '');
+
+  var html = '<thead><tr><th>#</th><th>' + t.chain_col_proc + '</th><th class="num">' +
+             t.chain_col_t1 + '</th><th class="num">' + t.chain_col_t2 + '</th><th class="num">' +
+             t.chain_col_Q + '</th><th class="num">' + t.chain_col_W + '</th></tr></thead><tbody>';
+  var sumQ = 0, sumW = 0, hasQ = false, hasW = false;
+  CHAIN.forEach(function(s, i){
+    html += '<tr><td>' + (i + 1) + '→' + (i + 2) + '</td><td>' + stageKindLabel(s.kind) +
+            '</td><td class="num">' + nf(s.p1.t, 1) + '</td><td class="num">' + nf(s.p2.t, 1) +
+            '</td><td class="num">' + (s.Q === null ? '—' : sf(s.Q, 2)) +
+            '</td><td class="num">' + (s.W === null ? '—' : sf(s.W, 2)) + '</td></tr>';
+    if(s.Q !== null){ sumQ += s.Q; hasQ = true; }
+    if(s.W !== null){ sumW += s.W; hasW = true; }
+  });
+  html += '<tr class="chain-total"><td colspan="4">' + t.chain_total + '</td><td class="num">' +
+          (broken || !hasQ ? '—' : sf(sumQ, 2)) + '</td><td class="num">' +
+          (broken || !hasW ? '—' : sf(sumW, 2)) + '</td></tr></tbody>';
+  document.getElementById('tbl_chain').innerHTML = html;
+}
+document.getElementById('btn_chain_add').addEventListener('click', function(){
+  if(!LAST) return;
+  CHAIN.push(LAST);
+  // следующая точка 1 — точка 2 только что добавленной стадии: цепочка
+  // продолжается с того места, где предыдущая стадия закончилась
+  el.t1.value = rnd(LAST.p2.t, 2);
+  el.phi1.value = rnd(LAST.p2.phi, 2);
+  el.L1.value = LAST.p2.L;
+  clearPresetSelection();
+  render();
+});
+document.getElementById('btn_chain_clear').addEventListener('click', function(){
+  CHAIN = [];
+  render();
+});
 
 /* ---------------------------------------------------- вкладка климата --- */
 function fillCitySelect(){
@@ -1144,7 +1243,13 @@ var PRESETS = {
 function applyPreset(name){
   var p = PRESETS[name];
   if(!p) return;
-  Object.keys(p).forEach(function(k){ if(el[k]) el[k].value = p[k]; });
+  var keys = Object.keys(p);
+  // Цепочка уже начата: точка 1 — это точка 2 предыдущей стадии, поэтому
+  // пресет применяет только вид процесса и его параметры (t2/tcool/phi2/
+  // t1b/phi1b/L1b), не перезаписывая t1/phi1/L1 — так пресеты комбинируются
+  // друг с другом на одной диаграмме, а не всегда начинают с нуля.
+  if(CHAIN.length) keys = keys.filter(function(k){ return k !== 't1' && k !== 'phi1' && k !== 'L1'; });
+  keys.forEach(function(k){ if(el[k]) el[k].value = p[k]; });
   render();
   markPresetSelected(name);
 }
@@ -1211,6 +1316,10 @@ preset_winter_adiab: "Winter: adiabatic humidification",
 preset_summer_cool: "Summer: cooling with dehumidification",
 preset_steam: "Steam humidification",
 preset_mix: "Mixing with recirculation",
+chain_label: "Process chain:",
+chain_add: "+ add stage to chain",
+chain_clear: "Clear chain",
+chain_cap: "Assembled process chain: the point 2 of each stage becomes the point 1 of the next",
 proc_cap: "Psychrometric chart of moist air: φ = const curves, isotherms, J = const lines; segment 1→2 is the specified process",
 lab_t1: 'Temperature at pt. 1 <i>t</i><sub>1</sub>, °C',
 lab_phi1: 'Relative humidity at pt. 1 φ<sub>1</sub>, %',
