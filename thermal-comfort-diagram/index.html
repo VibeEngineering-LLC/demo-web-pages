@@ -49,7 +49,12 @@
 </section>
 
 
-<section class="card wide">
+<div class="tabbar" role="tablist" aria-label="Диаграмма по стандарту">
+  <button type="button" class="tabbtn active" id="tab_gost" data-target="sec_gost" role="tab" aria-selected="true" aria-controls="sec_gost">ГОСТ Р ИСО 7730-2009</button>
+  <button type="button" class="tabbtn" id="tab_ash" data-target="sec_ash" role="tab" aria-selected="false" aria-controls="sec_ash">ANSI/ASHRAE Standard 55-2023</button>
+</div>
+
+<section class="card wide tabpanel active" id="sec_gost" role="tabpanel" aria-labelledby="tab_gost">
   <h2>Диаграмма ГОСТ Р ИСО 7730-2009</h2>
   <p class="hint fullwidth" style="margin:-4px 0 12px 0">
     Идентичен ISO 7730:2005. Три категории A/B/C по PMV/PPD с учётом DR
@@ -60,8 +65,8 @@
     табл.&nbsp;5.27</b> (для тёплого периода и других типов помещений границы
     другие; полосы категорий по PMV/PPD влажность включают слабо, поэтому идут
     почти вертикально). Общие с ASHRAE входы (t, φ, v, Δ<i>t</i><sub>r</sub>,
-    met, clo) синхронизируются со второй диаграммой ниже. Клик по канве
-    переносит рабочую точку на обе.
+    met, clo) синхронизируются с вкладкой ASHRAE. Клик по канве
+    переносит рабочую точку на обе вкладки.
   </p>
 
   <div class="presets" role="group" aria-label="Типовые сценарии">
@@ -182,7 +187,7 @@
     <span><i style="background:#b23e37"></i>≥&nbsp;80&nbsp;%</span>
     &nbsp;<b>Контуры категорий по PMV (ГОСТ Р ИСО 7730-2009):</b>
     <span>A (|PMV|&lt;0,2), B (&lt;0,5), C (&lt;0,7)</span>
-    <span>— белый маркер: рабочая точка (t, φ); клик по канве переносит её. Общие поля (t, φ, v, Δ<i>t</i><sub>r</sub>, met, clo) синхронизируются с диаграммой ASHRAE ниже.</span>
+    <span>— белый маркер: рабочая точка (t, φ); клик по канве переносит её. Общие поля (t, φ, v, Δ<i>t</i><sub>r</sub>, met, clo) синхронизируются с вкладкой ASHRAE.</span>
   </div>
 
   <p class="hint fullwidth"><b>Про ползунок «Tu — турбулентность».</b> Скорость воздуха
@@ -196,8 +201,8 @@
   умолчанию), вытесняющая или без искусственной вентиляции — <b>ниже</b>. Величина
   Tu входит только в расчёт DR и на PMV/PPD не влияет.</p>
 
-  <div class="ldi">
-    <div class="ldi-title">Локальный дискомфорт — измеренные значения (для оценки категорий по ГОСТ Р ИСО 7730-2009; синхронизируется с блоком в секции ASHRAE)</div>
+  <details class="ldi">
+    <summary class="ldi-title">Локальный дискомфорт — измеренные значения (для оценки категорий по ГОСТ Р ИСО 7730-2009; синхронизируется с блоком в секции ASHRAE)</summary>
     <div class="ldi-section">
       <div class="ldi-subtitle">По ГОСТ Р ИСО 7730-2009 табл. A.1—A.3 (пороги Δt, t<sub>floor</sub>, асимметрии для категории A/B/C)</div>
       <div class="ldi-grid">
@@ -227,10 +232,10 @@
         </div>
       </div>
     </div>
-  </div>
+  </details>
 </section>
 
-<section class="card wide">
+<section class="card wide tabpanel" id="sec_ash" role="tabpanel" aria-labelledby="tab_ash">
   <h2>Диаграмма ANSI/ASHRAE Standard 55-2023</h2>
   <p class="hint fullwidth" style="margin:-4px 0 12px 0">
     Аналитический метод (Addendum&nbsp;h к 55-2020, свободно на ashrae.org):
@@ -245,7 +250,7 @@
     over the last twenty years», Indoor&nbsp;Air 23(6):442—461, 2013 (DOI:
     <a href="https://doi.org/10.1111/ina.12046" rel="noopener nofollow">10.1111/ina.12046</a>).
     Общие с ГОСТ поля (t, φ, v, Δ<i>t</i><sub>r</sub>, met, clo) синхронизируются
-    с верхней диаграммой; специфичные (солнце, адаптивная модель) — только здесь.
+    с вкладкой ГОСТ; специфичные (солнце, адаптивная модель) — только здесь.
   </p>
   <div class="diagwrap">
     <div class="plot">
@@ -331,11 +336,11 @@
     <span><i style="background:#dc915a"></i>50&nbsp;%</span>
     <span><i style="background:#b23e37"></i>≥&nbsp;80&nbsp;%</span>
     &nbsp;<b>Контур:</b>
-    <span>линия compliance ASHRAE 55 = граница |PMV|=0,5 (PPD≈10&nbsp;%). Клик по канве переносит рабочую точку и на верхнюю диаграмму.</span>
+    <span>линия compliance ASHRAE 55 = граница |PMV|=0,5 (PPD≈10&nbsp;%). Клик по канве переносит рабочую точку и на вкладку ГОСТ.</span>
   </div>
 
-  <div class="ldi">
-    <div class="ldi-title">Специфичные входы ASHRAE 55-2023 (опционально; 0 или «не задана» — не оценивается)</div>
+  <details class="ldi">
+    <summary class="ldi-title">Специфичные входы ASHRAE 55-2023 (опционально; 0 или «не задана» — не оценивается)</summary>
 
     <div class="ldi-section">
       <div class="ldi-subtitle">Поправка на прямую солнечную радиацию (ERF-модель, изменения в коде — Addendum&nbsp;d к 55-2020, свободно на ashrae.org)</div>
@@ -399,7 +404,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </details>
 
   <p class="hint fullwidth">
     <b>Как читать плитку «Соответствие ASHRAE 55-2023» ниже.</b> Плитка учитывает
@@ -842,6 +847,14 @@ function nf(x, d){
 function sf(x, d){
   if(x === null || !isFinite(x)) return '—';
   return (x >= 0 ? '+' : '−') + Math.abs(x).toFixed(d).replace('.', ',');
+}
+// красит весь виджет-плитку по статусу (a/b/c — норма/предупреждение, x — не соответствует)
+function setTileStatus(elId, status){
+  var node = document.getElementById(elId);
+  var tile = node && node.closest('.tile');
+  if(!tile) return;
+  tile.classList.remove('t-a','t-b','t-c','t-x');
+  if(status) tile.classList.add('t-' + status);
 }
 
 /* ------------------------------------------------------------------ ввод */
@@ -1343,17 +1356,22 @@ function render(){
   document.getElementById('o_tsu').innerHTML    = nf(tsu, 1) + '<span class="u"> °C</span>';
   document.getElementById('o_tcl').innerHTML    = (res_g ? nf(res_g.tcl, 1) : '—') + '<span class="u"> °C</span>';
 
-  var badge;
+  var badge, catStatus;
   if(overall !== null){
     badge = '<span class="badge b-' + overall.toLowerCase() + '">' + overall + '</span>';
+    catStatus = overall.toLowerCase();
   } else if(cc === null && cd !== null){
     badge = '<span class="badge b-x">вне A/B/C по PMV/PPD</span>';
+    catStatus = 'x';
   } else if(cc !== null && cd === null){
     badge = '<span class="badge b-x">вне A/B/C по DR (подвижность воздуха)</span>';
+    catStatus = 'x';
   } else {
     badge = '<span class="badge b-x">вне A/B/C</span>';
+    catStatus = 'x';
   }
   document.getElementById('o_cat').innerHTML = badge;
+  setTileStatus('o_cat', catStatus);
 
   var C = CATS[inp.cat], html = '';
 
@@ -1446,22 +1464,31 @@ function render(){
   var localFailed = localChecks.filter(function(c){ return c.ok === false; });
   var localEvalCount = localChecks.filter(function(c){ return c.ok !== null; }).length;
 
+  var ashStatus;
   if(!ashApp){
     ashBadge = '<span class="badge b-x">вне применимости (met вне 1,0—4,0 или clo вне 0,0—1,5)</span>';
+    ashStatus = 'x';
   } else if(pmvOK === null){
     ashBadge = '<span class="badge b-x">PMV не определён</span>';
+    ashStatus = 'x';
   } else if(!pmvOK){
     ashBadge = '<span class="badge b-x">не соответствует по PMV</span>';
+    ashStatus = 'x';
   } else if(!localApp){
     ashBadge = '<span class="badge b-b">соответствует по PMV; локальные критерии не применяются (clo≥0,7 или met≥1,3)</span>';
+    ashStatus = 'b';
   } else if(localFailed.length){
     ashBadge = '<span class="badge b-x">не соответствует (' + localFailed.map(function(c){return c.name;}).join('; ') + ')</span>';
+    ashStatus = 'x';
   } else if(localEvalCount === 0){
     ashBadge = '<span class="badge b-b">соответствует по PMV; локальные критерии не заданы</span>';
+    ashStatus = 'b';
   } else {
     ashBadge = '<span class="badge b-a">соответствует по PMV и ' + localEvalCount + ' заданным локальным критериям</span>';
+    ashStatus = 'a';
   }
   document.getElementById('o_ash').innerHTML = ashBadge;
+  setTileStatus('o_ash', ashStatus);
 
   // --- Адаптивная модель ASHRAE 55 ---
   var tpma = inp.tpma;
@@ -1472,15 +1499,19 @@ function render(){
   var adLower = 0.31 * tpma + 14.3;
   document.getElementById('ad_upper').textContent = adApp ? nf(adUpper, 1) : '—';
   document.getElementById('ad_lower').textContent = adApp ? nf(adLower, 1) : '—';
-  var adBadge;
+  var adBadge, adStatus;
   if(!adApp){
     adBadge = '<span class="badge b-x">t<sub>pma out</sub> вне 10—33,5 °C</span>';
+    adStatus = 'x';
   } else if(to >= adLower && to <= adUpper){
     adBadge = '<span class="badge b-a">соответствует (t<sub>o</sub>=' + nf(to,1) + ' °C)</span>';
+    adStatus = 'a';
   } else {
     adBadge = '<span class="badge b-x">не соответствует (t<sub>o</sub>=' + nf(to,1) + ' °C)</span>';
+    adStatus = 'x';
   }
   document.getElementById('ad_ok').innerHTML = adBadge;
+  setTileStatus('ad_ok', adStatus);
 
   var warn = [];
   if(inp.ta < 20 || inp.ta > 26)
@@ -1527,6 +1558,20 @@ if(window.matchMedia){
   var mq = window.matchMedia('(prefers-color-scheme: dark)');
   if(mq.addEventListener) mq.addEventListener('change', render);
 }
+
+/* --------------------------------------------------------------- вкладки */
+document.querySelectorAll('.tabbtn').forEach(function(tabBtn){
+  tabBtn.addEventListener('click', function(){
+    document.querySelectorAll('.tabbtn').forEach(function(b){
+      b.classList.remove('active'); b.setAttribute('aria-selected', 'false');
+    });
+    document.querySelectorAll('.tabpanel').forEach(function(p){ p.classList.remove('active'); });
+    tabBtn.classList.add('active');
+    tabBtn.setAttribute('aria-selected', 'true');
+    document.getElementById(tabBtn.getAttribute('data-target')).classList.add('active');
+    render();
+  });
+});
 
 /* --------------------------------------------------- пресеты сценариев */
 // Значения met/clo — по таблицам ГОСТ Р ИСО 7730-2009 приложение B (уровни
