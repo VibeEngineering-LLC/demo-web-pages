@@ -1946,13 +1946,19 @@ function applyPreset(name){
 }
 function markPresetSelected(name){
   document.querySelectorAll('.preset-btn').forEach(function(b){
-    b.classList.toggle('selected', b.getAttribute('data-preset') === name);
+    var sel = b.getAttribute('data-preset') === name;
+    b.classList.toggle('selected', sel);
+    b.setAttribute('aria-pressed', sel ? 'true' : 'false');
   });
 }
 function clearPresetSelection(){
-  document.querySelectorAll('.preset-btn.selected').forEach(function(b){ b.classList.remove('selected'); });
+  document.querySelectorAll('.preset-btn').forEach(function(b){
+    b.classList.remove('selected');
+    b.setAttribute('aria-pressed', 'false');
+  });
 }
 document.querySelectorAll('.preset-btn').forEach(function(btn){
+  btn.setAttribute('aria-pressed', 'false');
   btn.addEventListener('click', function(){ applyPreset(btn.getAttribute('data-preset')); });
 });
 
