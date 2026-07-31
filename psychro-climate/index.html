@@ -140,7 +140,7 @@
 
   <div id="chainwrap" class="fullwidth" style="display:none">
     <p class="cap" data-i18n="chain_cap">Собранная цепочка процессов: точка 2 каждой стадии становится точкой 1 следующей</p>
-    <table class="tbl" id="tbl_chain"></table>
+    <div class="tblwrap"><table class="tbl" id="tbl_chain"></table></div>
   </div>
 </section>
 
@@ -156,11 +156,13 @@
     <div class="ldi-cell">
       <label for="city" data-i18n="lab_city">Пункт строительства</label>
       <select id="city"></select>
+      <button type="button" class="preset-btn" id="btn_to_diagram" data-i18n="btn_to_diagram"
+              style="margin-top:6px; align-self:flex-start">Перенести наружный воздух на i-d диаграмму</button>
     </div>
     <div class="ldi-cell">
-      <label for="tin" data-i18n="lab_tin">Расчётная температура внутреннего воздуха <i>t</i><sub>в</sub>, °C
-        <span class="hint">(по ГОСТ 30494-2011; жилая комната — 20 °C, угловая — 22 °C)</span></label>
+      <label for="tin" data-i18n="lab_tin">Расчётная температура внутреннего воздуха <i>t</i><sub>в</sub>, °C</label>
       <input type="number" id="tin" min="12" max="30" step="0.5" value="20" inputmode="decimal">
+      <span class="hint" data-i18n="lab_tin_hint">(по ГОСТ 30494-2011; жилая комната — 20 °C, угловая — 22 °C)</span>
     </div>
   </div>
 
@@ -168,9 +170,6 @@
 
   <table class="tbl" id="tbl_clim"></table>
 
-  <div class="presets" style="margin-top:16px">
-    <button type="button" class="preset-btn" id="btn_to_diagram" data-i18n="btn_to_diagram">Перенести наружный воздух на i-d диаграмму</button>
-  </div>
   <p class="hint" id="clim_transfer_hint" data-i18n="clim_transfer_hint">Кнопка ставит точку 1 в
   температуру наиболее холодной пятидневки обеспеченностью 0,92 и среднюю месячную относительную
   влажность наиболее холодного месяца, после чего открывает вкладку процессов. Оговорка: эти две
@@ -571,7 +570,7 @@ var T = {
     chain_lock_hint: 'Поле заблокировано на время сборки цепочки: точка 1 — это точка 2 предыдущей стадии. «Очистить цепочку» разблокирует.',
     chain_warn_broken: 'Точка 1 одной из стадий не совпадает с точкой 2 предыдущей — поле t1/φ1/L1 было изменено вручную после сборки цепочки. Непрерывность потока нарушена, сумма Q и W по цепочке не показана: складывать энергии стадий с разным расходом физически некорректно.',
     warn_offchart_chain: 'Часть точек цепочки вышла за пределы отображаемой области диаграммы (по температуре или по влагосодержанию) и на ней не показана — значения в таблице цепочки верны.',
-    chain_col_proc: 'Процесс', chain_col_t1: 't начала, °C', chain_col_t2: 't конца, °C',
+    chain_col_proc: 'Процесс', chain_col_t1: 'Точка начала', chain_col_t2: 'Точка конца',
     chain_col_Q: 'Q, кВт', chain_col_W: 'W, кг/ч', chain_total: 'Сумма по цепочке',
     clim_gsop: 'ГСОП', clim_gsop_sub: '(°C·сут)/год, формула (5.2) СП 50.13330.2024',
     clim_t5: 'Пятидневка 0,92', clim_t5_sub: 'расчётная для отопления, °C',
@@ -629,7 +628,7 @@ var T = {
     chain_lock_hint: 'This field is locked while the chain is being built: point 1 is point 2 of the previous stage. “Clear chain” unlocks it.',
     chain_warn_broken: 'Point 1 of one stage does not match point 2 of the previous one — the t1/φ1/L1 field was edited by hand after the chain was built. Flow continuity is broken, so the chain’s Q and W total is not shown: adding the energy of stages with different flow rates is not physically valid.',
     warn_offchart_chain: 'Some points of the chain fall outside the chart’s displayed area (by temperature or by moisture content) and are not shown on it — the values in the chain table are still correct.',
-    chain_col_proc: 'Process', chain_col_t1: 'start t, °C', chain_col_t2: 'end t, °C',
+    chain_col_proc: 'Process', chain_col_t1: 'Start point', chain_col_t2: 'End point',
     chain_col_Q: 'Q, kW', chain_col_W: 'W, kg/h', chain_total: 'Chain total',
     clim_gsop: 'HDD', clim_gsop_sub: '(°C·day)/year, Eq. (5.2) SP 50.13330.2024',
     clim_t5: 'Coldest 5-day, 0.92', clim_t5_sub: 'heating design value, °C',
@@ -886,7 +885,16 @@ function drawDiagram(p1, p2, showGrid){
   // отрезки процесса: сначала зафиксированные стадии цепочки CHAIN, затем
   // текущая (ещё не добавленная) стадия p1→p2 — все точки нумеруются сквозно.
   var segments = CHAIN.map(function(s){ return {p1: s.p1, p2: s.p2}; });
-  if(p1 && p2) segments.push({p1: p1, p2: p2});
+  var hasCurrent = !!(p1 && p2);
+  if(hasCurrent) segments.push({p1: p1, p2: p2});
+  // Нумерация «1»/«2» даётся ТОЛЬКО текущей (ещё не добавленной) стадии — той
+  // самой, чьи t/φ описаны в полях сайдбара «Точка 1»/«Точка 2». Раньше все
+  // точки цепочки нумеровались сквозно (1,2,3…), и это расходилось с полями
+  // сайдбара, которые всегда о ТЕКУЩЕЙ стадии — путаница, замеченная
+  // оператором («индексы точек на диаграмме не соответствуют точкам
+  // параметров»). У зафиксированных стадий сайдбар не показывает ни один
+  // параметр (их можно посмотреть только в таблице цепочки), поэтому им
+  // сквозной номер не нужен — просто маркер без подписи.
   segments.forEach(function(seg, i){
     var a = ptXY(seg.p1), b = ptXY(seg.p2);
     CTX.save();
@@ -901,8 +909,14 @@ function drawDiagram(p1, p2, showGrid){
     CTX.lineTo(b.x - 14*Math.cos(ang + 0.42), b.y - 14*Math.sin(ang + 0.42));
     CTX.closePath(); CTX.fillStyle = 'rgba(178,62,55,.95)'; CTX.fill();
     CTX.restore();
-    if(i === 0) marker(a.x, a.y, '1', true);
-    marker(b.x, b.y, String(i + 2), i === segments.length - 1);
+    var isCurrent = hasCurrent && i === segments.length - 1;
+    if(isCurrent){
+      marker(a.x, a.y, '1', true);
+      marker(b.x, b.y, '2', true);
+    } else {
+      marker(a.x, a.y, '', i === 0);
+      if(i === segments.length - 1) marker(b.x, b.y, '', false);
+    }
   });
   if(!segments.length && p1){ var a2 = ptXY(p1); marker(a2.x, a2.y, T[LANG].lbl_p1, true); }
 }
@@ -1133,10 +1147,17 @@ function renderChain(){
   var html = '<thead><tr><th>#</th><th>' + t.chain_col_proc + '</th><th class="num">' +
              t.chain_col_t1 + '</th><th class="num">' + t.chain_col_t2 + '</th><th class="num">' +
              t.chain_col_Q + '</th><th class="num">' + t.chain_col_W + '</th></tr></thead><tbody>';
+  // Полное состояние точки (t/φ/d), а не только температура — иначе после
+  // перехода к следующей стадии исходные влажность и влагосодержание
+  // зафиксированной стадии нигде больше не видны (сайдбар показывает только
+  // текущую, ещё не добавленную стадию).
+  function pointCell(p){
+    return nf(p.t, 1) + ' °C, ' + nf(p.phi, 1) + ' %, ' + nf(p.d, 2) + ' ' + t.u_gkg;
+  }
   var sumQ = 0, sumW = 0, hasQ = false, hasW = false;
   CHAIN.forEach(function(s, i){
     html += '<tr><td>' + (i + 1) + '→' + (i + 2) + '</td><td>' + stageKindLabel(s.kind) +
-            '</td><td class="num">' + nf(s.p1.t, 1) + '</td><td class="num">' + nf(s.p2.t, 1) +
+            '</td><td class="num">' + pointCell(s.p1) + '</td><td class="num">' + pointCell(s.p2) +
             '</td><td class="num">' + (s.Q === null ? '—' : sf(s.Q, 1)) +
             '</td><td class="num">' + (s.W === null ? '—' : sf(s.W, 1)) + '</td></tr>';
     if(s.Q !== null){ sumQ += s.Q; hasQ = true; }
@@ -1408,7 +1429,8 @@ leg_marker: "— white marker: point 1; clicking the chart moves it.",
 clim_h2: "Design climate parameters of the site",
 clim_intro: "Values are given per SP 131.13330.2020 (Tables 3.1 and 4.1) for the selected location. Heating degree-days are computed from Eq. (5.2) of SP 50.13330.2024. The design indoor air temperature is specified separately — it depends on the intended use of the room and is taken from the minimum optimal temperatures of GOST 30494-2011.",
 lab_city: "Construction site",
-lab_tin: 'Design indoor air temperature <i>t</i><sub>in</sub>, °C <span class="hint">(per GOST 30494-2011; living room — 20 °C, corner room — 22 °C)</span>',
+lab_tin: 'Design indoor air temperature <i>t</i><sub>in</sub>, °C',
+lab_tin_hint: '(per GOST 30494-2011; living room — 20 °C, corner room — 22 °C)',
 btn_to_diagram: "Transfer the outdoor air to the i-d chart",
 clim_transfer_hint: "The button sets point 1 to the coldest five-day temperature at 0.92 assurance and the mean monthly relative humidity of the coldest month, then opens the processes tab. Caveat: these two quantities come from different columns of Table 3.1 and refer to different averaging periods — the humidity is a monthly mean, not a value observed at the design five-day temperature. Such a pairing is customary in design practice, but it is not itself a design parameter of SP 131.13330.2020; the resulting moisture content is a derived quantity with no normative standing.",
 h2_method: "How this is calculated",
