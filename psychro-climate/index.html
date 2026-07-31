@@ -10,31 +10,13 @@
 <p class="lede" data-i18n="lede">Состояние влажного воздуха, процессы его обработки в приточной установке
 и расчётные климатические параметры места строительства — в одном расчёте.</p>
 
-<section class="card">
-  <h2 data-i18n="h2_intro">Суть вопроса</h2>
-  <p data-i18n="intro_p1">Состояние влажного воздуха задаётся двумя независимыми величинами при известном
-  барометрическом давлении. Остальные — влагосодержание, энтальпия, относительная влажность,
-  температура точки росы, температура по влажному термометру, плотность — из них вычисляются.
-  Диаграмма <i>i–d</i> связывает эти величины графически: каждая точка плоскости отвечает одному
-  состоянию воздуха, а процесс его обработки — отрезку между двумя точками.</p>
-  <p data-i18n="intro_p2">Практическое следствие: тип процесса определяет направление отрезка.
-  Нагрев в поверхностном воздухонагревателе идёт при постоянном влагосодержании — вертикально вверх.
-  Адиабатическое увлажнение идёт при постоянной энтальпии — вдоль линии <i>J</i> = const.
-  Охлаждение ниже температуры точки росы сопровождается выпадением влаги, и отрезок ломается к
-  кривой насыщения. Отсюда следуют и мощность аппарата, и расход влаги.</p>
-  <p data-i18n="intro_p3">Вторая часть расчёта — расчётные параметры наружного воздуха. Они не
-  выбираются произвольно: температура наиболее холодной пятидневки обеспеченностью 0,92 задаёт
-  расчётный режим отопления, параметры тёплого периода — режим охлаждения, а продолжительность и
-  средняя температура отопительного периода дают градусо-сутки, от которых зависит требуемое
-  сопротивление теплопередаче ограждений.</p>
-</section>
-
 <div class="tabbar" role="tablist" data-i18n-aria="tabbar_aria" aria-label="Разделы расчёта">
-  <button type="button" class="tabbtn active" id="tab_proc" data-target="sec_proc" role="tab" aria-selected="true" aria-controls="sec_proc" data-i18n="tab_proc_label">Процессы обработки воздуха</button>
-  <button type="button" class="tabbtn" id="tab_clim" data-target="sec_clim" role="tab" aria-selected="false" aria-controls="sec_clim" data-i18n="tab_clim_label">Климат места строительства</button>
-  <button type="button" class="tabbtn" id="tab_method" data-target="sec_method" role="tab" aria-selected="false" aria-controls="sec_method" data-i18n="tab_method_label">Как это считается</button>
-  <button type="button" class="tabbtn" id="tab_src" data-target="sec_src" role="tab" aria-selected="false" aria-controls="sec_src" data-i18n="tab_src_label">Первоисточники</button>
-  <button type="button" class="tabbtn" id="tab_limits" data-target="sec_limits" role="tab" aria-selected="false" aria-controls="sec_limits" data-i18n="tab_limits_label">Границы применимости</button>
+  <button type="button" class="tabbtn active" id="tab_proc" data-target="sec_proc" role="tab" aria-selected="true" aria-controls="sec_proc" data-i18n="tab_proc_label">Процессы</button>
+  <button type="button" class="tabbtn" id="tab_clim" data-target="sec_clim" role="tab" aria-selected="false" aria-controls="sec_clim" data-i18n="tab_clim_label">Климат</button>
+  <button type="button" class="tabbtn" id="tab_method" data-target="sec_method" role="tab" aria-selected="false" aria-controls="sec_method" data-i18n="tab_method_label">Методика</button>
+  <button type="button" class="tabbtn" id="tab_src" data-target="sec_src" role="tab" aria-selected="false" aria-controls="sec_src" data-i18n="tab_src_label">Источники</button>
+  <button type="button" class="tabbtn" id="tab_limits" data-target="sec_limits" role="tab" aria-selected="false" aria-controls="sec_limits" data-i18n="tab_limits_label">Границы</button>
+  <button type="button" class="tabbtn" id="tab_help" data-target="sec_help" role="tab" aria-selected="false" aria-controls="sec_help" data-i18n="tab_help_label">Справка</button>
 </div>
 
 <section class="card wide tabpanel active" id="sec_proc" role="tabpanel" aria-labelledby="tab_proc">
@@ -271,6 +253,25 @@
     <li data-i18n="lim_6">Страница даёт оценку по перечисленным зависимостям и не заменяет проектный
     расчёт систем отопления, вентиляции и кондиционирования.</li>
   </ul>
+</section>
+
+<section class="card tabpanel" id="sec_help" role="tabpanel" aria-labelledby="tab_help">
+  <h2 data-i18n="h2_intro">Суть вопроса</h2>
+  <p data-i18n="intro_p1">Состояние влажного воздуха задаётся двумя независимыми величинами при известном
+  барометрическом давлении. Остальные — влагосодержание, энтальпия, относительная влажность,
+  температура точки росы, температура по влажному термометру, плотность — из них вычисляются.
+  Диаграмма <i>i–d</i> связывает эти величины графически: каждая точка плоскости отвечает одному
+  состоянию воздуха, а процесс его обработки — отрезку между двумя точками.</p>
+  <p data-i18n="intro_p2">Практическое следствие: тип процесса определяет направление отрезка.
+  Нагрев в поверхностном воздухонагревателе идёт при постоянном влагосодержании — вертикально вверх.
+  Адиабатическое увлажнение идёт при постоянной энтальпии — вдоль линии <i>J</i> = const.
+  Охлаждение ниже температуры точки росы сопровождается выпадением влаги, и отрезок ломается к
+  кривой насыщения. Отсюда следуют и мощность аппарата, и расход влаги.</p>
+  <p data-i18n="intro_p3">Вторая часть расчёта — расчётные параметры наружного воздуха. Они не
+  выбираются произвольно: температура наиболее холодной пятидневки обеспеченностью 0,92 задаёт
+  расчётный режим отопления, параметры тёплого периода — режим охлаждения, а продолжительность и
+  средняя температура отопительного периода дают градусо-сутки, от которых зависит требуемое
+  сопротивление теплопередаче ограждений.</p>
 </section>
 
 <p class="hint" data-i18n="footer_note">Расчёт выполняется в браузере, данные никуда не передаются.
@@ -515,11 +516,11 @@ function sf(x, dg){
 var T = {
   ru: {
     tile_t2: 'Температура т. 2', tile_phi2: 'Влажность т. 2', tile_d2: 'Влагосодержание т. 2',
-    tile_Q: 'Тепловой поток', tile_W: 'Влага', tile_eps: 'Угловой коэффициент',
+    tile_Q: 'Тепловой поток', tile_W: 'Влага',
     sub_t2: 'конечное состояние', sub_phi2: 'относительная, т. 2', sub_d2: 'г/кг сухого воздуха',
     sub_Q_heat: 'подводится к воздуху', sub_Q_cool: 'снимается с воздуха', sub_Q_zero: 'процесс без теплообмена',
+    sub_Q_steam: 'расходуется на генерацию пара увлажнителем, не на нагрев воздуха',
     sub_W_add: 'вносится в поток', sub_W_rem: 'выпадает из потока', sub_W_zero: 'влагосодержание не меняется',
-    sub_eps: 'кДж на кг влаги', sub_eps_na: 'd = const, не определён',
     col_par: 'Величина', col_p1: 'Точка 1', col_p2: 'Точка 2', col_unit: 'Ед.',
     r_t: 'Температура', r_phi: 'Относительная влажность', r_d: 'Влагосодержание',
     r_J: 'Энтальпия', r_tdew: 'Температура точки росы', r_twet: 'Температура по влажному термометру',
@@ -532,6 +533,9 @@ var T = {
     warn_sat: 'Конечная точка вышла за кривую насыщения φ = 100 % — состояние физически не достигается.',
     warn_adiab_dir: 'Адиабатическое охлаждение идёт с увлажнением: относительная влажность растёт. Задано значение ниже исходного — направление процесса противоположно.',
     warn_dehum_dir: 'Осушение снижает влагосодержание. Задано значение выше исходного — рассчитано увлажнение при J = const, а не осушение.',
+    warn_offchart_p1: 'Точка 1 вышла за пределы отображаемой области диаграммы (по температуре или по влагосодержанию) и на ней не показана — значения в таблице ниже верны.',
+    warn_offchart_p2: 'Точка 2 вышла за пределы отображаемой области диаграммы (по температуре или по влагосодержанию) и на ней не показана — значения в таблице ниже верны.',
+    warn_offchart_both: 'Обе точки вышли за пределы отображаемой области диаграммы (по температуре или по влагосодержанию) и на ней не показаны — значения в таблице ниже верны.',
     warn_clamped: 'Введённое значение выходило за диапазон поля и приведено к его границе: вне этого диапазона использованные зависимости не проверены.',
     warn_substituted: 'Поле оставлено пустым или содержит нечисловое значение — расчёт ведётся по значению по умолчанию, а не по тому, что показано в поле.',
     warn_none: '',
@@ -564,11 +568,11 @@ var T = {
   },
   en: {
     tile_t2: 'Temperature, pt. 2', tile_phi2: 'Humidity, pt. 2', tile_d2: 'Moisture content, pt. 2',
-    tile_Q: 'Heat flow', tile_W: 'Moisture', tile_eps: 'Angular coefficient',
+    tile_Q: 'Heat flow', tile_W: 'Moisture',
     sub_t2: 'final state', sub_phi2: 'relative, pt. 2', sub_d2: 'g/kg dry air',
     sub_Q_heat: 'supplied to the air', sub_Q_cool: 'removed from the air', sub_Q_zero: 'process without heat exchange',
+    sub_Q_steam: 'spent on generating steam in the humidifier, not on heating the air',
     sub_W_add: 'added to the stream', sub_W_rem: 'condensed out of the stream', sub_W_zero: 'moisture content unchanged',
-    sub_eps: 'kJ per kg of moisture', sub_eps_na: 'd = const, undefined',
     col_par: 'Quantity', col_p1: 'Point 1', col_p2: 'Point 2', col_unit: 'Unit',
     r_t: 'Temperature', r_phi: 'Relative humidity', r_d: 'Moisture content',
     r_J: 'Enthalpy', r_tdew: 'Dew-point temperature', r_twet: 'Wet-bulb temperature',
@@ -581,6 +585,9 @@ var T = {
     warn_sat: 'The final point fell outside the φ = 100% saturation curve — this state is not physically attainable.',
     warn_adiab_dir: 'Adiabatic cooling proceeds with humidification: relative humidity rises. A value below the initial one has been entered — the process direction is reversed.',
     warn_dehum_dir: 'Dehumidification lowers the moisture content. A value above the initial one has been entered, so humidification at J = const has been computed, not dehumidification.',
+    warn_offchart_p1: 'Point 1 falls outside the chart’s displayed area (by temperature or by moisture content) and is not shown on it — the values in the table below are still correct.',
+    warn_offchart_p2: 'Point 2 falls outside the chart’s displayed area (by temperature or by moisture content) and is not shown on it — the values in the table below are still correct.',
+    warn_offchart_both: 'Both points fall outside the chart’s displayed area (by temperature or by moisture content) and are not shown on it — the values in the table below are still correct.',
     warn_clamped: 'An entered value fell outside the range of its field and has been brought to the boundary: outside that range the relationships used here have not been verified.',
     warn_substituted: 'A field has been left empty or holds a non-numeric value — the calculation uses a default, not what the field displays.',
     warn_none: '',
@@ -666,7 +673,7 @@ var CV = document.getElementById('cv_id');
 var CTX = CV.getContext('2d');
 var PAD = {l: 78, r: 132, t: 26, b: 66};
 var D0 = 0, D1 = 26;            // влагосодержание, г/кг
-var J0 = -25, J1 = 120;         // энтальпия, кДж/кг
+var J0 = -25, J1 = 120;         // диапазон линий J = const (сетка), кДж/кг
 
 function plotRect(){
   return {x: PAD.l, y: PAD.t, w: CV.width - PAD.l - PAD.r, h: CV.height - PAD.t - PAD.b};
@@ -674,20 +681,23 @@ function plotRect(){
 // Косоугольная система Рамзина: ось d горизонтальна, линии J = const идут
 // вниз-вправо. Сдвиг подобран так, что изотерма t = 0 °C горизонтальна.
 var SHEAR = 2.5;                // кДж/кг на 1 г/кг — наклон изоэнтальпы
+// Вертикальный масштаб растянут так, чтобы видимый диапазон температур у левой
+// кромки (d = 0) занимал ровно всю высоту плота — иначе часть высоты канвы
+// пустует ниже нижней подписанной изотермы (баг, замечен по скриншоту).
+var T_AXIS_MIN = -40, T_AXIS_MAX = 40;
+var JS0 = C_AIR*T_AXIS_MIN, JS1 = C_AIR*T_AXIS_MAX;
 function px(d){ var r = plotRect(); return r.x + (d - D0)/(D1 - D0)*r.w; }
 function py(J, d){
   var r = plotRect();
   var Js = J - SHEAR*d;
-  var Js0 = J0 - SHEAR*D1, Js1 = J1 - SHEAR*D0;
-  return r.y + r.h - (Js - Js0)/(Js1 - Js0)*r.h;
+  return r.y + r.h - (Js - JS0)/(JS1 - JS0)*r.h;
 }
 function ptXY(p){ return {x: px(p.d), y: py(p.J, p.d)}; }
 // обратное преобразование: экранная точка → (d, J)
 function xyToState(sx, sy){
   var r = plotRect();
   var d = D0 + (sx - r.x)/r.w*(D1 - D0);
-  var Js0 = J0 - SHEAR*D1, Js1 = J1 - SHEAR*D0;
-  var Js = Js0 + (r.y + r.h - sy)/r.h*(Js1 - Js0);
+  var Js = JS0 + (r.y + r.h - sy)/r.h*(JS1 - JS0);
   return {d: d, J: Js + SHEAR*d};
 }
 
@@ -712,7 +722,7 @@ function drawDiagram(p1, p2, showGrid){
     }
     // изотермы
     CTX.strokeStyle = 'rgba(28,27,25,.20)';
-    for(var tt = -40; tt <= 60; tt += 5){
+    for(var tt = T_AXIS_MIN; tt <= T_AXIS_MAX; tt += 5){
       CTX.beginPath();
       var started = false;
       for(var dd = D0; dd <= D1 + 1e-9; dd += 0.5){
@@ -742,10 +752,13 @@ function drawDiagram(p1, p2, showGrid){
   });
   CTX.restore();
 
-  // подписи phi на кривых
-  CTX.font = '13px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
-  CTX.fillStyle = 'rgba(44,74,99,.95)';
-  CTX.textAlign = 'left'; CTX.textBaseline = 'middle';
+  // Подписи phi на кривых. Косоугольная сетка сводит кривые близко друг к
+  // другу у правого/верхнего края — если подписывать «как есть» в точке
+  // первого пересечения, цифры наезжают друг на друга. Поэтому сначала точки
+  // подписей собираются в список, затем разводятся по одной оси (Y — у правого
+  // края, X — у верхнего) минимальным шагом, и только потом рисуются.
+  var LABEL_GAP = 15;
+  var rightLabels = [], topLabels = [];
   PHIS.forEach(function(phi){
     for(var tt = 65; tt >= -45; tt -= 0.25){
       var dd = d_by_t_phi(pb, tt, phi);
@@ -753,19 +766,34 @@ function drawDiagram(p1, p2, showGrid){
       var X = px(dd), Y = py(J_by_t_d(tt, dd), dd);
       if(X > r.x + 4 && X < r.x + r.w - 4 && Y > r.y + 10 && Y < r.y + r.h - 10){
         if(dd > D1 - 0.6 || Math.abs(X - (r.x + r.w)) < 40){
-          CTX.fillText(phi + ' %', Math.min(X + 6, r.x + r.w + 4), Y);
+          rightLabels.push({phi: phi, x: Math.min(X + 6, r.x + r.w + 4), y: Y});
           return;
         }
       }
     }
-    // если кривая уходит вверх — подписать у верхней кромки
+    // если кривая уходит вверх раньше правого края — подписать у верхней кромки
     for(var tt2 = -45; tt2 <= 65; tt2 += 0.25){
       var dd2 = d_by_t_phi(pb, tt2, phi);
       if(dd2 < D0 || dd2 > D1 || !isFinite(dd2)) continue;
       var Y2 = py(J_by_t_d(tt2, dd2), dd2);
-      if(Y2 <= r.y + 12){ CTX.fillText(phi + ' %', px(dd2) + 6, r.y + 12); return; }
+      if(Y2 <= r.y + 12){ topLabels.push({phi: phi, x: px(dd2) + 6, y: r.y + 12}); return; }
     }
   });
+  // разводим по возрастанию Y (правый край) и по возрастанию X (верхний край)
+  function declutter(list, key, gap){
+    list.sort(function(a, b){ return a[key] - b[key]; });
+    for(var i = 1; i < list.length; i++){
+      if(list[i][key] - list[i-1][key] < gap) list[i][key] = list[i-1][key] + gap;
+    }
+  }
+  declutter(rightLabels, 'y', LABEL_GAP);
+  declutter(topLabels, 'x', 28);
+
+  CTX.font = '13px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
+  CTX.fillStyle = 'rgba(44,74,99,.95)';
+  CTX.textAlign = 'left'; CTX.textBaseline = 'middle';
+  rightLabels.forEach(function(l){ CTX.fillText(l.phi + ' %', l.x, l.y); });
+  topLabels.forEach(function(l){ CTX.fillText(l.phi + ' %', l.x, l.y); });
 
   // рамка и оси
   CTX.strokeStyle = 'rgba(28,27,25,.55)'; CTX.lineWidth = 1.5;
@@ -786,7 +814,7 @@ function drawDiagram(p1, p2, showGrid){
   // ось температур слева — по пересечению изотерм с левой кромкой d = 0
   CTX.textAlign = 'right'; CTX.textBaseline = 'middle';
   CTX.font = '14px -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
-  for(var tl = -40; tl <= 60; tl += 10){
+  for(var tl = T_AXIS_MIN; tl <= T_AXIS_MAX; tl += 10){
     var Yl = py(J_by_t_d(tl, D0), D0);
     if(Yl < r.y - 2 || Yl > r.y + r.h + 2) continue;
     CTX.beginPath(); CTX.moveTo(r.x - 6, Yl); CTX.lineTo(r.x, Yl);
@@ -820,9 +848,19 @@ function drawDiagram(p1, p2, showGrid){
   if(p1){ var a2 = ptXY(p1); marker(a2.x, a2.y, T[LANG].lbl_p1, true); }
 }
 
+// Точка вне видимого диапазона диаграммы (ось растянута под T_AXIS_MIN..MAX,
+// см. plotRect()/py()) — например, расчётная температура холодного города
+// колоднее -40 °C. Отдельно от «выхода за кривую насыщения» (φ > 100 %).
+function pointOffChart(p){
+  var xy = ptXY(p), r = plotRect();
+  return xy.x < r.x - 0.5 || xy.x > r.x + r.w + 0.5 || xy.y < r.y - 0.5 || xy.y > r.y + r.h + 0.5;
+}
 function marker(x, y, label, big){
   var r = plotRect();
-  if(x < r.x - 20 || x > r.x + r.w + 20 || y < r.y - 20 || y > r.y + r.h + 20) return;
+  // граница — та же, что у pointOffChart(): иначе есть полоса в пару градусов,
+  // где предупреждение уже говорит «не показана», а маркер ещё рисуется,
+  // наезжая на подписи осей.
+  if(x < r.x - 0.5 || x > r.x + r.w + 0.5 || y < r.y - 0.5 || y > r.y + r.h + 0.5) return;
   CTX.lineWidth = 4; CTX.strokeStyle = 'rgba(0,0,0,.85)';
   CTX.beginPath(); CTX.arc(x, y, big ? 13 : 10, 0, 2*Math.PI); CTX.stroke();
   CTX.strokeStyle = 'rgba(255,255,255,.98)'; CTX.lineWidth = 2;
@@ -931,10 +969,20 @@ function render(){
   var p2 = out ? out.p2 : null;
   if(p2 && p2.phi > 100.5) warn = t.warn_sat;
 
+  // Диаграмма показывает только диапазон T_AXIS_MIN..T_AXIS_MAX по вертикали;
+  // точка холоднее/теплее этого диапазона на ней не рисуется. Без явного
+  // предупреждения это выглядело бы как пустая канва без всякой причины.
+  var offP1 = pointOffChart(p1), offP2 = p2 ? pointOffChart(p2) : false;
+  if(offP1 && offP2) warn = t.warn_offchart_both + ' ' + warn;
+  else if(offP1) warn = t.warn_offchart_p1 + ' ' + warn;
+  else if(offP2) warn = t.warn_offchart_p2 + ' ' + warn;
+
   // плитки
   var Q = out ? out.Q : null, W = out ? out.W : null;
-  var eps = (p1 && p2) ? angular_coef(p1.J, p2.J, p1.d, p2.d) : null;
-  var qsub = (Q === null || Math.abs(Q) < 1e-9) ? t.sub_Q_zero : (Q > 0 ? t.sub_Q_heat : t.sub_Q_cool);
+  var qsub;
+  if(Q === null || Math.abs(Q) < 1e-9) qsub = t.sub_Q_zero;
+  else if(Q > 0 && kind === 'humid') qsub = t.sub_Q_steam;   // t = const: весь Q — латентная теплота пара
+  else qsub = Q > 0 ? t.sub_Q_heat : t.sub_Q_cool;
   var wsub = (W === null || Math.abs(W) < 1e-9) ? t.sub_W_zero : (W > 0 ? t.sub_W_add : t.sub_W_rem);
   document.getElementById('res_proc').innerHTML =
       tile(t.tile_t2, p2 ? nf(p2.t, 1) + ' °C' : '—', t.sub_t2) +
@@ -942,8 +990,7 @@ function render(){
            (p2 && p2.phi > 100.5) ? 't-x' : '') +
       tile(t.tile_d2, p2 ? nf(p2.d, 2) : '—', t.sub_d2) +
       tile(t.tile_Q, Q === null ? '—' : sf(Q, 2) + ' ' + t.u_kW, qsub) +
-      tile(t.tile_W, W === null ? '—' : sf(W, 2) + ' ' + t.u_kgh, wsub) +
-      tile(t.tile_eps, eps === null ? '—' : nf(eps, 0), eps === null ? t.sub_eps_na : t.sub_eps);
+      tile(t.tile_W, W === null ? '—' : sf(W, 2) + ' ' + t.u_kgh, wsub);
 
   // таблица состояний
   function row2(name, v1, v2, unit){
@@ -1149,11 +1196,12 @@ intro_p1: 'The state of moist air is defined by two independent quantities at a 
 intro_p2: 'The practical consequence: the type of process determines the direction of the segment. Heating in a surface air heater runs at constant moisture content — vertically upward. Adiabatic humidification runs at constant enthalpy — along a line of <i>J</i> = const. Cooling below the dew point is accompanied by condensation, and the segment breaks towards the saturation curve. Both the capacity of the unit and the moisture rate follow from this.',
 intro_p3: "The second part of the calculation is the design outdoor-air parameters. They are not chosen arbitrarily: the coldest five-day temperature at 0.92 assurance sets the heating design condition, the warm-period parameters set the cooling condition, and the duration and mean temperature of the heating period give the degree-days on which the required thermal resistance of the envelope depends.",
 tabbar_aria: "Calculation sections",
-tab_proc_label: "Air treatment processes",
-tab_clim_label: "Site climate",
-tab_method_label: "How this is calculated",
-tab_src_label: "Primary sources",
-tab_limits_label: "Limits of applicability",
+tab_proc_label: "Processes",
+tab_clim_label: "Climate",
+tab_method_label: "Method",
+tab_src_label: "Sources",
+tab_limits_label: "Limits",
+tab_help_label: "Help",
 proc_h2: "Air treatment processes on the i-d chart",
 proc_intro: "The initial point 1 (temperature, relative humidity, flow rate) and the process are specified. Point 2 and the energy quantities are computed. Clicking the chart moves point 1. All relationships are given on the “How this is calculated” tab.",
 presets_aria: "Typical processes",
