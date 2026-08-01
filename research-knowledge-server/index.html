@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Personal Research Knowledge Server — концепция</title>
+<style>
+:root{--ink:#1a2332;--mut:#5a6a7e;--line:#d7dee8;--acc:#2563a8;--bg:#f7f9fc;--card:#ffffff;--ok:#1a7f4b;--warn:#a86212;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:16px/1.65 Georgia,'Times New Roman',serif;color:var(--ink);background:var(--bg)}
+.wrap{max-width:980px;margin:0 auto;padding:0 24px 80px}
+header{padding:56px 0 32px;border-bottom:3px solid var(--acc)}
+h1{font-size:34px;line-height:1.25;margin-bottom:10px}
+.sub{color:var(--mut);font-size:18px;font-style:italic}
+h2{font-size:24px;margin:48px 0 16px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+p{margin:0 0 14px}
+.abstract{background:var(--card);border-left:4px solid var(--acc);padding:20px 24px;margin:28px 0;box-shadow:0 1px 4px rgba(20,40,80,.07)}
+.abstract .cap{font-variant:small-caps;letter-spacing:.06em;color:var(--acc);font-weight:bold;margin-bottom:8px}
+.abstract p:last-child{margin-bottom:0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+@media(max-width:720px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px 20px;box-shadow:0 1px 3px rgba(20,40,80,.05)}
+.card h3{font-size:17px;margin-bottom:8px;color:var(--acc)}
+.card p{font-size:15px;color:var(--mut);margin:0}
+.scheme{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:26px 22px;margin:22px 0;overflow-x:auto}
+.scheme .t{font-weight:bold;font-family:Georgia,serif;font-size:17px;margin-bottom:18px;color:var(--ink)}
+.flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;justify-content:center}
+.node{background:#eef4fb;border:1.5px solid var(--acc);border-radius:6px;padding:10px 16px;font:14px/1.4 'Segoe UI',Arial,sans-serif;text-align:center;min-width:120px;display:flex;flex-direction:column;justify-content:center}
+.node small{color:var(--mut);font-size:12px}
+.node.canon{background:#e8f6ee;border-color:var(--ok)}
+.node.cand{background:#fdf3e6;border-color:var(--warn)}
+.arr{display:flex;align-items:center;padding:0 10px;color:var(--acc);font-size:22px;font-family:Arial}
+.stack{display:flex;flex-direction:column;gap:0;max-width:820px;margin:0 auto}
+.box{border:1.5px solid var(--acc);border-radius:8px;padding:12px 14px 14px;background:#fdfefe}
+.box.outer{background:#f4f8fd}
+.box.dim{border-color:var(--line);background:#fafbfc}
+.bt{font:bold 12px 'Segoe UI',Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);margin-bottom:9px}
+.box.dim .bt{color:var(--mut)}
+.cells{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.cell{background:#eef4fb;border:1px solid #b9cfe6;border-radius:5px;padding:9px 8px;font:13px/1.35 'Segoe UI',Arial,sans-serif;text-align:center;display:flex;align-items:center;justify-content:center}
+.cell.dim{background:#f2f4f7;border-color:var(--line);color:var(--mut)}
+.inner{border:1px solid #c4d5e8;border-radius:6px;padding:10px 12px 12px;background:#fff}
+.inner+.inner{margin-top:10px}
+.it{font:bold 11px 'Segoe UI',Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin-bottom:8px}
+.varr{display:flex;flex-direction:column;align-items:center;padding:6px 0;color:var(--acc);font:13px 'Segoe UI',Arial,sans-serif}
+.varr .a{font-size:18px;line-height:1;font-family:Arial}
+table{border-collapse:collapse;width:100%;font:14px/1.5 'Segoe UI',Arial,sans-serif;margin:16px 0}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:#eef2f8}
+tr:nth-child(even) td{background:#fafbfd}
+.btn{display:inline-block;background:var(--acc);color:#fff;padding:12px 26px;border-radius:6px;text-decoration:none;font:16px 'Segoe UI',Arial,sans-serif;margin-top:10px}
+.btn:hover{background:#1b4f8a}
+footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);color:var(--mut);font-size:14px}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(30,79,133,.97);color:#fff;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:10px 24px;box-shadow:0 2px 10px rgba(10,30,60,.25)}
+.topbar .tn{font:15px 'Segoe UI',Arial,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar a{background:#fff;color:var(--acc);text-decoration:none;font:bold 14px 'Segoe UI',Arial,sans-serif;padding:7px 18px;border-radius:5px;white-space:nowrap}
+.topbar a:hover{background:#e8f0fa}
+.status{display:inline-block;background:#e8f6ee;border:1px solid var(--ok);color:var(--ok);border-radius:14px;padding:3px 12px;font:13px 'Segoe UI',Arial,sans-serif;margin-left:8px;vertical-align:middle}
+</style>
+</head>
+<body>
+<div class="topbar">
+<span class="tn">Personal Research Knowledge Server — концепция</span>
+<a href="concept.html">Читать полный документ →</a>
+</div>
+<div class="wrap">
+
+<header>
+<h1>Personal Research Knowledge Server<span class="status">концепция · 2026-08</span></h1>
+<div class="sub">Персональная исследовательская инфраструктура: центр научных знаний, правил и памяти</div>
+</header>
+
+<div class="abstract">
+<div class="cap">Реферат</div>
+<p>Предложена архитектура персонального сервера знаний для научно-технической работы. Сервер — активный участник конвейера: собственная языковая модель анализирует поступающие документы, извлекает ссылки, находит и скачивает первоисточники из сети, проводит их первичную валидацию, а также предоставляет вычислительную помощь слабым локальным клиентам. Локальные пользователи подключаются к серверу и получают готовые результаты поиска. Окончательные суждения и запись в проверенное ядро остаются за внешним фронтир-агентом; он же обслуживает саму систему — развёртывание, диагностику, обновления.</p>
+<p>Ядро архитектуры — сквозной верификационный конвейер: любое знание (документ, термин, формула, ребро графа) проходит путь «кандидат → проверка независимым агентом → канон», причём внёсший и проверяющий структурно не могут совпадать, а запись в канон возможна только через выделенную роль.</p>
+<p>Поиск реализован гибридной схемой: метаданные, полнотекстовый индекс, векторный слой и граф типизированных связей с пересортировкой. Индекс рассматривается как кэш; дословные цитаты извлекаются только из первоисточника с учётом карты дефектов текстового слоя. Система разделена на изолированные пространства (научное, персональные, домашнее) с раздельными данными, индексами и обработчиками.</p>
+<p>Обзор существующих решений (19 RAG-платформ, реестр MCP-серверов, GraphRAG-экосистема, стандарты TBX/SKOS) показал: отдельные элементы реализованы в разных системах порознь, однако целостного аналога предлагаемого конвейера верификации не обнаружено. Архитектура опирается на действующий прототип — терминологический словарь из 523 записей в десяти доменах, наполненный и верифицированный по описанной схеме.</p>
+</div>
+
+<h2>Общая архитектура</h2>
+<div class="scheme">
+<div class="t">Клиенты и сервер: интеллект приходит извне</div>
+<div class="stack">
+
+<div class="box">
+<div class="bt">Клиенты</div>
+<div class="cells">
+<div class="cell"><b>Claude Code</b>&nbsp;(фронтир)</div>
+<div class="cell">клиентская LLM</div>
+<div class="cell">скрипты · веб · инбокс</div>
+</div>
+</div>
+
+<div class="varr"><span class="a">▼</span><span>MCP · REST · файловые шары</span></div>
+
+<div class="box outer">
+<div class="bt">Research Knowledge Server</div>
+
+<div class="inner">
+<div class="it">Слой знаний</div>
+<div class="cells">
+<div class="cell">библиотека первоисточников</div>
+<div class="cell">терминологическая база RU↔EN</div>
+<div class="cell">правила стиля</div>
+<div class="cell">формулы</div>
+<div class="cell">оборудование, архив прошивок</div>
+<div class="cell">результаты измерений</div>
+</div>
+</div>
+
+<div class="inner">
+<div class="it">Слой поиска</div>
+<div class="cells">
+<div class="cell">метаданные</div>
+<div class="cell">полнотекст (BM25)</div>
+<div class="cell">вектор</div>
+<div class="cell">граф связей</div>
+<div class="cell">reranker</div>
+</div>
+</div>
+
+<div class="inner">
+<div class="it">Слой сервисов</div>
+<div class="cells">
+<div class="cell">MCP-сервер</div>
+<div class="cell">git (каноны)</div>
+<div class="cell">серверная LLM (фон)</div>
+<div class="cell">мониторинг · бэкап</div>
+</div>
+</div>
+
+</div>
+
+<div class="varr"><span class="a">▼</span><span>изоляция пространств: раздельные данные, индексы, обработчики</span></div>
+
+<div class="box dim">
+<div class="bt">Пространства</div>
+<div class="cells">
+<div class="cell">наука</div>
+<div class="cell dim">персональные</div>
+<div class="cell dim">дом (медиа)</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<h2>Верификационный конвейер — ядро системы</h2>
+<div class="scheme">
+<div class="t">Любое знание проходит один и тот же жизненный цикл</div>
+<div class="flow">
+<div class="node cand">кандидат<br><small>любой агент, любая модель<br>с провенансом</small></div>
+<div class="arr">→</div>
+<div class="node">проверка<br><small>другой агент<br>actor ≠ verifier</small></div>
+<div class="arr">→</div>
+<div class="node canon">канон<br><small>только write-lock-роль<br>git-коммит</small></div>
+</div>
+<p style="margin-top:16px;font-size:14px;color:var(--mut)">Продукция любой модели ниже фронтира — всегда кандидат. Автоматика (ингест, автопополнение библиотеки, извлечение терминов) наполняет очередь кандидатов, но не пишет в канон. Отзыв знания — статусом со ссылкой на замену, история не переписывается.</p>
+</div>
+
+<h2>Гибридный поиск</h2>
+<div class="scheme">
+<div class="t">Пять компонент, каждая отвечает за своё</div>
+<div class="flow">
+<div class="node">метаданные<br><small>точные фильтры</small></div>
+<div class="arr">+</div>
+<div class="node">BM25<br><small>точные слова,<br>номера стандартов</small></div>
+<div class="arr">+</div>
+<div class="node">вектор<br><small>смысл,<br>кросс-язычность</small></div>
+<div class="arr">+</div>
+<div class="node">граф<br><small>типизированные<br>связи</small></div>
+<div class="arr">→</div>
+<div class="node">reranker<br><small>порядок</small></div>
+</div>
+<p style="margin-top:16px;font-size:14px;color:var(--mut)">Два инварианта: индекс — кэш (истина в первоисточниках и каноне); чанк не цитируется — дословную цитату агент получает отдельным инструментом из первоисточника, с учётом карты дефектов текстового слоя PDF.</p>
+</div>
+
+<h2>Роли языковых моделей</h2>
+<table>
+<tr><th>Роль</th><th>Где</th><th>Делает</th><th>Право записи</th></tr>
+<tr><td><b>Фронтир</b></td><td>облако</td><td>окончательные суждения, верификация, канонизация; обслуживание системы (развёртывание, диагностика)</td><td>единственный путь в канон</td></tr>
+<tr><td><b>Серверная LLM</b></td><td>сервер</td><td>анализ документов, извлечение ссылок, поиск и докачка первоисточников из сети, первичная валидация, эмбеддинги, карточки; вычислительная помощь слабым клиентам</td><td>очередь кандидатов</td></tr>
+<tr><td>Клиентская LLM</td><td>рабочие машины</td><td>черновики, предобработка, экономия токенов; при нехватке мощности обращается к серверной</td><td>очередь кандидатов</td></tr>
+</table>
+
+<h2>Ключевые решения</h2>
+<div class="grid">
+<div class="card"><h3>Контент-адресное хранение</h3><p>Единица хранения — объект по хешу; тематическая раскладка — представление каталога. Дедупликация не разрушает структуру разделов.</p></div>
+<div class="card"><h3>Автономность без риска</h3><p>Механика ингеста работает круглосуточно без токенов; верификация — по расписанию с бюджетом; ядро сервера структурно не может расходовать токены.</p></div>
+<div class="card"><h3>Граф без автоэкстракции</h3><p>Типизированные рёбра из проверенных полей словаря и ссылочной базы; автоэкстракция связей моделью — только в карантин. Хранение — таблица в PostgreSQL.</p></div>
+<div class="card"><h3>Изоляция пространств</h3><p>Данные, индексы и обработчики пространств разделены; внешние клиенты получают доступ только к записям с явным публичным статусом.</p></div>
+<div class="card"><h3>Провенанс измерений</h3><p>«Измерено» и «смоделировано» — разные метки происхождения; калибровки версионируются; спектры несут структурные метаданные для поиска.</p></div>
+<div class="card"><h3>Проверено обзором аналогов</h3><p>19 RAG-платформ, реестр MCP-серверов, GraphRAG, TBX/SKOS: элементы существуют порознь, целостного аналога конвейера не обнаружено.</p></div>
+</div>
+
+<footer>
+Проект VibeEngineering · 2026 · концепция прошла два круга слепого адверсариального аудита (13 блокирующих находок закрыто) · железо — вне рамок документа
+</footer>
+
+</div>
+</body>
+</html>
