@@ -68,6 +68,20 @@
       <span class="go">Открыть отчёт &rarr;</span>
     </a>
 
+    <a class="card" href="./agent-contours-map/">
+      <span class="tag">LLM &middot; Delegation</span>
+      <h2>Contour Interaction Map &mdash; роли контуров и их взаимодействие</h2>
+      <p>Обезличенная модель ролей: оператор, reviewer/orchestrator (надзор, адъюдикация необратимого, actor&ne;verifier), канал координации, cross-zone handoff через владельца зоны. Sanitized view &mdash; паттерн, не карта инфраструктуры.</p>
+      <span class="go">Открыть карту &rarr;</span>
+    </a>
+
+    <a class="card" href="./multi-agent-config/">
+      <span class="tag">LLM &middot; Delegation</span>
+      <h2>Multi-Agent Contour Map &mdash; подгружённые и разработанные навыки</h2>
+      <p>Инвентарь навыков контура раскрываемым деревом: 58 в карте, 31 разработано под задачи оператора, 12 категорий, 4 open-source прошивки. Sanitized view &mdash; показаны только общедоступные компоненты.</p>
+      <span class="go">Открыть карту &rarr;</span>
+    </a>
+
     <a class="card" href="./atomfast-retry-delay-sweep/">
       <span class="tag">AtomFast · BLE</span>
       <h2>retry_delay sweep — sanity</h2>
@@ -84,6 +98,27 @@
       <span class="go">Открыть отчёт →</span>
     </a>
   
+    <a class="card" href="https://vibeengineering-llc.github.io/atomspectra-waterfall-family/">
+      <span class="tag">ESP32 &middot; Gateway</span>
+      <h2>SpectraWaterfall &mdash; открытые инструменты для гамма-спектрометрии</h2>
+      <p>Экосистема из пяти open-source (MIT) инструментов на ESP32-S3: спектрометр по USB, спектр по WiFi без ПК и телефона, &asymp;1&nbsp;Вт потребления, 8192 канала, экспорт в индустриальные форматы (N42.42, BecqMoni, InterSpec, ЛСРМ, RadiaCode и другие &mdash; всего 6). Готовые .exe и флешер прошивки &mdash; без программирования.</p>
+      <span class="go">Открыть экосистему &rarr;</span>
+    </a>
+
+    <a class="card" href="https://vibeengineering-llc.github.io/atomspectra-waterfall-esp32/">
+      <span class="tag">ESP32 &middot; Gateway</span>
+      <h2>AtomSpectra &rarr; ESP32-S3 &rarr; Web UI</h2>
+      <p>WiFi-шлюз для гамма-спектрометра KB Radar Atom Spectra на ESP32-S3 (USB OTG Host): 8192-канальный спектр в реальном времени в браузере, экспорт BecqMoni/InterSpec/N42.42/ЛСРМ, TCP-мост вместо COM-порта, хранение на flash до 400 спектров.</p>
+      <span class="go">Открыть проект &rarr;</span>
+    </a>
+
+    <a class="card" href="./atomspectra-mobile/">
+      <span class="tag">UI &middot; AtomSpectra</span>
+      <h2>ATOMSPECTRA GATEWAY &mdash; спектрометр в кармане</h2>
+      <p>Макеты мобильного интерфейса шлюза: портретный режим со всеми вкладками и полноэкранный спектр, ландшафтный режим с маркерами энергий выбранных нуклидов. Выбор нуклидов и Lin/Log/keV общие для обоих экранов.</p>
+      <span class="go">Открыть макеты &rarr;</span>
+    </a>
+
     <a class="card" href="./radon-monitor-report/">
       <span class="tag">Radon &middot; Dose</span>
       <h2>Мониторинг радона 22–27 июня 2026</h2>
@@ -122,11 +157,25 @@
       <span class="go">Открыть макеты &rarr;</span>
     </a>
 
+    <a class="card" href="./zhurnal-izmerenii-v2/">
+      <span class="tag">UI &middot; AtomFast</span>
+      <h2>Журнал измерений &mdash; без недостатков (вариант D)</h2>
+      <p>Экранная форма журнала измерений AtomFast: лента по датам, таблица переключателем, фильтр выезжающим листом, легенда порогов (норма/повыш./тревога), тап по записи &mdash; раскрытие с комментарием. Синтез после варианта&nbsp;A &mdash; <a href="https://vibeengineering-llc.github.io/demo-web-pages/zhurnal-izmerenii/">просторные карточки</a>.</p>
+      <span class="go">Открыть макет &rarr;</span>
+    </a>
+
     <a class="card" href="./radon-rn4-gamma-model-2026-07-21/">
       <span class="tag">Radon &middot; Model</span>
       <h2>Гамма-поле ДПР радона &mdash; расчётная модель (#RN4)</h2>
       <p>Нуклид-специфичная камерная модель Jacobi + независимая Монте-Карло верификация (Geant4): приращение H*(10) от <sup>214</sup>Pb/<sup>214</sup>Bi в помещении. v9.2: фактическая Г-геометрия цоколя по CAD-плану, полная модель прибора &mdash; поле в точке 0.59&ndash;0.64&nbsp;нЗв/ч на 100&nbsp;Бк/м&sup3;, ожидаемое показание БДКГ-05 0.75&ndash;0.76 (осаждение ДПР на корпус &mdash; 11&ndash;14% показания). Измеренный #RN3 коэффициент 1.09 (полоса 0.87–1.31) превышает расчётное показание в 1.43–1.45 раза; расчёт и измерение согласуются в пределах фактора 1.5. 7 рисунков, формулы, бюджет неопределённостей, RU/EN.</p>
       <span class="go">Открыть отчёт &rarr;</span>
+    </a>
+
+    <a class="card" href="./radon-room-calculator-3d/">
+      <span class="tag">Radon &middot; Model</span>
+      <h2>Гамма-поле ДПР радона &mdash; 3D-калькулятор комнаты (Geant4&nbsp;v8)</h2>
+      <p>Интерактивная 3D-визуализация поля H*(10) в L-комнате 88.3&nbsp;м&sup3; (Geant4 11.2.1, спектр <sup>214</sup>Pb+<sup>214</sup>Bi, 110&nbsp;линий LNHB): вращение мышью, зонд на высоте измерения, сравнение показания БДКГ-05 с расчётным полем и измеренным коэффициентом #RN3. Проект &laquo;Радоновый риск&raquo;.</p>
+      <span class="go">Открыть калькулятор &rarr;</span>
     </a>
 
     <a class="card" href="./uranium-glass-beads-skin-2026-07-23/">
@@ -135,6 +184,13 @@
       <p>Монте-Карло (Geant4) расчёт дозы в коже от чешского уранового бисера «жёлтый опал 6/0». Уран очищенный &mdash; вековое равновесие ряда нарушено на радии, поэтому доза практически целиком бета (<sup>234m</sup>Pa 2.27&nbsp;МэВ), не гамма. Сферическая бусина, самопоглощение β 55&ndash;67&nbsp;%. H<sub>кожа</sub> на контакте: одна бусина 6.7, цепочка 18.3, коврик 48&nbsp;мкЗв/ч (&gt;99.8% электроны). Эффект «горячей частицы» ×4.1, независимая классическая проверка (шарик, совпадение 4%), данные распада IAEA, сравнение с НРБ и аналогом (Hassan 2021). RU/EN, живые ссылки. Ред. 4.</p>
       <span class="go">Открыть отчёт &rarr;</span>
     </a>
+    <a class="card" href="./uranium-beads-calculator/">
+      <span class="tag">Dosimetry &middot; Geant4</span>
+      <h2>Калькулятор Hp(0,07): урановый стеклянный бисер на коже</h2>
+      <p>Интерактивный расчёт мощности эквивалентной дозы от уранового стеклянного бисера при контакте с кожей: произвольная геометрия раскладки, содержание урана, размер бусин. Откалиброван по Geant4, СКО 0,7&nbsp;%. Компаньон к <a href="https://vibeengineering-llc.github.io/demo-web-pages/uranium-glass-beads-skin-2026-07-23/">полному отчёту</a>.</p>
+      <span class="go">Открыть калькулятор &rarr;</span>
+    </a>
+
     <a class="card" href="./wt20-thorium-electrodes-2024-06-01/">
       <span class="tag">Gamma &middot; Geant4</span>
       <h2>Активность тория в пачке электродов WT-20 &mdash; спектр AtomSpectra Nano 16 PRO</h2>
@@ -147,6 +203,13 @@
       <span class="go">Открыть отчёт &rarr;</span>
     </a>
 
+    <a class="card" href="https://vibeengineering-llc.github.io/geant4-detector-models/">
+      <span class="tag">Gamma &middot; Geant4</span>
+      <h2>Модели детекторов гамма-излучения в Geant4</h2>
+      <p>Геометрия по чертежам и паспортам, сверка с измеренными кривыми эффективности. Кривые RadiaCode 101&ndash;103 в сосудах Маринелли (50&ndash;3000&nbsp;кэВ, интерактивный калькулятор удельной активности) и Гамма-1С &mdash; расчёт против паспорта поверенного прибора по пяти геометриям с наложением расчётных и заводских кривых.</p>
+      <span class="go">Открыть модели &rarr;</span>
+    </a>
+
     <a class="card" href="./radon-rational-method-calculator/">
       <span class="tag">Radon &middot; Metrology</span>
       <h2>Калькулятор Рационального метода &mdash; надёжность измерения радона</h2>
@@ -154,10 +217,24 @@
       <span class="go">Открыть калькулятор &rarr;</span>
     </a>
 
+    <a class="card" href="https://vibeengineering-llc.github.io/radon-risk/">
+      <span class="tag">Radon &middot; Metrology</span>
+      <h2>Рациональный метод контроля радона &mdash; полная версия сайта</h2>
+      <p>Пошаговое описание проблематики, логическая схема принятия решения и калькулятор надёжности (&ge;&nbsp;95&nbsp;%) вывода о соответствии нормативу, с цитатами первоисточника (проект методики радиационного контроля, АНРИ 2025, №1(120)). RU/EN, полная и упрощённая версии. Компактный вариант того же калькулятора &mdash; ниже.</p>
+      <span class="go">Открыть сайт &rarr;</span>
+    </a>
+
     <a class="card" href="./thermal-comfort-diagram/">
       <span class="tag">HVAC &middot; Thermal comfort</span>
       <h2>Диаграмма теплового комфорта &mdash; PMV/PPD, сквозняк, границы влажности</h2>
       <p>Интерактивная диаграмма t&thinsp;&times;&thinsp;&phi; с расчётом ощущаемого комфорта по <b>ГОСТ Р ИСО 7730-2009</b> (идентичен ISO 7730:2005): PMV, PPD, категории A/B/C одновременно по общему комфорту и по риску сквозняка DR, результирующая температура по <b>ГОСТ 30494-2011</b>, приложение А. Ось температуры &mdash; скользящая, привязана к PMV&nbsp;=&nbsp;&plusmn;1,5; поправка v<sub>ar</sub>&nbsp;=&nbsp;v&nbsp;+&nbsp;0,3(M&minus;1) при M&nbsp;&gt;&nbsp;1&nbsp;мет. Штриховые границы 30&nbsp;% и 60&nbsp;% &mdash; гигиенические, для жилой комнаты в холодный период (ГОСТ 30494 табл.&nbsp;1, СанПиН 1.2.3685-21 табл.&nbsp;5.27). Восемь параметров вертикальными движками; ссылки на первоисточники с реквизитами. Расчёт сверен с приложением E ГОСТ Р ИСО 7730-2009 (41 контрольная точка, макс. отклонение 0,062 балла PMV).</p>
+      <span class="go">Открыть диаграмму &rarr;</span>
+    </a>
+
+    <a class="card" href="./psychro-climate/">
+      <span class="tag">HVAC &middot; Thermal comfort</span>
+      <h2>i-d диаграмма влажного воздуха и климатические параметры для проектирования</h2>
+      <p>Интерактивная i-d диаграмма процессов обработки воздуха (нагрев, охлаждение с осушением, увлажнение, смешение) и климатические параметры наружного воздуха для расчёта воздухообмена и теплопритоков.</p>
       <span class="go">Открыть диаграмму &rarr;</span>
     </a>
 
