@@ -756,33 +756,49 @@ draw();
     ctx.save(); ctx.translate(14,mt+ph/2); ctx.rotate(-Math.PI/2);
     ctx.fillText("отсчётов в канале 1 кэВ за время образца",0,0); ctx.restore();
     if(st.anch){
+      // Подписи ставятся В ДВА РЯДА по высоте (row 0 — сверху, row 1 —
+      // ниже), чтобы соседние близкие якоря не слипались, и со сдвигом
+      // ВПРАВО от линии, а не влево (было — накладывалось на саму линию).
       if(S.xw_zone){
         const a=Math.max(st.lo,S.xw_zone[0]), b=Math.min(st.hi,S.xw_zone[1]);
         if(b>a){ ctx.fillStyle=css("--accent-soft");
           ctx.fillRect(X(a),mt,X(b)-X(a),ph);
-          ctx.fillStyle=css("--ink-3"); ctx.font="11px system-ui";
-          ctx.save(); ctx.translate(X(a)+11,mt+6); ctx.rotate(Math.PI/2);
+          ctx.fillStyle=css("--ink-2"); ctx.font="12px system-ui";
+          ctx.save(); ctx.translate(X(a)+13,mt+ph-8); ctx.rotate(-Math.PI/2);
           ctx.textAlign="left";
           ctx.fillText("зона ХРИ W "+fmt(S.xw_zone[0],0)+"–"+
                        fmt(S.xw_zone[1],0)+": пик не выделяется",0,0);
           ctx.restore(); } }
-      ctx.setLineDash([4,4]); ctx.textAlign="left"; ctx.font="11px system-ui";
+      ctx.setLineDash([4,4]); ctx.textAlign="left"; ctx.font="13px system-ui";
+      // Собираем все якоря в один список, сортируем по E, чередуем ряд по
+      // близости соседа (если ближе 40 px — меняем ряд).
+      const anch=[];
       for(const [key,col] of [["sample",css("--amber")],
-                              ["background",css("--blue")]]){
-        ctx.strokeStyle=col; ctx.fillStyle=col;
-        for(const a of (S.anchors[key]||[])){
-          if(a.E<st.lo||a.E>st.hi) continue;
-          const x=X(a.E); ctx.beginPath(); ctx.moveTo(x,mt);
-          ctx.lineTo(x,mt+ph); ctx.stroke();
-          ctx.save(); ctx.translate(x-3,mt+4); ctx.rotate(Math.PI/2);
-          ctx.fillText(fmt(a.E,1)+" "+a.nuc,0,0); ctx.restore(); } }
+                              ["background",css("--blue")]])
+        for(const a of (S.anchors[key]||[]))
+          if(a.E>=st.lo&&a.E<=st.hi) anch.push({E:a.E,nuc:a.nuc,col});
+      anch.sort((a,b)=>a.E-b.E);
+      let prevX=-1000, row=0;
+      for(const a of anch){
+        const x=X(a.E);
+        if(x-prevX<40) row=1-row; else row=0;
+        prevX=x;
+        ctx.strokeStyle=a.col; ctx.fillStyle=a.col;
+        ctx.beginPath(); ctx.moveTo(x,mt); ctx.lineTo(x,mt+ph); ctx.stroke();
+        ctx.save();
+        ctx.translate(x+4, mt+10+row*95);
+        ctx.rotate(-Math.PI/2);
+        ctx.textAlign="right";
+        ctx.fillText(fmt(a.E,1)+" "+a.nuc,0,0);
+        ctx.restore(); }
       ctx.setLineDash([2,5]); ctx.strokeStyle=css("--accent");
       ctx.fillStyle=css("--accent");
       for(const s of (S.sums||[])){
         if(s.E<st.lo||s.E>st.hi) continue;
         const x=X(s.E); ctx.beginPath(); ctx.moveTo(x,mt);
         ctx.lineTo(x,mt+ph); ctx.stroke();
-        ctx.save(); ctx.translate(x+10,mt+4); ctx.rotate(Math.PI/2);
+        ctx.save(); ctx.translate(x+4,mt+ph-8); ctx.rotate(-Math.PI/2);
+        ctx.textAlign="left";
         ctx.fillText(s.lab,0,0); ctx.restore(); }
       ctx.setLineDash([]); }
     const plot=(a,col)=>{ ctx.strokeStyle=col; ctx.lineWidth=1.2;
