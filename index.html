@@ -3,9 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b0f1a">
 <title>VibeEngineering — демо-страницы</title>
 <style>
-  :root { color-scheme: dark; }
+  :root { color-scheme: dark; --content-w: 1180px; }
   * { box-sizing: border-box; }
   body {
     margin: 0; min-height: 100vh;
@@ -19,7 +20,7 @@
   h1 { font-size: 2rem; margin: 0 0 10px; letter-spacing: .2px; }
   .sub { color: #9fb0cc; font-size: 1.02rem; line-height: 1.5; margin: 0; }
   .grid {
-    display: grid; gap: 20px; width: 100%; max-width: 860px;
+    display: grid; gap: 20px; width: 100%; max-width: var(--content-w);
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
   a.card {
@@ -28,13 +29,58 @@
     padding: 22px 22px 20px; transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
   }
   a.card:hover { transform: translateY(-3px); border-color: #3a72ff; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+  a.card, .chip, .reset, .empty button { -webkit-tap-highlight-color: rgba(58,114,255,.25); touch-action: manipulation; }
   .card h2 { margin: 0 0 8px; font-size: 1.16rem; color: #cfe0ff; }
   .card p { margin: 0 0 14px; color: #9fb0cc; font-size: .95rem; line-height: 1.5; }
   .card .go { font-size: .85rem; color: #6ea0ff; font-weight: 600; }
+  a.card:focus-visible { outline: 2px solid #3a72ff; outline-offset: 2px; border-color: #3a72ff; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
   .tag { display: inline-block; font-size: .72rem; color: #88e0c0; border: 1px solid #2f6b56;
-         border-radius: 999px; padding: 2px 10px; margin-bottom: 12px; letter-spacing: .3px; }
+         border-radius: 999px; padding: 2px 10px; letter-spacing: .3px; }
+
+  .filterbar { width: 100%; max-width: var(--content-w); margin-bottom: 28px; }
+  .search {
+    width: 100%; font: inherit; font-size: .95rem; color: #e6ebf5;
+    background: #131a2b; border: 1px solid #243150; border-radius: 10px;
+    padding: 10px 14px; margin-bottom: 14px;
+  }
+  .search::placeholder { color: #5d6c8a; }
+  .search:focus-visible { outline: 2px solid #3a72ff; outline-offset: 1px; border-color: #3a72ff; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .chip {
+    font: inherit; font-size: .78rem; color: #9fb0cc; background: transparent;
+    border: 1px solid #243150; border-radius: 999px; padding: 5px 13px; margin: 0;
+    cursor: pointer; letter-spacing: .2px;
+    transition: border-color .15s ease, color .15s ease, background .15s ease;
+  }
+  .chip:hover { border-color: #3a72ff; color: #cfe0ff; }
+  .chip:focus-visible { outline: 2px solid #3a72ff; outline-offset: 2px; }
+  .chip[aria-pressed="true"] { background: #1c2c52; border-color: #3a72ff; color: #cfe0ff; }
+  .filter-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-top: 12px; min-height: 1.2em; }
+  .count { color: #6b7a96; font-size: .82rem; margin: 0; }
+  .reset {
+    font: inherit; font-size: .82rem; color: #6ea0ff; background: none; border: none;
+    cursor: pointer; padding: 0; text-decoration: underline;
+  }
+  .reset:hover { color: #8fb4ff; }
+  .reset:focus-visible { outline: 2px solid #3a72ff; outline-offset: 2px; }
+
+  .empty { width: 100%; max-width: var(--content-w); text-align: center; color: #6b7a96; font-size: .92rem; padding: 40px 0; }
+  .empty button {
+    font: inherit; font-size: inherit; color: #6ea0ff; background: none; border: none;
+    cursor: pointer; text-decoration: underline; padding: 0;
+  }
+  .empty button:hover { color: #8fb4ff; }
+  .empty button:focus-visible { outline: 2px solid #3a72ff; outline-offset: 2px; }
+
   footer { margin-top: 46px; color: #6b7a96; font-size: .82rem; text-align: center; }
   footer a { color: #6ea0ff; text-decoration: none; }
+  footer a:focus-visible { outline: 2px solid #3a72ff; outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    a.card, a.card:hover, .chip { transition: none; }
+    a.card:hover { transform: none; }
+  }
 </style>
 </head>
 <body>
@@ -44,23 +90,45 @@
        Каждая страница — самодостаточная, обслуживается через GitHub Pages.</p>
   </header>
 
+  <div class="filterbar">
+    <input id="q" name="q" class="search" type="search" autocomplete="off"
+           placeholder="Поиск по названию, описанию, тегу…" aria-label="Поиск по названию, описанию, тегу">
+    <div class="chips" role="group" aria-label="Фильтр по тегам">
+      <button type="button" class="chip" data-tag="radon" aria-pressed="false">Радон</button>
+      <button type="button" class="chip" data-tag="gamma" aria-pressed="false">Гамма-спектрометрия</button>
+      <button type="button" class="chip" data-tag="geant4" aria-pressed="false">Geant4</button>
+      <button type="button" class="chip" data-tag="dose" aria-pressed="false">Дозиметрия</button>
+      <button type="button" class="chip" data-tag="calc" aria-pressed="false">Калькулятор</button>
+      <button type="button" class="chip" data-tag="llm" aria-pressed="false">LLM</button>
+      <button type="button" class="chip" data-tag="firmware" aria-pressed="false">Прошивка</button>
+      <button type="button" class="chip" data-tag="ui" aria-pressed="false">UI-макет</button>
+      <button type="button" class="chip" data-tag="arch" aria-pressed="false">Архитектура</button>
+      <button type="button" class="chip" data-tag="hvac" aria-pressed="false">ОВК</button>
+      <button type="button" class="chip" data-tag="metrology" aria-pressed="false">Метрология</button>
+    </div>
+    <p class="filter-meta">
+      <span class="count" id="count" aria-live="polite"></span>
+      <button type="button" class="reset" id="reset" hidden>Сбросить фильтр</button>
+    </p>
+  </div>
+
   <main class="grid">
-    <a class="card" href="./research-knowledge-server/" target="_blank" rel="noopener">
-      <span class="tag">Architecture &middot; RAG</span>
+    <a class="card" href="./research-knowledge-server/" data-tags="arch llm" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">Архитектура</span><span class="tag">LLM</span></div>
       <h2>Personal Research Knowledge Server &mdash; концепция</h2>
       <p>Персональный сервер знаний: конвейер &laquo;кандидат &rarr; проверка &rarr; канон&raquo;, hybrid RAG, MCP-интерфейс, обзор 19 существующих RAG-платформ. Реферат, схемы, полный документ на 17 разделов.</p>
       <span class="go">Открыть &rarr;</span>
     </a>
 
-    <a class="card" href="./radon-bdkg05-report-2026-07-12/" target="_blank" rel="noopener">
-      <span class="tag">Radon &middot; Dose</span>
+    <a class="card" href="./radon-bdkg05-report-2026-07-12/" data-tags="radon dose" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">Радон</span><span class="tag">Дозиметрия</span></div>
       <h2>&#9888; БДКГ-05 &harr; RadonEye Plus2 &mdash; влияние ОА радона на МЭД (11&ndash;12 июля 2026)</h2>
       <p>Эксперимент &laquo;выключение вентиляции&raquo;: радон &times;3.75 (318&rarr;1193 Бк/м&sup3;). cps +1.06/100, МЭД +1.09 нЗв/ч/100 Бк/м&sup3;. Интерактивные графики, погрешности, SMA, физика Pb&ndash;214/Bi&ndash;214.</p>
       <span class="go">Открыть отчёт &rarr;</span>
     </a>
 
-    <a class="card" href="./delegation-economics/" target="_blank" rel="noopener">
-      <span class="tag">LLM &middot; Delegation</span>
+    <a class="card" href="./delegation-economics/" data-tags="llm" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">LLM</span></div>
       <h2>Делегирование bulk-работы на локальную LLM</h2>
       <p>Замер на реальных данных: экономия контекста frontier-модели при выгрузке обработки
          на локальную <code>Qwen3-Coder&nbsp;30B</code> (90–97% с ~10&nbsp;КБ) + модель падений —
@@ -68,87 +136,80 @@
       <span class="go">Открыть отчёт &rarr;</span>
     </a>
 
-    <a class="card" href="./agent-contours-map/" target="_blank" rel="noopener">
-      <span class="tag">LLM &middot; Delegation</span>
+    <a class="card" href="./agent-contours-map/" data-tags="llm arch" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">LLM</span><span class="tag">Архитектура</span></div>
       <h2>Contour Interaction Map &mdash; роли контуров и их взаимодействие</h2>
       <p>Обезличенная модель ролей: оператор, reviewer/orchestrator (надзор, адъюдикация необратимого, actor&ne;verifier), канал координации, cross-zone handoff через владельца зоны. Sanitized view &mdash; паттерн, не карта инфраструктуры.</p>
       <span class="go">Открыть карту &rarr;</span>
     </a>
 
-    <a class="card" href="./multi-agent-config/" target="_blank" rel="noopener">
-      <span class="tag">LLM &middot; Delegation</span>
+    <a class="card" href="./multi-agent-config/" data-tags="llm arch" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">LLM</span><span class="tag">Архитектура</span></div>
       <h2>Multi-Agent Contour Map &mdash; подгружённые и разработанные навыки</h2>
       <p>Инвентарь навыков контура раскрываемым деревом: 58 в карте, 31 разработано под задачи оператора, 12 категорий, 4 open-source прошивки. Sanitized view &mdash; показаны только общедоступные компоненты.</p>
       <span class="go">Открыть карту &rarr;</span>
     </a>
 
-    <a class="card" href="./atomfast-retry-delay-sweep/" target="_blank" rel="noopener">
-      <span class="tag">AtomFast · BLE</span>
+    <a class="card" href="./atomfast-retry-delay-sweep/" data-tags="firmware" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">Прошивка</span></div>
       <h2>retry_delay sweep — sanity</h2>
       <p>Прогон BLE <code>retry_delay</code> 1400–1800&nbsp;мс (4×30&nbsp;с/точка)
          на дозиметре AtomFast: таблица + графики rec/min и connect-latency.</p>
       <span class="go">Открыть отчёт →</span>
     </a>
 
-    <a class="card" href="./atomfast-prod-sweep/" target="_blank" rel="noopener">
-      <span class="tag">AtomFast · BLE</span>
+    <a class="card" href="./atomfast-prod-sweep/" data-tags="firmware" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">Прошивка</span></div>
       <h2>retry_delay sweep — production</h2>
       <p>Production-серия <code>retry_delay</code> 500–2500&nbsp;мс ×&nbsp;10 итераций
          ×&nbsp;10–20&nbsp;мин мониторинга. Завершено 21&nbsp;из&nbsp;21 точки.</p>
       <span class="go">Открыть отчёт →</span>
     </a>
   
-    <a class="card" href="https://vibeengineering-llc.github.io/atomspectra-waterfall-family/" target="_blank" rel="noopener">
-      <span class="tag">ESP32 &middot; Gateway</span>
+    <a class="card" href="https://vibeengineering-llc.github.io/atomspectra-waterfall-family/" data-tags="firmware gamma" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">Прошивка</span><span class="tag">Гамма-спектрометрия</span></div>
       <h2>SpectraWaterfall &mdash; открытые инструменты для гамма-спектрометрии</h2>
       <p>Экосистема из пяти open-source (MIT) инструментов на ESP32-S3: спектрометр по USB, спектр по WiFi без ПК и телефона, &asymp;1&nbsp;Вт потребления, 8192 канала, экспорт в индустриальные форматы (N42.42, BecqMoni, InterSpec, ЛСРМ, RadiaCode и другие &mdash; всего 6). Готовые .exe и флешер прошивки &mdash; без программирования.</p>
       <span class="go">Открыть экосистему &rarr;</span>
     </a>
 
-    <a class="card" href="https://vibeengineering-llc.github.io/atomspectra-waterfall-esp32/" target="_blank" rel="noopener">
-      <span class="tag">ESP32 &middot; Gateway</span>
+    <a class="card" href="https://vibeengineering-llc.github.io/atomspectra-waterfall-esp32/" data-tags="firmware gamma" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">Прошивка</span><span class="tag">Гамма-спектрометрия</span></div>
       <h2>AtomSpectra &rarr; ESP32-S3 &rarr; Web UI</h2>
       <p>WiFi-шлюз для гамма-спектрометра KB Radar Atom Spectra на ESP32-S3 (USB OTG Host): 8192-канальный спектр в реальном времени в браузере, экспорт BecqMoni/InterSpec/N42.42/ЛСРМ, TCP-мост вместо COM-порта, хранение на flash до 400 спектров.</p>
       <span class="go">Открыть проект &rarr;</span>
     </a>
 
-    <a class="card" href="./atomspectra-mobile/" target="_blank" rel="noopener">
-      <span class="tag">UI &middot; AtomSpectra</span>
+    <a class="card" href="./atomspectra-mobile/" data-tags="ui gamma" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">UI-макет</span><span class="tag">Гамма-спектрометрия</span></div>
       <h2>ATOMSPECTRA GATEWAY &mdash; спектрометр в кармане</h2>
       <p>Макеты мобильного интерфейса шлюза: портретный режим со всеми вкладками и полноэкранный спектр, ландшафтный режим с маркерами энергий выбранных нуклидов. Выбор нуклидов и Lin/Log/keV общие для обоих экранов.</p>
       <span class="go">Открыть макеты &rarr;</span>
     </a>
 
-    <a class="card" href="./radon-monitor-report/" target="_blank" rel="noopener">
-      <span class="tag">Radon &middot; Dose</span>
+    <a class="card" href="./radon-monitor-report/" data-tags="radon dose" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">Радон</span><span class="tag">Дозиметрия</span></div>
       <h2>Мониторинг радона 22–27 июня 2026</h2>
       <p>RadonEye Plus2 + AtomFast D11594: скользящее среднее ОА и МД, корреляционный анализ. Корреляция не обнаружена (r=0.009, p=0.83).</p>
       <span class="go">Открыть отчёт →</span>
     </a>
 
-    <a class="card" href="./radon-monitor-report-2026-06-28-07-06/" target="_blank" rel="noopener">
-      <span class="tag">Radon &middot; Dose</span>
+    <a class="card" href="./radon-monitor-report-2026-06-28-07-06/" data-tags="radon dose" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">Радон</span><span class="tag">Дозиметрия</span></div>
       <h2>Мониторинг радона 28 июня &ndash; 6 июля 2026</h2>
       <p>RadonEye Plus2 + AtomFast D11594: ОА и МД, скользящее среднее и корреляционный анализ. Слабая значимая корреляция (r=0.256, p=0.009).</p>
       <span class="go">Открыть отчёт &rarr;</span>
     </a>
 
-    <a class="card" href="./radon-monitor-report-2026-06-29-07-06/" target="_blank" rel="noopener">
-      <span class="tag">Radon &middot; Dose</span>
+    <a class="card" href="./radon-monitor-report-2026-06-29-07-06/" data-tags="radon dose" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">Радон</span><span class="tag">Дозиметрия</span></div>
       <h2>Мониторинг радона 29 июня &ndash; 6 июля 2026</h2>
       <p>RadonEye Plus2 + AtomFast 8850: интерактивный график (MA&nbsp;30&nbsp;мин), компенсация приборного лага RadonEye &mdash; пик r=0.131 при сдвиге радона +30&nbsp;мин; температура и влажность стабильны.</p>
       <span class="go">Открыть отчёт &rarr;</span>
     </a>
 
-    <a class="card" href="./radon-bdkg05-report-2026-07-12/" target="_blank" rel="noopener">
-      <span class="tag">Radon &middot; Dose</span>
-      <h2>БДКГ-05 &harr; RadonEye: два стабильных диапазона (11&ndash;12 июля 2026)</h2>
-      <p>Атомтех БДКГ-05 vs ОА радона (RadonEye Plus2). Сравнение низкого радона (342&nbsp;Бк/м&sup3;) и плато (1193&nbsp;Бк/м&sup3;) после выключения вентиляции: cps +1.0 имп/с и МЭД +1.2&nbsp;нЗв/ч на 100&nbsp;Бк/м&sup3; &mdash; малый согласованный эффект (предположительно гамма дочерних радона).</p>
-      <span class="go">Открыть отчёт &rarr;</span>
-    </a>
-
-    <a class="card" href="./roi-wizard-ui-mockup-2026-07-25/" target="_blank" rel="noopener">
-      <span class="tag">UI &middot; BecqMoni</span>
+    <a class="card" href="./roi-wizard-ui-mockup-2026-07-25/" data-tags="ui" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">UI-макет</span></div>
       <h2>ROI-мастер для BecqMoni &mdash; макеты интерфейса-панели</h2>
       <p>Варианты компоновки мастера ROI как встроенной панели BecqMoni: закладки шагов со счётчиками
          («2&nbsp;&middot;&nbsp;Линии&nbsp;12»), настройки и результат фильтрации в одном окне, таблица линий
@@ -157,42 +218,42 @@
       <span class="go">Открыть макеты &rarr;</span>
     </a>
 
-    <a class="card" href="./zhurnal-izmerenii-v2/" target="_blank" rel="noopener">
-      <span class="tag">UI &middot; AtomFast</span>
+    <a class="card" href="./zhurnal-izmerenii-v2/" data-tags="ui" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">UI-макет</span></div>
       <h2>Журнал измерений &mdash; без недостатков (вариант D)</h2>
       <p>Экранная форма журнала измерений AtomFast: лента по датам, таблица переключателем, фильтр выезжающим листом, легенда порогов (норма/повыш./тревога), тап по записи &mdash; раскрытие с комментарием. Синтез после варианта&nbsp;A &mdash; <a href="https://vibeengineering-llc.github.io/demo-web-pages/zhurnal-izmerenii/" target="_blank" rel="noopener">просторные карточки</a>.</p>
       <span class="go">Открыть макет &rarr;</span>
     </a>
 
-    <a class="card" href="./radon-rn4-gamma-model-2026-07-21/" target="_blank" rel="noopener">
-      <span class="tag">Radon &middot; Model</span>
+    <a class="card" href="./radon-rn4-gamma-model-2026-07-21/" data-tags="radon geant4 dose" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">Радон</span><span class="tag">Geant4</span><span class="tag">Дозиметрия</span></div>
       <h2>Гамма-поле ДПР радона &mdash; расчётная модель (#RN4)</h2>
       <p>Нуклид-специфичная камерная модель Jacobi + независимая Монте-Карло верификация (Geant4): приращение H*(10) от <sup>214</sup>Pb/<sup>214</sup>Bi в помещении. v9.2: фактическая Г-геометрия цоколя по CAD-плану, полная модель прибора &mdash; поле в точке 0.59&ndash;0.64&nbsp;нЗв/ч на 100&nbsp;Бк/м&sup3;, ожидаемое показание БДКГ-05 0.75&ndash;0.76 (осаждение ДПР на корпус &mdash; 11&ndash;14% показания). Измеренный #RN3 коэффициент 1.09 (полоса 0.87–1.31) превышает расчётное показание в 1.43–1.45 раза; расчёт и измерение согласуются в пределах фактора 1.5. 7 рисунков, формулы, бюджет неопределённостей, RU/EN.</p>
       <span class="go">Открыть отчёт &rarr;</span>
     </a>
 
-    <a class="card" href="./radon-room-calculator-3d/" target="_blank" rel="noopener">
-      <span class="tag">Radon &middot; Model</span>
+    <a class="card" href="./radon-room-calculator-3d/" data-tags="radon geant4 calc" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">Радон</span><span class="tag">Geant4</span><span class="tag">Калькулятор</span></div>
       <h2>Гамма-поле ДПР радона &mdash; 3D-калькулятор комнаты (Geant4&nbsp;v8)</h2>
       <p>Интерактивная 3D-визуализация поля H*(10) в L-комнате 88.3&nbsp;м&sup3; (Geant4 11.2.1, спектр <sup>214</sup>Pb+<sup>214</sup>Bi, 110&nbsp;линий LNHB): вращение мышью, зонд на высоте измерения, сравнение показания БДКГ-05 с расчётным полем и измеренным коэффициентом #RN3. Проект &laquo;Радоновый риск&raquo;.</p>
       <span class="go">Открыть калькулятор &rarr;</span>
     </a>
 
-    <a class="card" href="./uranium-glass-beads-skin-2026-07-23/" target="_blank" rel="noopener">
-      <span class="tag">Dosimetry &middot; Geant4</span>
+    <a class="card" href="./uranium-glass-beads-skin-2026-07-23/" data-tags="geant4 dose" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">Geant4</span><span class="tag">Дозиметрия</span></div>
       <h2>Радиологическая оценка уранового стеклянного бисера: доза в коже (Geant4 MC)</h2>
       <p>Монте-Карло (Geant4) расчёт дозы в коже от чешского уранового бисера «жёлтый опал 6/0». Уран очищенный &mdash; вековое равновесие ряда нарушено на радии, поэтому доза практически целиком бета (<sup>234m</sup>Pa 2.27&nbsp;МэВ), не гамма. Сферическая бусина, самопоглощение β 55&ndash;67&nbsp;%. H<sub>кожа</sub> на контакте: одна бусина 6.7, цепочка 18.3, коврик 48&nbsp;мкЗв/ч (&gt;99.8% электроны). Эффект «горячей частицы» ×4.1, независимая классическая проверка (шарик, совпадение 4%), данные распада IAEA, сравнение с НРБ и аналогом (Hassan 2021). RU/EN, живые ссылки. Ред. 4.</p>
       <span class="go">Открыть отчёт &rarr;</span>
     </a>
-    <a class="card" href="./uranium-beads-calculator/" target="_blank" rel="noopener">
-      <span class="tag">Dosimetry &middot; Geant4</span>
+    <a class="card" href="./uranium-beads-calculator/" data-tags="geant4 dose calc" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">Geant4</span><span class="tag">Дозиметрия</span><span class="tag">Калькулятор</span></div>
       <h2>Калькулятор Hp(0,07): урановый стеклянный бисер на коже</h2>
       <p>Интерактивный расчёт мощности эквивалентной дозы от уранового стеклянного бисера при контакте с кожей: произвольная геометрия раскладки, содержание урана, размер бусин. Откалиброван по Geant4, СКО 0,7&nbsp;%. Компаньон к <a href="https://vibeengineering-llc.github.io/demo-web-pages/uranium-glass-beads-skin-2026-07-23/" target="_blank" rel="noopener">полному отчёту</a>.</p>
       <span class="go">Открыть калькулятор &rarr;</span>
     </a>
 
-    <a class="card" href="./wt20-thorium-electrodes-2024-06-01/" target="_blank" rel="noopener">
-      <span class="tag">Gamma &middot; Geant4</span>
+    <a class="card" href="./wt20-thorium-electrodes-2024-06-01/" data-tags="gamma geant4" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">Гамма-спектрометрия</span><span class="tag">Geant4</span></div>
       <h2>Активность тория в пачке электродов WT-20 &mdash; спектр AtomSpectra Nano 16 PRO</h2>
       <p>Контактный замер 01.06.2024: спектрометр CsI(Tl) 18&times;15&times;60 мм лежит на пачке из 10&nbsp;вольфрамовых электродов
          WT-20 с 2&nbsp;% масс. ThO<sub>2</sub>. Разложение спектра по МК-шаблонам звеньев ряда тория (Geant4 11.2.1,
@@ -203,8 +264,8 @@
       <span class="go">Открыть отчёт &rarr;</span>
     </a>
 
-    <a class="card" href="./thorium-232-secular-equilibrium/" target="_blank" rel="noopener">
-      <span class="tag">Gamma &middot; метрология</span>
+    <a class="card" href="./thorium-232-secular-equilibrium/" data-tags="gamma metrology" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">Гамма-спектрометрия</span><span class="tag">Метрология</span></div>
       <h2>Равновесие ряда тория-232 в объёмных контрольных источниках</h2>
       <p>Th-232 гамма-спектрометрически неизмерим напрямую &mdash; его паспортная активность выводится через дочерние
          при допущении о вековом равновесии. Обзор номенклатуры (ОМАСН/ОИСН Радиевого института, референсные материалы
@@ -217,36 +278,36 @@
       <span class="go">Открыть статью &rarr;</span>
     </a>
 
-    <a class="card" href="https://vibeengineering-llc.github.io/geant4-detector-models/" target="_blank" rel="noopener">
-      <span class="tag">Gamma &middot; Geant4</span>
+    <a class="card" href="https://vibeengineering-llc.github.io/geant4-detector-models/" data-tags="gamma geant4" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">Гамма-спектрометрия</span><span class="tag">Geant4</span></div>
       <h2>Модели детекторов гамма-излучения в Geant4</h2>
       <p>Геометрия по чертежам и паспортам, сверка с измеренными кривыми эффективности. Кривые RadiaCode 101&ndash;103 в сосудах Маринелли (50&ndash;3000&nbsp;кэВ, интерактивный калькулятор удельной активности) и Гамма-1С &mdash; расчёт против паспорта поверенного прибора по пяти геометриям с наложением расчётных и заводских кривых.</p>
       <span class="go">Открыть модели &rarr;</span>
     </a>
 
-    <a class="card" href="https://vibeengineering-llc.github.io/geant4-detector-models/atomspectra-nano16/" target="_blank" rel="noopener">
-      <span class="tag">Gamma &middot; Geant4</span>
+    <a class="card" href="https://vibeengineering-llc.github.io/geant4-detector-models/atomspectra-nano16/" data-tags="gamma geant4" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">Гамма-спектрометрия</span><span class="tag">Geant4</span></div>
       <h2>Из чего складывается спектр &mdash; функция отклика детектора (Nano 16 PRO)</h2>
       <p>Разложение отклика CsI(Tl) 18&times;15&times;60&nbsp;мм по каналам взаимодействия (Geant4): фотоэффект, одно- и многократный комптон с вылетом, вылет тормозного и характеристического рентгена, вторичные из корпуса. Доля пика полного поглощения 75,8&nbsp;% на 180&nbsp;кэВ &rarr; 6,2&nbsp;% на 3000&nbsp;кэВ. Матрица отклика 61&times;320, интерактивные доли на любом узле по наведению курсора, сборка отказывает при несходимости каналов. RU/EN.</p>
       <span class="go">Открыть страницу &rarr;</span>
     </a>
 
-    <a class="card" href="./radon-rational-method-calculator/" target="_blank" rel="noopener">
-      <span class="tag">Radon &middot; Metrology</span>
+    <a class="card" href="./radon-rational-method-calculator/" data-tags="radon metrology calc" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">Радон</span><span class="tag">Метрология</span><span class="tag">Калькулятор</span></div>
       <h2>Калькулятор Рационального метода &mdash; надёжность измерения радона</h2>
       <p>Достаточна ли длительность замера, чтобы решение о соответствии нормативу было надёжным (&ge;&nbsp;95&nbsp;%)? Интерактивная реализация критериев Рационального метода (Цапалов, <i>АНРИ</i> 2025, №1(120); англ. развитие &mdash; Tsapalov &amp; Kranrod, <i>Atmosphere</i> 2026, 17, 706): по измеренной концентрации, длительности, нормативу C<sub>ну</sub> и инструментальной погрешности &mdash; исход A/B/C (соответствует / не соответствует / серая зона) с порогами C<sub>AL</sub> и Табл.&nbsp;1 U<sub>V</sub>(t)/K<sub>p</sub>(t). Приоритет временной неопределённости над инструментальной. RU/EN.</p>
       <span class="go">Открыть калькулятор &rarr;</span>
     </a>
 
-    <a class="card" href="./thermal-comfort-diagram/" target="_blank" rel="noopener">
-      <span class="tag">HVAC &middot; Thermal comfort</span>
+    <a class="card" href="./thermal-comfort-diagram/" data-tags="hvac calc" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">ОВК</span><span class="tag">Калькулятор</span></div>
       <h2>Диаграмма теплового комфорта &mdash; PMV/PPD, сквозняк, границы влажности</h2>
       <p>Интерактивная диаграмма t&thinsp;&times;&thinsp;&phi; с расчётом ощущаемого комфорта по <b>ГОСТ Р ИСО 7730-2009</b> (идентичен ISO 7730:2005): PMV, PPD, категории A/B/C одновременно по общему комфорту и по риску сквозняка DR, результирующая температура по <b>ГОСТ 30494-2011</b>, приложение А. Ось температуры &mdash; скользящая, привязана к PMV&nbsp;=&nbsp;&plusmn;1,5; поправка v<sub>ar</sub>&nbsp;=&nbsp;v&nbsp;+&nbsp;0,3(M&minus;1) при M&nbsp;&gt;&nbsp;1&nbsp;мет. Штриховые границы 30&nbsp;% и 60&nbsp;% &mdash; гигиенические, для жилой комнаты в холодный период (ГОСТ 30494 табл.&nbsp;1, СанПиН 1.2.3685-21 табл.&nbsp;5.27). Восемь параметров вертикальными движками; ссылки на первоисточники с реквизитами. Расчёт сверен с приложением E ГОСТ Р ИСО 7730-2009 (41 контрольная точка, макс. отклонение 0,062 балла PMV).</p>
       <span class="go">Открыть диаграмму &rarr;</span>
     </a>
 
-    <a class="card" href="./psychro-climate/" target="_blank" rel="noopener">
-      <span class="tag">HVAC &middot; Thermal comfort</span>
+    <a class="card" href="./psychro-climate/" data-tags="hvac calc" target="_blank" rel="noopener">
+      <div class="tags"><span class="tag">ОВК</span><span class="tag">Калькулятор</span></div>
       <h2>i-d диаграмма влажного воздуха и климатические параметры для проектирования</h2>
       <p>Интерактивная i-d диаграмма процессов обработки воздуха (нагрев, охлаждение с осушением, увлажнение, смешение) и климатические параметры наружного воздуха для расчёта воздухообмена и теплопритоков.</p>
       <span class="go">Открыть диаграмму &rarr;</span>
@@ -254,8 +315,91 @@
 
   </main>
 
+  <p class="empty" id="empty" hidden>
+    Ничего не найдено по этому фильтру.
+    <button type="button" id="emptyReset">Сбросить фильтр</button>
+  </p>
+
   <footer>
     Исходники: <a href="https://github.com/VibeEngineering-LLC/demo-web-pages" target="_blank" rel="noopener">github.com/VibeEngineering-LLC/demo-web-pages</a>
   </footer>
+
+<script>
+(function () {
+  var cards  = Array.prototype.slice.call(document.querySelectorAll('.grid .card'));
+  var total  = cards.length;
+  var chips  = Array.prototype.slice.call(document.querySelectorAll('.chip'));
+  var search = document.getElementById('q');
+  var countEl = document.getElementById('count');
+  var emptyEl = document.getElementById('empty');
+  var resetBtn = document.getElementById('reset');
+  var active = new Set();
+  var NBSP = ' ';
+
+  cards.forEach(function (c) {
+    c._tags = (c.getAttribute('data-tags') || '').split(' ').filter(Boolean);
+    c._hay = c.textContent.toLowerCase();
+  });
+
+  // читаем начальный фильтр из URL — состояние переживает перезагрузку и шарится ссылкой
+  var initial = new URLSearchParams(location.search);
+  (initial.get('tags') || '').split(',').filter(Boolean).forEach(function (t) { active.add(t); });
+  chips.forEach(function (btn) {
+    if (active.has(btn.getAttribute('data-tag'))) btn.setAttribute('aria-pressed', 'true');
+  });
+  if (initial.get('q')) search.value = initial.get('q');
+
+  function syncUrl(q) {
+    var params = new URLSearchParams();
+    if (active.size) params.set('tags', Array.from(active).join(','));
+    if (q) params.set('q', q);
+    var qs = params.toString();
+    history.replaceState(null, '', qs ? '?' + qs : location.pathname);
+  }
+
+  function apply() {
+    var q = search.value.trim().toLowerCase();
+    var shown = 0;
+    cards.forEach(function (c) {
+      var tagOk = active.size === 0 || c._tags.some(function (t) { return active.has(t); });
+      var searchOk = q === '' || c._hay.indexOf(q) !== -1;
+      var visible = tagOk && searchOk;
+      c.hidden = !visible;
+      if (visible) shown++;
+    });
+    countEl.textContent = 'Показано' + NBSP + shown + NBSP + 'из' + NBSP + total;
+    emptyEl.hidden = shown !== 0;
+    resetBtn.hidden = active.size === 0 && q === '';
+    syncUrl(q);
+  }
+
+  function resetAll() {
+    active.clear();
+    chips.forEach(function (btn) { btn.setAttribute('aria-pressed', 'false'); });
+    search.value = '';
+    apply();
+  }
+
+  chips.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var tag = btn.getAttribute('data-tag');
+      if (active.has(tag)) {
+        active.delete(tag);
+        btn.setAttribute('aria-pressed', 'false');
+      } else {
+        active.add(tag);
+        btn.setAttribute('aria-pressed', 'true');
+      }
+      apply();
+    });
+  });
+
+  search.addEventListener('input', apply);
+  resetBtn.addEventListener('click', resetAll);
+  document.getElementById('emptyReset').addEventListener('click', resetAll);
+
+  apply();
+})();
+</script>
 </body>
 </html>
