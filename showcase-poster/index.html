@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5f2ea">
+<title>VibeEngineering — указатель демонстраций и отчётов</title>
+<link rel="stylesheet" href="styles/showcase.css">
+</head>
+<body>
+
+<div class="sheet">
+
+  <header class="top">
+    <p class="eyebrow">VibeEngineering · демо-страницы</p>
+    <h1>Указатель демонстраций и отчётов</h1>
+    <p class="stand">Статические демонстрации и отчёты по экспериментам. Каждая страница самодостаточна и обслуживается через GitHub Pages.</p>
+  </header>
+
+  <div class="panel">
+    <div class="searchbar">
+      <span class="lab">Поиск</span>
+      <input id="q" name="q" class="search" type="search" autocomplete="off"
+             placeholder="название, описание, тег…" aria-label="Поиск по названию, описанию, тегу">
+    </div>
+
+    <div class="chips" role="group" aria-label="Фильтр по тегам">
+        <button type="button" class="chip" data-tag="radon" aria-pressed="false">Радон<span class="chip-n">7</span></button>
+        <button type="button" class="chip" data-tag="gamma" aria-pressed="false">Гамма-спектрометрия<span class="chip-n">7</span></button>
+        <button type="button" class="chip" data-tag="geant4" aria-pressed="false">Geant4<span class="chip-n">7</span></button>
+        <button type="button" class="chip" data-tag="dose" aria-pressed="false">Дозиметрия<span class="chip-n">7</span></button>
+        <button type="button" class="chip" data-tag="calc" aria-pressed="false">Калькулятор<span class="chip-n">5</span></button>
+        <button type="button" class="chip" data-tag="llm" aria-pressed="false">LLM<span class="chip-n">4</span></button>
+        <button type="button" class="chip" data-tag="firmware" aria-pressed="false">Прошивка<span class="chip-n">4</span></button>
+        <button type="button" class="chip" data-tag="ui" aria-pressed="false">UI-макет<span class="chip-n">3</span></button>
+        <button type="button" class="chip" data-tag="arch" aria-pressed="false">Архитектура<span class="chip-n">3</span></button>
+        <button type="button" class="chip" data-tag="hvac" aria-pressed="false">ОВК<span class="chip-n">2</span></button>
+        <button type="button" class="chip" data-tag="metrology" aria-pressed="false">Метрология<span class="chip-n">2</span></button>
+    </div>
+
+    <div class="meta">
+      <span class="count" id="count" aria-live="polite"></span>
+      <button type="button" class="reset" id="reset" hidden>Сбросить фильтр</button>
+    </div>
+
+    <main id="list">
+
+    <a class="row" href="../research-knowledge-server/" target="_blank" rel="noopener" data-tags="arch llm">
+      <span class="row-num">01</span>
+      <span class="row-body">
+        <span class="row-title">Personal Research Knowledge Server — концепция</span>
+        <span class="row-desc">Персональный сервер знаний: конвейер «кандидат → проверка → канон», hybrid RAG, MCP-интерфейс, обзор 19 существующих RAG-платформ. Реферат, схемы, полный документ на 17 разделов.</span>
+      </span>
+      <span class="row-meta">Архитектура · LLM</span>
+    </a>
+
+    <a class="row" href="../radon-bdkg05-report-2026-07-12/" target="_blank" rel="noopener" data-tags="radon dose">
+      <span class="row-num">02</span>
+      <span class="row-body">
+        <span class="row-title">БДКГ-05 ↔ RadonEye Plus2 — влияние ОА радона на МЭД (11–12 июля 2026)</span>
+        <span class="row-desc">Эксперимент «выключение вентиляции»: радон ×3.75 (318→1193 Бк/м³). cps +1.06/100, МЭД +1.09 нЗв/ч/100 Бк/м³. Интерактивные графики, погрешности, SMA, физика Pb-214/Bi-214.</span>
+      </span>
+      <span class="row-meta">Радон · Дозиметрия</span>
+    </a>
+
+    <a class="row" href="../delegation-economics/" target="_blank" rel="noopener" data-tags="llm">
+      <span class="row-num">03</span>
+      <span class="row-body">
+        <span class="row-title">Делегирование bulk-работы на локальную LLM</span>
+        <span class="row-desc">Замер на реальных данных: экономия контекста frontier-модели при выгрузке обработки на локальную <code>Qwen3-Coder 30B</code> (90–97% с ~10 КБ) + модель падений — после скольких провалов выгоднее solo.</span>
+      </span>
+      <span class="row-meta">LLM</span>
+    </a>
+
+    <a class="row" href="../agent-contours-map/" target="_blank" rel="noopener" data-tags="llm arch">
+      <span class="row-num">04</span>
+      <span class="row-body">
+        <span class="row-title">Contour Interaction Map — роли контуров и их взаимодействие</span>
+        <span class="row-desc">Обезличенная модель ролей: оператор, reviewer/orchestrator (надзор, адъюдикация необратимого, actor≠verifier), канал координации, cross-zone handoff через владельца зоны. Sanitized view — паттерн, не карта инфраструктуры.</span>
+      </span>
+      <span class="row-meta">LLM · Архитектура</span>
+    </a>
+
+    <a class="row" href="../multi-agent-config/" target="_blank" rel="noopener" data-tags="llm arch">
+      <span class="row-num">05</span>
+      <span class="row-body">
+        <span class="row-title">Multi-Agent Contour Map — подгружённые и разработанные навыки</span>
+        <span class="row-desc">Инвентарь навыков контура раскрываемым деревом: 58 в карте, 31 разработано под задачи оператора, 12 категорий, 4 open-source прошивки. Sanitized view — показаны только общедоступные компоненты.</span>
+      </span>
+      <span class="row-meta">LLM · Архитектура</span>
+    </a>
+
+    <a class="row" href="../atomfast-retry-delay-sweep/" target="_blank" rel="noopener" data-tags="firmware">
+      <span class="row-num">06</span>
+      <span class="row-body">
+        <span class="row-title">retry_delay sweep — sanity</span>
+        <span class="row-desc">Прогон BLE <code>retry_delay</code> 1400–1800 мс (4×30 с/точка) на дозиметре AtomFast: таблица + графики rec/min и connect-latency.</span>
+      </span>
+      <span class="row-meta">Прошивка</span>
+    </a>
+
+    <a class="row" href="../atomfast-prod-sweep/" target="_blank" rel="noopener" data-tags="firmware">
+      <span class="row-num">07</span>
+      <span class="row-body">
+        <span class="row-title">retry_delay sweep — production</span>
+        <span class="row-desc">Production-серия <code>retry_delay</code> 500–2500 мс × 10 итераций × 10–20 мин мониторинга. Завершено 21 из 21 точки.</span>
+      </span>
+      <span class="row-meta">Прошивка</span>
+    </a>
+
+    <a class="row" href="../atomspectra-waterfall-family/" target="_blank" rel="noopener" data-tags="firmware gamma">
+      <span class="row-num">08</span>
+      <span class="row-body">
+        <span class="row-title">SpectraWaterfall — открытые инструменты для гамма-спектрометрии</span>
+        <span class="row-desc">Экосистема из пяти open-source (MIT) инструментов на ESP32-S3: спектрометр по USB, спектр по WiFi без ПК и телефона, ≈1 Вт потребления, 8192 канала, экспорт в индустриальные форматы (N42.42, BecqMoni, InterSpec, ЛСРМ, RadiaCode и другие — всего 6). Готовые .exe и флешер прошивки — без программирования.</span>
+      </span>
+      <span class="row-meta">Прошивка · Гамма-спектрометрия</span>
+    </a>
+
+    <a class="row" href="https://vibeengineering-llc.github.io/atomspectra-waterfall-esp32/" target="_blank" rel="noopener" data-tags="firmware gamma">
+      <span class="row-num">09</span>
+      <span class="row-body">
+        <span class="row-title">AtomSpectra → ESP32-S3 → Web UI</span>
+        <span class="row-desc">WiFi-шлюз для гамма-спектрометра KB Radar Atom Spectra на ESP32-S3 (USB OTG Host): 8192-канальный спектр в реальном времени в браузере, экспорт BecqMoni/InterSpec/N42.42/ЛСРМ, TCP-мост вместо COM-порта, хранение на flash до 400 спектров.</span>
+      </span>
+      <span class="row-meta">Прошивка · Гамма-спектрометрия</span>
+    </a>
+
+    <a class="row" href="../atomspectra-mobile/" target="_blank" rel="noopener" data-tags="ui gamma">
+      <span class="row-num">10</span>
+      <span class="row-body">
+        <span class="row-title">ATOMSPECTRA GATEWAY — спектрометр в кармане</span>
+        <span class="row-desc">Макеты мобильного интерфейса шлюза: портретный режим со всеми вкладками и полноэкранный спектр, ландшафтный режим с маркерами энергий выбранных нуклидов. Выбор нуклидов и Lin/Log/keV общие для обоих экранов.</span>
+      </span>
+      <span class="row-meta">UI-макет · Гамма-спектрометрия</span>
+    </a>
+
+    <a class="row" href="../radon-monitor-report/" target="_blank" rel="noopener" data-tags="radon dose">
+      <span class="row-num">11</span>
+      <span class="row-body">
+        <span class="row-title">Мониторинг радона 22–27 июня 2026</span>
+        <span class="row-desc">RadonEye Plus2 + AtomFast D11594: скользящее среднее ОА и МД, корреляционный анализ. Корреляция не обнаружена (r=0.009, p=0.83).</span>
+      </span>
+      <span class="row-meta">Радон · Дозиметрия</span>
+    </a>
+
+    <a class="row" href="../radon-monitor-report-2026-06-28-07-06/" target="_blank" rel="noopener" data-tags="radon dose">
+      <span class="row-num">12</span>
+      <span class="row-body">
+        <span class="row-title">Мониторинг радона 28 июня – 6 июля 2026</span>
+        <span class="row-desc">RadonEye Plus2 + AtomFast D11594: ОА и МД, скользящее среднее и корреляционный анализ. Слабая значимая корреляция (r=0.256, p=0.009).</span>
+      </span>
+      <span class="row-meta">Радон · Дозиметрия</span>
+    </a>
+
+    <a class="row" href="../radon-monitor-report-2026-06-29-07-06/" target="_blank" rel="noopener" data-tags="radon dose">
+      <span class="row-num">13</span>
+      <span class="row-body">
+        <span class="row-title">Мониторинг радона 29 июня – 6 июля 2026</span>
+        <span class="row-desc">RadonEye Plus2 + AtomFast 8850: интерактивный график (MA 30 мин), компенсация приборного лага RadonEye — пик r=0.131 при сдвиге радона +30 мин; температура и влажность стабильны.</span>
+      </span>
+      <span class="row-meta">Радон · Дозиметрия</span>
+    </a>
+
+    <div class="row" data-tags="ui">
+      <a class="row-link" href="../roi-wizard-ui-mockup-2026-07-25/" target="_blank" rel="noopener" aria-label="ROI-мастер для BecqMoni — макеты интерфейса-панели"></a>
+      <span class="row-num">14</span>
+      <span class="row-body">
+        <span class="row-title">ROI-мастер для BecqMoni — макеты интерфейса-панели</span>
+        <span class="row-desc">Варианты компоновки мастера ROI как встроенной панели BecqMoni: закладки шагов со счётчиками («2 · Линии 12»), настройки и результат фильтрации в одном окне, таблица линий и статусная строка — в оформлении хоста (WinForms). К каждому варианту — разбор плюсов, минусов и навигации. Сам инструмент: <a href="https://vibeengineering-llc.github.io/becqmoni-roi-wizard/" target="_blank" rel="noopener" class="inline-link">becqmoni-roi-wizard</a>.</span>
+      </span>
+      <span class="row-meta">UI-макет</span>
+    </div>
+
+    <div class="row" data-tags="ui">
+      <a class="row-link" href="../zhurnal-izmerenii-v2/" target="_blank" rel="noopener" aria-label="Журнал измерений — без недостатков (вариант D)"></a>
+      <span class="row-num">15</span>
+      <span class="row-body">
+        <span class="row-title">Журнал измерений — без недостатков (вариант D)</span>
+        <span class="row-desc">Экранная форма журнала измерений AtomFast: лента по датам, таблица переключателем, фильтр выезжающим листом, легенда порогов (норма/повыш./тревога), тап по записи — раскрытие с комментарием. Синтез после варианта A — <a href="https://vibeengineering-llc.github.io/demo-web-pages/zhurnal-izmerenii/" target="_blank" rel="noopener" class="inline-link">просторные карточки</a>.</span>
+      </span>
+      <span class="row-meta">UI-макет</span>
+    </div>
+
+    <a class="row" href="../radon-rn4-gamma-model-2026-07-21/" target="_blank" rel="noopener" data-tags="radon geant4 dose">
+      <span class="row-num">16</span>
+      <span class="row-body">
+        <span class="row-title">Гамма-поле ДПР радона — расчётная модель (#RN4)</span>
+        <span class="row-desc">Нуклид-специфичная камерная модель Jacobi + независимая Монте-Карло верификация (Geant4): приращение H*(10) от <sup>214</sup>Pb/<sup>214</sup>Bi в помещении. v9.2: фактическая Г-геометрия цоколя по CAD-плану, полная модель прибора — поле в точке 0.59–0.64 нЗв/ч на 100 Бк/м³, ожидаемое показание БДКГ-05 0.75–0.76 (осаждение ДПР на корпус — 11–14% показания). Измеренный #RN3 коэффициент 1.09 (полоса 0.87–1.31) превышает расчётное показание в 1.43–1.45 раза; расчёт и измерение согласуются в пределах фактора 1.5. 7 рисунков, формулы, бюджет неопределённостей, RU/EN.</span>
+      </span>
+      <span class="row-meta">Радон · Geant4 · Дозиметрия</span>
+    </a>
+
+    <a class="row" href="../radon-room-calculator-3d/" target="_blank" rel="noopener" data-tags="radon geant4 calc">
+      <span class="row-num">17</span>
+      <span class="row-body">
+        <span class="row-title">Гамма-поле ДПР радона — 3D-калькулятор комнаты (Geant4 v8)</span>
+        <span class="row-desc">Интерактивная 3D-визуализация поля H*(10) в L-комнате 88.3 м³ (Geant4 11.2.1, спектр <sup>214</sup>Pb+<sup>214</sup>Bi, 110 линий LNHB): вращение мышью, зонд на высоте измерения, сравнение показания БДКГ-05 с расчётным полем и измеренным коэффициентом #RN3. Проект «Радоновый риск».</span>
+      </span>
+      <span class="row-meta">Радон · Geant4 · Калькулятор</span>
+    </a>
+
+    <a class="row" href="../uranium-glass-beads-skin-2026-07-23/" target="_blank" rel="noopener" data-tags="geant4 dose">
+      <span class="row-num">18</span>
+      <span class="row-body">
+        <span class="row-title">Радиологическая оценка уранового стеклянного бисера: доза в коже (Geant4 MC)</span>
+        <span class="row-desc">Монте-Карло (Geant4) расчёт дозы в коже от чешского уранового бисера «жёлтый опал 6/0». Уран очищенный — вековое равновесие ряда нарушено на радии, поэтому доза практически целиком бета (<sup>234m</sup>Pa 2.27 МэВ), не гамма. Сферическая бусина, самопоглощение β 55–67%. H<sub>кожа</sub> на контакте: одна бусина 6.7, цепочка 18.3, коврик 48 мкЗв/ч (&gt;99.8% электроны). Эффект «горячей частицы» ×4.1, независимая классическая проверка (шарик, совпадение 4%), данные распада IAEA, сравнение с НРБ и аналогом (Hassan 2021). RU/EN, живые ссылки. Ред. 4.</span>
+      </span>
+      <span class="row-meta">Geant4 · Дозиметрия</span>
+    </a>
+
+    <div class="row" data-tags="geant4 dose calc">
+      <a class="row-link" href="../uranium-beads-calculator/" target="_blank" rel="noopener" aria-label="Калькулятор Hp(0,07): урановый стеклянный бисер на коже"></a>
+      <span class="row-num">19</span>
+      <span class="row-body">
+        <span class="row-title">Калькулятор Hp(0,07): урановый стеклянный бисер на коже</span>
+        <span class="row-desc">Интерактивный расчёт мощности эквивалентной дозы от уранового стеклянного бисера при контакте с кожей: произвольная геометрия раскладки, содержание урана, размер бусин. Откалиброван по Geant4, СКО 0,7%. Компаньон к <a href="https://vibeengineering-llc.github.io/demo-web-pages/uranium-glass-beads-skin-2026-07-23/" target="_blank" rel="noopener" class="inline-link">полному отчёту</a>.</span>
+      </span>
+      <span class="row-meta">Geant4 · Дозиметрия · Калькулятор</span>
+    </div>
+
+    <a class="row" href="../wt20-thorium-electrodes-2024-06-01/" target="_blank" rel="noopener" data-tags="gamma geant4">
+      <span class="row-num">20</span>
+      <span class="row-body">
+        <span class="row-title">Активность тория в пачке электродов WT-20 — спектр AtomSpectra Nano 16 PRO</span>
+        <span class="row-desc">Контактный замер 01.06.2024: спектрометр CsI(Tl) 18×15×60 мм лежит на пачке из 10 вольфрамовых электродов WT-20 с 2% масс. ThO₂. Разложение спектра по МК-шаблонам звеньев ряда тория (Geant4 11.2.1, Radioactive Decay + атомная релаксация), решение по методике ЛСРМ (гл. 12–14): нормальная система с полной дисперсией весов, σ(A) из обратной матрицы, идентификация δa &lt; 1. Интерактивные откалиброванные спектры образца и фона с наложением и разностью, сведение двух шкал ЕРН/тория порознь, сравнение двух методик построения шаблона (понуклидный МК против матрицы отклика). RU.</span>
+      </span>
+      <span class="row-meta">Гамма-спектрометрия · Geant4</span>
+    </a>
+
+    <a class="row" href="../thorium-232-secular-equilibrium/" target="_blank" rel="noopener" data-tags="gamma metrology">
+      <span class="row-num">21</span>
+      <span class="row-body">
+        <span class="row-title">Равновесие ряда тория-232 в объёмных контрольных источниках</span>
+        <span class="row-desc">Th-232 гамма-спектрометрически неизмерим напрямую — его паспортная активность выводится через дочерние при допущении о вековом равновесии. Обзор номенклатуры (ОМАСН/ОИСН Радиевого института, референсные материалы МАГАТЭ и NIST, Маринелли-эталоны Eckert &amp; Ziegler и ЧМИ) показывает: практики расходятся от аттестации отношения <sup>228</sup>Th/<sup>232</sup>Th отдельной величиной до одного числа без оговорок. Выведено замкнутое выражение для Th-228 при несимметричных начальных условиях, проверено численно и сверено с NUREG/CR-1039: активность немонотонна, падает до 42,2% к 4,55 года. Два механизма нарушения равновесия (химическое выделение; выход торона — с измеренными коэффициентами эманирования солей тория), интерактивный график, проверка состояния ряда по спектру. RU.</span>
+      </span>
+      <span class="row-meta">Гамма-спектрометрия · Метрология</span>
+    </a>
+
+    <a class="row" href="https://vibeengineering-llc.github.io/geant4-detector-models/" target="_blank" rel="noopener" data-tags="gamma geant4">
+      <span class="row-num">22</span>
+      <span class="row-body">
+        <span class="row-title">Модели детекторов гамма-излучения в Geant4</span>
+        <span class="row-desc">Геометрия по чертежам и паспортам, сверка с измеренными кривыми эффективности. Кривые RadiaCode 101–103 в сосудах Маринелли (50–3000 кэВ, интерактивный калькулятор удельной активности) и Гамма-1С — расчёт против паспорта поверенного прибора по пяти геометриям с наложением расчётных и заводских кривых.</span>
+      </span>
+      <span class="row-meta">Гамма-спектрометрия · Geant4</span>
+    </a>
+
+    <a class="row" href="https://vibeengineering-llc.github.io/geant4-detector-models/atomspectra-nano16/" target="_blank" rel="noopener" data-tags="gamma geant4">
+      <span class="row-num">23</span>
+      <span class="row-body">
+        <span class="row-title">Из чего складывается спектр — функция отклика детектора (Nano 16 PRO)</span>
+        <span class="row-desc">Разложение отклика CsI(Tl) 18×15×60 мм по каналам взаимодействия (Geant4): фотоэффект, одно- и многократный комптон с вылетом, вылет тормозного и характеристического рентгена, вторичные из корпуса. Доля пика полного поглощения 75,8% на 180 кэВ → 6,2% на 3000 кэВ. Матрица отклика 61×320, интерактивные доли на любом узле по наведению курсора, сборка отказывает при несходимости каналов. RU/EN.</span>
+      </span>
+      <span class="row-meta">Гамма-спектрометрия · Geant4</span>
+    </a>
+
+    <a class="row" href="../radon-rational-method-calculator/" target="_blank" rel="noopener" data-tags="radon metrology calc">
+      <span class="row-num">24</span>
+      <span class="row-body">
+        <span class="row-title">Калькулятор Рационального метода — надёжность измерения радона</span>
+        <span class="row-desc">Достаточна ли длительность замера, чтобы решение о соответствии нормативу было надёжным (≥95%)? Интерактивная реализация критериев Рационального метода (Цапалов, <i>АНРИ</i> 2025, №1(120); англ. развитие — Tsapalov &amp; Kranrod, <i>Atmosphere</i> 2026, 17, 706): по измеренной концентрации, длительности, нормативу C<sub>ну</sub> и инструментальной погрешности — исход A/B/C (соответствует / не соответствует / серая зона) с порогами C<sub>AL</sub> и Табл. 1 U<sub>V</sub>(t)/K<sub>p</sub>(t). Приоритет временной неопределённости над инструментальной. RU/EN.</span>
+      </span>
+      <span class="row-meta">Радон · Метрология · Калькулятор</span>
+    </a>
+
+    <a class="row" href="../thermal-comfort-diagram/" target="_blank" rel="noopener" data-tags="hvac calc">
+      <span class="row-num">25</span>
+      <span class="row-body">
+        <span class="row-title">Диаграмма теплового комфорта — PMV/PPD, сквозняк, границы влажности</span>
+        <span class="row-desc">Интерактивная диаграмма t×φ с расчётом ощущаемого комфорта по <b>ГОСТ Р ИСО 7730-2009</b> (идентичен ISO 7730:2005): PMV, PPD, категории A/B/C одновременно по общему комфорту и по риску сквозняка DR, результирующая температура по <b>ГОСТ 30494-2011</b>, приложение А. Ось температуры — скользящая, привязана к PMV = ±1,5; поправка v<sub>ar</sub> = v + 0,3(M−1) при M &gt; 1 мет. Штриховые границы 30% и 60% — гигиенические, для жилой комнаты в холодный период (ГОСТ 30494 табл. 1, СанПиН 1.2.3685-21 табл. 5.27). Восемь параметров вертикальными движками; ссылки на первоисточники с реквизитами. Расчёт сверен с приложением E ГОСТ Р ИСО 7730-2009 (41 контрольная точка, макс. отклонение 0,062 балла PMV).</span>
+      </span>
+      <span class="row-meta">ОВК · Калькулятор</span>
+    </a>
+
+    <a class="row" href="../psychro-climate/" target="_blank" rel="noopener" data-tags="hvac calc">
+      <span class="row-num">26</span>
+      <span class="row-body">
+        <span class="row-title">i-d диаграмма влажного воздуха и климатические параметры для проектирования</span>
+        <span class="row-desc">Интерактивная i-d диаграмма процессов обработки воздуха (нагрев, охлаждение с осушением, увлажнение, смешение) и климатические параметры наружного воздуха для расчёта воздухообмена и теплопритоков.</span>
+      </span>
+      <span class="row-meta">ОВК · Калькулятор</span>
+    </a>
+
+    </main>
+
+    <p class="empty" id="empty" hidden>
+      Ничего не найдено по этому фильтру.
+      <button type="button" class="reset" id="emptyReset">Сбросить фильтр</button>
+    </p>
+  </div>
+
+  <footer class="bot">
+    <span>Исходники: <a href="https://github.com/VibeEngineering-LLC/demo-web-pages" target="_blank" rel="noopener">github.com/VibeEngineering-LLC/demo-web-pages</a></span>
+    <span>GitHub Pages · статические страницы</span>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  var rows = Array.prototype.slice.call(document.querySelectorAll('#list .row'));
+  var total = rows.length;
+  var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
+  var search = document.getElementById('q');
+  var countEl = document.getElementById('count');
+  var emptyEl = document.getElementById('empty');
+  var resetBtn = document.getElementById('reset');
+  var active = new Set();
+
+  rows.forEach(function (r) {
+    r._tags = (r.getAttribute('data-tags') || '').split(' ').filter(Boolean);
+    r._hay = r.textContent.toLowerCase();
+  });
+
+  var initial = new URLSearchParams(location.search);
+  (initial.get('tags') || '').split(',').filter(Boolean).forEach(function (t) { active.add(t); });
+  chips.forEach(function (b) {
+    if (active.has(b.getAttribute('data-tag'))) b.setAttribute('aria-pressed', 'true');
+  });
+  if (initial.get('q')) search.value = initial.get('q');
+
+  function syncUrl(q) {
+    var p = new URLSearchParams();
+    if (active.size) p.set('tags', Array.from(active).join(','));
+    if (q) p.set('q', q);
+    var qs = p.toString();
+    history.replaceState(null, '', qs ? '?' + qs : location.pathname);
+  }
+
+  function apply() {
+    var q = search.value.trim().toLowerCase();
+    var shown = 0;
+    rows.forEach(function (r) {
+      var tagOk = active.size === 0 || r._tags.some(function (t) { return active.has(t); });
+      var searchOk = q === '' || r._hay.indexOf(q) !== -1;
+      var visible = tagOk && searchOk;
+      r.hidden = !visible;
+      if (visible) shown++;
+    });
+    countEl.textContent = 'показано ' + shown + ' / ' + total;
+    emptyEl.hidden = shown !== 0;
+    resetBtn.hidden = active.size === 0 && q === '';
+    syncUrl(q);
+  }
+
+  function resetAll() {
+    active.clear();
+    chips.forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
+    search.value = '';
+    apply();
+  }
+
+  chips.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var tag = b.getAttribute('data-tag');
+      if (active.has(tag)) { active.delete(tag); b.setAttribute('aria-pressed', 'false'); }
+      else { active.add(tag); b.setAttribute('aria-pressed', 'true'); }
+      apply();
+    });
+  });
+
+  search.addEventListener('input', apply);
+  resetBtn.addEventListener('click', resetAll);
+  document.getElementById('emptyReset').addEventListener('click', resetAll);
+
+  apply();
+})();
+</script>
+</body>
+</html>
