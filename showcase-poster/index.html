@@ -40,7 +40,7 @@
 
     <div class="meta">
       <span class="count" id="count" aria-live="polite"></span>
-      <button type="button" class="reset" id="reset" hidden>Сбросить фильтр</button>
+      <button type="button" class="reset" id="reset">Сбросить фильтр</button>
     </div>
 
     <main id="list">
@@ -367,7 +367,6 @@
     });
     countEl.textContent = 'показано ' + shown + ' / ' + total;
     emptyEl.hidden = shown !== 0;
-    resetBtn.hidden = active.size === 0 && q === '';
     syncUrl(q);
   }
 
