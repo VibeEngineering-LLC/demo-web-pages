@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Рациональный метод контроля радона — пошаговое описание, схема решения и калькулятор</title>
+<style>
+  :root{
+    --bg:#f7f6f3; --card:#ffffff; --ink:#1c1b19; --muted:#605c54;
+    --line:#e3e0d8; --accent:#4a6b8a; --accent-ink:#2c4a63;
+    --ok-bg:#e8f3ea; --ok-ink:#1f6b3a; --ok-line:#bcdcc5;
+    --bad-bg:#fbeaea; --bad-ink:#9a2b2b; --bad-line:#eec6c6;
+    --wait-bg:#fbf3e2; --wait-ink:#8a6420; --wait-line:#ecd9ad;
+    --input-bg:#fdfcfa; --quote-bg:#f1efe9;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#1a1917; --card:#232220; --ink:#ece9e3; --muted:#a7a299;
+      --line:#38352f; --accent:#89aecb; --accent-ink:#a9c6df;
+      --ok-bg:#1c2e22; --ok-ink:#7fce9a; --ok-line:#2f5138;
+      --bad-bg:#33201f; --bad-ink:#e79a9a; --bad-line:#5a3230;
+      --wait-bg:#312a1a; --wait-ink:#e2c079; --wait-line:#584a2c;
+      --input-bg:#1c1b19; --quote-bg:#211f1c;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1a1917; --card:#232220; --ink:#ece9e3; --muted:#a7a299;
+    --line:#38352f; --accent:#89aecb; --accent-ink:#a9c6df;
+    --ok-bg:#1c2e22; --ok-ink:#7fce9a; --ok-line:#2f5138;
+    --bad-bg:#33201f; --bad-ink:#e79a9a; --bad-line:#5a3230;
+    --wait-bg:#312a1a; --wait-ink:#e2c079; --wait-line:#584a2c;
+    --input-bg:#1c1b19; --quote-bg:#211f1c;
+  }
+  :root[data-theme="light"]{
+    --bg:#f7f6f3; --card:#ffffff; --ink:#1c1b19; --muted:#605c54;
+    --line:#e3e0d8; --accent:#4a6b8a; --accent-ink:#2c4a63;
+    --ok-bg:#e8f3ea; --ok-ink:#1f6b3a; --ok-line:#bcdcc5;
+    --bad-bg:#fbeaea; --bad-ink:#9a2b2b; --bad-line:#eec6c6;
+    --wait-bg:#fbf3e2; --wait-ink:#8a6420; --wait-line:#ecd9ad;
+    --input-bg:#fdfcfa; --quote-bg:#f1efe9;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1100px; margin:0 auto; padding:76px 20px 64px}
+  header h1{font-size:26px; line-height:1.25; margin:0 0 6px}
+  header .sub{color:var(--muted); font-size:15px; margin:0 0 4px; text-align:justify}
+  p, li, .hint, blockquote.quote{text-align:justify; text-justify:inter-word}
+  h1,h2,h3,label,.chip,.result .verdict,.err,table,footer p{text-align:left}
+  .result p{text-align:left}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:22px 22px; margin:22px 0;
+  }
+  h2{font-size:18px; margin:0 0 14px}
+  h3{font-size:15.5px; margin:0 0 6px}
+  section[aria-label="introduction"] h3{margin-top:26px}
+  section[aria-label="introduction"] h3:first-of-type{margin-top:0}
+  ol.steps h3{margin-top:0}
+  .grid{display:flex; flex-wrap:wrap; gap:18px 30px; align-items:flex-start}
+  .grid>div{flex:0 1 240px; max-width:260px}
+  .grid>div.wide{flex-basis:100%; max-width:520px}
+  .grid .hint{font-size:12px; text-align:left}
+  details.ref{margin-top:14px; border:1.5px solid var(--accent); border-radius:10px;
+    background:var(--input-bg)}
+  details.ref+details.ref{margin-top:8px}
+  details.ref>summary{cursor:pointer; padding:10px 14px; font-size:13.5px;
+    font-weight:700; list-style:none; text-align:left; color:var(--accent-ink)}
+  details.ref>summary::-webkit-details-marker{display:none}
+  details.ref>summary::before{content:"▸\00a0"; color:var(--accent-ink)}
+  details.ref[open]>summary::before{content:"▾\00a0"}
+  details.ref>summary:hover{text-decoration:underline}
+  details.ref .refbody{padding:0 14px 12px}
+  details.ref .refbody>*:first-child{margin-top:0}
+  @media (max-width:560px){.grid{grid-template-columns:1fr}}
+  label{display:block; font-size:13px; color:var(--muted); margin:0 0 5px; font-weight:600;
+    text-transform:uppercase; letter-spacing:.03em}
+  .field{display:flex; gap:8px}
+  input[type=number],select{
+    width:100%; padding:8px 10px; font-size:15px; color:var(--ink);
+    background:var(--input-bg); border:1px solid var(--line); border-radius:9px;
+    font-variant-numeric:tabular-nums;
+  }
+  .field input[type=number]{width:104px; flex:0 0 104px}
+  input:focus,select:focus{outline:2px solid var(--accent); outline-offset:1px; border-color:var(--accent)}
+  select.unit{width:auto; min-width:0; flex:0 1 auto}
+  .unit-static{align-self:center; font-size:15px; color:var(--muted); white-space:nowrap}
+  .hint{font-size:12.5px; color:var(--muted); margin:5px 0 0}
+  .hint b{color:var(--accent-ink)}
+  ul.hint-list{font-size:12.5px; color:var(--muted); margin:4px 0 0; padding-left:18px; text-align:left}
+  ul.hint-list li{margin:3px 0}
+  .result{
+    border-radius:12px; padding:18px 20px; margin-top:20px; border:1px solid var(--line);
+  }
+  .result.ok{background:var(--ok-bg); border-color:var(--ok-line)}
+  .result.bad{background:var(--bad-bg); border-color:var(--bad-line)}
+  .result.wait{background:var(--wait-bg); border-color:var(--wait-line)}
+  .result .verdict{font-size:19px; font-weight:700; margin:0 0 6px; display:flex; align-items:baseline; gap:10px}
+  .result.ok .verdict{color:var(--ok-ink)}
+  .result.bad .verdict{color:var(--bad-ink)}
+  .result.wait .verdict{color:var(--wait-ink)}
+  .result .tag{font-size:12px; font-weight:800; padding:2px 9px; border-radius:20px;
+    letter-spacing:.05em; border:1px solid currentColor}
+  .result p{margin:8px 0 0; font-size:14.5px}
+  .metrics{display:flex; flex-wrap:wrap; gap:8px 10px; margin-top:14px}
+  .chip{font-size:13px; background:var(--card); border:1px solid var(--line);
+    border-radius:8px; padding:6px 11px; font-variant-numeric:tabular-nums}
+  .chip b{color:var(--accent-ink)}
+  .err{color:var(--bad-ink); font-size:14px; margin-top:16px; font-weight:600}
+  .work{margin-top:15px; border-top:1px solid var(--line); padding-top:12px}
+  .work h4{font-size:12px; margin:0 0 9px; color:var(--muted); font-weight:700;
+    text-transform:uppercase; letter-spacing:.04em; text-align:left}
+  .work-row{margin:0 0 11px; font-size:13.5px}
+  .work-row:last-child{margin-bottom:0}
+  .work-name{font-weight:700; margin:0 0 3px; text-align:left}
+  .work-eq{background:var(--card); border:1px solid var(--line); border-radius:7px;
+    padding:7px 10px; overflow-x:auto; text-align:left; white-space:nowrap;
+    font-variant-numeric:tabular-nums}
+  .work-yes{color:var(--ok-ink); font-weight:700}
+  .work-no{color:var(--bad-ink); font-weight:700}
+  .work-na{color:var(--muted)}
+  .work-dim{opacity:.55}
+  .work-skip{font-size:12.5px; color:var(--muted); margin:4px 0 0; text-align:left}
+  .work-final{font-size:13.5px; margin:12px 0 0; text-align:left;
+    border-top:1px dashed var(--line); padding-top:10px}
+  table{width:100%; border-collapse:collapse; font-size:13.5px; font-variant-numeric:tabular-nums}
+  .tblscroll{overflow-x:auto; -webkit-overflow-scrolling:touch}
+  th,td{border:1px solid var(--line); padding:6px 8px; text-align:center; white-space:nowrap}
+  th{background:var(--input-bg); font-weight:700}
+  td.rowlab,th.rowlab{text-align:left; color:var(--muted); font-weight:700}
+  ul.notes{margin:0; padding-left:20px}
+  ul.notes li{margin:7px 0; font-size:14.5px}
+  code{background:var(--input-bg); border:1px solid var(--line); border-radius:5px;
+    padding:1px 6px; font-size:13.5px; font-variant-numeric:tabular-nums}
+  .formula{background:var(--input-bg); border:1px solid var(--line); border-radius:9px;
+    padding:12px 14px; margin:12px 0; font-size:15px; overflow-x:auto}
+  a{color:var(--accent-ink)}
+  footer{color:var(--muted); font-size:13px; margin-top:26px; line-height:1.55}
+  .toolbar{position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; gap:8px; justify-content:flex-end; align-items:center;
+    padding:10px 16px; background:var(--bg);
+    border-bottom:1px solid var(--line); box-shadow:0 1px 6px rgba(0,0,0,.06)}
+  .toolbar button{background:var(--card); color:var(--ink);
+    border:1px solid var(--line); border-radius:20px; padding:6px 13px; font-size:13px; cursor:pointer}
+  .toolbar button:hover{border-color:var(--accent)}
+  .toolbar a{background:var(--card); color:var(--ink); border:1px solid var(--line);
+    border-radius:20px; padding:6px 13px; font-size:13px; text-decoration:none}
+  .toolbar a:hover{border-color:var(--accent)}
+  /* ── пошаговое описание ── */
+  ol.steps{list-style:none; margin:0; padding:0}
+  ol.steps>li{margin:0 0 20px}
+  ol.steps>li:last-child{margin-bottom:0}
+  ol.steps>li p{margin:4px 0 0; font-size:14.5px}
+  blockquote.quote{
+    background:var(--quote-bg); border-left:3px solid var(--accent); margin:10px 0 0;
+    padding:9px 14px; font-size:13.5px; font-style:italic; border-radius:0 8px 8px 0;
+  }
+  blockquote.quote cite{display:block; margin-top:5px; font-style:normal; font-size:12px;
+    color:var(--muted)}
+  /* ── блок-схема ── */
+  .flowchart{width:100%; height:auto; display:block; margin:8px auto 0}
+  .fc-rect{fill:var(--card); stroke:var(--line); stroke-width:1.5}
+  .fc-decision{fill:var(--input-bg); stroke:var(--accent); stroke-width:1.5}
+  .fc-ok{fill:var(--ok-bg); stroke:var(--ok-line); stroke-width:1.5}
+  .fc-bad{fill:var(--bad-bg); stroke:var(--bad-line); stroke-width:1.5}
+  .fc-wait{fill:var(--wait-bg); stroke:var(--wait-line); stroke-width:1.5}
+  .fc-text{fill:var(--ink); font-size:12.5px; font-family:inherit; text-anchor:middle}
+  .fc-text.fc-ok-t{fill:var(--ok-ink)}
+  .fc-text.fc-bad-t{fill:var(--bad-ink)}
+  .fc-text.fc-wait-t{fill:var(--wait-ink)}
+  .fc-small{font-size:11px; fill:var(--muted)}
+  .fc-line{stroke:var(--muted); stroke-width:1.5; fill:none}
+  .fc-arrowhead{fill:var(--muted)}
+  .fc-edge{font-size:11.5px; fill:var(--accent-ink); font-weight:700}
+  .dl-row{margin:18px 0 0; text-align:left}
+  a.dl{display:inline-block; text-decoration:none; font-size:14px; font-weight:600;
+    color:var(--accent-ink); background:var(--input-bg); border:1px solid var(--line);
+    border-radius:9px; padding:10px 15px}
+  a.dl:hover{border-color:var(--accent)}
+  /* ── простая версия статьи ── */
+  body.simple blockquote.quote{display:none}
+  body.simple [data-i18n="kDef"],body.simple [data-i18n="alaraDef"]{display:none}
+  body.simple ol.steps .formula{display:none}
+  body.simple ul.hint-list[data-i18n="step6Defs"]{display:none}
+  .fc-simple{display:none}
+  body.simple .fc-sci{display:none}
+  body.simple .fc-simple{display:block}
+  body.simple [data-i18n="flowLegendIntro"],body.simple ul.hint-list[data-i18n="flowLegend"]{display:none}
+  body.simple section[aria-label="table1"]{display:none}
+  body.simple .result .work{display:none}
+  body.simple .result .metrics{display:none}
+  body.simple details#refUd{display:none}
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <button id="langBtn" title="Language">EN</button>
+  <a id="modeBtn" href="simple.html">простая версия</a>
+  <button id="themeBtn" title="Theme"><span data-i18n="btnTheme">◑ тема</span></button>
+</div>
+<div class="wrap">
+
+<header>
+  <h1 data-i18n="h1">Рациональный метод контроля радона в помещении</h1>
+  <p class="sub" data-i18n="sub1">Пошаговое описание, логическая схема принятия решения и калькулятор надёжности (≥&nbsp;95&nbsp;%) вывода о соответствии нормативу.</p>
+  <p class="sub" data-i18n="sub2">Источники: проект методики радиационного контроля и практическое руководство Цапалова А.А. (АНРИ, 2025, №1(120)).</p>
+</header>
+
+<!-- ═══════════════ ВВЕДЕНИЕ ═══════════════ -->
+<section class="card" aria-label="introduction">
+  <h2 data-i18n="introH2">Проблематика, актуальность и назначение метода</h2>
+
+  <h3 data-i18n="introH3b">Проблема: не обеспечивается надёжность оценки соответствия тестируемого помещения требованиям норматива</h3>
+  <p data-i18n="introP2">Радон — основной фактор радиационного риска для населения, и Нормы радиационной безопасности ограничивают его <b>среднегодовое</b> содержание в помещении. Однако проверить соответствие этому нормативу надёжно действующая практика не позволяет: показание прибора за несколько суток само по себе ещё не среднегодовой уровень, а методические документы допускают даже мгновенные измерения длительностью в минуты. В результате решения о соответствии принимаются с неизвестной надёжностью — задача состоит в том, чтобы сделать её заданной и контролируемой. Исходные ограничения методика формулирует сама:</p>
+  <blockquote class="quote" data-i18n="introQ2">«Концентрация радона может существенно (кратно) изменяться в течение суток, недель и сезонов даже в постоянно закрытых помещениях и зданиях, поэтому наиболее надежное решение о соответствии (или несоответствии) тестируемого помещения требованиям Норм радиационной безопасности достигается за счет измерения в течение одного года»<cite>— §4.1.4</cite></blockquote>
+  <blockquote class="quote" data-i18n="introQ3">«В то же время в большинстве зданий содержание радона существенно ниже ограничивающего уровня, поэтому нерационально в каждом помещении определять среднегодовой уровень с высокой точностью за счет длительного измерения в течение года, однако сокращение времени теста, очевидно, приводит к снижению надежности оценки соответствия»<cite>— §4.1.4</cite></blockquote>
+  <p data-i18n="introP3">Распространённой альтернативой стали экспрессные измерения длительностью от нескольких минут до нескольких часов. Методика исключает их полностью — не из осторожности, а по результатам специальных исследований:</p>
+  <blockquote class="quote" data-i18n="introQ4">«Результаты специальных исследований свидетельствуют о низкой надежности оценки соответствия на основе экспрессных измерений по причине неприемлемо высоких временных вариаций радона, и как следствие, чрезмерно высокой и неконтролируемой временной неопределенности. Кроме того, практика экспрессных измерений не только не обеспечивает удовлетворительную надежность оценки соответствия тестируемых помещений требованиям Норм радиационной безопасности, но и совершенно не защищена от небрежности либо умышленного нарушения условий измерения»<cite>— §4.1.5</cite></blockquote>
+
+  <h3 data-i18n="introH3a">Актуальность: контроль требуется в каждом помещении, а не только на радоноопасных территориях</h3>
+  <p data-i18n="introP1">Сузить задачу, ограничившись заведомо радоноопасными территориями, не удаётся: оценка радоноопасности предсказывает средний уровень по территории, но не уровень в конкретном помещении. Поэтому областью контроля становится весь фонд помещений с длительным пребыванием людей — независимо от региона:</p>
+  <blockquote class="quote" data-i18n="introQ1">«Высокие содержания радона в отдельных зданиях нередко обнаруживаются, в том числе, и в пределах территорий с низким средним уровнем радона в зданиях по региону. Этот факт закономерно связан с логнормальным характером распределения ОА радона в зданиях. Поэтому контроль радона должен проводиться в каждом здании, а измерение – единственный способ для оценки соответствия помещения/здания требованиям норм радиационной безопасности»<cite>— §4.1.2</cite></blockquote>
+
+  <h3 data-i18n="introH3c">Что решает метод</h3>
+  <p data-i18n="introP4">Рациональный метод отвечает не на вопрос «насколько точно измерено», а на вопрос «достаточно ли данных для надёжного решения». На практике это выглядит так: к результату измерения добавляется запас на неопределённость, и с нормативом сравнивается верхняя граница возможного среднегодового значения — заведомо осторожная оценка. Обе составляющие запаса определены явно: временная неопределённость U<sub>V</sub>(t) берётся из таблицы по длительности теста, инструментальная U<sub>и</sub> — из документов на прибор. Чем дольше измерение, тем меньше запас и тем ближе осторожная оценка к самому результату.</p>
+  <blockquote class="quote" data-i18n="introQ5">«Суть рационального критерия оценки соответствия (выражение (1) п. 4.2.1) заключается в сравнении ограничивающего уровня с верхней границей доверительного интервала оцениваемого среднегодового значения, которое определяется на основе результата измерения концентрации радона с учетом возможности контроля основных компонентов (временной и инструментальной) неопределенности, снижающейся с увеличением продолжительности теста»<cite>— §4.1.4</cite></blockquote>
+  <p data-i18n="introP5">Практическое следствие: вместо простого сравнения «выше или ниже норматива» метод даёт три исхода — <b>соответствует</b>, <b>не соответствует</b> и <b>серая зона</b>. Первые два выносятся только тогда, когда данных для них действительно хватает; серая зона — не ошибка, а прямое указание продолжить измерение. Решение выносится по <b>отдельному помещению</b> (§7.1) — именно этот случай реализован в калькуляторе; соответствие здания в целом устанавливается отдельно, по совокупности обследованных помещений (§7.2).</p>
+  <blockquote class="quote" data-i18n="introQ6">«Выраженный выше принцип измерения и оценки соответствия (1), благодаря контролю основных компонентов неопределенности, обеспечивает надежность решений с вероятностью не менее 95% независимо от применяемых методов и средств измерений как при долгосрочных, так и краткосрочных тестах, но исключая применение экспрессных измерений длительностью несколько минут или часов»<cite>— §4.1.4</cite></blockquote>
+
+  <h3 data-i18n="introH3d">Преимущества</h3>
+  <ul class="notes" data-i18n="introAdv">
+    <li><b>Короткий тест даёт надёжный результат.</b> В большинстве зданий уровень радона заметно ниже норматива, и надёжный вывод достигается за 2–7 суток: «достаточно лишь проведения недорогих краткосрочных тестов (от 2 до 7 суток) в рамках рационального критерия, чтобы убедиться в отсутствии радоновой проблемы» (§4.1.4).</li>
+    <li><b>Требования к точности прибора смягчены обоснованно.</b> При тесте короче двух месяцев вклад инструментальной неопределённости мал даже при 40&nbsp;%: «метрологические требования по обеспечению качества в режиме краткосрочных измерений должны быть более мягкими по сравнению с требованиями к долгосрочным измерениям. Это позволяет легализовать применение недорогих (непрофессиональных) средств измерений радона, а также участие самого населения в широкомасштабном тестировании помещений зданий» (§4.1.7).</li>
+    <li><b>Возможно массовое обследование.</b> Невысокая стоимость теста и регламентированные условия измерения позволяют проводить тестирование в масштабе страны, в том числе силами самих жильцов (§4.1.8).</li>
+    <li><b>Объект регулирования — здание, а не отдельный человек.</b> Цель регулирования — снижение и коллективного, и индивидуального риска «через управление зданиями, а не индивидуальной экспозицией» (§4.1.3).</li>
+    <li><b>Результат воспроизводим и проверяем.</b> Протокол содержит расчёт левых частей неравенств (1) и (2) отдельно от вывода, поэтому решение можно перепроверить по исходным числам (§9.1.7).</li>
+  </ul>
+
+  <h3 data-i18n="introH3e">Границы применимости</h3>
+  <ul class="notes" data-i18n="introLim">
+    <li>Метод распространяется только на <b>радон-222</b>. Для торона (Rn-220) пространственно-временные закономерности не изучены и аналогичная база отсутствует (§4.1.1).</li>
+    <li>Значения U<sub>V</sub>(t) и K<sub>p</sub>(t) получены для конкретных условий измерения (раздел 5): режим вентиляции, размещение прибора, микроклимат. При нарушении этих условий надёжность 95&nbsp;% не гарантируется.</li>
+    <li>Юридическую силу решение приобретает только при измерениях аккредитованной лабораторией аттестованными средствами по ГОСТ ISO/IEC 17025–2019 (§7.3.2). Настоящий калькулятор — вспомогательный инструмент и официальный протокол не заменяет.</li>
+  </ul>
+
+  <p class="dl-row"><a class="dl" id="dlArticle" href="article/Tsapalov_2025_ANRI_1-120_metodika-proekt.pdf" download data-i18n="dlArticle">📄 Скачать первоисточник — проект методики (PDF, АНРИ 2025, №1(120), с.76–95)</a></p>
+</section>
+
+<!-- ═══════════════ ПОШАГОВОЕ ОПИСАНИЕ МЕТОДА ═══════════════ -->
+<section class="card" aria-label="steps">
+  <h2 data-i18n="stepsH2">Пошаговое описание рационального метода</h2>
+  <p class="hint" style="margin:0 0 14px" data-i18n="stepsIntro">По первоисточнику — проекту методики радиационного контроля (АНРИ, 2025, №1(120), с.76–95). Курсивом в рамках — цитаты автора с указанием пункта.</p>
+
+  <ol class="steps">
+    <li>
+      <h3 data-i18n="step1H3">1. Длительность теста как главный фактор надёжности</h3>
+      <p data-i18n="step1P">Концентрация радона может существенно, иногда кратно, меняться в течение суток, недель и сезонов (§4.1.4). Самое надёжное решение дало бы измерение в течение целого года, но это нерационально в каждом отдельном помещении. Рациональный критерий сравнивает норматив не с самой измеренной концентрацией, а с границей доверительного интервала среднегодового значения — она сужается с ростом длительности теста. Расчёты по 26 странам показывают: краткий тест (4–6 суток) почти не уступает по надёжности решения длинному (2–3 месяца), но обходится на порядок дешевле.</p>
+      <blockquote class="quote" data-i18n="quote1">«...продолжительность теста должна быть не менее 2 суток в условиях ограниченного режима вентиляции и не менее 4 суток в условиях нормального режима вентиляции»<cite data-i18n="cite1">— §4.1.5</cite></blockquote>
+    </li>
+    <li>
+      <h3 data-i18n="step2H3">2. Что называется «тестом»</h3>
+      <p data-i18n="step2P">Определение теста в методике шире бытового: показание с экрана монитора, не сопровождённое данными об условиях измерения и оценкой соответствия, тестом не является. Экспрессные измерения (от минут до часов) не допускаются вовсе.</p>
+      <blockquote class="quote" data-i18n="quote2">«тест – процедура контроля, включающая проведение краткосрочного или долгосрочного измерения, а также сбор/анализ данных и оценку соответствия помещения требованиям норм радиационной безопасности»<cite data-i18n="cite2">— §3</cite></blockquote>
+    </li>
+    <li>
+      <h3 data-i18n="step3H3">3. Выбор режима вентиляции</h3>
+      <p data-i18n="step3P">Нормальный режим — штатная эксплуатация без ограничений, тест от 4 суток. Ограниченный — окна и двери постоянно закрыты (пустующее новое здание, выходные без персонала), тест от 2 суток. Временная неопределённость в ограниченном режиме ниже, однако такие условия не отражают обычную эксплуатацию помещения:</p>
+      <blockquote class="quote" data-i18n="quote3">«Тестирование помещений в режиме нормальной (обычной) вентиляции является более предпочтительным по сравнению с тестированием в режиме ограниченной вентиляции»<cite data-i18n="cite3">— §5.2.3</cite></blockquote>
+    </li>
+    <li>
+      <h3 data-i18n="step4H3">4. Выбор и подготовка помещения</h3>
+      <p data-i18n="step4P">Методика регламентирует и выбор помещения, и точку установки прибора, поскольку оба влияют на результат: радон поступает в здание из грунта, поэтому в приоритете нижние этажи и помещения, где люди проводят больше всего времени, а показания прибора искажаются вблизи окон, дверей и источников тепла.</p>
+      <blockquote class="quote" data-i18n="quote4">«Высоким является приоритет тестирования помещений с длительным пребыванием типа спальни, детской игровой комнаты, рабочего кабинета... в которых люди обычно проводят не менее 6 часов в сутки»<cite data-i18n="cite4">— §4.1.8</cite></blockquote>
+      <blockquote class="quote" data-i18n="quote5">«Место измерения должно располагаться вдали от оконного проема, двери и источников тепла, холода, влаги или сквозняков, не ближе 20 см от стен»<cite data-i18n="cite5">— §5.3.1</cite></blockquote>
+    </li>
+    <li>
+      <h3 data-i18n="step5H3">5. Требования к прибору</h3>
+      <p data-i18n="step5P">Требования к точности прибора для коротких тестов смягчены: при длительности до двух месяцев вклад приборной погрешности в итоговую неопределённость второстепенен по сравнению с временной изменчивостью радона (§4.1.7). Это делает пригодными недорогие приборы и открывает возможность самостоятельного тестирования жильцами.</p>
+      <blockquote class="quote" data-i18n="quote6">«Рационально применять методы и средства измерений с погрешностью калибровки... не выходящей за пределы ±40% (при k = 2) и ±(20–30)% (при k = 2) в краткосрочном и долгосрочном режимах измерений, соответственно»<cite data-i18n="cite6">— §5.5.2</cite></blockquote>
+      <p class="hint" data-i18n="kDef">Здесь и далее <b>k</b> — коэффициент охвата: k=2 означает расширенную неопределённость с доверительной вероятностью ≈95&nbsp;% (ГОСТ 34100.3–2017); так задаются и U<sub>V</sub>(t), и U<sub>и</sub> ниже.</p>
+    </li>
+    <li>
+      <h3 data-i18n="step6H3">6. Расчёт порогов по Табл.1</h3>
+      <p data-i18n="step6P">По измеренной длительности t и режиму вентиляции из Табл.1 (ниже) берут временную неопределённость U<sub>V</sub>(t) и коэффициент кратности K<sub>p</sub>(t), затем проверяют критерий (1) и критерий (2):</p>
+      <div class="formula" data-i18n="step6Formula">
+        Критерий (1): C(t)·[1&nbsp;+&nbsp;√(U<sub>V</sub>²&nbsp;+&nbsp;U<sub>и</sub>²)]&nbsp;&lt;&nbsp;C<sub>ну</sub>&nbsp;&nbsp;(§4.2.1)<br>
+        Критерий (2): C(t)/K<sub>p</sub>(t)·[1&nbsp;−&nbsp;U<sub>и</sub>]&nbsp;&gt;&nbsp;C<sub>ну</sub>&nbsp;&nbsp;(§4.2.2, только нормальный режим)
+      </div>
+      <ul class="hint-list" data-i18n="step6Defs">
+        <li><b>C(t)</b> — измеренная средняя объёмная активность (ОА) радона за весь период теста, Бк/м³: показание монитора; если прибор выдаёт ЭРОА — подставляют ЭРОА×2 (F=0.5).</li>
+        <li><b>t</b> — фактическая длительность теста, сутки. По t и режиму вентиляции из Табл.1 выбирается строка (шаговый выбор — значение ближайшего меньшего узла).</li>
+        <li><b>C<sub>ну</sub></b> — норматив (референтный уровень) на среднегодовую концентрацию, Бк/м³: с ним сравнивается доверительный интервал оценки.</li>
+        <li><b>U<sub>V</sub>(t)</b> — временная неопределённость: насколько среднее за t суток может отличаться от истинного среднегодового из-за естественных колебаний радона во времени. Относительная величина, безразмерная (охват k=2); берётся из Табл.1 по t и режиму. Доминирующий вклад в неопределённость решения.</li>
+        <li><b>U<sub>и</sub></b> — инструментальная неопределённость: погрешность калибровки самого прибора, с сертификата/паспорта. Относительная величина, безразмерная (охват k=2); второстепенный вклад при тестах короче ~2 месяцев.</li>
+        <li><b>K<sub>p</sub>(t)</b> — коэффициент кратности: во сколько раз результат краткосрочного измерения может превысить среднегодовое значение. Безразмерный, из Табл.1; используется только в критерии (2) и только для нормального режима вентиляции.</li>
+      </ul>
+    </li>
+    <li>
+      <h3 data-i18n="step7H3">7. Принятие решения (три исхода)</h3>
+      <p data-i18n="step7P">Порядок проверки строго последовательный, а исход «серая зона» ограничен по времени: без правила девяти месяцев помещение с уровнем вблизи норматива можно было бы измерять неограниченно долго, так и не приняв решения.</p>
+      <blockquote class="quote" data-i18n="quote7"><b data-i18n="q7lbl">(a)</b> «Помещение соответствует требованиям Норм радиационной безопасности, если... выполняется критерий (1)»<cite data-i18n="cite7">— §7.1.1</cite></blockquote>
+      <blockquote class="quote" data-i18n="quote8"><b data-i18n="q8lbl">(b)</b> «Помещение не соответствует требованиям..., если... выполняется критерий (2), либо не выполняется критерий (1) при продолжительности теста не менее 9 месяцев»<cite data-i18n="cite8">— §7.1.2</cite></blockquote>
+      <blockquote class="quote" data-i18n="quote9"><b data-i18n="q9lbl">(c)</b> «...рекомендуется: проведение более точных измерений в долгосрочном режиме (от 2 до 12 месяцев)..., либо проведение мер по снижению ОА радона, следуя принципу ALARA»<cite data-i18n="cite9">— §7.1.3</cite></blockquote>
+      <p class="hint" data-i18n="alaraDef"><b>ALARA</b> (As Low As Reasonably Achievable — «настолько низко, насколько это разумно достижимо») — принцип радиационной защиты: дозы облучения снижают до разумно достижимого уровня с учётом социальных и экономических факторов, а не до формального норматива (источник, §3). Подробнее: <a href="https://en.wikipedia.org/wiki/As_low_as_reasonably_achievable" target="_blank" rel="noopener">en.wikipedia.org/wiki/As_low_as_reasonably_achievable</a>.</p>
+    </li>
+    <li>
+      <h3 data-i18n="step8H3">8. Оформление результата</h3>
+      <p data-i18n="step8P">Расчётная часть протокола отделена от вывода: сначала приводятся значения левых частей критериев (1) и (2) и действующий норматив, затем заключение о соответствии (§9.1.7) — решение можно перепроверить по исходным числам.</p>
+      <blockquote class="quote" data-i18n="quote10">«Протокол испытаний (тестирования) должен быть оформлен в соответствии с требованиями ГОСТ Р 58973–2020»<cite data-i18n="cite10">— §9.1</cite></blockquote>
+    </li>
+  </ol>
+</section>
+
+<!-- ═══════════════ БЛОК-СХЕМА ═══════════════ -->
+<section class="card" aria-label="flowchart">
+  <h2 data-i18n="flowH2">Логическая схема принятия решения</h2>
+  <p class="hint" style="margin:0 0 10px" data-i18n="flowIntro">Порядок проверки строго последовательный: критерий (1) → критерий (2) → правило 9 месяцев. Первое выполненное условие определяет исход.</p>
+  <p class="hint" data-i18n="flowLegendIntro">Величины на схеме:</p>
+  <ul class="hint-list" data-i18n="flowLegend">
+    <li><b>C(t)</b> — измеренная средняя ОА радона за время теста, Бк/м³.</li>
+    <li><b>t</b> — длительность теста, сутки.</li>
+    <li><b>C<sub>ну</sub></b> — норматив на среднегодовую концентрацию, Бк/м³.</li>
+    <li><b>U<sub>V</sub></b> — временная неопределённость из Табл.1 (относительная, k=2) — доминирующий вклад.</li>
+    <li><b>U<sub>и</sub></b> — инструментальная неопределённость прибора, с сертификата (относительная, k=2).</li>
+    <li><b>K<sub>p</sub>(t)</b> — коэффициент кратности из Табл.1 (безразмерный; только нормальный режим, только критерий (2)).</li>
+    <li><b>Как читают Табл.1.</b> В таблице заданы не все длительности, а только опорные (4, 5, 6, 7, 8, 10, 12, 14, 20 суток, далее по месяцам). Если длительность теста попала между строками, берут строку с <b>меньшим</b> t: её значения U<sub>V</sub> и K<sub>p</sub> выше, то есть оценка получается более осторожной. Промежуточные значения не вычисляются. Пример из источника: для t&nbsp;=&nbsp;4,8&nbsp;суток берут строку «4&nbsp;суток», K<sub>p</sub>&nbsp;=&nbsp;1,74.</li>
+  </ul>
+  <svg class="flowchart fc-sci" viewBox="0 0 780 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="flowchart" style="margin-top:14px"
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path class="fc-arrowhead" d="M0,0 L10,5 L0,10 z"/>
+      </marker>
+    </defs>
+
+    <!-- связи -->
+    <path class="fc-line" marker-end="url(#arrow)" d="M280,70 L280,103"/>
+    <path class="fc-line" marker-end="url(#arrow)" d="M280,160 L280,188"/>
+    <path class="fc-line" marker-end="url(#arrow)" d="M420,260 L468,260"/>
+    <path class="fc-line" marker-end="url(#arrow)" d="M280,330 L280,383"/>
+    <path class="fc-line" marker-end="url(#arrow)" d="M420,460 L450,460 L450,440 L468,440"/>
+    <path class="fc-line" marker-end="url(#arrow)" d="M280,535 L280,583"/>
+    <path class="fc-line" marker-end="url(#arrow)" d="M420,650 L450,650 L450,480 L468,480"/>
+    <path class="fc-line" marker-end="url(#arrow)" d="M280,715 L280,758"/>
+    <path class="fc-line" marker-end="url(#arrow)" d="M110,807 L60,807 L60,42 L103,42"/>
+    <text class="fc-edge fc-small" transform="rotate(-90 47 500)" x="47" y="500" data-i18n="fcLoop">измерение продолжается</text>
+
+    <text class="fc-edge" x="300" y="352" data-i18n="fcNo">нет</text>
+    <text class="fc-edge" x="300" y="557" data-i18n="fcNo">нет</text>
+    <text class="fc-edge" x="300" y="737" data-i18n="fcNo">нет</text>
+    <text class="fc-edge" x="432" y="252" data-i18n="fcYes">да</text>
+    <text class="fc-edge" x="432" y="432" data-i18n="fcYes">да</text>
+    <text class="fc-edge" x="432" y="642" data-i18n="fcYes">да</text>
+
+    <!-- старт -->
+    <rect class="fc-rect" x="110" y="15" width="340" height="55" rx="10"/>
+    <text class="fc-text" x="280" y="37" data-i18n="fcStart1">Измерение C(t) за время t</text>
+    <text class="fc-text fc-small" x="280" y="55" data-i18n="fcStart2">режим вентиляции: нормальный / ограниченный</text>
+
+    <!-- таблица -->
+    <rect class="fc-rect" x="110" y="105" width="340" height="55" rx="10"/>
+    <text class="fc-text" x="280" y="127" data-i18n="fcTable1">Из Табл.1 (Приложение А) берут U&#7592;(t) и K&#7597;(t)</text>
+    <text class="fc-text fc-small" x="280" y="145" data-i18n="fcTable2">если t между строками — берут строку с меньшим t</text>
+
+    <!-- диамант 1: критерий 1 -->
+    <polygon class="fc-decision" points="280,190 420,260 280,330 140,260"/>
+    <text class="fc-text" x="280" y="253" data-i18n="fcD1_1">Критерий (1)?</text>
+    <text class="fc-text fc-small" x="280" y="270" data-i18n="fcD1_2">C(t)[1+√(Uᵥ²+Uᵢ²)] &lt; C_ну</text>
+
+    <!-- (a) соответствует -->
+    <rect class="fc-ok" x="470" y="225" width="270" height="70" rx="10"/>
+    <text class="fc-text fc-ok-t" x="605" y="253" data-i18n="fcA1">(a) СООТВЕТСТВУЕТ нормативу</text>
+    <text class="fc-text fc-ok-t fc-small" x="605" y="271" data-i18n="fcA2">§7.1.1 — мероприятия не требуются</text>
+
+    <!-- диамант 2: критерий 2 -->
+    <polygon class="fc-decision" points="280,385 420,460 280,535 140,460"/>
+    <text class="fc-text" x="280" y="443" data-i18n="fcD2_1">Критерий (2)?</text>
+    <text class="fc-text fc-small" x="280" y="459" data-i18n="fcD2_2">(только норм. режим)</text>
+    <text class="fc-text fc-small" x="280" y="475" data-i18n="fcD2_3">C(t)/K&#7597;(t)·(1−Uᵢ) &gt; C_ну</text>
+
+    <!-- (b) не соответствует (общий блок) -->
+    <rect class="fc-bad" x="470" y="400" width="270" height="120" rx="10"/>
+    <text class="fc-text fc-bad-t" x="605" y="430" data-i18n="fcB1">(b) НЕ СООТВЕТСТВУЕТ нормативу</text>
+    <text class="fc-text fc-bad-t fc-small" x="605" y="450" data-i18n="fcB2">§7.1.2</text>
+    <text class="fc-text fc-bad-t fc-small" x="605" y="468" data-i18n="fcB3">защитные (противорадоновые)</text>
+    <text class="fc-text fc-bad-t fc-small" x="605" y="485" data-i18n="fcB4">мероприятия</text>
+
+    <!-- диамант 3: 9 месяцев -->
+    <polygon class="fc-decision" points="280,585 420,650 280,715 140,650"/>
+    <text class="fc-text" x="280" y="643" data-i18n="fcD3_1">t ≥ 9 месяцев</text>
+    <text class="fc-text fc-small" x="280" y="660" data-i18n="fcD3_2">(270 суток)?</text>
+
+    <!-- (c) серая зона -->
+    <rect class="fc-wait" x="110" y="760" width="340" height="95" rx="10"/>
+    <text class="fc-text fc-wait-t" x="280" y="787" data-i18n="fcC1">(c) СЕРАЯ ЗОНА</text>
+    <text class="fc-text fc-wait-t fc-small" x="280" y="806" data-i18n="fcC2">§7.1.3 — долгосрочный тест 2–12 мес.</text>
+    <text class="fc-text fc-wait-t fc-small" x="280" y="823" data-i18n="fcC3">либо меры по снижению ОА радона (ALARA)</text>
+  </svg>
+  <svg class="flowchart fc-simple" viewBox="0 0 780 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="flowchart-simple" style="margin-top:14px">
+    <defs>
+      <marker id="arrowS" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path class="fc-arrowhead" d="M0,0 L10,5 L0,10 z"/>
+      </marker>
+    </defs>
+
+    <path class="fc-line" marker-end="url(#arrowS)" d="M280,70 L280,103"/>
+    <path class="fc-line" marker-end="url(#arrowS)" d="M280,160 L280,188"/>
+    <path class="fc-line" marker-end="url(#arrowS)" d="M420,260 L468,260"/>
+    <path class="fc-line" marker-end="url(#arrowS)" d="M280,330 L280,383"/>
+    <path class="fc-line" marker-end="url(#arrowS)" d="M420,460 L450,460 L450,440 L468,440"/>
+    <path class="fc-line" marker-end="url(#arrowS)" d="M280,535 L280,583"/>
+    <path class="fc-line" marker-end="url(#arrowS)" d="M420,650 L450,650 L450,480 L468,480"/>
+    <path class="fc-line" marker-end="url(#arrowS)" d="M280,715 L280,758"/>
+    <path class="fc-line" marker-end="url(#arrowS)" d="M110,807 L60,807 L60,42 L103,42"/>
+    <text class="fc-edge fc-small" transform="rotate(-90 47 500)" x="47" y="500" data-i18n="fcsLoop">прибор продолжает мерить</text>
+
+    <text class="fc-edge" x="300" y="352" data-i18n="fcNo">нет</text>
+    <text class="fc-edge" x="300" y="557" data-i18n="fcNo">нет</text>
+    <text class="fc-edge" x="300" y="737" data-i18n="fcNo">нет</text>
+    <text class="fc-edge" x="432" y="252" data-i18n="fcYes">да</text>
+    <text class="fc-edge" x="432" y="432" data-i18n="fcYes">да</text>
+    <text class="fc-edge" x="432" y="642" data-i18n="fcYes">да</text>
+
+    <rect class="fc-rect" x="110" y="15" width="340" height="55" rx="10"/>
+    <text class="fc-text" x="280" y="37" data-i18n="fcsStart1">Измерьте радон: прибор стоит в комнате</text>
+    <text class="fc-text fc-small" x="280" y="55" data-i18n="fcsStart2">несколько суток и сам считает средний уровень</text>
+
+    <rect class="fc-rect" x="110" y="105" width="340" height="55" rx="10"/>
+    <text class="fc-text" x="280" y="127" data-i18n="fcsMargin1">Введите данные в калькулятор — он сам добавит</text>
+    <text class="fc-text fc-small" x="280" y="145" data-i18n="fcsMargin2">запас на изменчивость газа и на погрешность прибора</text>
+
+    <polygon class="fc-decision" points="280,190 420,260 280,330 140,260"/>
+    <text class="fc-text" x="280" y="253" data-i18n="fcsD1a">Даже с запасом</text>
+    <text class="fc-text fc-small" x="280" y="270" data-i18n="fcsD1b">ниже нормы?</text>
+
+    <rect class="fc-ok" x="470" y="225" width="270" height="70" rx="10"/>
+    <text class="fc-text fc-ok-t" x="605" y="253" data-i18n="fcsA1">Всё в порядке</text>
+    <text class="fc-text fc-ok-t fc-small" x="605" y="271" data-i18n="fcsA2">дом защищать не нужно</text>
+
+    <polygon class="fc-decision" points="280,385 420,460 280,535 140,460"/>
+    <text class="fc-text" x="280" y="446" data-i18n="fcsD2a">Выше нормы даже по</text>
+    <text class="fc-text fc-small" x="280" y="465" data-i18n="fcsD2b">осторожной нижней оценке?</text>
+
+    <rect class="fc-bad" x="470" y="400" width="270" height="120" rx="10"/>
+    <text class="fc-text fc-bad-t" x="605" y="440" data-i18n="fcsB1">Радона много</text>
+    <text class="fc-text fc-bad-t fc-small" x="605" y="462" data-i18n="fcsB2">дом нужно защищать</text>
+    <text class="fc-text fc-bad-t fc-small" x="605" y="480" data-i18n="fcsB3">(герметизация, вентиляция)</text>
+
+    <polygon class="fc-decision" points="280,585 420,650 280,715 140,650"/>
+    <text class="fc-text" x="280" y="643" data-i18n="fcsD3a">Замер идёт уже</text>
+    <text class="fc-text fc-small" x="280" y="660" data-i18n="fcsD3b">9 месяцев или дольше?</text>
+
+    <rect class="fc-wait" x="110" y="760" width="340" height="95" rx="10"/>
+    <text class="fc-text fc-wait-t" x="280" y="787" data-i18n="fcsC1">Пока непонятно</text>
+    <text class="fc-text fc-wait-t fc-small" x="280" y="806" data-i18n="fcsC2">пусть прибор постоит ещё</text>
+    <text class="fc-text fc-wait-t fc-small" x="280" y="823" data-i18n="fcsC3">чем дольше замер, тем точнее ответ</text>
+  </svg>
+</section>
+
+<!-- ═══════════════ КАЛЬКУЛЯТОР ═══════════════ -->
+<section class="card" aria-label="calculator">
+  <h2 data-i18n="calcH2">Расчёт решения</h2>
+  <div class="grid">
+    <div>
+      <label for="mode" data-i18n="lblMode">Режим вентиляции</label>
+      <div class="field">
+        <select id="mode">
+          <option value="normal" selected data-i18n="optModeNormal">нормальный</option>
+          <option value="restricted" data-i18n="optModeRestricted">ограниченный</option>
+        </select>
+      </div>
+      <p class="hint" data-i18n="hintMode">Нормальный — штатная эксплуатация, тест от 4 суток. Ограниченный — окна/двери постоянно закрыты, тест от 2 суток (критерий (2) в нём не определён).</p>
+    </div>
+    <div>
+      <label for="dur" data-i18n="lblDur">Длительность измерения t</label>
+      <div class="field">
+        <input type="number" id="dur" value="6" min="0" step="1">
+        <select class="unit" id="durUnit">
+          <option value="day" selected data-i18n="optDay">сутки</option>
+          <option value="month" data-i18n="optMonth">месяцы</option>
+        </select>
+      </div>
+      <p class="hint" data-i18n="hintDur">За сколько усреднено C(t). 1&nbsp;месяц = 30&nbsp;суток (общая ось Табл.1).</p>
+    </div>
+    <div>
+      <label for="ct" data-i18n="lblCt">Измеренная концентрация C(t)</label>
+      <div class="field">
+        <input type="number" id="ct" value="85" min="0" step="1">
+        <select class="unit" id="ctUnit">
+          <option value="bq" selected data-i18n="unitBqOA">Бк/м³ (ОА)</option>
+          <option value="eroa" data-i18n="unitEROA">Бк/м³ (ЭРОА)</option>
+          <option value="pci" data-i18n="unitPci">pCi/L</option>
+        </select>
+      </div>
+      <p class="hint" data-i18n="hintCt">Показание радон-монитора, среднее за весь период. Выберите единицу справа — пересчёт в ОА (Бк/м³) выполняется автоматически: ЭРОА&nbsp;×2 (F=0.5), pCi/L&nbsp;×37.</p>
+    </div>
+    <div>
+      <label for="ud" data-i18n="lblUd">Инструментальная неопределённость U<sub>и</sub></label>
+      <div class="field">
+        <input type="number" id="ud" value="20" min="0" max="95" step="1">
+        <span class="unit-static" data-i18n="unitPct">% (k=2)</span>
+      </div>
+      <p class="hint" data-i18n="hintUd">Погрешность калибровки прибора при k=2. При отсутствии данных поверки см. справку ниже: паспортное значение 10&nbsp;% использовать не следует.</p>
+    </div>
+    <div class="wide">
+      <label for="rl" data-i18n="lblRl">Норматив C<sub>ну</sub></label>
+      <div class="field">
+        <select id="rl">
+          <optgroup id="rlGroupRF" label="Россия (НРБ-99/2009)">
+            <option value="200" selected data-i18n="rlOptRfNew">200 — новое/реконструированное здание, рекомендуется (100 ЭРОА)</option>
+            <option value="400" data-i18n="rlOptRfOld">400 — эксплуатируемое здание (200 ЭРОА)</option>
+          </optgroup>
+          <optgroup id="rlGroupWHO" label="WHO (Handbook on Indoor Radon, 2009)">
+            <option value="100" data-i18n="rlOptWhoRec">100 — рекомендуемый уровень</option>
+            <option value="300" data-i18n="rlOptWhoMax">300 — максимальный уровень</option>
+          </optgroup>
+          <optgroup id="rlGroupEPA" label="US EPA">
+            <option value="148" data-i18n="rlOptEpa">148 — action level (4 pCi/L)</option>
+          </optgroup>
+          <optgroup id="rlGroupEU" label="EU (Directive 2013/59/Euratom)">
+            <option value="300" data-i18n="rlOptEu">300 — референтный уровень</option>
+          </optgroup>
+        </select>
+      </div>
+      <p class="hint" data-i18n="hintRl">Норматив выбирается из списка — все значения уже приведены к ОА радона (Бк/м³). РФ (НРБ-99/2009) даёт две планки: 200 для новых/реконструированных зданий (100 ЭРОА) и 400 для уже эксплуатируемых (200 ЭРОА); при сомнении в статусе здания рекомендуется более строгая планка — 200. Другие страны и перевод единиц — в справке ниже.</p>
+    </div>
+  </div>
+
+  <details class="ref" id="refRl">
+    <summary data-i18n="refRlSummary">Норматив C<sub>ну</sub>: национальные ориентиры и в каких единицах они заданы</summary>
+    <div class="refbody">
+      <ul class="hint-list" data-i18n="hintRlList">
+        <li><b>РФ</b> (НРБ-99/2009) — единственный из перечисленных, кто нормирует <b>по ЭРОА</b>: эксплуатируемые здания 200 ЭРОА (= 400 ОА при F=0.5), новые/реконструированные 100 ЭРОА (= 200 ОА).</li>
+        <li><b>WHO</b> (Handbook on Indoor Radon, 2009) — <b>по ОА</b>: 100 рекомендуемый / 300 максимальный.</li>
+        <li><b>US EPA</b> — <b>по ОА</b>: 148 Бк/м³ (= 4 pCi/L), action level.</li>
+        <li><b>EU</b> (Council Directive 2013/59/Euratom, BSS) — <b>по ОА</b>: 300, референтный уровень.</li>
+      </ul>
+      <p class="hint" data-i18n="hintRlNote">Международная практика (WHO, EPA, EU) нормирует непосредственно объёмную активность радона-222 (ОА) — то, что показывает монитор. РФ нормирует ЭРОА (по дочерним продуктам распада), поэтому российские значения при переводе в ОА удваиваются: 200 ЭРОА ↔ 400 ОА.</p>
+    </div>
+  </details>
+
+  <details class="ref" id="refUd">
+    <summary data-i18n="refUdSummary">Инструментальная неопределённость U<sub>и</sub>: что такое k, где взять значение, типовые цифры</summary>
+    <div class="refbody">
+      <p class="hint" data-i18n="hintUdWhere"><b>Где взять:</b> свидетельство о поверке/аттестации или паспорт (спецификация) прибора&nbsp;— строка «неопределённость измерения», «погрешность измерения (±)» или «неопределённость калибровки».</p>
+      <ul class="hint-list" data-i18n="hintUdList">
+        <li><b>k&nbsp;— коэффициент охвата</b>, то есть во сколько раз расширили стандартную неопределённость. В поле выше вводится <b>относительная погрешность прибора в процентах при k=2</b> (интервал ≈95&nbsp;%). Букву «k» в паспортах пишут редко, поэтому пересчитайте паспортную цифру по тому, что стоит рядом с ней:
+          <ul>
+            <li>«P&nbsp;=&nbsp;0,95», «доверительная вероятность 0,95», «95&nbsp;%», «2σ» — это и есть k=2, <b>берите как есть</b>. Пример: в свидетельстве «±30&nbsp;% (P&nbsp;=&nbsp;0,95)» → в поле вводите <b>30</b>.</li>
+            <li>«СКО», «1σ», «стандартная неопределённость», «P&nbsp;=&nbsp;0,68» — <b>умножьте саму цифру погрешности на 2</b>. Пример: «СКО&nbsp;=&nbsp;12&nbsp;%» → 2&nbsp;×&nbsp;12&nbsp;%&nbsp;=&nbsp;24&nbsp;% → в поле вводите <b>24</b>.</li>
+            <li>«P&nbsp;=&nbsp;0,99», «3σ» — <b>разделите цифру на 1,5</b>. Пример: «±45&nbsp;% (3σ)» → 45&nbsp;%&nbsp;/&nbsp;1,5&nbsp;=&nbsp;30&nbsp;% → в поле вводите <b>30</b>.</li>
+            <li>просто «±X&nbsp;%» без пояснений (пределы допускаемой основной погрешности) — обычно соответствует ≈95&nbsp;%, берите как есть. Пример: «±40&nbsp;%» → в поле вводите <b>40</b>.</li>
+          </ul>
+        </li>
+        <li><b>Ориентиры источника:</b> краткосрочный тест — до ±40&nbsp;%, долгосрочный — ±(20–30)&nbsp;%; ниже 20&nbsp;% не рекомендуется (межгодовые вариации радона сами по себе ≈15–20&nbsp;%).</li>
+        <li><b>Значения из источника (Приложение Б):</b> мониторы RadonEye / RadonEye&nbsp;Plus2 и Corentium&nbsp;Home / Wave&nbsp;Radon — U<sub>к</sub>(ε) <b>не превышает 0,30</b> (Б4.1); трековый экспозиметр РЭИ-4 с детектором LR-115 — не более 0,30 (Б3.1); угольный комплекс «КАМЕРА» — детектор ≤&nbsp;0,15 и пробоотборник ≤&nbsp;0,25 (или 0,40 без учёта привеса угля), Б2.1.</li>
+        <li><b>Осторожно с паспортной цифрой.</b> Производитель RadonEye указывает точность «менее ±10&nbsp;%» — это заводская спецификация при высокой концентрации и длительном наборе. Метрологические испытания партии таких мониторов дали неопределённость калибровки до 0,30 (k=2), и именно это значение источник рекомендует для расчёта. Если нет собственных данных поверки — берите 0,30, а не паспортные 10&nbsp;%.</li>
+      </ul>
+    </div>
+  </details>
+
+  <div id="out"></div>
+</section>
+
+<!-- ═══════════════ ТАБЛИЦА 1 ═══════════════ -->
+<section class="card" aria-label="table1">
+  <h2 data-i18n="tableH2">Таблица 1 — временная неопределённость U<sub>V</sub>(t) и коэффициент кратности K<sub>p</sub>(t)</h2>
+  <p class="hint" style="margin-top:0" data-i18n="tableHintTop">Приложение А источника. Если длительность теста попала между строками таблицы, берут строку с <b>меньшим</b> t — её значения выше, оценка более осторожная; промежуточные значения не вычисляются. Пример из источника: для t&nbsp;=&nbsp;4,8&nbsp;суток берут строку «4&nbsp;суток», K<sub>p</sub>&nbsp;=&nbsp;1,74.</p>
+
+  <h3 data-i18n="tableNormalH3">Нормальный режим (от 4 суток)</h3>
+  <div class="tblscroll">
+    <table>
+      <tr><th class="rowlab" data-i18n="thDay">Сутки</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>10</th><th>12</th><th>14</th><th>20</th></tr>
+      <tr><td class="rowlab">U<sub>V</sub>(t)</td><td>1.25</td><td>1.20</td><td>1.20</td><td>1.20</td><td>1.20</td><td>1.10</td><td>1.10</td><td>1.10</td><td>1.10</td></tr>
+      <tr><td class="rowlab" data-i18n="labMF">K<sub>p</sub>(t)</td><td>1.74</td><td>1.72</td><td>1.70</td><td>1.69</td><td>1.68</td><td>1.67</td><td>1.66</td><td>1.65</td><td>1.61</td></tr>
+      <tr><th class="rowlab" data-i18n="thMonth">Месяц</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th></tr>
+      <tr><td class="rowlab">U<sub>V</sub>(t)</td><td>1.05</td><td>1.00</td><td>0.85</td><td>0.65</td><td>0.55</td><td>0.45</td><td>0.35</td><td>0.25</td><td>0.17</td><td>0.10</td><td>0.05</td><td>0.00</td></tr>
+      <tr><td class="rowlab" data-i18n="labMF">K<sub>p</sub>(t)</td><td>1.56</td><td>1.48</td><td>1.44</td><td>1.42</td><td>1.37</td><td>1.31</td><td>1.24</td><td>1.20</td><td>1.14</td><td>1.09</td><td>1.05</td><td>1.00</td></tr>
+    </table>
+  </div>
+
+  <h3 style="margin-top:18px" data-i18n="tableRestrH3">Ограниченный режим (от 2 суток; K<sub>p</sub>(t) не определён)</h3>
+  <div class="tblscroll">
+    <table>
+      <tr><th class="rowlab" data-i18n="thDay">Сутки</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>10</th><th>12</th><th>14</th><th>20</th></tr>
+      <tr><td class="rowlab">U<sub>V</sub>(t)</td><td>1.05</td><td>1.00</td><td>0.95</td><td>0.90</td><td>0.80</td><td>0.75</td><td>0.70</td><td>0.65</td><td>0.60</td><td>0.55</td><td>0.50</td></tr>
+      <tr><th class="rowlab" data-i18n="thMonth">Месяц</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th></tr>
+      <tr><td class="rowlab">U<sub>V</sub>(t)</td><td>0.45</td><td>0.40</td><td>0.38</td><td>0.36</td><td>0.32</td><td>0.26</td><td>0.20</td><td>0.16</td><td>0.14</td><td>0.09</td><td>0.05</td><td>0.00</td></tr>
+    </table>
+  </div>
+  <p class="hint" data-i18n="tableHintBottom">Обратите внимание: при 2&nbsp;месяцах (нормальный режим) U<sub>V</sub>&nbsp;=&nbsp;100&nbsp;%, при 3&nbsp;месяцах&nbsp;=&nbsp;85&nbsp;%&nbsp;— двух-трёхмесячное измерение ещё далеко от среднегодового.</p>
+</section>
+
+<footer>
+  <p data-i18n="footSrc1"><b>Основной источник (методика):</b> «Оценка соответствия помещений зданий требованиям Норм радиационной безопасности по ограничению содержания радона в воздухе. Методика радиационного контроля (проект)». <i>АНРИ</i> <b>2025</b>, №1(120), с.76–95.</p>
+  <p data-i18n="footDisc">Калькулятор воспроизводит критерии (1),(2) и правило §7.1.2 (9&nbsp;месяцев) с табличными значениями U<sub>V</sub>(t)/K<sub>p</sub>(t) источника. Неофициальная вспомогательная реализация контура «Радоновый риск». Для торона (ДПР Rn-220) метод пока не разработан. Расчёт не заменяет официальные протоколы измерений.</p>
+</footer>
+
+</div>
+
+<script>
+"use strict";
+// ── Таблица 1 (Приложение А источника): режим → {сутки: [UV, Kp]} ──
+var TABLES = {
+  normal: {
+    4:[1.25,1.74], 5:[1.20,1.72], 6:[1.20,1.70], 7:[1.20,1.69], 8:[1.20,1.68],
+    10:[1.10,1.67], 12:[1.10,1.66], 14:[1.10,1.65], 20:[1.10,1.61],
+    30:[1.05,1.56], 60:[1.00,1.48], 90:[0.85,1.44], 120:[0.65,1.42], 150:[0.55,1.37],
+    180:[0.45,1.31], 210:[0.35,1.24], 240:[0.25,1.20], 270:[0.17,1.14], 300:[0.10,1.09],
+    330:[0.05,1.05], 360:[0.00,1.00]
+  },
+  restricted: {
+    2:[1.05,null], 3:[1.00,null], 4:[0.95,null], 5:[0.90,null], 6:[0.80,null],
+    7:[0.75,null], 8:[0.70,null], 10:[0.65,null], 12:[0.60,null], 14:[0.55,null], 20:[0.50,null],
+    30:[0.45,null], 60:[0.40,null], 90:[0.38,null], 120:[0.36,null], 150:[0.32,null],
+    180:[0.26,null], 210:[0.20,null], 240:[0.16,null], 270:[0.14,null], 300:[0.09,null],
+    330:[0.05,null], 360:[0.00,null]
+  }
+};
+var MIN_DAYS = {normal:4, restricted:2};
+
+// Шаговый выбор узла (ДОСЛОВНО по примечанию к Табл.1 источника: между узлами
+// берётся значение МЕНЬШЕГО соседнего узла — например, Kp(4.8 сут) = 1.74).
+// НЕ интерполяция.
+function lookup(mode, t){
+  var table = TABLES[mode];
+  var days = Object.keys(table).map(Number).sort(function(a,b){return a-b;});
+  if(t >= days[days.length-1]) return table[days[days.length-1]];
+  var chosen = days[0];
+  for(var i=0;i<days.length;i++){
+    if(days[i] <= t) chosen = days[i]; else break;
+  }
+  return table[chosen];
+}
+
+function fmt(x,n){ n=(n===undefined?2:n); return (Math.round(x*Math.pow(10,n))/Math.pow(10,n)).toFixed(n); }
+
+// Приведение введённого значения к ОА радона в Бк/м3 — единицам, в которых
+// записаны критерии (1),(2). ЭРОА×2: F = ЭРОА/ОА = 0.5 (§3 источника).
+// pCi/L×37: 1 pCi/L = 37 Бк/м3 (точно).
+var UNIT_FACTOR = { bq:1, eroa:2, pci:37 };
+function toBqOA(value, unit){ return value * UNIT_FACTOR[unit]; }
+
+// ─────────────── i18n ───────────────
+var I18N = {
+  ru:{
+    title:"Рациональный метод контроля радона — пошаговое описание, схема решения и калькулятор",
+    btnTheme:"◑ тема",
+    btnModeSimple:"простая версия", btnModeSci:"научная версия",
+    h1:"Рациональный метод контроля радона в помещении",
+    sub1:"Пошаговое описание, логическая схема принятия решения и калькулятор надёжности (≥&nbsp;95&nbsp;%) вывода о соответствии нормативу.",
+    sub2:"Источники: проект методики радиационного контроля и практическое руководство Цапалова А.А. (АНРИ, 2025, №1(120)).",
+
+    introH2:"Проблематика, актуальность и назначение метода",
+    introH3a:"Актуальность: контроль требуется в каждом помещении, а не только на радоноопасных территориях",
+    introP1:"Сузить задачу, ограничившись заведомо радоноопасными территориями, не удаётся: оценка радоноопасности предсказывает средний уровень по территории, но не уровень в конкретном помещении. Поэтому областью контроля становится весь фонд помещений с длительным пребыванием людей — независимо от региона:",
+    introQ1:"«Высокие содержания радона в отдельных зданиях нередко обнаруживаются, в том числе, и в пределах территорий с низким средним уровнем радона в зданиях по региону. Этот факт закономерно связан с логнормальным характером распределения ОА радона в зданиях. Поэтому контроль радона должен проводиться в каждом здании, а измерение – единственный способ для оценки соответствия помещения/здания требованиям норм радиационной безопасности»<cite>— §4.1.2</cite>",
+    introH3b:"Проблема: не обеспечивается надёжность оценки соответствия тестируемого помещения требованиям норматива",
+    introP2:"Радон — основной фактор радиационного риска для населения, и Нормы радиационной безопасности ограничивают его <b>среднегодовое</b> содержание в помещении. Однако проверить соответствие этому нормативу надёжно действующая практика не позволяет: показание прибора за несколько суток само по себе ещё не среднегодовой уровень, а методические документы допускают даже мгновенные измерения длительностью в минуты. В результате решения о соответствии принимаются с неизвестной надёжностью — задача состоит в том, чтобы сделать её заданной и контролируемой. Исходные ограничения методика формулирует сама:",
+    introQ2:"«Концентрация радона может существенно (кратно) изменяться в течение суток, недель и сезонов даже в постоянно закрытых помещениях и зданиях, поэтому наиболее надежное решение о соответствии (или несоответствии) тестируемого помещения требованиям Норм радиационной безопасности достигается за счет измерения в течение одного года»<cite>— §4.1.4</cite>",
+    introQ3:"«В то же время в большинстве зданий содержание радона существенно ниже ограничивающего уровня, поэтому нерационально в каждом помещении определять среднегодовой уровень с высокой точностью за счет длительного измерения в течение года, однако сокращение времени теста, очевидно, приводит к снижению надежности оценки соответствия»<cite>— §4.1.4</cite>",
+    introP3:"Распространённой альтернативой стали экспрессные измерения длительностью от нескольких минут до нескольких часов. Методика исключает их полностью — не из осторожности, а по результатам специальных исследований:",
+    introQ4:"«Результаты специальных исследований свидетельствуют о низкой надежности оценки соответствия на основе экспрессных измерений по причине неприемлемо высоких временных вариаций радона, и как следствие, чрезмерно высокой и неконтролируемой временной неопределенности. Кроме того, практика экспрессных измерений не только не обеспечивает удовлетворительную надежность оценки соответствия тестируемых помещений требованиям Норм радиационной безопасности, но и совершенно не защищена от небрежности либо умышленного нарушения условий измерения»<cite>— §4.1.5</cite>",
+    introH3c:"Что решает метод",
+    introP4:"Рациональный метод отвечает не на вопрос «насколько точно измерено», а на вопрос «достаточно ли данных для надёжного решения». На практике это выглядит так: к результату измерения добавляется запас на неопределённость, и с нормативом сравнивается верхняя граница возможного среднегодового значения — заведомо осторожная оценка. Обе составляющие запаса определены явно: временная неопределённость U<sub>V</sub>(t) берётся из таблицы по длительности теста, инструментальная U<sub>и</sub> — из документов на прибор. Чем дольше измерение, тем меньше запас и тем ближе осторожная оценка к самому результату.",
+    introQ5:"«Суть рационального критерия оценки соответствия (выражение (1) п. 4.2.1) заключается в сравнении ограничивающего уровня с верхней границей доверительного интервала оцениваемого среднегодового значения, которое определяется на основе результата измерения концентрации радона с учетом возможности контроля основных компонентов (временной и инструментальной) неопределенности, снижающейся с увеличением продолжительности теста»<cite>— §4.1.4</cite>",
+    introP5:"Практическое следствие: вместо простого сравнения «выше или ниже норматива» метод даёт три исхода — <b>соответствует</b>, <b>не соответствует</b> и <b>серая зона</b>. Первые два выносятся только тогда, когда данных для них действительно хватает; серая зона — не ошибка, а прямое указание продолжить измерение. Решение выносится по <b>отдельному помещению</b> (§7.1) — именно этот случай реализован в калькуляторе; соответствие здания в целом устанавливается отдельно, по совокупности обследованных помещений (§7.2).",
+    introQ6:"«Выраженный выше принцип измерения и оценки соответствия (1), благодаря контролю основных компонентов неопределенности, обеспечивает надежность решений с вероятностью не менее 95% независимо от применяемых методов и средств измерений как при долгосрочных, так и краткосрочных тестах, но исключая применение экспрессных измерений длительностью несколько минут или часов»<cite>— §4.1.4</cite>",
+    introH3d:"Преимущества",
+    introAdv:"<li><b>Короткий тест даёт надёжный результат.</b> В большинстве зданий уровень радона заметно ниже норматива, и надёжный вывод достигается за 2–7 суток: «достаточно лишь проведения недорогих краткосрочных тестов (от 2 до 7 суток) в рамках рационального критерия, чтобы убедиться в отсутствии радоновой проблемы» (§4.1.4).</li><li><b>Требования к точности прибора смягчены обоснованно.</b> При тесте короче двух месяцев вклад инструментальной неопределённости мал даже при 40&nbsp;%: «метрологические требования по обеспечению качества в режиме краткосрочных измерений должны быть более мягкими по сравнению с требованиями к долгосрочным измерениям. Это позволяет легализовать применение недорогих (непрофессиональных) средств измерений радона, а также участие самого населения в широкомасштабном тестировании помещений зданий» (§4.1.7).</li><li><b>Возможно массовое обследование.</b> Невысокая стоимость теста и регламентированные условия измерения позволяют проводить тестирование в масштабе страны, в том числе силами самих жильцов (§4.1.8).</li><li><b>Объект регулирования — здание, а не отдельный человек.</b> Цель регулирования — снижение и коллективного, и индивидуального риска «через управление зданиями, а не индивидуальной экспозицией» (§4.1.3).</li><li><b>Результат воспроизводим и проверяем.</b> Протокол содержит расчёт левых частей неравенств (1) и (2) отдельно от вывода, поэтому решение можно перепроверить по исходным числам (§9.1.7).</li>",
+    introH3e:"Границы применимости",
+    introLim:"<li>Метод распространяется только на <b>радон-222</b>. Для торона (Rn-220) пространственно-временные закономерности не изучены и аналогичная база отсутствует (§4.1.1).</li><li>Значения U<sub>V</sub>(t) и K<sub>p</sub>(t) получены для конкретных условий измерения (раздел 5): режим вентиляции, размещение прибора, микроклимат. При нарушении этих условий надёжность 95&nbsp;% не гарантируется.</li><li>Юридическую силу решение приобретает только при измерениях аккредитованной лабораторией аттестованными средствами по ГОСТ ISO/IEC 17025–2019 (§7.3.2). Настоящий калькулятор — вспомогательный инструмент и официальный протокол не заменяет.</li>",
+    dlArticle:"📄 Скачать первоисточник — проект методики (PDF, АНРИ 2025, №1(120), с.76–95)",
+    stepsH2:"Пошаговое описание рационального метода",
+    stepsIntro:"По первоисточнику — проекту методики радиационного контроля (АНРИ, 2025, №1(120), с.76–85). Курсивом в рамках — цитаты автора с указанием пункта.",
+    step1H3:"1. Длительность теста как главный фактор надёжности",
+    step1P:"Концентрация радона может существенно, иногда кратно, меняться в течение суток, недель и сезонов (§4.1.4). Самое надёжное решение дало бы измерение в течение целого года, но это нерационально в каждом отдельном помещении. Рациональный критерий сравнивает норматив не с самой измеренной концентрацией, а с границей доверительного интервала среднегодового значения — она сужается с ростом длительности теста. Расчёты по 26 странам показывают: краткий тест (4–6 суток) почти не уступает по надёжности решения длинному (2–3 месяца), но обходится на порядок дешевле.",
+    quote1:"«...продолжительность теста должна быть не менее 2 суток в условиях ограниченного режима вентиляции и не менее 4 суток в условиях нормального режима вентиляции»<cite data-i18n=\"cite1\">— §4.1.5</cite>",
+    cite1:"— §4.1.5",
+    step2H3:"2. Что называется «тестом»",
+    step2P:"Определение теста в методике шире бытового: показание с экрана монитора, не сопровождённое данными об условиях измерения и оценкой соответствия, тестом не является. Экспрессные измерения (от минут до часов) не допускаются вовсе.",
+    quote2:"«тест – процедура контроля, включающая проведение краткосрочного или долгосрочного измерения, а также сбор/анализ данных и оценку соответствия помещения требованиям норм радиационной безопасности»<cite data-i18n=\"cite2\">— §3</cite>",
+    cite2:"— §3",
+    step3H3:"3. Выбор режима вентиляции",
+    step3P:"Нормальный режим — штатная эксплуатация без ограничений, тест от 4 суток. Ограниченный — окна и двери постоянно закрыты (пустующее новое здание, выходные без персонала), тест от 2 суток. Временная неопределённость в ограниченном режиме ниже, однако такие условия не отражают обычную эксплуатацию помещения:",
+    quote3:"«Тестирование помещений в режиме нормальной (обычной) вентиляции является более предпочтительным по сравнению с тестированием в режиме ограниченной вентиляции»<cite data-i18n=\"cite3\">— §5.2.3</cite>",
+    cite3:"— §5.2.3",
+    step4H3:"4. Выбор и подготовка помещения",
+    step4P:"Методика регламентирует и выбор помещения, и точку установки прибора, поскольку оба влияют на результат: радон поступает в здание из грунта, поэтому в приоритете нижние этажи и помещения, где люди проводят больше всего времени, а показания прибора искажаются вблизи окон, дверей и источников тепла.",
+    quote4:"«Высоким является приоритет тестирования помещений с длительным пребыванием типа спальни, детской игровой комнаты, рабочего кабинета... в которых люди обычно проводят не менее 6 часов в сутки»<cite data-i18n=\"cite4\">— §4.1.8</cite>",
+    cite4:"— §4.1.8",
+    quote5:"«Место измерения должно располагаться вдали от оконного проема, двери и источников тепла, холода, влаги или сквозняков, не ближе 20 см от стен»<cite data-i18n=\"cite5\">— §5.3.1</cite>",
+    cite5:"— §5.3.1",
+    step5H3:"5. Требования к прибору",
+    step5P:"Требования к точности прибора для коротких тестов смягчены: при длительности до двух месяцев вклад приборной погрешности в итоговую неопределённость второстепенен по сравнению с временной изменчивостью радона (§4.1.7). Это делает пригодными недорогие приборы и открывает возможность самостоятельного тестирования жильцами.",
+    quote6:"«Рационально применять методы и средства измерений с погрешностью калибровки... не выходящей за пределы ±40% (при k = 2) и ±(20–30)% (при k = 2) в краткосрочном и долгосрочном режимах измерений, соответственно»<cite data-i18n=\"cite6\">— §5.5.2</cite>",
+    cite6:"— §5.5.2",
+    kDef:"Здесь и далее <b>k</b> — коэффициент охвата: k=2 означает расширенную неопределённость с доверительной вероятностью ≈95&nbsp;% (ГОСТ 34100.3–2017); так задаются и U<sub>V</sub>(t), и U<sub>и</sub> ниже.",
+    step6H3:"6. Расчёт порогов по Табл.1",
+    step6P:"По измеренной длительности t и режиму вентиляции из Табл.1 (ниже) берут временную неопределённость U<sub>V</sub>(t) и коэффициент кратности K<sub>p</sub>(t), затем проверяют критерий (1) и критерий (2):",
+    step6Formula:"Критерий (1): C(t)·[1&nbsp;+&nbsp;√(U<sub>V</sub>²&nbsp;+&nbsp;U<sub>и</sub>²)]&nbsp;&lt;&nbsp;C<sub>ну</sub>&nbsp;&nbsp;(§4.2.1)<br>Критерий (2): C(t)/K<sub>p</sub>(t)·[1&nbsp;−&nbsp;U<sub>и</sub>]&nbsp;&gt;&nbsp;C<sub>ну</sub>&nbsp;&nbsp;(§4.2.2, только нормальный режим)",
+    step6Defs:"<li><b>C(t)</b> — измеренная средняя объёмная активность (ОА) радона за весь период теста, Бк/м³: показание монитора; если прибор выдаёт ЭРОА — подставляют ЭРОА×2 (F=0.5).</li><li><b>t</b> — фактическая длительность теста, сутки. По t и режиму вентиляции из Табл.1 выбирается строка (шаговый выбор — значение ближайшего меньшего узла).</li><li><b>C<sub>ну</sub></b> — норматив (референтный уровень) на среднегодовую концентрацию, Бк/м³: с ним сравнивается доверительный интервал оценки.</li><li><b>U<sub>V</sub>(t)</b> — временная неопределённость: насколько среднее за t суток может отличаться от истинного среднегодового из-за естественных колебаний радона во времени. Относительная величина, безразмерная (охват k=2); берётся из Табл.1 по t и режиму. Доминирующий вклад в неопределённость решения.</li><li><b>U<sub>и</sub></b> — инструментальная неопределённость: погрешность калибровки самого прибора, с сертификата/паспорта. Относительная величина, безразмерная (охват k=2); второстепенный вклад при тестах короче ~2 месяцев.</li><li><b>K<sub>p</sub>(t)</b> — коэффициент кратности: во сколько раз результат краткосрочного измерения может превысить среднегодовое значение. Безразмерный, из Табл.1; используется только в критерии (2) и только для нормального режима вентиляции.</li>",
+    step7H3:"7. Принятие решения (три исхода)",
+    step7P:"Порядок проверки строго последовательный, а исход «серая зона» ограничен по времени: без правила девяти месяцев помещение с уровнем вблизи норматива можно было бы измерять неограниченно долго, так и не приняв решения.",
+    q7lbl:"(a)", q8lbl:"(b)", q9lbl:"(c)",
+    quote7:"«Помещение соответствует требованиям Норм радиационной безопасности, если... выполняется критерий (1)»<cite data-i18n=\"cite7\">— §7.1.1</cite>",
+    cite7:"— §7.1.1",
+    quote8:"«Помещение не соответствует требованиям..., если... выполняется критерий (2), либо не выполняется критерий (1) при продолжительности теста не менее 9 месяцев»<cite data-i18n=\"cite8\">— §7.1.2</cite>",
+    cite8:"— §7.1.2",
+    quote9:"«...рекомендуется: проведение более точных измерений в долгосрочном режиме (от 2 до 12 месяцев)..., либо проведение мер по снижению ОА радона, следуя принципу ALARA»<cite data-i18n=\"cite9\">— §7.1.3</cite>",
+    cite9:"— §7.1.3",
+    alaraDef:"<b>ALARA</b> (As Low As Reasonably Achievable — «настолько низко, насколько это разумно достижимо») — принцип радиационной защиты: дозы облучения снижают до разумно достижимого уровня с учётом социальных и экономических факторов, а не до формального норматива (источник, §3). Подробнее: <a href=\"https://en.wikipedia.org/wiki/As_low_as_reasonably_achievable\" target=\"_blank\" rel=\"noopener\">en.wikipedia.org/wiki/As_low_as_reasonably_achievable</a>.",
+    step8H3:"8. Оформление результата",
+    step8P:"Расчётная часть протокола отделена от вывода: сначала приводятся значения левых частей критериев (1) и (2) и действующий норматив, затем заключение о соответствии (§9.1.7) — решение можно перепроверить по исходным числам.",
+    quote10:"«Протокол испытаний (тестирования) должен быть оформлен в соответствии с требованиями ГОСТ Р 58973–2020»<cite data-i18n=\"cite10\">— §9.1</cite>",
+    cite10:"— §9.1",
+
+    flowH2:"Логическая схема принятия решения",
+    flowIntro:"Порядок проверки строго последовательный: критерий (1) → критерий (2) → правило 9 месяцев. Первое выполненное условие определяет исход.",
+    fcYes:"да", fcNo:"нет",
+    fcStart1:"Измерение C(t) за время t",
+    fcStart2:"режим вентиляции: нормальный / ограниченный",
+    fcTable1:"Из Табл.1 (Приложение А) берут Uᵥ(t) и Kₚ(t)",
+    fcTable2:"если t между строками — берут строку с меньшим t",
+    fcD1_1:"Критерий (1)?",
+    fcD1_2:"C(t)[1+√(Uᵥ²+Uᵢ²)] < C_ну",
+    fcA1:"(a) СООТВЕТСТВУЕТ нормативу",
+    fcA2:"§7.1.1 — мероприятия не требуются",
+    fcD2_1:"Критерий (2)?",
+    fcD2_2:"(только норм. режим)",
+    fcD2_3:"C(t)/Kₚ(t)·(1−Uᵢ) > C_ну",
+    fcB1:"(b) НЕ СООТВЕТСТВУЕТ нормативу",
+    fcB2:"§7.1.2",
+    fcB3:"защитные (противорадоновые)",
+    fcB4:"мероприятия",
+    fcD3_1:"t ≥ 9 месяцев",
+    fcD3_2:"(270 суток)?",
+    fcC1:"(c) СЕРАЯ ЗОНА",
+    fcLoop:"измерение продолжается",
+    fcsLoop:"прибор продолжает мерить",
+    fcC2:"§7.1.3 — долгосрочный тест 2–12 мес.",
+    fcC3:"либо меры по снижению ОА радона (ALARA)",
+    fcsStart1:"Измерьте радон: прибор стоит в комнате", fcsStart2:"несколько суток и сам считает средний уровень",
+    fcsMargin1:"Введите данные в калькулятор — он сам добавит", fcsMargin2:"запас на изменчивость газа и на погрешность прибора",
+    fcsD1a:"Даже с запасом", fcsD1b:"ниже нормы?",
+    fcsA1:"Всё в порядке", fcsA2:"дом защищать не нужно",
+    fcsD2a:"Выше нормы даже по", fcsD2b:"осторожной нижней оценке?",
+    fcsB1:"Радона много", fcsB2:"дом нужно защищать", fcsB3:"(герметизация, вентиляция)",
+    fcsD3a:"Замер идёт уже", fcsD3b:"9 месяцев или дольше?",
+    fcsC1:"Пока непонятно", fcsC2:"пусть прибор постоит ещё", fcsC3:"чем дольше замер, тем точнее ответ",
+    flowLegendIntro:"Величины на схеме:",
+    flowLegend:"<li><b>C(t)</b> — измеренная средняя ОА радона за время теста, Бк/м³.</li><li><b>t</b> — длительность теста, сутки.</li><li><b>C<sub>ну</sub></b> — норматив на среднегодовую концентрацию, Бк/м³.</li><li><b>U<sub>V</sub></b> — временная неопределённость из Табл.1 (относительная, k=2) — доминирующий вклад.</li><li><b>U<sub>и</sub></b> — инструментальная неопределённость прибора, с сертификата (относительная, k=2).</li><li><b>K<sub>p</sub>(t)</b> — коэффициент кратности из Табл.1 (безразмерный; только нормальный режим, только критерий (2)).</li><li><b>Как читают Табл.1.</b> В таблице заданы не все длительности, а только опорные (4, 5, 6, 7, 8, 10, 12, 14, 20 суток, далее по месяцам). Если длительность теста попала между строками, берут строку с <b>меньшим</b> t: её значения U<sub>V</sub> и K<sub>p</sub> выше, то есть оценка получается более осторожной. Промежуточные значения не вычисляются. Пример из источника: для t&nbsp;=&nbsp;4,8&nbsp;суток берут строку «4&nbsp;суток», K<sub>p</sub>&nbsp;=&nbsp;1,74.</li>",
+
+    calcH2:"Расчёт решения",
+    lblMode:"Режим вентиляции",
+    optModeNormal:"нормальный", optModeRestricted:"ограниченный",
+    hintMode:"Нормальный — штатная эксплуатация, тест от 4 суток. Ограниченный — окна/двери постоянно закрыты, тест от 2 суток (критерий (2) в нём не определён).",
+    refRlSummary:"Норматив C<sub>ну</sub>: национальные ориентиры и в каких единицах они заданы",
+    refUdSummary:"Инструментальная неопределённость U<sub>и</sub>: что такое k, где взять значение, типовые цифры",
+    hintUdWhere:"<b>Где взять:</b> свидетельство о поверке/аттестации или паспорт (спецификация) прибора&nbsp;— строка «неопределённость измерения», «погрешность измерения (±)» или «неопределённость калибровки».",
+    lblCt:"Измеренная концентрация C(t)",
+    hintCt:"Показание радон-монитора, среднее за весь период. Выберите единицу справа&nbsp;— пересчёт в ОА (Бк/м³) выполняется автоматически: ЭРОА&nbsp;×2 (F=0.5), pCi/L&nbsp;×37.",
+    unitBqOA:"Бк/м³ (ОА)", unitEROA:"Бк/м³ (ЭРОА)", unitPci:"pCi/L", unitPct:"% (k=2)",
+    lblDur:"Длительность измерения t",
+    optDay:"сутки", optMonth:"месяцы",
+    hintDur:"За сколько усреднено C(t). 1&nbsp;месяц = 30&nbsp;суток (общая ось Табл.1).",
+    lblRl:"Норматив C<sub>ну</sub>",
+    hintRl:"Норматив выбирается из списка — все значения уже приведены к ОА радона (Бк/м³). РФ (НРБ-99/2009) даёт две планки: 200 для новых/реконструированных зданий (100 ЭРОА) и 400 для уже эксплуатируемых (200 ЭРОА); при сомнении в статусе здания рекомендуется более строгая планка — 200. Другие страны и перевод единиц — в справке ниже.",
+    rlGroupRF:"Россия (НРБ-99/2009)", rlGroupWHO:"ВОЗ (Handbook on Indoor Radon, 2009)", rlGroupEPA:"US EPA", rlGroupEU:"Евросоюз (Directive 2013/59/Euratom)",
+    rlOptRfNew:"200 — новое/реконструированное здание, рекомендуется (100 ЭРОА)", rlOptRfOld:"400 — эксплуатируемое здание (200 ЭРОА)",
+    rlOptWhoRec:"100 — рекомендуемый уровень", rlOptWhoMax:"300 — максимальный уровень",
+    rlOptEpa:"148 — action level (4 pCi/L)", rlOptEu:"300 — референтный уровень",
+    hintRlList:"<li><b>РФ</b> (НРБ-99/2009) — единственный из перечисленных, кто нормирует <b>по ЭРОА</b>: эксплуатируемые здания 200 ЭРОА (= 400 ОА при F=0.5), новые/реконструированные 100 ЭРОА (= 200 ОА).</li><li><b>WHO</b> (Handbook on Indoor Radon, 2009) — <b>по ОА</b>: 100 рекомендуемый / 300 максимальный.</li><li><b>US EPA</b> — <b>по ОА</b>: 148 Бк/м³ (= 4 pCi/L), action level.</li><li><b>EU</b> (Council Directive 2013/59/Euratom, BSS) — <b>по ОА</b>: 300, референтный уровень.</li>",
+    hintRlNote:"Международная практика (WHO, EPA, EU) нормирует непосредственно объёмную активность радона-222 (ОА)&nbsp;— то, что показывает монитор. РФ нормирует ЭРОА (по дочерним продуктам распада), поэтому российские значения при переводе в ОА удваиваются: 200 ЭРОА ↔ 400 ОА.",
+    noteConverted:"Значения приведены к ОА радона (Бк/м³) — единицам, в которых записаны критерии: ЭРОА ×2 (F=0.5), pCi/L ×37.",
+    workH:"Проверка критериев на ваших числах",
+    workC1Name:"Критерий (1) — «соответствует», §4.2.1:  C(t)·[1 + √(U_V² + U_и²)] < C_ну",
+    workC2Name:"Критерий (2) — «не соответствует», §4.2.2:  C(t)/K_p(t)·[1 − U_и] > C_ну",
+    workC2NA:"не применяется: K_p(t) определён только для нормального режима вентиляции (§4.2.2)",
+    work9Name:"Правило 9 месяцев, §7.1.2:  критерий (1) не выполнен И t ≥ 9 месяцев",
+    workYes:"выполнен",
+    workNo:"не выполнен",
+    workSkip1:"↳ в решении НЕ участвует: исход уже определён критерием (1) — проверка на нём останавливается (§7.1.1).",
+    workSkip2:"↳ в решении НЕ участвует: исход уже определён критерием (2) — проверка на нём останавливается (§7.1.2).",
+    workByC1:"<b>Итог:</b> сработал критерий&nbsp;(1) — помещение признаётся <b>соответствующим</b> нормативу (§7.1.1). Проверка на этом останавливается: критерий&nbsp;(2) и правило 9&nbsp;месяцев на исход уже не влияют.",
+    workByC2:"<b>Итог:</b> критерий&nbsp;(1) не сработал, но сработал критерий&nbsp;(2) — помещение признаётся <b>не соответствующим</b> нормативу (§7.1.2). Правило 9&nbsp;месяцев на исход уже не влияет.",
+    workBy9:"<b>Итог:</b> ни критерий&nbsp;(1), ни критерий&nbsp;(2) не сработали, но тест длится ≥&nbsp;9&nbsp;месяцев — по правилу §7.1.2 помещение признаётся <b>не соответствующим</b> нормативу.",
+    workByNone:"<b>Итог:</b> не сработало ни одно из трёх условий — исход <b>«серая зона»</b> (§7.1.3): данных пока недостаточно для надёжного вывода.",
+    lblUd:"Инструментальная неопределённость U<sub>и</sub>",
+    hintUd:"Погрешность калибровки прибора при k=2. При отсутствии данных поверки см. справку ниже: паспортное значение 10&nbsp;% использовать не следует.",
+    hintUdList:"<li><b>k&nbsp;— коэффициент охвата</b>, то есть во сколько раз расширили стандартную неопределённость. В поле выше вводится <b>относительная погрешность прибора в процентах при k=2</b> (интервал ≈95&nbsp;%). Букву «k» в паспортах пишут редко, поэтому пересчитайте паспортную цифру по тому, что стоит рядом с ней:<ul><li>«P&nbsp;=&nbsp;0,95», «доверительная вероятность 0,95», «95&nbsp;%», «2σ» — это и есть k=2, <b>берите как есть</b>. Пример: в свидетельстве «±30&nbsp;% (P&nbsp;=&nbsp;0,95)» → в поле вводите <b>30</b>.</li><li>«СКО», «1σ», «стандартная неопределённость», «P&nbsp;=&nbsp;0,68» — <b>умножьте саму цифру погрешности на 2</b>. Пример: «СКО&nbsp;=&nbsp;12&nbsp;%» → 2&nbsp;×&nbsp;12&nbsp;%&nbsp;=&nbsp;24&nbsp;% → в поле вводите <b>24</b>.</li><li>«P&nbsp;=&nbsp;0,99», «3σ» — <b>разделите цифру на 1,5</b>. Пример: «±45&nbsp;% (3σ)» → 45&nbsp;%&nbsp;/&nbsp;1,5&nbsp;=&nbsp;30&nbsp;% → в поле вводите <b>30</b>.</li><li>просто «±X&nbsp;%» без пояснений (пределы допускаемой основной погрешности) — обычно соответствует ≈95&nbsp;%, берите как есть. Пример: «±40&nbsp;%» → в поле вводите <b>40</b>.</li></ul></li><li><b>Ориентиры источника:</b> краткосрочный тест — до ±40&nbsp;%, долгосрочный — ±(20–30)&nbsp;%; ниже 20&nbsp;% не рекомендуется (межгодовые вариации радона сами по себе ≈15–20&nbsp;%).</li><li><b>Значения из источника (Приложение Б):</b> мониторы RadonEye / RadonEye&nbsp;Plus2 и Corentium&nbsp;Home / Wave&nbsp;Radon — U<sub>к</sub>(ε) <b>не превышает 0,30</b> (Б4.1); трековый экспозиметр РЭИ-4 с детектором LR-115 — не более 0,30 (Б3.1); угольный комплекс «КАМЕРА» — детектор ≤&nbsp;0,15 и пробоотборник ≤&nbsp;0,25 (или 0,40 без учёта привеса угля), Б2.1.</li><li><b>Осторожно с паспортной цифрой.</b> Производитель RadonEye указывает точность «менее ±10&nbsp;%» — это заводская спецификация при высокой концентрации и длительном наборе. Метрологические испытания партии таких мониторов дали неопределённость калибровки до 0,30 (k=2), и именно это значение источник рекомендует для расчёта. Если нет собственных данных поверки — берите 0,30, а не паспортные 10&nbsp;%.</li>",
+
+    tableH2:"Таблица 1 — временная неопределённость U<sub>V</sub>(t) и коэффициент кратности K<sub>p</sub>(t)",
+    tableHintTop:"Приложение А источника. Если длительность теста попала между строками таблицы, берут строку с <b>меньшим</b> t — её значения выше, оценка более осторожная; промежуточные значения не вычисляются. Пример из источника: для t&nbsp;=&nbsp;4,8&nbsp;суток берут строку «4&nbsp;суток», K<sub>p</sub>&nbsp;=&nbsp;1,74.",
+    tableNormalH3:"Нормальный режим (от 4 суток)",
+    tableRestrH3:"Ограниченный режим (от 2 суток; K<sub>p</sub>(t) не определён)",
+    thDay:"Сутки", thMonth:"Месяц", labUV:"U<sub>V</sub>(t)", labMF:"K<sub>p</sub>(t)",
+    tableHintBottom:"Обратите внимание: при 2&nbsp;месяцах (нормальный режим) U<sub>V</sub>&nbsp;=&nbsp;100&nbsp;%, при 3&nbsp;месяцах&nbsp;=&nbsp;85&nbsp;%&nbsp;— двух-трёхмесячное измерение ещё далеко от среднегодового.",
+
+    footSrc1:"<b>Основной источник (методика):</b> «Оценка соответствия помещений зданий требованиям Норм радиационной безопасности по ограничению содержания радона в воздухе. Методика радиационного контроля (проект)». <i>АНРИ</i> <b>2025</b>, №1(120), с.76–95.",
+    footDisc:"Калькулятор воспроизводит критерии (1),(2) и правило §7.1.2 (9&nbsp;месяцев) с табличными значениями U<sub>V</sub>(t)/K<sub>p</sub>(t) источника. Неофициальная вспомогательная реализация контура «Радоновый риск». Для торона (ДПР Rn-220) метод пока не разработан. Расчёт не заменяет официальные протоколы измерений.",
+
+    // динамика
+    v_ok:"Соответствует нормативу",
+    e_ok:"Защитные мероприятия не требуются. Верхняя оценка среднегодовой концентрации ниже C<sub>ну</sub> — решение надёжно (≥ 95 %). §7.1.1",
+    v_bad:"Не соответствует нормативу",
+    e_bad2:"Требуются защитные (противорадоновые) мероприятия. Нижняя оценка среднегодовой концентрации выше C<sub>ну</sub> — превышение надёжно (≥ 95 %). §7.1.2, критерий (2).",
+    e_bad9:"Требуются защитные (противорадоновые) мероприятия. Критерий (1) не выполнен, а тест продолжается уже ≥ 9 месяцев — по правилу §7.1.2 решение фиксируется как «не соответствует», далее измерять не нужно.",
+    v_wait:"Серая зона",
+    e_wait:"Данных недостаточно для надёжного вывода (t &lt; 9 мес.). Рекомендуется долгосрочный тест (2–12 месяцев), либо меры по снижению ОА радона по принципу ALARA (§7.1.3).",
+    chipThr1:"порог (a) C<sub>AL</sub><sup>(1)</sup>", chipThr2:"порог (b) C<sub>AL</sub><sup>(2)</sup>",
+    chipDays:"сут.", bq:"Бк/м³", chipMode:"режим",
+    warnUd:"U<sub>и</sub> &lt; 20 %: источник не рекомендует (межгодовые вариации радона ≈ 15–20 %).",
+    warnT12:"свыше 12 месяцев: за пределами таблицы, приняты значения для 12 месяцев (U<sub>V</sub>=0).",
+    errCt:"Задайте концентрацию C(t) ≥ 0.",
+    errDur:"Задайте длительность t &gt; 0.",
+    errUd:"Задайте инструментальную неопределённость U<sub>и</sub>.",
+    errMinNormal:"В нормальном режиме критерии определены от 4 суток (§4.1.5). Увеличьте длительность или выберите ограниченный режим.",
+    errMinRestricted:"В ограниченном режиме критерии определены от 2 суток (§4.1.5). Увеличьте длительность."
+  },
+  en:{
+    title:"Rational Method for Indoor Radon Control — step-by-step guide, decision flowchart and calculator",
+    btnTheme:"◑ theme",
+    btnModeSimple:"plain version", btnModeSci:"scientific version",
+    h1:"Rational Method for Indoor Radon Control",
+    sub1:"Step-by-step description, decision-logic flowchart, and a reliability (≥&nbsp;95%) calculator for the compliance decision.",
+    sub2:"Sources: the draft radiation-control methodology and practical guide by Tsapalov, A.A. (ANRI, 2025, No.1(120), in Russian).",
+
+    introH2:"Context, relevance and purpose of the method",
+    introH3a:"Relevance: control is required in every room, not only in areas known to be radon-prone",
+    introP1:"The task cannot be narrowed down to areas known to be radon-prone: a radon-potential assessment predicts the average level over an area, not the level in a particular room. The scope of control is therefore the entire stock of long-occupancy rooms, regardless of region:",
+    introQ1:"(translated) \"High radon concentrations in individual buildings are not uncommon, including within areas whose regional average indoor radon level is low. This fact follows naturally from the lognormal distribution of indoor radon activity concentration. Therefore radon control must be carried out in every building, and measurement is the only way to assess a room's or building's compliance with the radiation safety standards\"<cite>— §4.1.2</cite>",
+    introH3b:"The problem: the reliability of the compliance assessment of a tested room is not ensured",
+    introP2:"Radon is the principal radiation-risk factor for the population, and the Radiation Safety Standards limit its <b>annual average</b> indoor concentration. Yet current practice cannot verify compliance with that limit reliably: a few days' instrument reading is not yet the annual average, while the current methodological documents permit even instantaneous measurements lasting minutes. As a result, compliance decisions are made with unknown reliability — the task is to make it specified and controlled. The methodology states the underlying constraints itself:",
+    introQ2:"(translated) \"Radon concentration can vary substantially (by multiples) over days, weeks and seasons even in permanently closed rooms and buildings, so the most reliable decision on whether a tested room complies with the Radiation Safety Standards is achieved by measuring over one year\"<cite>— §4.1.4</cite>",
+    introQ3:"(translated) \"At the same time, in most buildings radon levels are well below the limiting level, so determining the annual average with high accuracy in every room through a year-long measurement is irrational; shortening the test, however, evidently reduces the reliability of the compliance assessment\"<cite>— §4.1.4</cite>",
+    introP3:"A common alternative has been grab measurements lasting from minutes to a few hours. The methodology rules them out entirely — not out of caution, but on the strength of dedicated studies:",
+    introQ4:"(translated) \"Dedicated studies show low reliability of compliance assessment based on grab measurements, owing to unacceptably high temporal radon variation and, consequently, excessive and uncontrolled temporal uncertainty. Moreover, grab-measurement practice not only fails to provide satisfactory reliability of compliance assessment against the Radiation Safety Standards, but is also entirely unprotected against negligence or deliberate violation of the measurement conditions\"<cite>— §4.1.5</cite>",
+    introH3c:"What the method solves",
+    introP4:"The Rational Method answers not \"how precisely was it measured\" but \"is there enough data for a reliable decision\". In practice this works as follows: a margin for uncertainty is added to the measurement result, and what is compared with the reference level is the upper bound of the possible annual average — a deliberately conservative estimate. Both components of that margin are defined explicitly: the temporal uncertainty U<sub>V</sub>(t) is taken from the table by test duration, the instrumental U<sub>D</sub> from the device's documentation. The longer the measurement, the smaller the margin and the closer the conservative estimate to the result itself.",
+    introQ5:"(translated) \"The essence of the rational compliance criterion (expression (1), clause 4.2.1) lies in comparing the limiting level with the upper confidence bound of the estimated annual average, which is determined from the measured radon concentration while controlling the principal uncertainty components (temporal and instrumental), which decrease as the test duration grows\"<cite>— §4.1.4</cite>",
+    introP5:"The practical consequence: instead of a simple \"above or below the limit\" comparison, the method yields three outcomes — <b>complies</b>, <b>does not comply</b>, and the <b>grey zone</b>. The first two are issued only when the data genuinely suffice; the grey zone is not an error but an explicit instruction to continue measuring. The decision is issued for an <b>individual room</b> (§7.1) — that is the case implemented in the calculator; compliance of the building as a whole is established separately, from the set of rooms surveyed (§7.2).",
+    introQ6:"(translated) \"The measurement and compliance-assessment principle (1) set out above, thanks to control of the principal uncertainty components, provides decisions reliable with a probability of at least 95% regardless of the measurement methods and devices used, for both long-term and short-term tests, but excluding grab measurements lasting minutes or hours\"<cite>— §4.1.4</cite>",
+    introH3d:"Advantages",
+    introAdv:"<li><b>A short test yields a reliable result.</b> In most buildings radon is well below the limit and a reliable conclusion is reached within 2–7 days: \"inexpensive short-term tests (from 2 to 7 days) within the rational criterion are sufficient to confirm the absence of a radon problem\" (§4.1.4).</li><li><b>Requirements for device accuracy are relaxed on justified grounds.</b> For tests shorter than two months the instrumental contribution is small even at 40%: \"quality-assurance metrological requirements for short-term measurements should be softer than those for long-term measurements. This makes it possible to legitimize inexpensive (non-professional) radon measuring devices, as well as participation of the population itself in large-scale testing of building rooms\" (§4.1.7).</li><li><b>Mass surveying becomes feasible.</b> The low cost of a test and the regulated measurement conditions allow testing at country scale, including by residents themselves (§4.1.8).</li><li><b>The object of regulation is the building, not the individual.</b> The goal of regulation is to reduce both collective and individual risk \"through the management of buildings rather than individual exposure\" (§4.1.3).</li><li><b>The result is reproducible and auditable.</b> The report states the left-hand sides of inequalities (1) and (2) separately from the conclusion, so the decision can be re-checked against the original numbers (§9.1.7).</li>",
+    introH3e:"Limits of applicability",
+    introLim:"<li>The method covers <b>radon-222</b> only. For thoron (Rn-220) the spatial and temporal patterns have not been studied and no comparable dataset exists (§4.1.1).</li><li>The U<sub>V</sub>(t) and MF(t) values were obtained for specific measurement conditions (Section 5): ventilation mode, device placement, indoor climate. If those conditions are violated, the 95% reliability is not guaranteed.</li><li>A decision acquires legal force only when measurements are made by an accredited laboratory with certified instruments per GOST ISO/IEC 17025-2019 (§7.3.2). This calculator is an auxiliary tool and does not replace an official test report.</li>",
+    dlArticle:"📄 Download the primary source — the draft methodology (PDF, in Russian; ANRI 2025, No.1(120), pp.76–95)",
+    stepsH2:"Step-by-step description of the Rational Method",
+    stepsIntro:"Based on the primary source — the draft radiation-control methodology (ANRI, 2025, No.1(120), pp.76–85, in Russian). Quotations below are translated from the Russian original; clause numbers are given for traceability.",
+    step1H3:"1. Test duration as the main driver of reliability",
+    step1P:"Indoor radon concentration can change substantially — sometimes by multiples — over the course of days, weeks and seasons (§4.1.4). A full year of monitoring would give the most reliable decision, but that is impractical for every single room. The rational criterion compares the reference level not with the raw measured value, but with the confidence-interval bound of the estimated annual average — a bound that narrows as the test gets longer. Calculations across 26 countries show a short test (4–6 days) is almost as reliable as a long one (2–3 months), yet costs an order of magnitude less.",
+    quote1:"(translated) \"...the test duration must be at least 2 days under restricted ventilation and at least 4 days under normal ventilation\"<cite data-i18n=\"cite1\">— §4.1.5</cite>",
+    cite1:"— §4.1.5",
+    step2H3:"2. What counts as a \"test\"",
+    step2P:"The methodology defines a test more broadly than everyday usage: a monitor reading unaccompanied by data on the measurement conditions and a compliance assessment is not a test. Grab measurements (minutes to hours) are not permitted at all.",
+    quote2:"(translated) \"a test is a control procedure comprising a short- or long-term measurement, together with data collection/analysis and the compliance assessment of the room\"<cite data-i18n=\"cite2\">— §3</cite>",
+    cite2:"— §3",
+    step3H3:"3. Choosing the ventilation mode",
+    step3P:"Normal mode is routine operation with no restrictions, test from 4 days. Restricted mode has windows and doors permanently closed (an empty new building, an unoccupied weekend) — test from 2 days. Temporal uncertainty is lower in the restricted mode, but such conditions do not reflect routine occupancy:",
+    quote3:"(translated) \"Testing rooms under normal (routine) ventilation is preferable to testing under restricted ventilation\"<cite data-i18n=\"cite3\">— §5.2.3</cite>",
+    cite3:"— §5.2.3",
+    step4H3:"4. Choosing and preparing the room",
+    step4P:"The methodology regulates both the choice of room and the placement of the device, since both affect the result: radon enters a building from the ground, so lower floors and the rooms where people spend the most time take priority, while readings are distorted near windows, doors and heat sources.",
+    quote4:"(translated) \"Priority for testing is high for long-occupancy rooms such as bedrooms, children's playrooms, home offices... where people usually spend at least 6 hours a day\"<cite data-i18n=\"cite4\">— §4.1.8</cite>",
+    cite4:"— §4.1.8",
+    quote5:"(translated) \"The measurement location must be away from window openings, doors, and sources of heat, cold, moisture or draughts, at least 20 cm from walls\"<cite data-i18n=\"cite5\">— §5.3.1</cite>",
+    cite5:"— §5.3.1",
+    step5H3:"5. Device requirements",
+    step5P:"Accuracy requirements for short tests are relaxed: for durations up to two months the device's contribution to the total uncertainty is secondary to radon's temporal variability (§4.1.7). This qualifies inexpensive devices and opens the way to self-testing by residents.",
+    quote6:"(translated) \"It is rational to use measurement methods and devices with a calibration uncertainty... not exceeding ±40% (k=2) and ±(20–30)% (k=2) for short-term and long-term measurement modes, respectively\"<cite data-i18n=\"cite6\">— §5.5.2</cite>",
+    cite6:"— §5.5.2",
+    kDef:"Throughout this page, <b>k</b> is the coverage factor: k=2 means an expanded uncertainty at a confidence level of ≈95% (GOST 34100.3–2017 / GUM); U<sub>V</sub>(t) and U<sub>D</sub> below are both defined this way.",
+    step6H3:"6. Computing the action levels from Table 1",
+    step6P:"From the measured duration t and ventilation mode, Table 1 (below) gives the temporal uncertainty U<sub>V</sub>(t) and the multiplicity factor MF(t); criterion (1) and criterion (2) are then checked:",
+    step6Formula:"Criterion (1): C(t)·[1&nbsp;+&nbsp;√(U<sub>V</sub>²&nbsp;+&nbsp;U<sub>D</sub>²)]&nbsp;&lt;&nbsp;C<sub>RL</sub>&nbsp;&nbsp;(§4.2.1)<br>Criterion (2): C(t)/MF(t)·[1&nbsp;−&nbsp;U<sub>D</sub>]&nbsp;&gt;&nbsp;C<sub>RL</sub>&nbsp;&nbsp;(§4.2.2, normal mode only)",
+    step6Defs:"<li><b>C(t)</b> — the measured average radon activity concentration over the whole test, Bq/m³: the monitor's reading; if the device reports EEC, substitute EEC×2 (F=0.5).</li><li><b>t</b> — the actual test duration, in days. Table 1's row is picked by t and ventilation mode (a step-lookup — the value of the nearest lower node).</li><li><b>C<sub>RL</sub></b> — the reference level for the annual-average concentration, Bq/m³: the value the confidence-interval estimate is compared against.</li><li><b>U<sub>V</sub>(t)</b> — temporal uncertainty: how far the t-day average can differ from the true annual average because radon varies naturally over time. Relative, dimensionless (coverage k=2); taken from Table 1 by t and mode. The dominant source of decision uncertainty.</li><li><b>U<sub>D</sub></b> — instrumental uncertainty: the device's own calibration error, from its certificate/datasheet. Relative, dimensionless (coverage k=2); a minor contributor for tests shorter than ~2 months.</li><li><b>MF(t)</b> — multiplicity factor: how many times a short-term reading can exceed the true annual average. Dimensionless, from Table 1; used only in criterion (2), and only for the normal ventilation mode.</li>",
+    step7H3:"7. Making the decision (three outcomes)",
+    step7P:"The checks run in strict order, and the grey-zone outcome is bounded in time: without the nine-month rule a room hovering near the limit could be measured indefinitely without ever reaching a decision.",
+    q7lbl:"(a)", q8lbl:"(b)", q9lbl:"(c)",
+    quote7:"(translated) \"The room complies with the Radiation Safety Standards if... criterion (1) is met\"<cite data-i18n=\"cite7\">— §7.1.1</cite>",
+    cite7:"— §7.1.1",
+    quote8:"(translated) \"The room does not comply..., if... criterion (2) is met, or if criterion (1) is not met at a test duration of at least 9 months\"<cite data-i18n=\"cite8\">— §7.1.2</cite>",
+    cite8:"— §7.1.2",
+    quote9:"(translated) \"...it is recommended to: carry out more accurate long-term measurements (from 2 to 12 months)..., or take measures to reduce the radon activity concentration following the ALARA principle\"<cite data-i18n=\"cite9\">— §7.1.3</cite>",
+    cite9:"— §7.1.3",
+    alaraDef:"<b>ALARA</b> (As Low As Reasonably Achievable) — a radiation-protection principle: exposure is reduced to a level that is reasonably achievable given social and economic factors, not merely down to a formal reference level (source, §3). More: <a href=\"https://en.wikipedia.org/wiki/As_low_as_reasonably_achievable\" target=\"_blank\" rel=\"noopener\">en.wikipedia.org/wiki/As_low_as_reasonably_achievable</a>.",
+    step8H3:"8. Reporting the result",
+    step8P:"The calculation part of the report is kept separate from the conclusion: first the left-hand-side values of criteria (1) and (2) and the applicable limit, then the compliance verdict (§9.1.7) — the decision can be re-checked from the original numbers.",
+    quote10:"(translated) \"The test report must be drawn up in accordance with the requirements of GOST R 58973–2020\"<cite data-i18n=\"cite10\">— §9.1</cite>",
+    cite10:"— §9.1",
+
+    flowH2:"Decision-logic flowchart",
+    flowIntro:"The checks run strictly in order: criterion (1) → criterion (2) → the 9-month rule. The first condition met determines the outcome.",
+    fcYes:"yes", fcNo:"no",
+    fcStart1:"Measure C(t) over duration t",
+    fcStart2:"ventilation mode: normal / restricted",
+    fcTable1:"Take Uᵥ(t) and MF(t) from Table 1 (Appendix A)",
+    fcTable2:"if t falls between rows — take the row with the smaller t",
+    fcD1_1:"Criterion (1)?",
+    fcD1_2:"C(t)[1+√(Uᵥ²+U_D²)] < C_RL",
+    fcA1:"(a) COMPLIES with the reference level",
+    fcA2:"§7.1.1 — no remediation needed",
+    fcD2_1:"Criterion (2)?",
+    fcD2_2:"(normal mode only)",
+    fcD2_3:"C(t)/MF(t)·(1−U_D) > C_RL",
+    fcB1:"(b) DOES NOT COMPLY",
+    fcB2:"§7.1.2",
+    fcB3:"remediation measures",
+    fcB4:"required",
+    fcD3_1:"t ≥ 9 months",
+    fcD3_2:"(270 days)?",
+    fcC1:"(c) GREY ZONE",
+    fcLoop:"measurement continues",
+    fcsLoop:"the device keeps measuring",
+    fcC2:"§7.1.3 — long-term test 2–12 months,",
+    fcC3:"or radon-reduction measures (ALARA)",
+    fcsStart1:"Measure the radon: the device stays in the room", fcsStart2:"for several days and computes the average itself",
+    fcsMargin1:"Enter the numbers into the calculator — it will add", fcsMargin2:"the margin for the gas's variability and the device's error",
+    fcsD1a:"Below the limit", fcsD1b:"even with the margin?",
+    fcsA1:"All fine", fcsA2:"no protection needed",
+    fcsD2a:"Above the limit even by the", fcsD2b:"cautious lower estimate?",
+    fcsB1:"Too much radon", fcsB2:"the home needs protection", fcsB3:"(sealing, ventilation)",
+    fcsD3a:"Has the measurement run", fcsD3b:"9 months or longer?",
+    fcsC1:"Not clear yet", fcsC2:"let the device keep running", fcsC3:"the longer it runs, the surer the answer",
+    flowLegendIntro:"Quantities in the diagram:",
+    flowLegend:"<li><b>C(t)</b> — the measured average radon activity concentration over the test, Bq/m³.</li><li><b>t</b> — test duration, days.</li><li><b>C<sub>RL</sub></b> — the reference level for the annual-average concentration, Bq/m³.</li><li><b>U<sub>V</sub></b> — temporal uncertainty from Table 1 (relative, k=2) — the dominant contribution.</li><li><b>U<sub>D</sub></b> — the device's instrumental uncertainty, from its certificate (relative, k=2).</li><li><b>MF(t)</b> — multiplicity factor from Table 1 (dimensionless; normal mode only, criterion (2) only).</li><li><b>How Table 1 is read.</b> The table lists only reference durations (4, 5, 6, 7, 8, 10, 12, 14, 20 days, then months). If the test duration falls between rows, take the row with the <b>smaller</b> t: its U<sub>V</sub> and MF values are higher, making the estimate more conservative. Intermediate values are not computed. Example from the source: for t&nbsp;=&nbsp;4.8&nbsp;days use the \"4 days\" row, MF&nbsp;=&nbsp;1.74.</li>",
+
+    calcH2:"Decision calculation",
+    lblMode:"Ventilation mode",
+    optModeNormal:"normal", optModeRestricted:"restricted",
+    hintMode:"Normal — routine operation, test from 4 days. Restricted — windows/doors permanently closed, test from 2 days (criterion (2) is not defined for it).",
+    refRlSummary:"Reference level C<sub>RL</sub>: national benchmarks and the units they are set in",
+    refUdSummary:"Instrumental uncertainty U<sub>D</sub>: what k means, where to find the value, typical figures",
+    hintUdWhere:"<b>Where to find it:</b> the calibration/verification certificate or the device datasheet — the line reading \"measurement uncertainty\", \"measurement error (±)\" or \"calibration uncertainty\".",
+    lblCt:"Measured concentration C(t)",
+    hintCt:"Radon-monitor reading, averaged over the whole period. Pick the unit on the right — conversion to activity concentration (Bq/m³) is automatic: EEC&nbsp;×2 (F=0.5), pCi/L&nbsp;×37.",
+    unitBqOA:"Bq/m³ (AC)", unitEROA:"Bq/m³ (EEC)", unitPci:"pCi/L", unitPct:"% (k=2)",
+    lblDur:"Measurement duration t",
+    optDay:"days", optMonth:"months",
+    hintDur:"Over what period C(t) is averaged. 1&nbsp;month = 30&nbsp;days (Table 1's common axis).",
+    lblRl:"Reference level C<sub>RL</sub>",
+    hintRl:"The reference level is chosen from a list — all values are already converted to radon activity concentration (Bq/m³). Russia (NRB-99/2009) sets two thresholds: 200 for new/renovated buildings (100 EEC) and 400 for already-occupied ones (200 EEC); when the building's status is unclear, the stricter threshold, 200, is recommended. Other countries and unit conversions are in the reference below.",
+    rlGroupRF:"Russia (NRB-99/2009)", rlGroupWHO:"WHO (Handbook on Indoor Radon, 2009)", rlGroupEPA:"US EPA", rlGroupEU:"EU (Directive 2013/59/Euratom)",
+    rlOptRfNew:"200 — new/renovated building, recommended (100 EEC)", rlOptRfOld:"400 — occupied building (200 EEC)",
+    rlOptWhoRec:"100 — recommended level", rlOptWhoMax:"300 — maximum level",
+    rlOptEpa:"148 — action level (4 pCi/L)", rlOptEu:"300 — reference level",
+    hintRlList:"<li><b>Russia</b> (NRB-99/2009) — the only one listed that regulates <b>in EEC</b>: occupied buildings 200 EEC (= 400 AC at F=0.5), new/renovated 100 EEC (= 200 AC).</li><li><b>WHO</b> (Handbook on Indoor Radon, 2009) — <b>in AC</b>: 100 recommended / 300 maximum.</li><li><b>US EPA</b> — <b>in AC</b>: 148 Bq/m³ (= 4 pCi/L), action level.</li><li><b>EU</b> (Council Directive 2013/59/Euratom, BSS) — <b>in AC</b>: 300, reference level.</li>",
+    hintRlNote:"International practice (WHO, EPA, EU) regulates radon-222 activity concentration (AC) directly — what the monitor reads. Russia regulates EEC (via decay progeny), so Russian values double when converted to AC: 200 EEC ↔ 400 AC.",
+    noteConverted:"Values converted to radon activity concentration (Bq/m³) — the units the criteria are written in: EEC ×2 (F=0.5), pCi/L ×37.",
+    workH:"Criteria checked against your numbers",
+    workC1Name:"Criterion (1) — \"complies\", §4.2.1:  C(t)·[1 + √(U_V² + U_D²)] < C_RL",
+    workC2Name:"Criterion (2) — \"does not comply\", §4.2.2:  C(t)/MF(t)·[1 − U_D] > C_RL",
+    workC2NA:"not applicable: MF(t) is defined only for the normal ventilation mode (§4.2.2)",
+    work9Name:"Nine-month rule, §7.1.2:  criterion (1) not met AND t ≥ 9 months",
+    workYes:"met",
+    workNo:"not met",
+    workSkip1:"↳ NOT used in the decision: the outcome is already settled by criterion (1) — the check stops there (§7.1.1).",
+    workSkip2:"↳ NOT used in the decision: the outcome is already settled by criterion (2) — the check stops there (§7.1.2).",
+    workByC1:"<b>Outcome:</b> criterion&nbsp;(1) is met — the room is judged <b>compliant</b> (§7.1.1). The check stops here: criterion&nbsp;(2) and the nine-month rule no longer affect the outcome.",
+    workByC2:"<b>Outcome:</b> criterion&nbsp;(1) failed but criterion&nbsp;(2) is met — the room is judged <b>non-compliant</b> (§7.1.2). The nine-month rule no longer affects the outcome.",
+    workBy9:"<b>Outcome:</b> neither criterion&nbsp;(1) nor criterion&nbsp;(2) is met, but the test has run ≥&nbsp;9&nbsp;months — under §7.1.2 the room is judged <b>non-compliant</b>.",
+    workByNone:"<b>Outcome:</b> none of the three conditions is met — the result is the <b>grey zone</b> (§7.1.3): the data are not yet sufficient for a reliable conclusion.",
+    lblUd:"Instrumental uncertainty U<sub>D</sub>",
+    hintUd:"The device's calibration uncertainty at k=2. If no verification data of your own is available, see the reference below: the datasheet figure of 10% should not be used.",
+    hintUdList:"<li><b>k is the coverage factor</b> — how many times the standard uncertainty was expanded. The field above takes the <b>device's relative uncertainty in percent at k=2</b> (an ≈95% interval). Device documents rarely spell out \"k\", so convert the stated figure according to what accompanies it:<ul><li>\"P = 0.95\", \"confidence level 0.95\", \"95%\", \"2σ\" — this already is k=2, <b>use as is</b>. Example: a certificate reading \"±30% (P = 0.95)\" → enter <b>30</b>.</li><li>\"SD\", \"1σ\", \"standard uncertainty\", \"P = 0.68\" — <b>multiply the figure itself by 2</b>. Example: \"SD = 12%\" → 2&nbsp;×&nbsp;12%&nbsp;=&nbsp;24% → enter <b>24</b>.</li><li>\"P = 0.99\", \"3σ\" — <b>divide the figure by 1.5</b>. Example: \"±45% (3σ)\" → 45%&nbsp;/&nbsp;1.5&nbsp;=&nbsp;30% → enter <b>30</b>.</li><li>a bare \"±X%\" with no qualifier (limits of permissible error) — usually corresponds to ≈95%, use as is. Example: \"±40%\" → enter <b>40</b>.</li></ul></li><li><b>Source guidance:</b> short-term test — up to ±40%, long-term — ±(20–30)%; below 20% is not recommended (year-to-year radon variation alone is ≈15–20%).</li><li><b>Values from the source (Appendix B):</b> RadonEye / RadonEye&nbsp;Plus2 and Corentium&nbsp;Home / Wave&nbsp;Radon monitors — U<sub>K</sub>(ε) <b>does not exceed 0.30</b> (B4.1); the REI-4 track exposimeter with an LR-115 detector — no more than 0.30 (B3.1); the \"KAMERA\" charcoal system — detector ≤&nbsp;0.15 and sampler ≤&nbsp;0.25 (or 0.40 if the charcoal weight gain is not accounted for), B2.1.</li><li><b>Beware the datasheet figure.</b> RadonEye's manufacturer states an accuracy of \"less than ±10%\" — a factory specification at high concentration and long integration. Metrological testing of a batch of such monitors yielded a calibration uncertainty up to 0.30 (k=2), and that is the value the source recommends for the calculation. Without your own verification data, use 0.30, not the datasheet's 10%.</li>",
+
+    tableH2:"Table 1 — temporal uncertainty U<sub>V</sub>(t) and multiplicity factor MF(t)",
+    tableHintTop:"Appendix A of the source. If the test duration falls between rows, take the row with the <b>smaller</b> t — its values are higher, making the estimate more conservative; intermediate values are not computed. Example from the source: for t&nbsp;=&nbsp;4.8&nbsp;days use the \"4 days\" row, MF&nbsp;=&nbsp;1.74.",
+    tableNormalH3:"Normal mode (from 4 days)",
+    tableRestrH3:"Restricted mode (from 2 days; MF(t) not defined)",
+    thDay:"Day", thMonth:"Month", labUV:"U<sub>V</sub>(t)", labMF:"MF(t)",
+    tableHintBottom:"Note: at 2&nbsp;months (normal mode) U<sub>V</sub>&nbsp;=&nbsp;100%, at 3&nbsp;months&nbsp;=&nbsp;85%&nbsp;— a two-to-three-month measurement is still far from the annual average.",
+
+    footSrc1:"<b>Primary source (methodology):</b> \"Compliance assessment of building rooms against the Radiation Safety Standards for limiting indoor radon. Draft radiation-control methodology\" (in Russian). <i>ANRI</i> <b>2025</b>, No.1(120), pp.76–95.",
+    footDisc:"The calculator reproduces criteria (1),(2) and the §7.1.2 nine-month rule with the source's tabulated U<sub>V</sub>(t)/MF(t) values. Unofficial auxiliary implementation of the \"Radon Risk\" pipeline. For thoron (Rn-220 progeny) the method is not yet developed. This calculation does not replace official measurement protocols.",
+
+    // dynamic
+    v_ok:"Complies with the reference level",
+    e_ok:"Remediation measures are not required. The upper estimate of the annual-average concentration is below C<sub>RL</sub> — the decision is reliable (≥ 95%). §7.1.1",
+    v_bad:"Does not comply with the reference level",
+    e_bad2:"Remediation measures are required. The lower estimate of the annual-average concentration is above C<sub>RL</sub> — the exceedance is reliable (≥ 95%). §7.1.2, criterion (2).",
+    e_bad9:"Remediation measures are required. Criterion (1) is not met and the test has already run ≥ 9 months — per §7.1.2 the decision is fixed as \"does not comply\"; no further measurement is needed.",
+    v_wait:"Grey zone",
+    e_wait:"Data are insufficient for a reliable conclusion (t &lt; 9 months). A long-term test (2–12 months) is recommended, or radon-reduction measures following ALARA (§7.1.3).",
+    chipThr1:"AL (a) C<sub>AL</sub><sup>(1)</sup>", chipThr2:"AL (b) C<sub>AL</sub><sup>(2)</sup>",
+    chipDays:"days", bq:"Bq/m³", chipMode:"mode",
+    warnUd:"U<sub>D</sub> &lt; 20%: not recommended by the source (year-to-year radon variation ≈ 15–20%).",
+    warnT12:"over 12 months: beyond the table, values for 12 months are used (U<sub>V</sub>=0).",
+    errCt:"Enter concentration C(t) ≥ 0.",
+    errDur:"Enter duration t &gt; 0.",
+    errUd:"Enter instrumental uncertainty U<sub>D</sub>.",
+    errMinNormal:"Under normal ventilation the criteria are defined from 4 days (§4.1.5). Increase the duration or select restricted mode.",
+    errMinRestricted:"Under restricted ventilation the criteria are defined from 2 days (§4.1.5). Increase the duration."
+  }
+};
+// Простая версия статьи: словарь накладывается ПОВЕРХ I18N выбранного языка.
+// Ключи, которых здесь нет (калькулятор, таблицы, схема), остаются научными.
+var SIMPLE = {
+  ru:{
+    title:"Радон в доме: проверьте свой замер — просто о методе",
+    sub1:"Проверьте свой замер радона: достаточно ли он длился, чтобы доверять выводу.",
+    introH2:"О методе простыми словами",
+    introH3a:"Почему нельзя просто прикинуть без прибора",
+    introP2:"Радон — невидимый радиоактивный газ, который просачивается в дом из земли. Риск для здоровья определяется средним уровнем за год, а прибор показывает лишь то, что происходит сейчас: сегодня газа мало, через неделю — в несколько раз больше, он «дышит» вместе с погодой и проветриванием. Поэтому короткий замер сам по себе ещё ничего не доказывает, а держать прибор в каждой комнате целый год никто не будет. Метод решает именно эту задачу: как сделать надёжный вывод, не измеряя целый год.",
+    introP3:"Экспресс-замеры за полчаса, которые иногда предлагают, не говорят почти ничего: газ слишком изменчив.",
+    introH3b:"В чём проблема",
+    introP1:"Заранее оценить уровень радона в конкретном помещении нельзя. Карты радоноопасности и обследования территорий дают средний уровень по району, а концентрация в отдельном доме определяется его собственными условиями: грунтом под фундаментом, путями поступления газа из земли, вентиляцией. Поэтому здания с высоким уровнем радона регулярно обнаруживают и там, где район в целом благополучен, и даже соседние дома могут отличаться в разы. Единственный способ узнать уровень в своей комнате — измерить именно в ней.",
+    introH3c:"Что делает метод",
+    introP4:"Метод отвечает на один вопрос: хватило ли вашего замера, чтобы сделать вывод. К показанию прибора добавляется запас — на изменчивость газа и на погрешность прибора — и с нормой сравнивается уже эта осторожная оценка. Чем дольше стоял прибор, тем меньше запас.",
+    introP5:"Ответов три: «всё в порядке», «радона много — дом нужно защищать» и «пока непонятно — пусть прибор постоит ещё». Ответ относится к той комнате, где стоял прибор.",
+    introH3d:"Что это даёт вам",
+    introAdv:"<li><b>Обычно хватает 4–7 суток.</b> В большинстве домов радона немного, и недельный замер уже даёт надёжный ответ.</li><li><b>Не нужен дорогой прибор.</b> Для короткого замера точности бытового радон-монитора достаточно.</li><li><b>Ответ с гарантией.</b> Если метод сказал «всё в порядке» или «радона много», вероятность ошибки не больше 5&nbsp;%.</li><li><b>«Пока непонятно» — не провал.</b> Это инструкция: продолжайте измерять, данных пока мало.</li>",
+    introH3e:"О чём помнить",
+    introLim:"<li>Прибор должен стоять правильно: в жилой комнате, не у окна и не у батареи — иначе метод не работает.</li><li>Метод оценивает радон — газ из земли; другие источники излучения он не рассматривает.</li><li>Официальное заключение выдаёт только аккредитованная лаборатория. Калькулятор помогает понять ваш результат и решить, нужно ли её приглашать.</li>",
+    dlArticle:"📄 Скачать статью-первоисточник (PDF, для специалистов)",
+    stepsH2:"Как всё сделать — по шагам",
+    stepsIntro:"Коротко и без формул. Научная версия с цитатами первоисточника — по кнопке «научная версия» вверху страницы.",
+    step1H3:"1. Главное — сколько дней мерить",
+    step1P:"Радон постоянно меняется, поэтому важнее всего длительность замера, а не цена прибора. Минимум — 4 дня при обычной жизни в квартире; 2 дня, если помещение стоит закрытым и в нём никто не живёт.",
+    step2H3:"2. Замер — это не взгляд на экран",
+    step2P:"Одно показание ни о чём не говорит. Нужен средний уровень за все дни замера — прибор считает его сам.",
+    step3H3:"3. Живите как обычно",
+    step3P:"Лучший замер — при обычной жизни: проветривайте и открывайте двери как всегда. Режим «всё закрыто» существует для пустых помещений, но он показывает не то, чем вы дышите на самом деле.",
+    step4H3:"4. Куда поставить прибор",
+    step4P:"В комнату, где проводите больше всего времени (спальня, детская), лучше на нижнем этаже — газ идёт из земли. Не на подоконник, не к батарее, не ближе 20 см от стены, на высоте от 0,4 до 2 м. Во время замера прибор не переставлять.",
+    step5H3:"5. Какой прибор подойдёт",
+    step5P:"Для короткого замера годится бытовой радон-монитор. В калькуляторе укажите его погрешность: если точно не знаете — ставьте 30.",
+    step6H3:"6. Что считает калькулятор",
+    step6P:"К вашему среднему значению калькулятор добавляет запас — на изменчивость газа (зависит от длительности замера) и на погрешность прибора — и сравнивает полученную осторожную оценку с нормой.",
+    step7H3:"7. Три возможных ответа",
+    step7P:"«Соответствует» — всё в порядке. «Не соответствует» — радона много, дом нужно защищать (это решаемая задача: герметизация подвала, вентиляция). «Серая зона» — данных пока мало, пусть прибор постоит ещё; если ясности нет и после 9 месяцев, считается, что норма не выполнена.",
+    step8H3:"8. Если нужен документ",
+    step8P:"Официальное заключение оформляет аккредитованная лаборатория. Замер бытовым прибором — способ понять, стоит ли её приглашать.",
+    flowH2:"Как принимается решение",
+    flowIntro:"Проверки идут по порядку — до первого сработавшего условия.",
+    lblMode:"Как живёт помещение",
+    optModeNormal:"обычная жизнь", optModeRestricted:"всё закрыто",
+    hintMode:"«Обычная жизнь» — в помещении живут и проветривают как всегда (замер от 4 суток). «Всё закрыто» — пустое помещение с закрытыми окнами и дверями (от 2 суток).",
+    lblCt:"Показание прибора",
+    hintCt:"Средний уровень за весь замер — прибор считает его сам. Единицу выберите справа, пересчёт автоматический.",
+    lblDur:"Сколько длился замер",
+    hintDur:"Сколько суток (или месяцев) прибор простоял в комнате.",
+    lblRl:"Норма",
+    hintRl:"Норма выбирается из списка. Для России: 200 — если дом новый или недавно капитально отремонтирован (рекомендуется), 400 — для дома старой постройки. Нормы других стран — в этом же списке и в справке ниже.",
+    rlGroupRF:"Россия", rlGroupWHO:"ВОЗ (Всемирная организация здравоохранения)", rlGroupEPA:"США (EPA)", rlGroupEU:"Евросоюз",
+    rlOptRfNew:"200 — новый или отремонтированный дом (рекомендуется)", rlOptRfOld:"400 — дом старой постройки",
+    rlOptWhoRec:"100 — рекомендуемый уровень", rlOptWhoMax:"300 — максимально допустимый уровень",
+    rlOptEpa:"148 — уровень действия (США)", rlOptEu:"300 — референтный уровень (ЕС)",
+    lblUd:"Погрешность прибора",
+    unitPct:"%",
+    hintUd:"Из паспорта прибора. Если точно не знаете — ставьте 30.",
+    refRlSummary:"Какая норма в разных странах",
+    warnUd:"Погрешность меньше 20 % у радон-мониторов не встречается — проверьте значение.",
+    warnT12:"Замер дольше 12 месяцев: расчёт выполнен как для 12 месяцев.",
+    errMinNormal:"При обычной жизни в помещении замер должен длиться не меньше 4 суток.",
+    errMinRestricted:"В закрытом пустом помещении замер должен длиться не меньше 2 суток.",
+    noteConverted:"Значения пересчитаны в Бк/м³ — единицы, в которых записана норма.",
+    v_ok:"Всё в порядке",
+    e_ok:"Даже с запасом на изменчивость газа уровень ниже нормы. Вероятность ошибки — не больше 5 %.",
+    v_bad:"Радона много",
+    e_bad2:"Даже по осторожной нижней оценке уровень выше нормы. Дом нужно защищать от радона — это решаемая задача (герметизация подвала, вентиляция).",
+    e_bad9:"Прибор стоял 9 месяцев или дольше, а уверенности «всё в порядке» так и не появилось — по правилам это считается превышением. Дом нужно защищать от радона.",
+    v_wait:"Пока непонятно",
+    e_wait:"Данных недостаточно. Пусть прибор постоит ещё: чем дольше замер, тем точнее ответ."
+  },
+  en:{
+    title:"Radon at home: check your measurement — the plain version",
+    sub1:"Check your radon measurement: did it run long enough to trust the conclusion.",
+    introH2:"The method in plain words",
+    introH3a:"Why you cannot just guess without a device",
+    introP2:"Radon is an invisible radioactive gas that seeps into homes from the ground. The health risk is set by the average level over a year, while the device shows only what is happening now: little gas today, several times more next week — it breathes with the weather and ventilation. So a short measurement by itself proves nothing, and nobody will keep a device in every room for a whole year. The method solves exactly this: how to reach a reliable conclusion without measuring for a year.",
+    introP3:"Half-hour express checks, sometimes offered, tell almost nothing: the gas is too changeable.",
+    introH3b:"What the problem is",
+    introP1:"The radon level in a particular room cannot be estimated in advance. Radon-risk maps and territorial surveys give the average for an area, while the concentration in an individual house is set by its own conditions: the ground under the foundation, the entry paths of the gas, the ventilation. That is why houses with high radon are regularly found even in areas that look fine on average, and even neighbouring houses can differ several-fold. The only way to know the level in your room is to measure in that room.",
+    introH3c:"What the method does",
+    introP4:"The method answers one question: was your measurement long enough to draw a conclusion. A margin is added to the device reading — for the gas's variability and for the device's error — and it is this cautious estimate that is compared with the limit. The longer the device has been running, the smaller the margin.",
+    introP5:"There are three possible answers: all fine; too much radon — the home needs protection; not clear yet — let the device keep running. The answer applies to the room where the device stood.",
+    introH3d:"What you get",
+    introAdv:"<li><b>4–7 days are usually enough.</b> Most homes have little radon, and a week-long measurement already gives a reliable answer.</li><li><b>No expensive device needed.</b> A consumer radon monitor is accurate enough for a short measurement.</li><li><b>An answer with a guarantee.</b> If the method says fine or not fine, the chance of error is at most 5%.</li><li><b>Not clear yet is not a failure.</b> It is an instruction: keep measuring, the data are not sufficient yet.</li>",
+    introH3e:"Things to keep in mind",
+    introLim:"<li>The device must be placed properly: in a lived-in room, away from windows and radiators — otherwise the method does not work.</li><li>The method assesses radon, the gas from the ground; it does not cover other radiation sources.</li><li>An official report can only be issued by an accredited laboratory. The calculator helps you understand your result and decide whether to call one.</li>",
+    dlArticle:"📄 Download the source article (PDF, in Russian, for specialists)",
+    stepsH2:"How to do it, step by step",
+    stepsIntro:"Short and formula-free. The scientific version with quotations from the source is available via the button at the top of the page.",
+    step1H3:"1. What matters most is how many days you measure",
+    step1P:"Radon changes all the time, so the duration of the measurement matters more than the price of the device. The minimum is 4 days while living as usual; 2 days if the room stays closed and unoccupied.",
+    step2H3:"2. A measurement is not a glance at the screen",
+    step2P:"A single reading tells nothing. You need the average over all the days of the measurement — the device computes it itself.",
+    step3H3:"3. Live as usual",
+    step3P:"The best measurement is taken during normal life: air the rooms as you always do. The closed-up mode exists for empty premises, but it does not show what you actually breathe.",
+    step4H3:"4. Where to put the device",
+    step4P:"In the room where you spend the most time (bedroom, nursery), preferably on a lower floor — the gas comes from the ground. Not on a windowsill, not next to a radiator, at least 20 cm from the wall, at a height of 0.4–2 m. Do not move the device during the measurement.",
+    step5H3:"5. Which device will do",
+    step5P:"A consumer radon monitor is fine for a short measurement. Enter its uncertainty in the calculator: if unsure, use 30.",
+    step6H3:"6. What the calculator computes",
+    step6P:"It adds a margin to your average — for the gas's variability (depending on duration) and for the device's error — and compares the resulting cautious estimate with the limit.",
+    step7H3:"7. Three possible answers",
+    step7P:"Complies — all fine. Does not comply — too much radon, the home needs protection (a solvable task: sealing the basement, ventilation). Grey zone — not enough data yet, let the device keep running; if there is still no clarity after 9 months, the limit is considered not met.",
+    step8H3:"8. If you need a document",
+    step8P:"An official report is issued by an accredited laboratory. A measurement with a consumer device is the way to find out whether you should call one.",
+    flowH2:"How the decision is made",
+    flowIntro:"The checks run in order — until the first condition fires.",
+    lblMode:"How the room is used",
+    optModeNormal:"normal life", optModeRestricted:"all closed",
+    hintMode:"Normal life — the room is lived in and aired as usual (measurement from 4 days). All closed — an empty room with windows and doors shut (from 2 days).",
+    lblCt:"Device reading",
+    hintCt:"The average over the whole measurement — the device computes it itself. Pick the unit on the right; conversion is automatic.",
+    lblDur:"How long the measurement ran",
+    hintDur:"How many days (or months) the device stood in the room.",
+    lblRl:"The limit",
+    hintRl:"Pick the limit from the list. In Russia: 200 for a new or recently fully renovated home (recommended), 400 for an older home. Other countries' limits are in the same list and in the reference below.",
+    rlGroupRF:"Russia", rlGroupWHO:"WHO (World Health Organization)", rlGroupEPA:"US (EPA)", rlGroupEU:"European Union",
+    rlOptRfNew:"200 — new or renovated home (recommended)", rlOptRfOld:"400 — older home",
+    rlOptWhoRec:"100 — recommended level", rlOptWhoMax:"300 — maximum level",
+    rlOptEpa:"148 — action level (US)", rlOptEu:"300 — reference level (EU)",
+    lblUd:"Device error",
+    unitPct:"%",
+    hintUd:"From the device's datasheet. If unsure, use 30.",
+    refRlSummary:"Limits in different countries",
+    warnUd:"An error below 20% does not occur in radon monitors — check the value.",
+    warnT12:"Measurement longer than 12 months: computed as for 12 months.",
+    errMinNormal:"With normal life in the room the measurement must run at least 4 days.",
+    errMinRestricted:"In a closed empty room — at least 2 days.",
+    noteConverted:"Values converted to Bq/m³ — the units the limit is written in.",
+    v_ok:"All fine",
+    e_ok:"Even with the margin for the gas's variability the level is below the limit. The chance of error is at most 5%.",
+    v_bad:"Too much radon",
+    e_bad2:"Even by the cautious lower estimate the level is above the limit. The home needs radon protection — a solvable task (sealing the basement, ventilation).",
+    e_bad9:"The device has run for 9 months or more, and confidence that all is fine never came — by the rules this counts as exceeding the limit. The home needs radon protection.",
+    v_wait:"Not clear yet",
+    e_wait:"Not enough data. Let the device keep running: the longer the measurement, the surer the answer."
+  }
+};
+var MODE = "sci";
+var CURDICT = I18N.ru;
+var LANG = "ru";
+
+function applyLang(lang){
+  LANG = lang;
+  var dict = {}, k;
+  var base = I18N[lang];
+  for(k in base) dict[k] = base[k];
+  if(MODE === "simple"){
+    var over = SIMPLE[lang];
+    for(k in over) dict[k] = over[k];
+  }
+  CURDICT = dict;
+  document.documentElement.setAttribute("lang", lang);
+  document.title = dict.title;
+  document.querySelectorAll("[data-i18n]").forEach(function(el){
+    var key = el.getAttribute("data-i18n");
+    if(dict[key]!==undefined) el.innerHTML = dict[key];
+  });
+  ["RF","WHO","EPA","EU"].forEach(function(c){
+    var og = document.getElementById("rlGroup"+c);
+    if(og && dict["rlGroup"+c]!==undefined) og.label = dict["rlGroup"+c];
+  });
+  document.getElementById("langBtn").textContent = (lang==="ru") ? "EN" : "RU";
+  document.getElementById("modeBtn").textContent = (MODE==="simple") ? dict.btnModeSci : dict.btnModeSimple;
+  document.body.classList.toggle("simple", MODE==="simple");
+  calc();
+}
+
+function calc(){
+  var L = CURDICT;
+  var out=document.getElementById("out");
+  var mode=document.getElementById("mode").value;
+  var ctRaw=parseFloat(document.getElementById("ct").value);
+  var ctUnit=document.getElementById("ctUnit").value;
+  var durV=parseFloat(document.getElementById("dur").value);
+  var unit=document.getElementById("durUnit").value;
+  var rl=parseFloat(document.getElementById("rl").value);
+  var udPct=parseFloat(document.getElementById("ud").value);
+
+  var errs=[];
+  if(!(ctRaw>=0)) errs.push(L.errCt);
+  if(!(durV>0)) errs.push(L.errDur);
+  if(!(udPct>=0)) errs.push(L.errUd);
+  if(errs.length){ out.innerHTML='<div class="err">'+errs.join("<br>")+'</div>'; return; }
+
+  // Приведение измеренной концентрации к ОА радона, Бк/м3: ЭРОА×2 (F=0.5, §3 источника), pCi/L×37.
+  // Норматив уже в ОА — выбирается из списка стран/планок, свободный ввод не допускается.
+  var ct = toBqOA(ctRaw, ctUnit);
+
+  var tDays = unit==="month" ? durV*30 : durV;
+  var ud = udPct/100;
+  var minDays = MIN_DAYS[mode];
+  if(tDays < minDays){
+    out.innerHTML='<div class="err">'+(mode==="normal"?L.errMinNormal:L.errMinRestricted)+'</div>';
+    return;
+  }
+
+  var warn=[];
+  if(ud<0.20) warn.push(L.warnUd);
+  if(tDays>360) warn.push(L.warnT12);
+
+  var uvmf = lookup(mode, tDays);
+  var uv = uvmf[0], mf = uvmf[1];
+  var comb = Math.sqrt(uv*uv+ud*ud);
+
+  var cAL1 = rl/(1+comb);
+  var crit1 = ct*(1+comb) < rl;                       // критерий (1), §4.2.1
+
+  var showCrit2 = (mf!==null && ud<1);                 // Kp определён только для normal; конечный знаменатель
+  var cAL2=null, crit2=false;
+  if(showCrit2){
+    cAL2 = mf*rl/(1-ud);
+    crit2 = (ct/mf)*(1-ud) > rl;                       // критерий (2), §4.2.2
+  }
+
+  var nineMonthOverride = (!crit1) && (tDays>=270);    // §7.1.2
+
+  var cls,tag,verdict,expl;
+  if(crit1){
+    cls="ok"; tag="A"; verdict=L.v_ok; expl=L.e_ok;
+  } else if(crit2 || nineMonthOverride){
+    cls="bad"; tag="B"; verdict=L.v_bad; expl = crit2 ? L.e_bad2 : L.e_bad9;
+  } else {
+    cls="wait"; tag="C"; verdict=L.v_wait; expl=L.e_wait;
+  }
+
+  var modeLabel = mode==="normal" ? L.optModeNormal : L.optModeRestricted;
+  var converted = (ctUnit!=="bq");
+  var chips =
+    '<span class="chip">'+L.chipMode+' = <b>'+modeLabel+'</b></span>'+
+    (converted?'<span class="chip">C(t) = <b>'+fmt(ct,1)+'</b> '+L.bq+' · C'+(LANG==="ru"?'<sub>ну</sub>':'<sub>RL</sub>')+' = <b>'+fmt(rl,1)+'</b> '+L.bq+'</span>':'')+
+    '<span class="chip">'+L.labUV+' = <b>'+fmt(uv)+'</b></span>'+
+    '<span class="chip">'+L.labMF+' = <b>'+(mf===null?'—':fmt(mf))+'</b></span>'+
+    '<span class="chip">'+L.chipThr1+' = <b>'+fmt(cAL1,1)+'</b> '+L.bq+'</span>'+
+    (cAL2!==null?'<span class="chip">'+L.chipThr2+' = <b>'+fmt(cAL2,1)+'</b> '+L.bq+'</span>':'')+
+    '<span class="chip">t = <b>'+fmt(tDays,0)+'</b> '+L.chipDays+'</span>';
+
+  // ── Выкладка: подстановка введённых чисел в критерии ──
+  // Проверка последовательная (§7.1): первое сработавшее условие определяет
+  // исход, последующие в решении уже не участвуют — это помечается явно.
+  var decidedBy = crit1 ? "c1" : (crit2 ? "c2" : (nineMonthOverride ? "r9" : null));
+  var lhs1 = ct*(1+comb);
+  var yes = '<span class="work-yes">'+L.workYes+'</span>';
+  var no  = '<span class="work-no">'+L.workNo+'</span>';
+  function skipNote(by){
+    return '<p class="work-skip">'+(by==="c1"? L.workSkip1 : L.workSkip2)+'</p>';
+  }
+
+  var work =
+    '<div class="work"><h4>'+L.workH+'</h4>'+
+    '<div class="work-row"><p class="work-name">'+L.workC1Name+'</p>'+
+      '<div class="work-eq">'+fmt(ct,1)+' · [1 + √('+fmt(uv)+'² + '+fmt(ud)+'²)] = '+
+      fmt(ct,1)+' · '+fmt(1+comb,3)+' = <b>'+fmt(lhs1,1)+'</b> '+
+      (crit1?'&lt;':'≥')+' '+fmt(rl,1)+' '+L.bq+' → '+(crit1?yes:no)+'</div></div>';
+
+  var c2Skipped = (decidedBy==="c1");
+  work += '<div class="work-row'+(c2Skipped?' work-dim':'')+'"><p class="work-name">'+L.workC2Name+'</p>';
+  if(showCrit2){
+    var lhs2 = (ct/mf)*(1-ud);
+    work +=
+      '<div class="work-eq">'+fmt(ct,1)+' / '+fmt(mf)+' · [1 − '+fmt(ud)+'] = <b>'+fmt(lhs2,1)+'</b> '+
+      (crit2?'&gt;':'≤')+' '+fmt(rl,1)+' '+L.bq+' → '+(crit2?yes:no)+'</div>';
+  } else {
+    work += '<div class="work-eq work-na">'+L.workC2NA+'</div>';
+  }
+  if(c2Skipped) work += skipNote("c1");
+  work += '</div>';
+
+  var r9Skipped = (decidedBy==="c1" || decidedBy==="c2");
+  work +=
+    '<div class="work-row'+(r9Skipped?' work-dim':'')+'"><p class="work-name">'+L.work9Name+'</p>'+
+    '<div class="work-eq">t = '+fmt(tDays,0)+' '+L.chipDays+' '+(tDays>=270?'≥':'&lt;')+' 270 '+L.chipDays+
+    ' → '+((!crit1 && tDays>=270)?yes:no)+'</div>'+
+    (r9Skipped? skipNote(decidedBy) : '')+
+    '</div>';
+
+  work += '<p class="work-final">'+
+    (decidedBy==="c1"? L.workByC1 : decidedBy==="c2"? L.workByC2 :
+     decidedBy==="r9"? L.workBy9 : L.workByNone)+'</p>';
+  work += '</div>';
+
+  var noteHtml = converted? '<p style="opacity:.85">'+L.noteConverted+'</p>' : '';
+  var warnHtml = warn.length? '<p style="opacity:.85">⚠ '+warn.join('<br>⚠ ')+'</p>' : '';
+
+  out.innerHTML =
+    '<div class="result '+cls+'">'+
+      '<div class="verdict"><span class="tag">'+tag+'</span>'+verdict+'</div>'+
+      '<p>'+expl+'</p>'+
+      '<div class="metrics">'+chips+'</div>'+
+      work+
+      noteHtml+
+      warnHtml+
+    '</div>';
+}
+
+if(MODE === "simple"){
+  // бытовые приборы показывают ОА; ЭРОА в простой версии только путает
+  var eroaOpt = document.querySelector('#ctUnit option[value="eroa"]');
+  if(eroaOpt) eroaOpt.parentNode.removeChild(eroaOpt);
+}
+
+["mode","ct","ctUnit","dur","durUnit","rl","ud"].forEach(function(id){
+  var el=document.getElementById(id);
+  el.addEventListener("input",calc);
+  el.addEventListener("change",calc);
+});
+
+document.getElementById("langBtn").addEventListener("click",function(){
+  applyLang(LANG==="ru" ? "en" : "ru");
+});
+document.getElementById("themeBtn").addEventListener("click",function(){
+  var cur=document.documentElement.getAttribute("data-theme");
+  var next = cur==="dark" ? "light" : (cur==="light" ? "dark" :
+    (window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "dark"));
+  document.documentElement.setAttribute("data-theme",next);
+});
+
+applyLang("ru");
+</script>
+</body>
+</html>
