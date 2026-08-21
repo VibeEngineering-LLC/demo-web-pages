@@ -3,7 +3,7 @@
 Публичные демо-страницы **VibeEngineering-LLC**. Каждая демонстрация — в своей
 подпапке; все страницы статические и обслуживаются через GitHub Pages.
 
-**Витрина:** https://vibeengineering-llc.github.io/demo-web-pages/
+**Витрина:** https://vibeengineering-llc.github.io/demo-web-pages/showcase-poster/
 
 ## Демонстрации
 
