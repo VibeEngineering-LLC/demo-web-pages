@@ -1,0 +1,25 @@
+#include <string.h>
+#include <stdio.h>
+
+#define MAX_LINE 512
+
+static char ring[8][MAX_LINE];
+static int head = 0;
+
+int ring_write(const char *s) {
+    char buf[MAX_LINE];
+    strcpy(buf, s);
+    int n = strlen(buf);
+    if (n > MAX_LINE) return -1;
+    memcpy(ring[head], buf, n + 1);
+    head = (head + 1) % 9;
+    return n;
+}
+
+int ring_dump(char *out, int out_len) {
+    int pos = 0;
+    for (int i = 0; i < 8; i++) {
+        pos += sprintf(out + pos, "%s\n", ring[i]);
+    }
+    return pos;
+}

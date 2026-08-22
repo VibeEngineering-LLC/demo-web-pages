@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="ru" data-lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f5f2ea" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e0c08" media="(prefers-color-scheme: dark)">
+<title>Стенд врёт раньше моделей</title>
+<meta name="description" content="Сравнение пяти локальных LLM на десяти задачах делегирования — и одиннадцать дефектов самого бенчмарка, найденных до первой публикации чисел. Методика поверки измерительного стенда.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wrap">
+
+<header class="poster">
+  <div class="topbar">
+    <p class="eyebrow" data-i18n="eyebrow">Локальные LLM · Ollama · RTX 4090 24 ГБ · 5 моделей × 10 задач × 2 повтора</p>
+    <button type="button" class="langbtn" id="langtoggle" aria-label="Switch language">EN</button>
+  </div>
+  <h1 data-i18n="h1">Стенд врёт <span class="mark">раньше моделей</span></h1>
+  <p class="lede" data-i18n="lede">Сравнение пяти локальных моделей на десяти задачах делегирования — и одиннадцать дефектов самого бенчмарка, найденных до первой публикации чисел. Семь из них искажали оценку в пользу вывода «модели плохи». Статья о том, как поверять измерительный стенд, прежде чем верить его таблице.</p>
+  <p class="ai-note" data-i18n="ainote">Страница подготовлена с использованием ассистента на базе больших языковых моделей (Claude, Anthropic). Роли, ответственность и происхождение каждого числа — в разделе «Заявление об использовании ИИ».</p>
+
+  <div class="kpis">
+    <div class="kpi"><b>11</b><span data-i18n="k1">дефектов найдено в самом стенде до публикации</span></div>
+    <div class="kpi"><b>7</b><span data-i18n="k2">из них делали балл не связанным с работой модели</span></div>
+    <div class="kpi"><b>6×4</b><span data-i18n="k3">раундов аудита × моделей-аудиторов — пропустили четыре самых дорогих</span></div>
+    <div class="kpi"><b>0,87</b><span data-i18n="k4">лучший средний балл после поверки (qwen3.6:27b) при 38 ток/с</span></div>
+  </div>
+</header>
+
+<!-- ══════════════ РЕФЕРАТ ══════════════ -->
+<section>
+  <div class="abstract">
+    <p data-i18n="abs1"><strong>Цель.</strong> Проверить, годятся ли новые локальные модели (qwen3.6:27b, devstral-small-2, glm-4.7-flash, nemotron-cascade-2) на замену действующей qwen3-coder:30b в задачах делегирования рутинной работы ассистенту; попутно — построить бенчмарк, которому можно доверять.</p>
+    <p data-i18n="abs2"><strong>Стенд.</strong> Одна видеокарта RTX 4090 (24 ГБ), сервер Ollama, десять задач с оценкой 0…1: извлечение из лога в 400 строк, пакетная классификация 200 строк, поиск факта в 25 КБ текста, ревизия Python- и C-кода с посеянными дефектами, генерация функции под скрытые тесты, арифметика по CSV, суммаризация по фактам, строгая JSON-схема, переписывание с ограничениями.</p>
+    <p data-i18n="abs3"><strong>Методы.</strong> Поверка стенда оракулом и мутантом по каждой задаче; шесть раундов стерильного аудита чекеров четырьмя разными моделями; намеренное жульничество; мутация окружения; решающие эксперименты с одной переменной; подготовка публикации как отдельный вид проверки.</p>
+    <p data-i18n="abs4"><strong>Вывод.</strong> В стенде найдено одиннадцать дефектов, семь — до того, как он мог выдать хоть одно достоверное число; самые дорогие четыре не были найдены аудитом кода и вскрылись только при попытке объяснить результат внешнему читателю. После поверки лучший средний балл — у qwen3.6:27b (0,87), но при скорости в 4 раза ниже qwen3-coder:30b (0,78 при 161 ток/с). Универсальный вывод: одинаковый результат у всех испытуемых — признак дефекта стенда, а не свойства испытуемых.</p>
+  </div>
+  <p class="keywords" data-i18n="kw"><strong>Ключевые слова:</strong> локальные LLM, Ollama, бенчмарк, делегирование, поверка измерительного стенда, оракул-тест, мутационное тестирование, справедливость задания, structured output, grammar-constraint, воспроизводимость.</p>
+</section>
+
+<!-- ══════════════ 1. ВВЕДЕНИЕ ══════════════ -->
+<section>
+  <h2><span class="num">1</span><span data-i18n="h2_1">Постановка задачи</span></h2>
+  <p data-i18n="p1_1">Ассистент на базе большой языковой модели выносит рутинную работу — разбор логов, пакетную классификацию, извлечение полей, черновую ревизию кода — на локальную модель, чтобы не тратить контекст и деньги дорогой модели. Действующий выбор — qwen3-coder:30b (MoE, ~18 ГБ в видеопамяти). За лето 2026 года появились четыре кандидата того же класса, и возник практический вопрос: есть ли среди них замена.</p>
+  <p data-i18n="p1_2">Первый замер, выполненный соседним контуром, показал у qwen3.6:27b время ответа 156–296 с против 0,4–2,5 с у действующей модели и пустые ответы на JSON-задачах. Проверка фактом показала, что оба эффекта — артефакты измерения: модель была загружена на процессор сторожем видеопамяти (в журнале сервера — «no usable GPU found»), а в режиме структурированного вывода при включённом рассуждении итоговый JSON уходил в поле <code>thinking</code>, а не <code>response</code>. На видеокарте и с отключённым рассуждением та же модель давала 38 ток/с и корректный JSON за 1,3 с.</p>
+  <p data-i18n="p1_3">Этот эпизод задал тему статьи. Сравнение моделей — её повод; предмет — то, что измерительный стенд требует поверки раньше, чем измеряемые объекты, и что стандартные средства такой поверки (аудит кода, даже многократный и стерильный) на часть дефектов слепы по построению.</p>
+</section>
+
+<!-- ══════════════ 2. СТЕНД И МОДЕЛИ ══════════════ -->
+<section>
+  <h2><span class="num">2</span><span data-i18n="h2_2">Стенд и участники</span></h2>
+  <div class="tw">
+  <table>
+    <thead><tr><th data-i18n="t2_h1">Модель</th><th class="num" data-i18n="t2_h2">Вес на GPU</th><th data-i18n="t2_h3">Архитектура</th><th data-i18n="t2_h4">Особенность, важная для стенда</th></tr></thead>
+    <tbody>
+      <tr><td><code>qwen3-coder:30b</code></td><td class="num">18,6 ГБ</td><td>MoE 30B-A3B</td><td data-i18n="t2_r1">действующая модель делегирования; без режима рассуждения</td></tr>
+      <tr><td><code>qwen3.6:27b</code></td><td class="num">17,4 ГБ</td><td>dense 27B</td><td data-i18n="t2_r2">рассуждение включено по умолчанию; с <code>format=json</code> обязателен <code>think:false</code></td></tr>
+      <tr><td><code>devstral-small-2:24b</code></td><td class="num">17,1 ГБ</td><td>dense 24B</td><td data-i18n="t2_r3">заточена под agentic/tool-use; принимает изображения</td></tr>
+      <tr><td><code>glm-4.7-flash</code></td><td class="num">19,9 ГБ</td><td>MoE ~30B</td><td data-i18n="t2_r4">впритык по памяти (запас ~3 ГБ); то же требование <code>think:false</code></td></tr>
+      <tr><td><code>nemotron-cascade-2:30b</code></td><td class="num">21,3 + 4,3 ГБ на CPU</td><td>MoE 30B-A3B</td><td data-i18n="t2_r5">единственная, не помещающаяся целиком; отвечает последовательностью объектов без внешних скобок</td></tr>
+    </tbody>
+    <caption data-i18n="t2_cap">Таблица 1 — Участники. Все запросы: temperature 0, контекст 32 768 токенов, сервер Ollama на одной RTX 4090 (23 028 МиБ), перед сменой модели предыдущая выгружается явно.</caption>
+  </table>
+  </div>
+</section>
+
+<!-- ══════════════ 3. ЗАДАНИЯ ══════════════ -->
+<section>
+  <h2><span class="num">3</span><span data-i18n="h2_3">Десять заданий</span></h2>
+  <p data-i18n="p3_0">Задания строятся детерминированно (один генератор с фиксированным зерном), поэтому все модели получают побитово одинаковый вход. Эталон формируется вместе с заданием и сохраняется; функция оценки только сравнивает. Балл — доля правильного от 0 до 1, не «прошёл/не прошёл». Полный исходник с генераторами и проверками приложен (раздел 8).</p>
+  <div class="tw">
+  <table>
+    <thead><tr><th>#</th><th data-i18n="t3_h1">Задание</th><th data-i18n="t3_h2">Вход</th><th data-i18n="t3_h3">Что измеряет</th><th data-i18n="t3_h4">Как считается балл</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><code>log_extract</code></td><td data-i18n="t3_1i">лог 400 строк (~12,9 тыс. токенов)</td><td data-i18n="t3_1m">счёт и агрегация по длинному тексту</td><td data-i18n="t3_1s">4 × 0,25: число ошибок по подсистемам, список устройств с «disk full», первая и последняя метка времени</td></tr>
+      <tr><td>2</td><td><code>bulk200</code></td><td data-i18n="t3_2i">200 строк лога с индексами</td><td data-i18n="t3_2m">пакетная классификация без потерь</td><td data-i18n="t3_2s">доля верно классифицированных уникальных индексов; форма ответа (список / словарь / обёртка) не наказывается</td></tr>
+      <tr><td>3</td><td><code>needle</code></td><td data-i18n="t3_3i">25 КБ русского текста-наполнителя</td><td data-i18n="t3_3m">поиск факта в длинном контексте</td><td data-i18n="t3_3s">0,5 серийный номер + 0,5 дата; регистр и пробелы не значимы</td></tr>
+      <tr><td>4</td><td><code>code_review_hard</code></td><td data-i18n="t3_4i">Python-модуль, 7 посеянных дефектов</td><td data-i18n="t3_4m">полнота и точность ревизии</td><td data-i18n="t3_4s">попадания по номеру строки ±1 / 7, умноженные на точность (штраф за «дробовик», о нём предупреждено в инструкции)</td></tr>
+      <tr><td>5</td><td><code>codegen_tests</code></td><td data-i18n="t3_5i">спецификация функции <code>parse_duration</code></td><td data-i18n="t3_5m">генерация кода под скрытые тесты</td><td data-i18n="t3_5s">доля пройденных из 12 тестов в изолированном процессе (включая ожидаемые ValueError)</td></tr>
+      <tr><td>6</td><td><code>csv_stats</code></td><td data-i18n="t3_6i">CSV 60 строк</td><td data-i18n="t3_6m">арифметика: среднее и максимум по группам</td><td data-i18n="t3_6s">4 группы × (0,125 среднее с допуском 0,05 + 0,125 максимум)</td></tr>
+      <tr><td>7</td><td><code>summarize_facts</code></td><td data-i18n="t3_7i">отчёт об инциденте ~250 строк</td><td data-i18n="t3_7m">суммаризация без потери ключевых фактов</td><td data-i18n="t3_7s">найдено из 7 фактов (причина, 3 компонента, 2 числа, рекомендация); «26.65» и «26,65» равноправны</td></tr>
+      <tr><td>8</td><td><code>strict_schema</code></td><td data-i18n="t3_8i">один абзац</td><td data-i18n="t3_8m">точное следование схеме</td><td data-i18n="t3_8s">5 × 0,2: ровно те ключи, device, firmware, metrics, flags; строковые числа не роняют балл</td></tr>
+      <tr><td>9</td><td><code>c_review</code></td><td data-i18n="t3_9i">фрагмент C, 5 посеянных дефектов</td><td data-i18n="t3_9m">ревизия безопасности</td><td data-i18n="t3_9s">как в задании 4: попадания / 5 × точность</td></tr>
+      <tr><td>10</td><td><code>ru_rewrite_constraints</code></td><td data-i18n="t3_10i">разговорный абзац</td><td data-i18n="t3_10m">следование формальным ограничениям в русском тексте</td><td data-i18n="t3_10s">5 × 0,2: ровно 3 предложения, без запрещённых слов (по границам слова), число и компонент упомянуты, заглавные и точки</td></tr>
+    </tbody>
+    <caption data-i18n="t3_cap">Таблица 2 — Задания. В скобках у входа — размер промпта, измеренный счётчиком prompt_eval_count сервера, не оценка.</caption>
+  </table>
+  </div>
+</section>
+
+<!-- ══════════════ 4. ПОВЕРКА СТЕНДА ══════════════ -->
+<section>
+  <h2><span class="num">4</span><span data-i18n="h2_4">Поверка стенда: одиннадцать дефектов</span></h2>
+  <p data-i18n="p4_0">Прежде чем доверять хоть одному числу, каждая функция оценки была проверена в обе стороны: заведомо верный ответ обязан давать ровно 1,00, заведомо неверный — меньше. Затем — шесть раундов стерильного аудита чекеров моделями, которые не видели ни выводов автора, ни находок друг друга (qwen3-coder, glm-4.7-flash, devstral-small-2, qwen3.6, nemotron), в трёх постановках: соответствие спецификации, обвязка прогона, справедливость задания к испытуемому. Ниже — все дефекты в порядке обнаружения, с указанием метода, который их нашёл.</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>#</th><th data-i18n="t4_h1">Дефект</th><th data-i18n="t4_h2">Последствие</th><th data-i18n="t4_h3">Нашёл</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td data-i18n="d1">Эталон в <code>bulk200</code> вычислялся заново случайным генератором внутри проверки</td><td data-i18n="d1c">оценка была шумом: верный ответ получал 0,45</td><td class="ok" data-i18n="m_oracle">оракул</td></tr>
+      <tr><td>2</td><td data-i18n="d2">Харнесс <code>codegen_tests</code>: <code>.format()</code> на строке с литералами <code>{"input":…}</code></td><td data-i18n="d2c">ложный ноль всем; после починки 12/12</td><td class="ok" data-i18n="m_smoke">смоук-прогон</td></tr>
+      <tr><td>3</td><td data-i18n="d3"><code>strict_schema</code>: <code>abs(str − число)</code> бросал TypeError, внешний except обнулял всё задание</td><td data-i18n="d3c">узкая ошибка типа стирала уже набранные баллы</td><td class="ok" data-i18n="m_audit">аудит (раунд 1)</td></tr>
+      <tr><td>4</td><td data-i18n="d4">Форма вместо содержания: <code>"OK"</code> ≠ <code>"ok"</code>; серийник в другом регистре; <code>Debug_Log_Ring</code></td><td data-i18n="d4c">0,00 при 200/200 верных классификаций</td><td class="ok" data-i18n="m_fair">аудит справедливости (раунд 4)</td></tr>
+      <tr><td>5</td><td data-i18n="d5">Уникальность индексов не проверялась</td><td data-i18n="d5c">200 копий одной верной записи → 1,00 за 1/200 работы</td><td class="ok" data-i18n="m_cheat">намеренное жульничество (раунд 5)</td></tr>
+      <tr><td>6</td><td data-i18n="d6">Штраф за ложные срабатывания в ревизии кода не был объявлен в инструкции</td><td data-i18n="d6c">наказание за невидимое правило</td><td class="ok" data-i18n="m_fair2">аудит справедливости (раунд 5)</td></tr>
+      <tr><td>7</td><td data-i18n="d7"><strong>Режим <code>format=json</code> закрывал JSON после первого объекта</strong></td><td data-i18n="d7c">0,00 у всех пяти моделей на пакетной задаче; без режима — 1,00 у тех же</td><td class="bad" data-i18n="m_pub">подготовка публикации</td></tr>
+      <tr><td>8</td><td data-i18n="d8">Парсер не принимал <code>{…},{…},{…}</code> без внешних скобок</td><td data-i18n="d8c">2091 токен верных записей → 0,00</td><td class="bad" data-i18n="m_pub2">подготовка публикации</td></tr>
+      <tr><td>9</td><td data-i18n="d9">Транзиентный обрыв (eval_count=0, 391 с) выдавался за провал модели</td><td data-i18n="d9c">повтор того же запроса: 0,71 вместо 0,00</td><td class="bad" data-i18n="m_pub3">подготовка публикации</td></tr>
+      <tr><td>10</td><td data-i18n="d10">Моя же мера №9 оказалась слишком широкой: отсутствие счётчика ≠ обрыв</td><td data-i18n="d10c">полный верный ответ без счётчиков помечался как сбой</td><td class="bad" data-i18n="m_interp">блок «требует толкования»</td></tr>
+      <tr><td>11</td><td data-i18n="d11">Поломка оснастки (нет раннера) и занятая видеопамять выглядели как 0,00</td><td data-i18n="d11c">недоступность GPU читалась как «плохая модель»</td><td class="ok" data-i18n="m_env">мутация окружения (раунд 2)</td></tr>
+    </tbody>
+    <caption data-i18n="t4_cap">Таблица 3 — Дефекты стенда. Зелёным — найденные поверкой и аудитом; красным — четыре, которые шесть раундов аудита четырьмя моделями не нашли.</caption>
+  </table>
+  </div>
+
+  <h3 data-i18n="h3_4a">Решающий эксперимент по дефекту 7</h3>
+  <p data-i18n="p4_1">Пакетная классификация давала ноль у всех пяти моделей во всех прогонах. По логике «когда падают все — подозревать экзаменатора» была поставлена проверка с одной переменной: та же модель, тот же промпт, отличается только режим запроса.</p>
+  <div class="ba">
+    <div class="before"><span class="k">format = json</span><span class="v">13 <small data-i18n="tok">токенов</small></span><p data-i18n="ba1">один объект <code>{"idx":0,"class":"warning"}</code> — 1 строка из 200. Балл 0,00</p></div>
+    <div class="after"><span class="k" data-i18n="nofmt">без format</span><span class="v">2893 <small data-i18n="tok2">токенов</small></span><p data-i18n="ba2">полный массив, 200/200 верно. Балл 1,00</p></div>
+  </div>
+  <p data-i18n="p4_2">Grammar-constraint режима структурированного вывода в Ollama завершает JSON после первого валидного объекта. Стенд в этой части измерял не модели, а собственный режим API. Практическое правило: <code>format=json</code> пригоден для короткого структурированного ответа и непригоден для длинных перечислений; пакетные задачи — без него, с разбором markdown-обёртки парсером.</p>
+
+  <div class="box flag">
+    <h4 data-i18n="box1h">Почему аудит кода этого не видит</h4>
+    <p data-i18n="box1p">Шесть раундов, четыре разные модели-аудитора, два раунда прицельно про справедливость задания — все читали код, а дефект жил в сочетании кода с фактическим поведением внешней системы. Код был корректен построчно; API корректен по документации; неверно их сочетание. Наращивание числа и разнообразия аудиторов здесь не помогает — нужен другой вид проверки: открыть сырой ответ и поставить эксперимент с одной переменной.</p>
+  </div>
+</section>
+
+<!-- ══════════════ 5. РЕЗУЛЬТАТЫ ══════════════ -->
+<section>
+  <h2><span class="num">5</span><span data-i18n="h2_5">Результаты после поверки</span></h2>
+  <p data-i18n="p5_0">Числа ниже — последнего прогона на стенде со всеми одиннадцатью исправлениями; прогоны, начатые до любой правки, отброшены целиком (смешивать в одной таблице числа разных версий проверки нельзя). Каждая аномалия из блока «требует толкования» разобрана до публикации — разбор в 5.2.</p>
+  <div class="tw">
+  <table class="results">
+    <thead><tr><th data-i18n="t5_h0">Задание</th><th class="num">coder</th><th class="num">qwen3.6</th><th class="num">devstral</th><th class="num">glm-4.7</th><th class="num">nemotron</th></tr></thead>
+    <tbody>
+      <tr><td>log_extract</td><td class="num">0,50</td><td class="num">0,50</td><td class="num">0,50</td><td class="num">0,25</td><td class="num">0,50</td></tr>
+      <tr><td>bulk200</td><td class="num best">1,00</td><td class="num best">1,00</td><td class="num best">1,00</td><td class="num best">1,00</td><td class="num">0,99</td></tr>
+      <tr><td>needle</td><td class="num best">1,00</td><td class="num best">1,00</td><td class="num best">1,00</td><td class="num best">1,00</td><td class="num best">1,00</td></tr>
+      <tr><td>code_review_hard</td><td class="num">0,57</td><td class="num best">1,00</td><td class="num">0,86</td><td class="num">0,00 <sup>а</sup></td><td class="num">0,86</td></tr>
+      <tr><td>codegen_tests</td><td class="num best">1,00</td><td class="num best">1,00</td><td class="num">0,50</td><td class="num">0,67</td><td class="num">0,67</td></tr>
+      <tr><td>csv_stats</td><td class="num">0,38</td><td class="num">0,50</td><td class="num">0,50</td><td class="num">0,44</td><td class="num">0,38</td></tr>
+      <tr><td>summarize_facts</td><td class="num">0,71</td><td class="num">0,86</td><td class="num">0,57</td><td class="num">0,86</td><td class="num">0,86</td></tr>
+      <tr><td>strict_schema</td><td class="num best">1,00</td><td class="num best">1,00</td><td class="num best">1,00</td><td class="num best">1,00</td><td class="num">0,80</td></tr>
+      <tr><td>c_review</td><td class="num">0,60</td><td class="num">0,80</td><td class="num">0,80</td><td class="num">0,60</td><td class="num">0,00 <sup>б</sup></td></tr>
+      <tr><td>ru_rewrite_constraints</td><td class="num best">1,00</td><td class="num best">1,00</td><td class="num best">1,00</td><td class="num best">1,00</td><td class="num">0,80</td></tr>
+      <tr class="total"><td data-i18n="t5_mean">Средний балл</td><td class="num">0,78</td><td class="num best">0,87</td><td class="num">0,77</td><td class="num">0,68</td><td class="num">0,69</td></tr>
+      <tr class="total"><td data-i18n="t5_tok">Скорость, ток/с</td><td class="num best">161</td><td class="num">38</td><td class="num">45</td><td class="num">135</td><td class="num">89</td></tr>
+      <tr class="total"><td data-i18n="t5_wall">Время на все 20 вызовов, с</td><td class="num best">70</td><td class="num">271</td><td class="num">205</td><td class="num">701</td><td class="num">124</td></tr>
+    </tbody>
+    <caption data-i18n="t5_cap">Таблица 4 — Средний балл по двум повторам. Жёлтым — максимум в строке. Скорость — по успешным вызовам; время — суммарное, включая загрузку модели. Сноски а, б — в 5.2.</caption>
+  </table>
+  </div>
+
+  <h3 data-i18n="h3_5a">5.1 Что из этого следует</h3>
+  <ul>
+    <li data-i18n="r1"><strong>qwen3.6:27b</strong> — лучшее качество (0,87), в том числе единственная 1,00 на ревизии Python-кода; цена — скорость в 4,2 раза ниже действующей модели (38 против 161 ток/с) и обязательное отключение рассуждения при структурированном выводе.</li>
+    <li data-i18n="r2"><strong>qwen3-coder:30b</strong> остаётся разумным выбором для делегирования: 0,78 при наивысшей скорости и наименьшем времени; проигрывает на ревизии кода (0,57) и арифметике.</li>
+    <li data-i18n="r3"><strong>glm-4.7-flash</strong> — по скорости близка к coder (135 ток/с), но на ревизии Python-кода дважды уходила в неограниченную генерацию (сноска а); по памяти — впритык.</li>
+    <li data-i18n="r4"><strong>devstral-small-2</strong> и <strong>nemotron</strong> — без выраженных преимуществ на этом наборе; nemotron к тому же не помещается в карту целиком.</li>
+    <li data-i18n="r5">Три задания не различают модели (<code>needle</code>, <code>strict_schema</code>, <code>ru_rewrite</code> — максимум почти у всех) — в следующей версии их надо усложнять или заменять; это тоже вывод блока «требует толкования».</li>
+  </ul>
+
+  <h3 data-i18n="h3_5b">5.2 Блок «требует толкования» — разобран</h3>
+  <p data-i18n="p5_2">Стенд печатает этот блок сам, вместе с таблицей; прогон не считается завершённым, пока на каждый пункт нет письменного ответа. В последнем прогоне — семь пунктов.</p>
+  <ul>
+    <li data-i18n="i1"><strong>log_extract 0,50 у четырёх из пяти</strong> — вырожденная строка, подозрение на стенд. Эталон восстановлен из текста промпта независимо от генератора: совпал с проверкой. Значит модели реально одинаково ошибаются в счёте (<code>ble: 8</code> вместо 6, <code>DEV-005</code> вместо <code>DEV-009</code>) — общее свойство класса на длинном тексте, не дефект стенда. <span class="ok">Свойство объекта.</span></li>
+    <li data-i18n="i2"><strong>(а) glm-4.7-flash, ревизия Python, оба повтора</strong> — ответ 104 947 символов за 318 с без признаков завершения: не обрыв, а неограниченная генерация; балл 0 заслужен. <span class="ok">Свойство объекта.</span></li>
+    <li data-i18n="i3"><strong>(б) nemotron, ревизия C, оба повтора</strong> — прямой повтор с полным ответом дважды даёт неразбираемую структуру при содержательно верных находках внутри («Buffer overflow… memcpy copies n+1 bytes»). Модель не держит требуемую форму; балл 0 — за форму, и это отмечено честно. <span class="ok">Свойство объекта.</span></li>
+    <li data-i18n="i4"><strong>bulk200 и needle — максимум у всех</strong> — задания не различают; зафиксировано как ограничение набора, не как достижение моделей. <span class="warn">Ограничение стенда.</span></li>
+  </ul>
+  <p data-i18n="p5_3">Три пункта из семи оказались поведением объекта, а не сбоем — это штатный исход толкования. Его смысл не в оправдании моделей, а в разделении трёх исходов: свойство объекта, сбой среды, дефект стенда.</p>
+</section>
+
+<!-- ══════════════ 6. МЕТОД ══════════════ -->
+<section>
+  <h2><span class="num">6</span><span data-i18n="h2_6">Метод: что сработало и что нет</span></h2>
+  <div class="tw">
+  <table>
+    <thead><tr><th data-i18n="t6_h1">Вид проверки</th><th class="num" data-i18n="t6_h2">Нашёл дефектов</th><th data-i18n="t6_h3">Какой класс ловит</th></tr></thead>
+    <tbody>
+      <tr><td data-i18n="t6_1">Оракул и мутант по каждой задаче</td><td class="num">4</td><td data-i18n="t6_1c">вычисление балла: случайный эталон, обнуляющий except, форма вместо содержания</td></tr>
+      <tr><td data-i18n="t6_2">Аудит кода, 6 раундов, 4 модели</td><td class="num">2 + 1</td><td data-i18n="t6_2c">реализация; плюс один дефект в самом аудит-инструменте (неразобранный ответ выдавался за «чисто»)</td></tr>
+      <tr><td data-i18n="t6_3">Намеренное жульничество</td><td class="num">1</td><td data-i18n="t6_3c">балл, достижимый неверным ответом — иначе не находится</td></tr>
+      <tr><td data-i18n="t6_4">Мутация окружения</td><td class="num">1</td><td data-i18n="t6_4c">сбой среды, выдаваемый за провал объекта</td></tr>
+      <tr><td><strong data-i18n="t6_5">Подготовка публикации + блок толкования</strong></td><td class="num"><strong>4</strong></td><td data-i18n="t6_5c">смысл: разрыв между числом и его толкованием; дефекты на стыке кода с поведением внешней системы</td></tr>
+    </tbody>
+    <caption data-i18n="t6_cap">Таблица 5 — Отдача по видам проверки. Отдача аудита по раундам: 4 → 1 → 2 → 3 → 2 → 0 реальных находок; смена вида проверки давала больше, чем смена аудитора при том же вопросе.</caption>
+  </table>
+  </div>
+
+  <div class="box">
+    <h4 data-i18n="box2h">Написать вывод для внешнего читателя — отдельный метод проверки</h4>
+    <p data-i18n="box2p1">Аудит спрашивает «правильно ли сделано» и проверяет локально: верна ли эта строка кода. Подготовка публикации спрашивает «что это значит» и проверяет глобально: осмысленна ли эта таблица. Число «0,00 у всех пяти моделей» безупречно проходит аудит кода — и разваливается на попытке написать фразу «все модели проваливают пакетную классификацию», потому что фраза требует причины, а причины нет. Отсутствие объяснения — и есть сигнал дефекта.</p>
+    <p data-i18n="box2p2">Метод не требует реальной публикации. Достаточно по каждой строке итоговой таблицы написать одну фразу-вывод и причину каждого выделяющегося значения. Фраза, которую нельзя дописать без «наверное», указывает, где открыть сырые данные. В этом исследовании именно так найдены четыре самых дорогих дефекта из одиннадцати.</p>
+  </div>
+
+  <h3 data-i18n="h3_6a">Чек-лист приёмки стенда — до первого доклада чисел</h3>
+  <ol>
+    <li data-i18n="c1"><strong>Оракул:</strong> эталонный ответ по каждой задаче даёт ровно 1,00; эталон восстановлен из промпта, не из внутренних переменных.</li>
+    <li data-i18n="c2"><strong>Мутант:</strong> заведомо неверный ответ даёт меньше 1,00 по каждой задаче.</li>
+    <li data-i18n="c3"><strong>Жулик:</strong> дубликаты, константа, «перечислить всё подряд» не дают высокого балла.</li>
+    <li data-i18n="c4"><strong>Формы:</strong> верный ответ в ином регистре, с пробелами, в другой структуре — тот же балл.</li>
+    <li data-i18n="c5"><strong>Оснастка:</strong> сломанное окружение помечается отдельно, а не нулём.</li>
+    <li data-i18n="c6"><strong>Инструкция:</strong> всё, что влияет на балл, названо испытуемому явно.</li>
+    <li data-i18n="c7"><strong>Вырожденная колонка:</strong> одинаковый результат у всех — открыть сырой ответ и поставить эксперимент с одной переменной; не назначать аудит кода, он на этот класс слеп.</li>
+    <li data-i18n="c8"><strong>Смена версии стенда — полный перепрогон</strong>, а не продолжение с того места.</li>
+  </ol>
+</section>
+
+<!-- ══════════════ 7. ОГРАНИЧЕНИЯ ══════════════ -->
+<section>
+  <h2><span class="num">7</span><span data-i18n="h2_7">Ограничения</span></h2>
+  <ul>
+    <li data-i18n="l1">Одна видеокарта, один сервер Ollama, одна квантизация (Q4_K_M для всех) — результаты переносимы на этот класс железа, не дальше; nemotron измерен с частичной выгрузкой на процессор и потому в невыгодном положении по скорости.</li>
+    <li data-i18n="l2">Два повтора при temperature 0 — достаточно, чтобы заметить недетерминизм, недостаточно для статистики разброса; для решения о замене модели в продукции нужны ≥5 повторов и несколько зёрен генератора заданий.</li>
+    <li data-i18n="l3">Набор заданий — прокси реальной делегируемой работы, а не она сама; три задания оказались неразличающими и подлежат замене.</li>
+    <li data-i18n="l4">Задания и оценка на русском языке — модели с более слабой русской частью обучения в невыгодном положении; это сознательный выбор под реальное применение, а не нейтральный бенчмарк.</li>
+    <li data-i18n="l5">Одиннадцать найденных дефектов не означают, что двенадцатого нет. Означают, что прошлые числа были недостоверны, а нынешние прошли все перечисленные проверки.</li>
+  </ul>
+</section>
+
+<!-- ══════════════ 8. ПРИЛОЖЕНИЕ ══════════════ -->
+<section>
+  <h2><span class="num">8</span><span data-i18n="h2_8">Приложение: исходник бенчмарка</span></h2>
+  <p data-i18n="p8_1">Переносимая копия стенда — один файл Python и три фикстуры, только стандартная библиотека и <code>requests</code>. Запускается против любого сервера Ollama (<code>OLLAMA_BASE_URL</code>), сторож видеопамяти необязателен. Содержит все одиннадцать исправлений, оракул-проверяемые функции оценки и блок «требует толкования» на выходе.</p>
+  <p>
+    <a class="dl" href="./llm_bench.py" download data-i18n="dl1">llm_bench.py — стенд</a>
+    <a class="dl" href="./fixtures/codegen_runner.py" download data-i18n="dl2">codegen_runner.py</a>
+    <a class="dl" href="./fixtures/buggy_module.py.txt" download data-i18n="dl3">buggy_module.py.txt</a>
+    <a class="dl" href="./fixtures/buggy_ring.c.txt" download data-i18n="dl4">buggy_ring.c.txt</a>
+  </p>
+  <p class="mono" data-i18n="p8_2">Запуск: <code>python llm_bench.py --reps 2</code>; одна модель и часть задач: <code>--models coder --tasks bulk200,needle</code>. Имена моделей и оценки памяти — в списке <code>MODELS</code> в начале файла.</p>
+</section>
+
+<!-- ══════════════ 9. ИИ ══════════════ -->
+<section>
+  <h2><span class="num">9</span><span data-i18n="h2_9">Заявление об использовании ИИ</span></h2>
+  <p data-i18n="p9_1">Стенд спроектирован, прогнан и поверен ассистентом на базе Claude (Anthropic). Функции оценки и вспомогательные инструменты сгенерированы локальной моделью qwen3-coder:30b по письменным спецификациям и приняты прогоном, а не чтением. Стерильный аудит чекеров выполняли локальные модели qwen3-coder:30b, glm-4.7-flash, devstral-small-2, qwen3.6:27b и nemotron-cascade-2 — каждая в брифе без выводов автора и находок других аудиторов. Оператор ставил задачу, скачивал модели, принимал промежуточные решения (в том числе «написание статьи — отдельный метод тестирования» и «вопрос „что это значит“ должен задавать инструмент») и несёт ответственность за публикацию. Все числа в статье — из файла результатов последнего прогона; ни одно не введено вручную.</p>
+</section>
+
+<footer>
+  <p data-i18n="f1">Опубликовано 23 августа 2026 года. Стиль страницы — серия технических плакатов этой витрины. Метки достоверности: каждое число в таблицах 4–5 — из JSON результатов прогона; каждый дефект в таблице 3 — воспроизведён до правки и проверен в обе стороны после.</p>
+</footer>
+
+</div>
+
+<script>
+var I18N_EN = {
+  doc_title: "The Rig Lies Before the Models Do",
+  meta_description: "Five local LLMs on ten delegation tasks — and eleven defects in the benchmark itself, found before the first number was published. A method for calibrating the measuring rig.",
+  eyebrow: "Local LLMs · Ollama · RTX 4090 24 GB · 5 models × 10 tasks × 2 reps",
+  h1: "The rig lies <span class=\"mark\">before the models do</span>",
+  lede: "Five local models compared on ten delegation tasks — and eleven defects in the benchmark itself, found before the first number was published. Seven of them skewed the score toward “the models are bad”. An article on calibrating the measuring rig before trusting its table.",
+  ainote: "This page was prepared with the help of an assistant based on large language models (Claude, Anthropic). Roles, responsibility and the provenance of every number are in the “AI use statement” section.",
+  k1: "defects found in the rig itself before publication",
+  k2: "of them made the score unrelated to the model’s work",
+  k3: "audit rounds × auditor models — missed the four most expensive",
+  k4: "best mean score after calibration (qwen3.6:27b) at 38 tok/s",
+  abs1: "<strong>Aim.</strong> To check whether the new local models (qwen3.6:27b, devstral-small-2, glm-4.7-flash, nemotron-cascade-2) can replace the incumbent qwen3-coder:30b for delegating routine work from an assistant; and, along the way, to build a benchmark that can be trusted.",
+  abs2: "<strong>Rig.</strong> One RTX 4090 (24 GB), an Ollama server, ten tasks scored 0…1: extraction from a 400-line log, batch classification of 200 lines, needle search in 25 KB of text, review of Python and C code with seeded defects, function generation against hidden tests, CSV arithmetic, fact-preserving summarisation, strict JSON schema, constrained rewriting.",
+  abs3: "<strong>Methods.</strong> Rig calibration by oracle and mutant per task; six rounds of sterile checker audit by four different models; deliberate cheating; environment mutation; single-variable decisive experiments; preparing the publication as a separate kind of check.",
+  abs4: "<strong>Conclusion.</strong> Eleven defects were found in the rig, seven of them before it could produce a single trustworthy number; the four most expensive were not found by code audit and surfaced only when the result had to be explained to an outside reader. After calibration the best mean score belongs to qwen3.6:27b (0.87), at 4× lower speed than qwen3-coder:30b (0.78 at 161 tok/s). The general lesson: an identical result across all subjects is a sign of a rig defect, not a property of the subjects.",
+  kw: "<strong>Keywords:</strong> local LLMs, Ollama, benchmark, delegation, rig calibration, oracle test, mutation testing, task fairness, structured output, grammar constraint, reproducibility.",
+  h2_1: "Problem statement",
+  p1_1: "An LLM-based assistant offloads routine work — log parsing, batch classification, field extraction, draft code review — to a local model to save the context and cost of the expensive model. The incumbent is qwen3-coder:30b (MoE, ~18 GB of VRAM). Over summer 2026 four candidates of the same class appeared, and a practical question arose: is any of them a replacement.",
+  p1_2: "The first measurement, made by a neighbouring team, showed qwen3.6:27b responding in 156–296 s against 0.4–2.5 s for the incumbent, and returning empty answers on JSON tasks. Checking against the facts showed both effects to be measurement artefacts: the model had been loaded onto the CPU by the VRAM guard (the server log reads “no usable GPU found”), and in structured-output mode with reasoning enabled the final JSON went into the <code>thinking</code> field instead of <code>response</code>. On the GPU with reasoning off, the same model gave 38 tok/s and correct JSON in 1.3 s.",
+  p1_3: "That episode set the theme of this article. The model comparison is its occasion; its subject is that the measuring rig needs calibrating before the objects being measured, and that the standard means of such calibration — code audit, even repeated and sterile — are blind by construction to part of the defects.",
+  h2_2: "Rig and participants",
+  t2_h1: "Model", t2_h2: "GPU weight", t2_h3: "Architecture", t2_h4: "Property that matters to the rig",
+  t2_r1: "incumbent delegation model; no reasoning mode",
+  t2_r2: "reasoning on by default; <code>think:false</code> is mandatory with <code>format=json</code>",
+  t2_r3: "tuned for agentic/tool use; accepts images",
+  t2_r4: "tight on memory (~3 GB headroom); same <code>think:false</code> requirement",
+  t2_r5: "the only one that does not fit entirely; answers with a sequence of objects without outer brackets",
+  t2_cap: "Table 1 — Participants. All requests: temperature 0, context 32 768 tokens, Ollama server on a single RTX 4090 (23 028 MiB), previous model explicitly unloaded before switching.",
+  h2_3: "The ten tasks",
+  p3_0: "Tasks are built deterministically (one generator with a fixed seed), so every model receives a bit-identical input. The reference is produced together with the task and stored; the scoring function only compares. The score is the fraction correct from 0 to 1, not pass/fail. The full source with generators and checks is attached (section 8).",
+  t3_h1: "Task", t3_h2: "Input", t3_h3: "What it measures", t3_h4: "How the score is computed",
+  t3_1i: "400-line log (~12.9k tokens)", t3_1m: "counting and aggregation over long text", t3_1s: "4 × 0.25: error count per subsystem, list of “disk full” devices, first and last timestamp",
+  t3_2i: "200 indexed log lines", t3_2m: "lossless batch classification", t3_2s: "fraction of correctly classified unique indices; answer form (list / dict / wrapper) is not penalised",
+  t3_3i: "25 KB of Russian filler text", t3_3m: "fact retrieval in long context", t3_3s: "0.5 serial number + 0.5 date; case and whitespace ignored",
+  t3_4i: "Python module, 7 seeded defects", t3_4m: "completeness and precision of review", t3_4s: "line hits ±1 / 7, multiplied by precision (shotgun penalty, announced in the instruction)",
+  t3_5i: "spec of <code>parse_duration</code>", t3_5m: "code generation against hidden tests", t3_5s: "fraction passed of 12 tests in an isolated process (including expected ValueError)",
+  t3_6i: "60-row CSV", t3_6m: "arithmetic: mean and max per group", t3_6s: "4 groups × (0.125 mean within 0.05 + 0.125 max)",
+  t3_7i: "incident report ~250 lines", t3_7m: "summarisation without losing key facts", t3_7s: "found out of 7 facts (cause, 3 components, 2 numbers, recommendation); “26.65” and “26,65” equal",
+  t3_8i: "one paragraph", t3_8m: "exact schema compliance", t3_8s: "5 × 0.2: exactly those keys, device, firmware, metrics, flags; string numbers don’t drop the score",
+  t3_9i: "C fragment, 5 seeded defects", t3_9m: "security review", t3_9s: "as in task 4: hits / 5 × precision",
+  t3_10i: "colloquial paragraph", t3_10m: "following formal constraints in Russian text", t3_10s: "5 × 0.2: exactly 3 sentences, no forbidden words (word-boundary), number and component mentioned, capitals and full stops",
+  t3_cap: "Table 2 — Tasks. Input size in brackets is measured by the server’s prompt_eval_count, not estimated.",
+  h2_4: "Rig calibration: eleven defects",
+  p4_0: "Before trusting a single number, every scoring function was checked both ways: a known-correct answer must give exactly 1.00, a known-wrong one — less. Then six rounds of sterile checker audit by models that saw neither the author’s conclusions nor each other’s findings (qwen3-coder, glm-4.7-flash, devstral-small-2, qwen3.6, nemotron), in three framings: spec compliance, run harness, fairness of the task to the subject. Below — all defects in order of discovery, with the method that found each.",
+  t4_h1: "Defect", t4_h2: "Consequence", t4_h3: "Found by",
+  d1: "Reference in <code>bulk200</code> was recomputed by a random generator inside the check", d1c: "score was noise: a correct answer got 0.45", m_oracle: "oracle",
+  d2: "<code>codegen_tests</code> harness: <code>.format()</code> on a string containing <code>{\"input\":…}</code> literals", d2c: "false zero for everyone; 12/12 after the fix", m_smoke: "smoke run",
+  d3: "<code>strict_schema</code>: <code>abs(str − number)</code> raised TypeError, outer except zeroed the whole task", d3c: "a narrow type error wiped already-earned points", m_audit: "audit (round 1)",
+  d4: "Form instead of content: <code>\"OK\"</code> ≠ <code>\"ok\"</code>; serial in other case; <code>Debug_Log_Ring</code>", d4c: "0.00 with 200/200 correct classifications", m_fair: "fairness audit (round 4)",
+  d5: "Index uniqueness not checked", d5c: "200 copies of one correct record → 1.00 for 1/200 of the work", m_cheat: "deliberate cheating (round 5)",
+  d6: "Penalty for false positives in code review was not announced in the instruction", d6c: "punished for an invisible rule", m_fair2: "fairness audit (round 5)",
+  d7: "<strong><code>format=json</code> mode closed the JSON after the first object</strong>", d7c: "0.00 for all five models on the batch task; without the mode — 1.00 for the same", m_pub: "preparing the publication",
+  d8: "Parser rejected <code>{…},{…},{…}</code> without outer brackets", d8c: "2091 tokens of correct records → 0.00", m_pub2: "preparing the publication",
+  d9: "A transient cut-off (eval_count=0, 391 s) was reported as model failure", d9c: "re-running the same request: 0.71 instead of 0.00", m_pub3: "preparing the publication",
+  d10: "My own fix #9 was too broad: a missing counter ≠ a cut-off", d10c: "a complete correct answer without counters was flagged as a failure", m_interp: "“needs interpretation” block",
+  d11: "Broken harness (no runner) and busy VRAM looked like 0.00", d11c: "GPU unavailability read as “bad model”", m_env: "environment mutation (round 2)",
+  t4_cap: "Table 3 — Rig defects. Green — found by calibration and audit; red — the four that six audit rounds by four models did not find.",
+  h3_4a: "Decisive experiment on defect 7",
+  p4_1: "Batch classification scored zero for all five models in every run. By the logic “when everyone fails, suspect the examiner”, a single-variable check was set up: same model, same prompt, only the request mode differs.",
+  tok: "tokens", tok2: "tokens", nofmt: "no format",
+  ba1: "one object <code>{\"idx\":0,\"class\":\"warning\"}</code> — 1 line out of 200. Score 0.00",
+  ba2: "full array, 200/200 correct. Score 1.00",
+  p4_2: "The grammar constraint of Ollama’s structured-output mode terminates the JSON after the first valid object. In this part the rig measured not the models but its own API mode. Practical rule: <code>format=json</code> is fine for a short structured answer and unfit for long enumerations; batch tasks go without it, with the markdown wrapper stripped by the parser.",
+  box1h: "Why code audit doesn’t see this",
+  box1p: "Six rounds, four different auditor models, two rounds aimed specifically at task fairness — all read the code, while the defect lived in the combination of the code with the actual behaviour of an external system. The code was correct line by line; the API was correct per its docs; their combination was wrong. Adding more or more diverse auditors does not help here — a different kind of check is needed: open the raw answer and run a single-variable experiment.",
+  h2_5: "Results after calibration",
+  p5_0: "The numbers below are from the last run on the rig with all eleven fixes; runs started before any fix were discarded entirely (numbers from different versions of the check must not share a table). Every anomaly from the “needs interpretation” block was resolved before publication — see 5.2.",
+  t5_h0: "Task", t5_mean: "Mean score", t5_tok: "Speed, tok/s", t5_wall: "Time for all 20 calls, s",
+  t5_cap: "Table 4 — Mean score over two repetitions. Yellow — row maximum. Speed — over successful calls; time — total, including model load. Footnotes a, b — in 5.2.",
+  h3_5a: "5.1 What follows",
+  r1: "<strong>qwen3.6:27b</strong> — best quality (0.87), including the only 1.00 on Python code review; the price is 4.2× lower speed than the incumbent (38 vs 161 tok/s) and mandatory reasoning-off with structured output.",
+  r2: "<strong>qwen3-coder:30b</strong> remains a sound choice for delegation: 0.78 at the highest speed and lowest time; loses on code review (0.57) and arithmetic.",
+  r3: "<strong>glm-4.7-flash</strong> — close to coder in speed (135 tok/s), but twice ran into unbounded generation on Python review (footnote a); tight on memory.",
+  r4: "<strong>devstral-small-2</strong> and <strong>nemotron</strong> — no pronounced advantage on this set; nemotron additionally does not fit the card entirely.",
+  r5: "Three tasks do not discriminate (<code>needle</code>, <code>strict_schema</code>, <code>ru_rewrite</code> — near-maximum for all) — in the next version they must be hardened or replaced; that too is a finding of the “needs interpretation” block.",
+  h3_5b: "5.2 The “needs interpretation” block — resolved",
+  p5_2: "The rig prints this block itself, alongside the table; a run is not considered complete until every item has a written answer. The last run had seven items.",
+  i1: "<strong>log_extract 0.50 for four of five</strong> — a degenerate row, suspicion on the rig. The reference was rebuilt from the prompt text independently of the generator: it matched the check. So the models genuinely make the same counting error (<code>ble: 8</code> instead of 6, <code>DEV-005</code> instead of <code>DEV-009</code>) — a property of the class on long text, not a rig defect. <span class=\"ok\">Property of the object.</span>",
+  i2: "<strong>(a) glm-4.7-flash, Python review, both reps</strong> — 104 947-character answer in 318 s with no sign of stopping: not a cut-off but unbounded generation; score 0 deserved. <span class=\"ok\">Property of the object.</span>",
+  i3: "<strong>(b) nemotron, C review, both reps</strong> — a direct re-run with a full answer twice gives an unparseable structure with substantively correct findings inside (“Buffer overflow… memcpy copies n+1 bytes”). The model does not hold the required form; score 0 is for form, and that is stated honestly. <span class=\"ok\">Property of the object.</span>",
+  i4: "<strong>bulk200 and needle — maximum for all</strong> — the tasks do not discriminate; recorded as a limitation of the set, not an achievement of the models. <span class=\"warn\">Rig limitation.</span>",
+  p5_3: "Three of seven items turned out to be behaviour of the object rather than failure — a normal outcome of interpretation. Its point is not to excuse the models but to separate three outcomes: property of the object, environment failure, rig defect.",
+  h2_6: "Method: what worked and what did not",
+  t6_h1: "Kind of check", t6_h2: "Defects found", t6_h3: "Which class it catches",
+  t6_1: "Oracle and mutant per task", t6_1c: "score computation: random reference, zeroing except, form instead of content",
+  t6_2: "Code audit, 6 rounds, 4 models", t6_2c: "implementation; plus one defect in the audit tool itself (an unparsed answer reported as “clean”)",
+  t6_3: "Deliberate cheating", t6_3c: "a score reachable with a wrong answer — not found otherwise",
+  t6_4: "Environment mutation", t6_4c: "environment failure reported as object failure",
+  t6_5: "Preparing publication + interpretation block", t6_5c: "meaning: the gap between a number and its reading; defects at the boundary of code and external-system behaviour",
+  t6_cap: "Table 5 — Yield per kind of check. Audit yield by round: 4 → 1 → 2 → 3 → 2 → 0 real findings; changing the kind of check gave more than changing the auditor with the same question.",
+  box2h: "Writing the conclusion for an outside reader is a check in its own right",
+  box2p1: "Audit asks “was it done right” and checks locally: is this line of code correct. Preparing a publication asks “what does it mean” and checks globally: does this table make sense. The number “0.00 for all five models” passes code audit flawlessly — and falls apart on the attempt to write “all models fail batch classification”, because the sentence demands a cause and there is none. The absence of an explanation is itself the signal of a defect.",
+  box2p2: "The method does not require actual publication. It is enough to write, for every row of the final table, one concluding sentence and the reason for every outlier. A sentence that cannot be finished without “probably” marks where to open the raw data. In this study that is exactly how the four most expensive of the eleven defects were found.",
+  h3_6a: "Rig acceptance checklist — before the first numbers are reported",
+  c1: "<strong>Oracle:</strong> the reference answer for every task gives exactly 1.00; the reference is rebuilt from the prompt, not from internal variables.",
+  c2: "<strong>Mutant:</strong> a known-wrong answer gives less than 1.00 on every task.",
+  c3: "<strong>Cheater:</strong> duplicates, a constant, “list everything” do not yield a high score.",
+  c4: "<strong>Forms:</strong> a correct answer in another case, with spaces, in another structure — same score.",
+  c5: "<strong>Harness:</strong> a broken environment is flagged separately, not as zero.",
+  c6: "<strong>Instruction:</strong> everything that affects the score is stated to the subject explicitly.",
+  c7: "<strong>Degenerate column:</strong> identical result for all — open the raw answer and run a single-variable experiment; do not assign code audit, it is blind to this class.",
+  c8: "<strong>A new rig version means a full re-run</strong>, not resuming where it stopped.",
+  h2_7: "Limitations",
+  l1: "One GPU, one Ollama server, one quantisation (Q4_K_M for all) — results transfer to this class of hardware, no further; nemotron was measured with partial CPU offload and is thus disadvantaged in speed.",
+  l2: "Two repetitions at temperature 0 are enough to notice nondeterminism, not enough for spread statistics; a production replacement decision needs ≥5 reps and several generator seeds.",
+  l3: "The task set is a proxy for real delegated work, not the work itself; three tasks proved non-discriminating and are due for replacement.",
+  l4: "Tasks and scoring are in Russian — models with weaker Russian training are disadvantaged; a deliberate choice for the real application, not a neutral benchmark.",
+  l5: "Eleven defects found do not mean there is no twelfth. They mean the earlier numbers were untrustworthy and the current ones passed every check listed.",
+  h2_8: "Appendix: benchmark source",
+  p8_1: "A portable copy of the rig — one Python file and three fixtures, standard library plus <code>requests</code> only. Runs against any Ollama server (<code>OLLAMA_BASE_URL</code>); the VRAM guard is optional. Contains all eleven fixes, oracle-checkable scoring functions and the “needs interpretation” block on output.",
+  dl1: "llm_bench.py — the rig", dl2: "codegen_runner.py", dl3: "buggy_module.py.txt", dl4: "buggy_ring.c.txt",
+  p8_2: "Run: <code>python llm_bench.py --reps 2</code>; one model and a subset of tasks: <code>--models coder --tasks bulk200,needle</code>. Model names and memory estimates are in the <code>MODELS</code> list at the top of the file.",
+  h2_9: "AI use statement",
+  p9_1: "The rig was designed, run and calibrated by an assistant based on Claude (Anthropic). Scoring functions and helper tools were generated by the local model qwen3-coder:30b from written specifications and accepted by execution, not by reading. Sterile checker audits were performed by the local models qwen3-coder:30b, glm-4.7-flash, devstral-small-2, qwen3.6:27b and nemotron-cascade-2 — each briefed without the author’s conclusions or other auditors’ findings. The operator set the task, downloaded the models, made the intermediate decisions (including “writing the article is a separate testing method” and “the question ‘what does it mean’ must be asked by the tool”) and bears responsibility for publication. All numbers in the article come from the results file of the last run; none were typed in by hand.",
+  f1: "Published 23 August 2026. Page style — the technical-poster series of this showcase. Provenance: every number in tables 4–5 is from the run’s results JSON; every defect in table 3 was reproduced before the fix and verified both ways after."
+};
+var RU_CACHE = {}, RU_TITLE, RU_DESC, LANG = 'ru';
+function applyLang(lang){
+  document.querySelectorAll('[data-i18n]').forEach(function(node){
+    var k = node.getAttribute('data-i18n');
+    if(!(k in RU_CACHE)) RU_CACHE[k] = node.innerHTML;
+    node.innerHTML = (lang === 'en' && I18N_EN[k] !== undefined) ? I18N_EN[k] : RU_CACHE[k];
+  });
+  if(RU_TITLE === undefined) RU_TITLE = document.title;
+  document.title = (lang === 'en') ? I18N_EN.doc_title : RU_TITLE;
+  var d = document.querySelector('meta[name="description"]');
+  if(d){ if(RU_DESC === undefined) RU_DESC = d.getAttribute('content');
+         d.setAttribute('content', lang === 'en' ? I18N_EN.meta_description : RU_DESC); }
+  document.documentElement.lang = lang;
+  document.documentElement.setAttribute('data-lang', lang);
+  LANG = lang;
+  try{ localStorage.setItem('llmb_lang', lang); }catch(e){}
+  document.getElementById('langtoggle').textContent = (lang === 'ru') ? 'EN' : 'RU';
+}
+document.getElementById('langtoggle').addEventListener('click', function(){ applyLang(LANG === 'ru' ? 'en' : 'ru'); });
+(function(){ var s=null; try{ s=localStorage.getItem('llmb_lang'); }catch(e){} if(s==='en') applyLang('en'); })();
+</script>
+</body>
+</html>
