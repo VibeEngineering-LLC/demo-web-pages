@@ -96,9 +96,19 @@ h2 .num{
   padding:5px 9px; margin-right:10px; vertical-align:3px;
 }
 h3{font-size:19px; margin:28px 0 10px; font-weight:700}
+/* Выключка по формату: ровный правый край. Переносы обязательны — без них
+   русский текст рвётся большими межсловными пробелами. */
+p,li{
+  text-align:justify; text-justify:inter-word;
+  hyphens:auto; -webkit-hyphens:auto;
+  hyphenate-limit-chars:6 3 3;
+}
 p{margin:0 0 14px}
 ul,ol{margin:0 0 14px; padding-left:22px}
 li{margin:0 0 7px}
+/* короткие строки выключать не надо — растянутся уродливо */
+.kpi span,.keywords,caption,figcaption,.row-meta,td,th{text-align:initial; hyphens:manual}
+td.num,th.num{text-align:right}
 code{
   font:0.88em/1.4 var(--mono); background:var(--sunk);
   padding:.1em .35em; border:1px solid var(--rule-soft);
