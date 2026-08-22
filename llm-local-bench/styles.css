@@ -67,9 +67,9 @@ h1 .mark{
   background:var(--accent-soft); color:#16140f;
   padding:0 .12em; box-decoration-break:clone;
 }
-.lede{font-size:19px; color:var(--dim); margin:0 0 16px; max-width:70ch}
+.lede{font-size:19px; color:var(--dim); margin:0 0 16px}
 .ai-note{
-  font-size:14px; color:var(--faint); margin:18px 0 0; max-width:70ch;
+  font-size:14px; color:var(--faint); margin:18px 0 0;
   border-left:3px solid var(--rule-soft); padding-left:12px;
 }
 
@@ -96,8 +96,8 @@ h2 .num{
   padding:5px 9px; margin-right:10px; vertical-align:3px;
 }
 h3{font-size:19px; margin:28px 0 10px; font-weight:700}
-p{margin:0 0 14px; max-width:74ch}
-ul,ol{margin:0 0 14px; padding-left:22px; max-width:74ch}
+p{margin:0 0 14px}
+ul,ol{margin:0 0 14px; padding-left:22px}
 li{margin:0 0 7px}
 code{
   font:0.88em/1.4 var(--mono); background:var(--sunk);
