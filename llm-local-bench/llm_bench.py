@@ -175,34 +175,38 @@ def task_log_extract():
                 return (0.0, "check error: invalid JSON structure")
             
             # Check errors_by_subsys
-            errors_match = True
-            for sub in subsystems:
-                if str(result.get("errors_by_subsys", {}).get(sub, 0)) != str(errors_by_subsys[sub]):
-                    errors_match = False
-                    break
+            # дефект 13: пять НЕЗАВИСИМЫХ чисел — доля верных, не AND
+            # дефект 15: «схема нарушена» и «значения не совпали» — разные состояния
+            got_errors = result.get("errors_by_subsys")
+            if not isinstance(got_errors, dict):
+                errors_frac, errors_state = 0.0, "errors_by_subsys ОТСУТСТВУЕТ/схема нарушена"
+            else:
+                ok_sub = sum(1 for sub in subsystems
+                             if str(got_errors.get(sub, "")) == str(errors_by_subsys[sub]))
+                errors_frac = ok_sub / len(subsystems)
+                errors_state = f"errors_by_subsys {ok_sub}/{len(subsystems)}"
             
-            # Check disk_full_devices
-            disk_full_match = set(result.get("disk_full_devices", [])) == disk_full_devices
-            
-            # Check timestamps
+            # дефект 14: формат ЭЛЕМЕНТА не оговорён — "wifi DEV-009" принимать как DEV-009.
+            # Jaccard, НЕ recall: перечислить все DEV-* не должно давать максимум
+            got_raw = result.get("disk_full_devices")
+            if not isinstance(got_raw, list):
+                disk_frac, disk_state = 0.0, "disk_full_devices ОТСУТСТВУЕТ/схема нарушена"
+            else:
+                got_devs = {m.group(0) for m in
+                            (re.search(r"DEV-\d+", str(x).upper()) for x in got_raw) if m}
+                union = got_devs | disk_full_devices
+                hit = len(got_devs & disk_full_devices)
+                disk_frac = (hit / len(union)) if union else 1.0
+                disk_state = (f"disk_full_devices {hit}/{len(disk_full_devices)} верных, "
+                              f"названо {len(got_devs)}")
+
+            # атомарные поля — all-or-nothing: частичного совпадения по смыслу не существует
             first_match = result.get("first_error_ts") == first_error_ts
             last_match = result.get("last_error_ts") == last_error_ts
             
-            score = 0.0
-            note_parts = []
-            
-            if errors_match:
-                score += 0.25
-                note_parts.append("errors_by_subsys match")
-            else:
-                note_parts.append("errors_by_subsys mismatch")
-                
-            if disk_full_match:
-                score += 0.25
-                note_parts.append("disk_full_devices match")
-            else:
-                note_parts.append("disk_full_devices mismatch")
-                
+            score = 0.25 * errors_frac + 0.25 * disk_frac
+            note_parts = [errors_state, disk_state]
+
             if first_match:
                 score += 0.25
                 note_parts.append("first_error_ts match")
@@ -1102,7 +1106,10 @@ def main():
                 start_time = time.perf_counter_ns()
                 
                 try:
-                    response = gen(model, task["prompt"], task["fmt"], think, est_MB, soft_guard)
+                    # дефект 12: think — ПО ЗАДАЧЕ, не по модели. false нужен только там,
+                    # где format='json' (иначе JSON уходит в поле thinking — дефект 7).
+                    task_think = None if think is None else (False if task["fmt"] else None)
+                    response = gen(model, task["prompt"], task["fmt"], task_think, est_MB, soft_guard)
                     end_time = time.perf_counter_ns()
                     
                     wall_s = (end_time - start_time) / 1e9
