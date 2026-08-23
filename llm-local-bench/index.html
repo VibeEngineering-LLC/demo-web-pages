@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#f5f2ea" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0e0c08" media="(prefers-color-scheme: dark)">
 <title>Стенд врёт раньше моделей</title>
-<meta name="description" content="Сравнение пяти локальных LLM на десяти задачах делегирования — и одиннадцать дефектов самого бенчмарка, найденных до первой публикации чисел. Методика поверки измерительного стенда.">
+<meta name="description" content="Каталог из пятнадцати ловушек, подстерегающих любого, кто строит бенчмарк языковых моделей: от эталона, который пересчитывается вместо сравнения, до режима API, обрывающего ответ. Каждая воспроизведена на работающем стенде.">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -273,7 +273,7 @@
 <script>
 var I18N_EN = {
   doc_title: "The Rig Lies Before the Models Do",
-  meta_description: "Five local LLMs on ten delegation tasks — and eleven defects in the benchmark itself, found before the first number was published. A method for calibrating the measuring rig.",
+  meta_description: "A catalogue of fifteen traps awaiting anyone who builds a language-model benchmark: from a reference value recomputed instead of compared, to an API mode that truncates the answer. Each one reproduced on a working rig.",
   eyebrow: "Local LLMs · Ollama · RTX 4090 24 GB · 5 models × 10 tasks × 2 reps",
   h1: "The rig lies <span class=\"mark\">before the models do</span>",
   lede: "A catalogue of fifteen traps awaiting anyone who builds a language-model benchmark: from a reference value recomputed instead of compared, to an API mode that truncates the answer and looks like model failure. Each one was reproduced on a working rig and verified both ways — none is hypothetical. The material comes from a comparison of five local models on ten delegation tasks.",
