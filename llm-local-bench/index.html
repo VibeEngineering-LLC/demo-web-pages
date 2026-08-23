@@ -132,7 +132,7 @@
 <!-- ══════════════ 5. РЕЗУЛЬТАТЫ ══════════════ -->
 <section>
   <h2><span class="num">5</span><span data-i18n="h2_5">Результаты после поверки</span></h2>
-  <p data-i18n="p5_0">Числа ниже — последнего прогона на стенде со всеми одиннадцатью исправлениями; прогоны, начатые до любой правки, отброшены целиком (смешивать в одной таблице числа разных версий проверки нельзя). Каждая аномалия из блока «требует толкования» разобрана до публикации — разбор в 5.2.</p>
+  <p data-i18n="p5_0">Числа ниже — последнего прогона на стенде со всеми пятнадцатью исправлениями; прогоны, начатые до любой правки, отброшены целиком (смешивать в одной таблице числа разных версий проверки нельзя). Каждая аномалия из блока «требует толкования» разобрана до публикации — разбор в 5.2.</p>
   <div class="box flag">
     <h4 data-i18n="upd_h">Ловушки 12–15: найдены после публикации — методом, описанным в самой статье</h4>
     <p data-i18n="upd_1"><strong>Как обнаружены.</strong> Правило из раздела 6 («одинаковый результат у всех испытуемых — симптом дефекта стенда») применено к собственной таблице: задание <code>log_extract</code> давало почти одинаковый результат у всех пяти моделей. Проверка подтвердила симптом — четыре ловушки сработали одновременно. Случай показателен тем, что правило поймало то, чего не увидели шесть раундов аудита кода.</p>
@@ -205,7 +205,7 @@
   <div class="box">
     <h4 data-i18n="box2h">Написать вывод для внешнего читателя — отдельный метод проверки</h4>
     <p data-i18n="box2p1">Аудит спрашивает «правильно ли сделано» и проверяет локально: верна ли эта строка кода. Подготовка публикации спрашивает «что это значит» и проверяет глобально: осмысленна ли эта таблица. Число «0,00 у всех пяти моделей» безупречно проходит аудит кода — и разваливается на попытке написать фразу «все модели проваливают пакетную классификацию», потому что фраза требует причины, а причины нет. Отсутствие объяснения — и есть сигнал дефекта.</p>
-    <p data-i18n="box2p2">Метод не требует реальной публикации. Достаточно по каждой строке итоговой таблицы написать одну фразу-вывод и причину каждого выделяющегося значения. Фраза, которую нельзя дописать без «наверное», указывает, где открыть сырые данные. В этом исследовании именно так найдены четыре самых дорогих дефекта из одиннадцати.</p>
+    <p data-i18n="box2p2">Метод не требует реальной публикации. Достаточно по каждой строке итоговой таблицы написать одну фразу-вывод и причину каждого выделяющегося значения. Фраза, которую нельзя дописать без «наверное», указывает, где открыть сырые данные. Именно этим способом обнаружены четыре самые дорогие ловушки из пятнадцати — те, которые не даются аудиту кода.</p>
   </div>
 
   <h3 data-i18n="h3_6a">Чек-лист приёмки стенда — до первого доклада чисел</h3>
@@ -229,14 +229,14 @@
     <li data-i18n="l2">Два повтора при temperature 0 — достаточно, чтобы заметить недетерминизм, недостаточно для статистики разброса; для решения о замене модели в продукции нужны ≥5 повторов и несколько зёрен генератора заданий.</li>
     <li data-i18n="l3">Набор заданий — прокси реальной делегируемой работы, а не она сама; три задания оказались неразличающими и подлежат замене.</li>
     <li data-i18n="l4">Задания и оценка на русском языке — модели с более слабой русской частью обучения в невыгодном положении; это сознательный выбор под реальное применение, а не нейтральный бенчмарк.</li>
-    <li data-i18n="l5">Одиннадцать найденных дефектов не означают, что двенадцатого нет. Означают, что прошлые числа были недостоверны, а нынешние прошли все перечисленные проверки.</li>
+    <li data-i18n="l5">Пятнадцать найденных ловушек не означают, что шестнадцатой нет — четыре из пятнадцати обнаружились уже после того, как стенд считался поверенным. Означают лишь, что нынешние числа прошли все перечисленные проверки, а прежние — не проходили.</li>
   </ul>
 </section>
 
 <!-- ══════════════ 8. ПРИЛОЖЕНИЕ ══════════════ -->
 <section>
   <h2><span class="num">8</span><span data-i18n="h2_8">Приложение: исходник бенчмарка</span></h2>
-  <p data-i18n="p8_1">Переносимая копия стенда — один файл Python и три фикстуры, только стандартная библиотека и <code>requests</code>. Запускается против любого сервера Ollama (<code>OLLAMA_BASE_URL</code>), сторож видеопамяти необязателен. Содержит все одиннадцать исправлений, оракул-проверяемые функции оценки и блок «требует толкования» на выходе.</p>
+  <p data-i18n="p8_1">Переносимая копия стенда — один файл Python и три фикстуры, только стандартная библиотека и <code>requests</code>. Запускается против любого сервера Ollama (<code>OLLAMA_BASE_URL</code>), сторож видеопамяти необязателен. Содержит защиту от всех пятнадцати ловушек, оракул-проверяемые функции оценки и блок «требует толкования» на выходе.</p>
   <p>
     <a class="dl" href="./llm_bench.py" download data-i18n="dl1">llm_bench.py — стенд</a>
     <a class="dl" href="./fixtures/codegen_runner.py" download data-i18n="dl2">codegen_runner.py</a>
@@ -338,7 +338,7 @@ var I18N_EN = {
   box1h: "Why code audit doesn’t see this",
   box1p: "Six rounds, four different auditor models, two rounds aimed specifically at task fairness — all read the code, while the defect lived in the combination of the code with the actual behaviour of an external system. The code was correct line by line; the API was correct per its docs; their combination was wrong. Adding more or more diverse auditors does not help here — a different kind of check is needed: open the raw answer and run a single-variable experiment.",
   h2_5: "Results after calibration",
-  p5_0: "The numbers below are from the last run on the rig with all eleven fixes; runs started before any fix were discarded entirely (numbers from different versions of the check must not share a table). Every anomaly from the “needs interpretation” block was resolved before publication — see 5.2.",
+  p5_0: "The numbers below are from the last run on the rig with all fifteen fixes; runs started before any fix were discarded entirely (numbers from different versions of the check must not share a table). Every anomaly from the “needs interpretation” block was resolved before publication — see 5.2.",
   t5_h0: "Task", t5_mean: "Mean score <sup>c</sup>", t5_rank: "Rank (by significance)", t5_tok: "Speed, tok/s <sup>e</sup>", t5_wall: "Time for all 20 calls, s",
   t5_cap: "Table 4 — Mean score over two repetitions. Yellow — row maximum. Speed — over successful calls; time — total, including model load. Footnotes a, b — in 5.2. <strong>c</strong> — recomputed on 23 Aug after defects 12–15 were fixed (see the update box above); the model answers are unchanged, only the check differs. <strong>d</strong> — places two to five are statistically indistinguishable (paired bootstrap, 10,000 resamples, p from 0.21 to 0.48); the order within that group is not supported by the data. <strong>e</strong> — tokens of each model's own tokeniser; not directly comparable across models.",
   upd_h: "Traps 12–15: found after publication — by the method this article itself describes",
@@ -370,7 +370,7 @@ var I18N_EN = {
   t6_cap: "Table 5 — Yield per kind of check. Audit yield by round: 4 → 1 → 2 → 3 → 2 → 0 real findings; changing the kind of check gave more than changing the auditor with the same question.",
   box2h: "Writing the conclusion for an outside reader is a check in its own right",
   box2p1: "Audit asks “was it done right” and checks locally: is this line of code correct. Preparing a publication asks “what does it mean” and checks globally: does this table make sense. The number “0.00 for all five models” passes code audit flawlessly — and falls apart on the attempt to write “all models fail batch classification”, because the sentence demands a cause and there is none. The absence of an explanation is itself the signal of a defect.",
-  box2p2: "The method does not require actual publication. It is enough to write, for every row of the final table, one concluding sentence and the reason for every outlier. A sentence that cannot be finished without “probably” marks where to open the raw data. In this study that is exactly how the four most expensive of the eleven defects were found.",
+  box2p2: "The method does not require actual publication. It is enough to write, for every row of the final table, one concluding sentence and the reason for every outlier. A sentence that cannot be finished without “probably” marks where to open the raw data. This is exactly how the four most expensive of the fifteen traps were found — the ones that code audit does not yield.",
   h3_6a: "Rig acceptance checklist — before the first numbers are reported",
   c1: "<strong>Oracle:</strong> the reference answer for every task gives exactly 1.00; the reference is rebuilt from the prompt, not from internal variables.",
   c2: "<strong>Mutant:</strong> a known-wrong answer gives less than 1.00 on every task.",
@@ -385,9 +385,9 @@ var I18N_EN = {
   l2: "Two repetitions at temperature 0 are enough to notice nondeterminism, not enough for spread statistics; a production replacement decision needs ≥5 reps and several generator seeds.",
   l3: "The task set is a proxy for real delegated work, not the work itself; three tasks proved non-discriminating and are due for replacement.",
   l4: "Tasks and scoring are in Russian — models with weaker Russian training are disadvantaged; a deliberate choice for the real application, not a neutral benchmark.",
-  l5: "Eleven defects found do not mean there is no twelfth. They mean the earlier numbers were untrustworthy and the current ones passed every check listed.",
+  l5: "Fifteen traps found do not mean there is no sixteenth — four of the fifteen surfaced after the rig was already considered calibrated. They only mean that the current numbers passed every check listed, and the earlier ones did not.",
   h2_8: "Appendix: benchmark source",
-  p8_1: "A portable copy of the rig — one Python file and three fixtures, standard library plus <code>requests</code> only. Runs against any Ollama server (<code>OLLAMA_BASE_URL</code>); the VRAM guard is optional. Contains all eleven fixes, oracle-checkable scoring functions and the “needs interpretation” block on output.",
+  p8_1: "A portable copy of the rig — one Python file and three fixtures, standard library plus <code>requests</code> only. Runs against any Ollama server (<code>OLLAMA_BASE_URL</code>); the VRAM guard is optional. Contains guards against all fifteen traps, oracle-checkable scoring functions and the “needs interpretation” block on output.",
   dl1: "llm_bench.py — the rig", dl2: "codegen_runner.py", dl3: "buggy_module.py.txt", dl4: "buggy_ring.c.txt",
   p8_2: "Run: <code>python llm_bench.py --reps 2</code>; one model and a subset of tasks: <code>--models coder --tasks bulk200,needle</code>. Model names and memory estimates are in the <code>MODELS</code> list at the top of the file.",
   h2_9: "AI use statement",
