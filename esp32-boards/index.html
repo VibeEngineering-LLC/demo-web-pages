@@ -40,7 +40,7 @@ body{
   font-family:var(--sans); line-height:1.5;
   -webkit-text-size-adjust:100%;
 }
-.sheet{max-width:1180px; margin:0 auto; padding:clamp(20px,4vw,56px)}
+.sheet{width:100%; margin:0; padding:clamp(20px,4vw,56px)}
 
 /* ---------- шапка ---------- */
 .top{border-bottom:3px solid var(--rule); padding-bottom:28px; margin-bottom:40px}
@@ -50,10 +50,9 @@ body{
 }
 h1{
   font-size:clamp(30px,6vw,60px); line-height:1.04; margin:0 0 18px;
-  letter-spacing:-.02em; font-weight:800; max-width:20ch;
+  letter-spacing:-.02em; font-weight:800;
 }
-h1 mark{background:var(--accent); color:#16140f; padding:0 .12em}
-.stand{font-size:clamp(15px,2.1vw,20px); color:var(--dim); margin:0; max-width:62ch}
+.stand{font-size:clamp(15px,2.1vw,20px); color:var(--dim); margin:0}
 .stand b{color:var(--ink)}
 
 /* ---------- сводка ---------- */
@@ -73,7 +72,7 @@ h2{
   font-weight:800;
 }
 .sec{margin:0 0 52px}
-.sec-note{color:var(--dim); margin:0 0 24px; max-width:70ch}
+.sec-note{color:var(--dim); margin:0 0 24px}
 
 /* ---------- карточки плат ---------- */
 .boards{display:grid; gap:26px; grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
@@ -121,7 +120,7 @@ ul.pm.minus li::before{content:"−"; color:var(--bad)}
 .lesson-n{font-size:34px; font-weight:800; line-height:.9; color:var(--accent);
   -webkit-text-stroke:1.5px var(--ink); letter-spacing:-.03em}
 .lesson h3{margin:0 0 7px; font-size:17px; letter-spacing:-.01em}
-.lesson p{margin:0; color:var(--dim); font-size:14.5px; max-width:78ch}
+.lesson p{margin:0; color:var(--dim); font-size:14.5px}
 .lesson p + p{margin-top:8px}
 .lesson code{font-family:var(--mono); font-size:.92em; background:var(--sunk);
   padding:1px 5px; border:1px solid var(--rule-soft)}
@@ -180,7 +179,7 @@ a{color:var(--ink)}
 
   <header class="top">
     <p class="eyebrow">VibeEngineering · инженерный опыт</p>
-    <h1>Четыре платы ESP32: <mark>что мы узнали</mark>, пока на них работали</h1>
+    <h1>Четыре платы ESP32: что мы узнали, пока на них работали</h1>
     <p class="stand">Не обзор по даташитам. Здесь то, что выяснилось на живом железе за год работы над
       шлюзами к дозиметрам и спектрометрам: <b>где платы удивили, где подвели и что стоило нам
       недель отладки</b>. Числа — из собственных измерений.</p>
