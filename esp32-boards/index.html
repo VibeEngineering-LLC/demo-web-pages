@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5f2ea">
+<title>Четыре платы ESP32 — что мы узнали, пока на них работали</title>
+<style>
+:root{
+  color-scheme: light dark;
+  --paper:#f5f2ea; --sunk:#ebe7dc;
+  --ink:#16140f; --dim:#4c493f; --faint:#6a6558;
+  --rule:#16140f; --rule-soft:#c9c4b4;
+  --accent:#f6d31c;
+  --good:#1f6b3a; --bad:#a3271c;
+  --shadow:7px 7px 0 #16140f;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"Cascadia Mono",Consolas,"DejaVu Sans Mono",monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#161511; --sunk:#1f1d17;
+    --ink:#f0ede3; --dim:#b5b0a1; --faint:#847f70;
+    --rule:#f0ede3; --rule-soft:#3a382e;
+    --accent:#c8a80e; --good:#6fbf8b; --bad:#e0736a;
+    --shadow:7px 7px 0 #000000;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#161511; --sunk:#1f1d17;
+  --ink:#f0ede3; --dim:#b5b0a1; --faint:#847f70;
+  --rule:#f0ede3; --rule-soft:#3a382e;
+  --accent:#c8a80e; --good:#6fbf8b; --bad:#e0736a;
+  --shadow:7px 7px 0 #000000;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--sans); line-height:1.5;
+  -webkit-text-size-adjust:100%;
+}
+.sheet{max-width:1180px; margin:0 auto; padding:clamp(20px,4vw,56px)}
+
+/* ---------- шапка ---------- */
+.top{border-bottom:3px solid var(--rule); padding-bottom:28px; margin-bottom:40px}
+.eyebrow{
+  font-family:var(--mono); font-size:12px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--faint); margin:0 0 14px;
+}
+h1{
+  font-size:clamp(30px,6vw,60px); line-height:1.04; margin:0 0 18px;
+  letter-spacing:-.02em; font-weight:800; max-width:20ch;
+}
+h1 mark{background:var(--accent); color:#16140f; padding:0 .12em}
+.stand{font-size:clamp(15px,2.1vw,20px); color:var(--dim); margin:0; max-width:62ch}
+.stand b{color:var(--ink)}
+
+/* ---------- сводка ---------- */
+.facts{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:2px; background:var(--rule-soft); border:3px solid var(--rule);
+  box-shadow:var(--shadow); margin:0 0 48px;
+}
+.fact{background:var(--paper); padding:18px 16px}
+.fact-n{font-size:clamp(24px,4vw,38px); font-weight:800; line-height:1; letter-spacing:-.02em}
+.fact-l{font-family:var(--mono); font-size:11px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--faint); margin-top:8px}
+
+/* ---------- секции ---------- */
+h2{
+  font-size:clamp(20px,3.2vw,30px); margin:0 0 6px; letter-spacing:-.01em;
+  font-weight:800;
+}
+.sec{margin:0 0 52px}
+.sec-note{color:var(--dim); margin:0 0 24px; max-width:70ch}
+
+/* ---------- карточки плат ---------- */
+.boards{display:grid; gap:26px; grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.board{
+  border:3px solid var(--rule); background:var(--paper);
+  box-shadow:var(--shadow); display:flex; flex-direction:column;
+}
+.board-h{padding:18px 20px; border-bottom:3px solid var(--rule); background:var(--sunk)}
+.board-h h3{margin:0 0 4px; font-size:20px; letter-spacing:-.01em}
+.board-h .sub{font-family:var(--mono); font-size:12px; color:var(--faint)}
+.badge{
+  display:inline-block; font-family:var(--mono); font-size:11px; font-weight:700;
+  letter-spacing:.08em; text-transform:uppercase; padding:3px 8px;
+  border:2px solid var(--rule); margin-top:10px;
+}
+.badge.main{background:var(--accent); color:#16140f}
+.board-body{padding:18px 20px; flex:1}
+.specs{width:100%; border-collapse:collapse; margin:0 0 18px; font-size:14px}
+.specs th,.specs td{text-align:left; padding:5px 0; border-bottom:1px solid var(--rule-soft); vertical-align:top}
+.specs th{font-weight:600; color:var(--faint); width:44%; font-size:13px}
+.specs td{font-family:var(--mono); font-size:13px}
+.no{color:var(--bad); font-weight:700}
+.yes{color:var(--good); font-weight:700}
+ul.pm{list-style:none; margin:0 0 14px; padding:0}
+ul.pm li{padding-left:24px; position:relative; margin-bottom:9px; font-size:14.5px}
+ul.pm li::before{
+  position:absolute; left:0; top:0; font-weight:800; font-family:var(--mono);
+}
+ul.pm.plus li::before{content:"+"; color:var(--good)}
+ul.pm.minus li::before{content:"−"; color:var(--bad)}
+.pm-h{font-family:var(--mono); font-size:11px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--faint); margin:0 0 9px}
+.verdict{
+  border-top:3px solid var(--rule); padding:14px 20px; background:var(--sunk);
+  font-size:14px;
+}
+.verdict b{display:block; font-family:var(--mono); font-size:11px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--faint); margin-bottom:5px; font-weight:700}
+
+/* ---------- уроки ---------- */
+.lessons{display:grid; gap:2px; background:var(--rule-soft);
+  border:3px solid var(--rule); box-shadow:var(--shadow)}
+.lesson{background:var(--paper); padding:22px 24px; display:grid;
+  grid-template-columns:56px 1fr; gap:18px; align-items:start}
+.lesson-n{font-size:34px; font-weight:800; line-height:.9; color:var(--accent);
+  -webkit-text-stroke:1.5px var(--ink); letter-spacing:-.03em}
+.lesson h3{margin:0 0 7px; font-size:17px; letter-spacing:-.01em}
+.lesson p{margin:0; color:var(--dim); font-size:14.5px; max-width:78ch}
+.lesson p + p{margin-top:8px}
+.lesson code{font-family:var(--mono); font-size:.92em; background:var(--sunk);
+  padding:1px 5px; border:1px solid var(--rule-soft)}
+
+/* ---------- измерение ---------- */
+.measure{
+  border:3px solid var(--rule); box-shadow:var(--shadow); background:var(--paper);
+  padding:0; overflow-x:auto;
+}
+table.m{width:100%; border-collapse:collapse; min-width:460px}
+table.m caption{
+  text-align:left; padding:16px 20px; border-bottom:3px solid var(--rule);
+  background:var(--sunk); font-weight:700; font-size:15px;
+}
+table.m th,table.m td{padding:11px 20px; text-align:left; border-bottom:1px solid var(--rule-soft)}
+table.m th{font-family:var(--mono); font-size:11px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--faint); font-weight:600}
+table.m td{font-family:var(--mono); font-size:14px}
+table.m td:first-child{font-family:var(--sans); font-size:14.5px}
+table.m tr:last-child td{border-bottom:0}
+.was{color:var(--bad)} .now{color:var(--good); font-weight:700}
+
+/* ---------- карта прошивок ---------- */
+.map{display:grid; gap:2px; background:var(--rule-soft);
+  border:3px solid var(--rule); box-shadow:var(--shadow)}
+.map-row{background:var(--paper); padding:14px 20px; display:grid;
+  grid-template-columns:1fr auto; gap:14px; align-items:baseline}
+.map-row .p{font-weight:600; font-size:14.5px}
+.map-row .p small{display:block; color:var(--dim); font-weight:400; font-size:13px; margin-top:3px}
+.map-row .b{font-family:var(--mono); font-size:12px; color:var(--faint); text-align:right; white-space:nowrap}
+
+/* ---------- подвал ---------- */
+.foot{border-top:3px solid var(--rule); margin-top:48px; padding-top:22px;
+  display:flex; flex-wrap:wrap; gap:14px 28px; align-items:baseline}
+.foot a{color:var(--ink); font-weight:600}
+.foot .note{color:var(--faint); font-size:13px; font-family:var(--mono)}
+a{color:var(--ink)}
+.linkbtn{
+  display:inline-block; border:3px solid var(--rule); box-shadow:4px 4px 0 var(--rule);
+  padding:9px 16px; font-weight:700; text-decoration:none; background:var(--accent);
+  color:#16140f; font-size:14.5px;
+}
+.linkbtn:hover{transform:translate(2px,2px); box-shadow:2px 2px 0 var(--rule)}
+
+@media (max-width:560px){
+  .lesson{grid-template-columns:1fr; gap:8px}
+  .lesson-n{font-size:26px}
+  .map-row{grid-template-columns:1fr}
+  .map-row .b{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+  <header class="top">
+    <p class="eyebrow">VibeEngineering · инженерный опыт</p>
+    <h1>Четыре платы ESP32: <mark>что мы узнали</mark>, пока на них работали</h1>
+    <p class="stand">Не обзор по даташитам. Здесь то, что выяснилось на живом железе за год работы над
+      шлюзами к дозиметрам и спектрометрам: <b>где платы удивили, где подвели и что стоило нам
+      недель отладки</b>. Числа — из собственных измерений.</p>
+  </header>
+
+  <div class="facts">
+    <div class="fact"><div class="fact-n">4</div><div class="fact-l">платы в работе</div></div>
+    <div class="fact"><div class="fact-n">9</div><div class="fact-l">прошивок на них</div></div>
+    <div class="fact"><div class="fact-n">30,6 → 0 %</div><div class="fact-l">потери измерений</div></div>
+    <div class="fact"><div class="fact-n">1 год</div><div class="fact-l">впустую без PSRAM</div></div>
+  </div>
+
+  <section class="sec">
+    <h2>Платы</h2>
+    <p class="sec-note">По каждой — характеристики, чем хороша и чем неудобна, и наш вердикт:
+      брать или не брать под конкретную задачу.</p>
+
+    <div class="boards">
+
+      <article class="board">
+        <div class="board-h">
+          <h3>ESP32-S3-DevKitC-1 N16R8</h3>
+          <div class="sub">Espressif · Xtensa LX7 ×2 · 240 МГц</div>
+          <span class="badge main">основная рабочая</span>
+        </div>
+        <div class="board-body">
+          <table class="specs">
+            <tr><th>Flash</th><td>16 МБ</td></tr>
+            <tr><th>PSRAM</th><td class="yes">8 МБ octal</td></tr>
+            <tr><th>Радио</th><td>Wi-Fi + BLE 5</td></tr>
+            <tr><th>USB</th><td>OTG + отдельный UART</td></tr>
+          </table>
+          <p class="pm-h">Чем хороша</p>
+          <ul class="pm plus">
+            <li>Тянет тяжёлое: водопад спектров на 8192 канала сутками без потерь.</li>
+            <li>Два USB-разъёма — прибор и отладка одновременно.</li>
+            <li>Исполнение кода из PSRAM убирает главный источник потерь под нагрузкой.</li>
+          </ul>
+          <p class="pm-h">Чем неудобна</p>
+          <ul class="pm minus">
+            <li><b>Профиль памяти не задаётся сам</b> — строка <code>board:</code> не включает
+              ни 16 МБ флеша, ни PSRAM. Год работы на четверти возможностей.</li>
+            <li>Wi-Fi отбирает у потока данных больше, чем кажется: буфер пришлось увеличить вчетверо.</li>
+            <li>Как BLE-клиент к приборам на чипах Nordic — у нас не заработала (разбор продолжается).</li>
+          </ul>
+        </div>
+        <div class="verdict"><b>Вердикт</b>
+          Берите под всё тяжёлое: буферы, история, USB-host, сложный веб-интерфейс.
+          Избыточна для автономного датчика на батарее.</div>
+      </article>
+
+      <article class="board">
+        <div class="board-h">
+          <h3>Seeed XIAO ESP32C3</h3>
+          <div class="sub">Seeed Studio · RISC-V ×1 · 160 МГц · 21×17,5 мм</div>
+          <span class="badge">компактная</span>
+        </div>
+        <div class="board-body">
+          <table class="specs">
+            <tr><th>Flash</th><td>4 МБ</td></tr>
+            <tr><th>PSRAM</th><td class="no">нет</td></tr>
+            <tr><th>Антенна</th><td class="no">внешняя, U.FL</td></tr>
+            <tr><th>Батарея</th><td class="yes">зарядка на борту</td></tr>
+          </table>
+          <p class="pm-h">Чем хороша</p>
+          <ul class="pm plus">
+            <li>Размер с ноготь плюс штатное управление зарядом Li-Ion.</li>
+            <li>Нативный USB: плата опознаётся по идентификаторам, а не по номеру порта.</li>
+            <li>Прошивка переносится с S3 малой кровью — правки только по памяти и периферии.</li>
+          </ul>
+          <p class="pm-h">Чем неудобна</p>
+          <ul class="pm minus">
+            <li><b>Антенна внешняя.</b> Забыли подключить — часы отладки кода при обесточенном приёме.</li>
+            <li>Светодиода нет вовсе: типовой для S3 блок с диодом валит сборку.</li>
+            <li>Три вывода заняты загрузкой и служебным выводом — под периферию не годятся.</li>
+          </ul>
+        </div>
+        <div class="verdict"><b>Вердикт</b>
+          Берите под автономный узел на батарее и простой шлюз. Не берите, если нужны
+          буферы, USB-host или тяжёлый интерфейс.</div>
+      </article>
+
+      <article class="board">
+        <div class="board-h">
+          <h3>ESP32-S3-USB-OTG</h3>
+          <div class="sub">Espressif · экран 240×240 · слот microSD</div>
+          <span class="badge">нишевая</span>
+        </div>
+        <div class="board-body">
+          <table class="specs">
+            <tr><th>Flash</th><td>8 МБ</td></tr>
+            <tr><th>PSRAM</th><td class="no">нет</td></tr>
+            <tr><th>USB</th><td class="yes">три разъёма</td></tr>
+            <tr><th>Питание хоста</th><td>500 мА</td></tr>
+          </table>
+          <p class="pm-h">Чем хороша</p>
+          <ul class="pm plus">
+            <li><b>Единственная, где отладка не мешает работе с USB-прибором</b> — отдельный мост на лог.</li>
+            <li>Спектрометр по USB: 845 кадров, ноль потерь и ноль ошибок линии.</li>
+            <li>Вся связка со спектрометром — ровно 1 Вт: около 4,5 часов от аккумулятора.</li>
+          </ul>
+          <p class="pm-h">Чем неудобна</p>
+          <ul class="pm minus">
+            <li><b>Нет PSRAM — это определяет архитектуру.</b> Постоянное соединение с браузером
+              не влезло: свободная память падала до сотен байт, сервер вставал.</li>
+            <li>Веб-сервер держит мало соединений: страница сама себе создаёт очередь.</li>
+            <li>Документация дважды разошлась с платой — полярность сигнала и режим карты памяти.</li>
+          </ul>
+        </div>
+        <div class="verdict"><b>Вердикт</b>
+          Берите под полевой терминал к USB-прибору с экраном и записью на карту.
+          Планируйте опрос, а не постоянное соединение.</div>
+      </article>
+
+      <article class="board">
+        <div class="board-h">
+          <h3>ESP32-DevKitC v4</h3>
+          <div class="sub">Espressif · WROOM-32 · Xtensa LX6 ×2</div>
+          <span class="badge">legacy</span>
+        </div>
+        <div class="board-body">
+          <table class="specs">
+            <tr><th>Flash</th><td>4 МБ</td></tr>
+            <tr><th>PSRAM</th><td class="no">нет</td></tr>
+            <tr><th>Радио</th><td>Wi-Fi + BT 4.2</td></tr>
+            <tr><th>USB</th><td>один разъём</td></tr>
+          </table>
+          <p class="pm-h">Чем хороша</p>
+          <ul class="pm plus">
+            <li>Работает и не ломается: ранние шлюзы жили месяцами без вмешательства.</li>
+            <li>Максимальная совместимость с готовыми примерами из интернета.</li>
+          </ul>
+          <p class="pm-h">Чем неудобна</p>
+          <ul class="pm minus">
+            <li>4 МБ и никакой внешней памяти — потолок для современных задач.</li>
+            <li>Нет USB-хоста, Bluetooth 4.2 вместо 5.</li>
+            <li>Отладочный порт и порт прошивки — один и тот же.</li>
+          </ul>
+        </div>
+        <div class="verdict"><b>Вердикт</b>
+          Для новых проектов не берём: разница в цене с S3 невелика, потолок несопоставим.
+          Существующее поддерживаем.</div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Пять уроков, оплаченных отладкой</h2>
+    <p class="sec-note">Каждый стоил времени. Если вы начинаете проект на ESP32, эти пять пунктов
+      сэкономят вам недели.</p>
+
+    <div class="lessons">
+
+      <div class="lesson">
+        <div class="lesson-n">01</div>
+        <div>
+          <h3>Имя платы в конфиге — это не её память</h3>
+          <p>Строка <code>board: esp32-s3-devkitc-1</code> задаёт распиновку и загрузчик, но не объём
+            флеша и не наличие внешней памяти. Среда сборки по умолчанию берёт 4 МБ, а определение
+            платы не включает PSRAM вовсе. Маркировка «N16R8» живёт только на наклейке модуля.</p>
+          <p>Итог одного такого недосмотра: прошивка работала на плате с 16 МБ и 8 МБ PSRAM,
+            используя 4 МБ и ноль внешней памяти. Документация при этом уверяла, что «запас есть».
+            <b>Задавайте профиль памяти явно и проверяйте сборкой, а не намерением.</b></p>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-n">02</div>
+        <div>
+          <h3>Wi-Fi и BLE делят одну антенну — и буфер это чувствует</h3>
+          <p>После добавления Wi-Fi потери в потоке спектрометра выросли с нуля до устойчивых 7–9 %.
+            Две правдоподобные гипотезы про конкуренцию ядер дали <b>побайтово одинаковые числа</b>
+            и были отвергнуты измерением.</p>
+          <p>Настоящая причина: приёмное кольцо не переживало всплеск, который создаёт радио.
+            Увеличили вчетверо — 10 480 кадров подряд без единой потери.
+            <b>При потерях после включения радио сначала мерьте пик буфера, а не переносите задачи по ядрам.</b></p>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-n">03</div>
+        <div>
+          <h3>Экономия энергии включена по умолчанию — и её видно в задержках</h3>
+          <p>Радио спит между маячками точки доступа. Чистый ping без всякой нагрузки дал разброс
+            <b>2–112 мс</b> при среднем 63 мс — для локальной сети это ненормально.
+            Лечится отключением энергосбережения ценой потребления; разумно сделать переключатель
+            «от сети / от батареи».</p>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-n">04</div>
+        <div>
+          <h3>На плате без PSRAM архитектура обмена решает всё</h3>
+          <p>Переход с опроса на постоянное соединение добавил около 10 КБ статики — и уронил
+            свободную память до <b>332 байт</b>. Веб-сервер переставал принимать соединения
+            даже без единого браузера. Ветку откатили целиком.</p>
+          <p><b>Считайте бюджет памяти до выбора архитектуры, а не после.</b></p>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-n">05</div>
+        <div>
+          <h3>Проверяйте железо фактом, а не документацией</h3>
+          <p>Три случая расхождения из нашей практики: полярность сигнала перегрузки оказалась
+            обратной описанию; заявленный однобитный режим карты на деле поднимался
+            четырёхпроводным; карта 64 ГБ с завода в exFAT не монтируется, потому что поддержка
+            exFAT в сборке выключена — а ошибка выглядит просто как невнятный код.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Что дал переход на исполнение кода из PSRAM</h2>
+    <p class="sec-note">Единственная настройка, давшая качественный скачок: операции с флешем
+      перестали гасить кэш и морозить приём данных. Измерено на живой плате.</p>
+    <div class="measure">
+      <table class="m">
+        <caption>Потери измерений под нагрузкой веб-интерфейса</caption>
+        <thead><tr><th>Сценарий</th><th>Было</th><th>Стало</th></tr></thead>
+        <tbody>
+          <tr><td>Активная запись водопада</td><td class="was">9,4 %</td><td class="now">0,0 %</td></tr>
+          <tr><td>Открыта системная страница</td><td class="was">25,8 %</td><td class="now">0,0 %</td></tr>
+          <tr><td>Шторм из шести клиентов</td><td class="was">95,6 %</td><td class="now">0,0 %</td></tr>
+          <tr><td>Медиана отклика</td><td class="was">—</td><td class="now">−29 %</td></tr>
+          <tr><td>Пропускная способность</td><td class="was">—</td><td class="now">+31 %</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Где какая плата задействована</h2>
+    <p class="sec-note">Карта наших прошивок: что на чём собрано.</p>
+    <div class="map">
+      <div class="map-row"><div class="p">Водопад гамма-спектров<small>USB-host, веб-интерфейс, запись сутками</small></div><div class="b">S3-DevKitC-1 N16R8</div></div>
+      <div class="map-row"><div class="p">BLE-шлюз к радон-детектору Radex<small>чтение по запросу, отдача в умный дом</small></div><div class="b">S3 N16R8 · XIAO C3</div></div>
+      <div class="map-row"><div class="p">BLE-шлюз к RadonEye Plus2<small>компактный автономный узел</small></div><div class="b">XIAO ESP32C3</div></div>
+      <div class="map-row"><div class="p">BLE-шлюз к дозиметру AtomFast<small>уведомления, локальная обработка</small></div><div class="b">DevKitC v4 · S3</div></div>
+      <div class="map-row"><div class="p">Мост к дозиметру БДКГ-05<small>промышленный протокол поверх USB</small></div><div class="b">S3-DevKitC-1 N16R8</div></div>
+      <div class="map-row"><div class="p">Полевой USB-терминал<small>экран, карта памяти, автономность</small></div><div class="b">S3-USB-OTG</div></div>
+      <div class="map-row"><div class="p">Сканер и разведка BLE-эфира<small>перечисление устройств, дамп сервисов</small></div><div class="b">XIAO C3 · DevKitC v4</div></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <a class="linkbtn" href="https://github.com/VibeEngineering-LLC/hardware-wiki" target="_blank" rel="noopener">Подробный справочник на GitHub</a>
+    <span class="note">Числа — из собственных измерений на живом железе</span>
+    <a href="../showcase-poster/">← к указателю демонстраций</a>
+  </footer>
+
+</div>
+
+</body>
+</html>
