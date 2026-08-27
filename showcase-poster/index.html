@@ -26,8 +26,8 @@
 
     <div class="chips" role="group" aria-label="Фильтр по тегам">
         <button type="button" class="chip" data-tag="radon" aria-pressed="false">Радон<span class="chip-n">7</span></button>
-        <button type="button" class="chip" data-tag="gamma" aria-pressed="false">Гамма-спектрометрия<span class="chip-n">10</span></button>
-        <button type="button" class="chip" data-tag="geant4" aria-pressed="false">Geant4<span class="chip-n">10</span></button>
+        <button type="button" class="chip" data-tag="gamma" aria-pressed="false">Гамма-спектрометрия<span class="chip-n">11</span></button>
+        <button type="button" class="chip" data-tag="geant4" aria-pressed="false">Geant4<span class="chip-n">11</span></button>
         <button type="button" class="chip" data-tag="dose" aria-pressed="false">Дозиметрия<span class="chip-n">8</span></button>
         <button type="button" class="chip" data-tag="calc" aria-pressed="false">Калькулятор<span class="chip-n">4</span></button>
         <button type="button" class="chip" data-tag="llm" aria-pressed="false">LLM<span class="chip-n">5</span></button>
@@ -326,6 +326,15 @@
         <span class="row-desc">Не обзор по даташитам: характеристики, плюсы и минусы четырёх плат (S3-DevKitC-1 N16R8, XIAO ESP32C3, S3-USB-OTG, DevKitC v4) и пять уроков, оплаченных отладкой — имя платы не задаёт её память, Wi-Fi отбирает у потока данных буфер, экономия энергии видна в задержках. Потери измерений 30,6 → 0 %, карта прошивок. Подробный справочник в отдельном репозитории.</span>
       </span>
       <span class="row-meta">Прошивка · Архитектура</span>
+    </a>
+
+    <a class="row" href="../rc103-background-decomposition/" target="_blank" rel="noopener" data-tags="gamma geant4">
+      <span class="row-num">32</span>
+      <span class="row-body">
+        <span class="row-title">Из чего состоит фон: разложение спектра RadiaCode-103</span>
+        <span class="row-desc">Спектр естественного фона за семь суток разбирается на вклады восьми нуклидов и мюонов расчётными шаблонами Geant4: каждый шаблон — отдельный прогон полного распада одного нуклида, а не таблица линий. Нуклиды на графике отключаются, сумма пересчитывается. Показано и то, почему звенья цепочек нельзя подгонять независимо (корреляции форм до 1,000), и чего этим спектром измерить нельзя.</span>
+      </span>
+      <span class="row-meta">Гамма-спектрометрия · Geant4</span>
     </a>
 
     </main>
