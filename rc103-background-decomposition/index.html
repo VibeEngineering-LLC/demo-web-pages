@@ -69,6 +69,10 @@ th.sym{text-transform:none}
 ol.refs{margin:10px 0 0 0;padding-left:26px}
 ol.refs li{margin:0 0 7px 0;text-align:justify;hyphens:auto;overflow-wrap:break-word}
 ol.refs li::marker{color:var(--faint);font-family:var(--mono);font-size:12px}
+/* Ссылка в списке источников: длинный URL не должен рвать вёрстку. */
+ol.refs a{color:inherit;text-decoration:underline;text-underline-offset:2px;
+  text-decoration-thickness:1px;word-break:break-all;font-family:var(--mono);font-size:13px}
+ol.refs a:hover{background:var(--accent-soft)}
 
 .top{border-bottom:6px solid var(--rule);padding-bottom:18px;margin-bottom:26px}
 .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
@@ -522,7 +526,7 @@ code{font-family:var(--mono);font-size:.93em;background:var(--sunk);padding:1px 
     <li>Bossew P. The radon emanation power of building materials, soils and rocks. Applied Radiation and Isotopes, 2003, vol. 59, pp. 389–392.</li>
     <li>Sakoda A., Ishimori Y., Yamaoka K. A comprehensive review of radon emanation measurements for mineral, rock, soil, mill tailing and fly ash. Applied Radiation and Isotopes, 2011, vol. 69, pp. 1422–1435.</li>
     <li>Breitenmoser D. Towards Monte Carlo based Full Spectrum Modeling of Airborne Gamma-Ray Spectrometry Systems. 2024. Приводится как пример полного спектрального моделирования; условия аэрогамма-съёмки от рассматриваемых отличаются.</li>
-    <li>Обзор опубликованных данных о сдвиге равновесия в рядах радия и тория в строительных материалах, подготовленный в рамках настоящей работы: репозиторий <code>Verter73/geant4-detector-models</code>, файл <code>skills/geant4-spectrum-pipeline/references/natural-series-equilibrium.md</code>.</li>
+    <li>Обзор опубликованных данных о сдвиге равновесия в рядах радия и тория в строительных материалах, подготовленный в рамках настоящей работы: <a href="https://github.com/Verter73/geant4-detector-models/blob/main/skills/geant4-spectrum-pipeline/references/natural-series-equilibrium.md">https://github.com/Verter73/geant4-detector-models/blob/main/skills/geant4-spectrum-pipeline/references/natural-series-equilibrium.md</a></li>
   </ol>
 </section>
 
