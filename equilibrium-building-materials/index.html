@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5f2ea">
+<title>Сдвиг радиоактивного равновесия в рядах урана и тория в строительных материалах</title>
+<style>
+/* Оформление «плакат»: тёплая небелёная бумага, чернота вместо серых,
+   линейки 3px, тень 7x7 без размытия, единственный акцент — жёлтая плашка.
+   Цветной текст не используется: цвет несут только схемы и плашки данных. */
+:root{
+  color-scheme: light dark;
+  --paper:#f5f2ea; --sunk:#ebe7dc;
+  --ink:#16140f; --dim:#4c493f; --faint:#6a6558;
+  --rule:#16140f; --rule-soft:#c9c4b4; --accent-soft:#f6d31c;
+  --shadow:7px 7px 0 #16140f;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"Cascadia Mono",Consolas,"DejaVu Sans Mono",monospace;
+  --u:#c8541c; --th:#1f7345; --break:#d21f1f; --ok:#0f5aa8;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#161511; --sunk:#1f1d17;
+    --ink:#f0ede3; --dim:#b5b0a1; --faint:#847f70;
+    --rule:#f0ede3; --rule-soft:#3a382e; --accent-soft:#c8a80e;
+    --shadow:7px 7px 0 #000000;
+    --u:#f0834a; --th:#4fbe84; --break:#ff6a5e; --ok:#6ea6e8;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.5;padding:28px 18px 64px}
+.sheet{max-width:1180px;margin:0 auto}
+
+/* ТЕКСТ ВЫКЛЮЧАЕТСЯ ВЛЕВО, НИКОГДА ПО ФОРМАТУ, и длина строки ограничена
+   у ВСЕХ текстовых блоков без исключения — врезки и подписи забываются
+   первыми и дают рецидив. Правило задано одним списком селекторов. */
+body,p,li,td,th,figcaption,caption{text-align:left}
+p,li,.cap,.sec-lead,caption,.stand,.abstract p,.note p,.warn p,.warn li,
+.warn h3,.kpi .l,.foot p,.chain-note{max-width:44ch}
+.stand{max-width:46ch}
+
+.top{border-bottom:6px solid var(--rule);padding-bottom:18px;margin-bottom:26px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);margin:0 0 10px}
+h1{font-size:clamp(28px,5vw,54px);line-height:1.05;margin:0 0 12px;
+  font-weight:800;letter-spacing:-.02em}
+.stand{font-size:clamp(15px,2vw,19px);color:var(--dim);margin:0}
+.mark{background:var(--accent-soft);color:#16140f;padding:0 .22em;
+  box-decoration-break:clone;-webkit-box-decoration-break:clone}
+
+h2{font-size:clamp(20px,3vw,28px);margin:0 0 6px;font-weight:800;letter-spacing:-.01em}
+h3{font-size:17px;margin:22px 0 8px}
+.sec{margin:44px 0 0;padding-top:20px;border-top:3px solid var(--rule)}
+.sec-lead{color:var(--dim);margin:0 0 18px}
+.num-tag{font-family:var(--mono);font-size:12px;color:var(--faint);
+  letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:4px}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:14px;margin:22px 0 0}
+.kpi{border:3px solid var(--rule);background:var(--paper);padding:14px 15px;box-shadow:var(--shadow)}
+.kpi .v{font-family:var(--mono);font-size:clamp(22px,3.2vw,30px);font-weight:700;
+  line-height:1.05;display:block}
+.kpi .l{font-size:13px;color:var(--dim);margin-top:6px;display:block}
+
+.fig{border:3px solid var(--rule);background:var(--paper);padding:16px;margin:20px 0 0;
+  box-shadow:var(--shadow)}
+.fig svg{display:block;width:100%;height:auto;overflow:visible}
+.cap{font-size:13.5px;color:var(--dim);margin:12px 2px 0}
+
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin-top:6px}
+caption{text-align:left;font-size:13px;color:var(--faint);padding-bottom:8px}
+th,td{border-bottom:1.5px solid var(--rule-soft);padding:8px 10px;text-align:right}
+th:first-child,td:first-child{text-align:left}
+thead th{border-bottom:3px solid var(--rule);font-size:12.5px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--dim);white-space:nowrap}
+tbody tr:last-child td{border-bottom:3px solid var(--rule)}
+td.n,th.n{font-family:var(--mono);white-space:nowrap}
+.scroll{overflow-x:auto}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media (max-width:860px){.two{grid-template-columns:1fr}}
+
+.note{border-left:6px solid var(--accent-soft);background:var(--sunk);
+  padding:14px 16px;margin:20px 0 0}
+.note p{margin:0 0 8px} .note p:last-child{margin:0}
+.warn{border:3px solid var(--rule);background:var(--sunk);padding:16px 18px;margin:20px 0 0}
+.warn h3{margin:0 0 10px;font-size:17px}
+.warn ul{margin:0;padding-left:20px} .warn li{margin:0 0 8px}
+.warn li:last-child{margin:0}
+
+.rules{list-style:none;padding:0;margin:18px 0 0}
+.rules li{border:3px solid var(--rule);background:var(--paper);padding:13px 15px;
+  margin:0 0 12px;box-shadow:var(--shadow);max-width:none}
+.rules b{display:block;font-size:15px;margin-bottom:4px}
+.rules span{font-size:14px;color:var(--dim);display:block;max-width:44ch}
+.rules code{white-space:nowrap}
+
+code{font-family:var(--mono);font-size:.93em;background:var(--sunk);padding:1px 5px}
+.abstract{border-left:6px solid var(--rule);padding:2px 0 2px 20px;margin:26px 0 0}
+.abstract .ab-h{font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);margin:0 0 10px;font-weight:700}
+.abstract p{margin:0 0 10px;font-size:15px}
+.abstract p:last-child{margin:0}
+.abstract .kw{color:var(--dim);font-size:14px}
+.foot{margin-top:52px;padding-top:18px;border-top:3px solid var(--rule);
+  font-size:13px;color:var(--faint)}
+.foot a{color:inherit}
+.foot ol{padding-left:20px;margin:10px 0 0}
+.foot li{margin:0 0 6px;max-width:74ch}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<header class="top">
+  <p class="eyebrow">Гамма-спектрометрия · естественные радионуклиды · справка</p>
+  <h1>Сдвиг равновесия в рядах урана и тория в строительных материалах</h1>
+  <p class="stand">Какие соотношения активностей внутри цепочек можно считать известными, а какие приходится измерять. Ряд тория практически всегда равновесен; ряд урана <span class="mark">не равновесен почти никогда</span>, и разрывов в нём три. Справка составлена для задач разложения спектра естественного фона.</p>
+</header>
+
+<section class="abstract">
+  <h2 class="ab-h">Реферат</h2>
+  <p>Рассмотрено состояние радиоактивного равновесия в рядах урана-238 и тория-232 применительно к строительным материалам и минеральному сырью. Актуальность определяется тем, что при гамма-спектрометрическом анализе активность родительских нуклидов обоих рядов не измеряется напрямую, а выводится из активности дочерних продуктов через принимаемое соотношение; ошибка в этом соотношении переносится в результат целиком.</p>
+  <p>Показано, что ряды устроены существенно по-разному. В ряду тория-232 единственным звеном, способным нарушить равновесие на масштабе лет, является пара радий-228 и торий-228, а её разделение требует химического передела сырья; поэтому для конструкций из природного материала отношения активностей принимаются равными единице. Исключение составляет таллий-208, доля которого определяется коэффициентом ветвления висмута-212 и составляет 0,3594 при полном равновесии. В ряду урана-238 действуют три независимых механизма нарушения: геохимическое разделение урана и радия, эманирование радона-222 и возгонка свинца-210 при термическом переделе.</p>
+  <p>Приведены измеренные коэффициенты эманирования для основных строительных материалов и выполнена оценка доли радона, покидающей бетонную конструкцию, по стационарному решению уравнения диффузии с распадом. Сформулированы правила, по которым внутрицепочечные соотношения задаются, а не определяются подгонкой.</p>
+  <p class="kw"><b>Ключевые слова:</b> радиоактивное равновесие, ряд урана-238, ряд тория-232, коэффициент эманирования, радон-222, торон, свинец-210, строительные материалы, эффективная удельная активность, гамма-спектрометрия.</p>
+</section>
+
+<section class="sec">
+  <span class="num-tag">1 · Постановка</span>
+  <h2>Почему это вообще важно</h2>
+  <p class="sec-lead">Родители обоих рядов собственного гамма-излучения практически не дают.</p>
+
+  <p>У тория-232 полезных гамма-переходов нет вовсе. Радий-226 даёт единственную слабую линию 186,2 кэВ, наложенную на линию 185,7 кэВ урана-235. Ряды при этом светят ярко, но светят их дочерние продукты.</p>
+
+  <p>Следовательно, активность родителя всегда получается косвенно, а результат зависит от принятого соотношения активностей внутри цепочки. Если оставить это соотношение свободным параметром подгонки, оно вберёт в себя все систематические погрешности модели и превратится в число без физического смысла.</p>
+
+  <div class="kpis">
+    <div class="kpi"><span class="v">97 %</span><span class="l">вклад свинца-214 и висмута-214 в гамма-излучение ряда урана</span></div>
+    <div class="kpi"><span class="v">0,0039</span><span class="l">во столько раз слабее светит радий-226, лишённый дочерних, по сравнению с равновесным рядом</span></div>
+    <div class="kpi"><span class="v">1</span><span class="l">точка разрыва в ряду тория</span></div>
+    <div class="kpi"><span class="v">3</span><span class="l">точки разрыва в ряду урана</span></div>
+  </div>
+</section>
+
+<section class="sec">
+  <span class="num-tag">2 · Строение рядов</span>
+  <h2>Где рвётся каждый ряд</h2>
+  <p class="sec-lead">Разрыв возможен лишь там, где на пути стоит долгоживущий нуклид: короткоживущий восстанавливает равновесие быстрее, чем успевает возникнуть дефицит.</p>
+
+  <div class="fig">
+    <svg viewBox="0 0 1000 470" role="img" aria-label="Схема двух рядов с отмеченными точками нарушения равновесия">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+        </marker>
+      </defs>
+
+      <!-- РЯД ТОРИЯ -->
+      <text x="20" y="26" font-family="var(--mono)" font-size="14" font-weight="700" fill="var(--th)">РЯД ТОРИЯ-232 — одна точка разрыва</text>
+      <g font-size="13" font-family="var(--mono)" fill="var(--ink)" text-anchor="middle">
+        <g stroke="var(--th)" stroke-width="3" fill="none" color="var(--th)">
+          <line x1="92" y1="66" x2="150" y2="66" marker-end="url(#ar)"/>
+          <line x1="230" y1="66" x2="288" y2="66" marker-end="url(#ar)"/>
+          <line x1="368" y1="66" x2="426" y2="66" marker-end="url(#ar)"/>
+          <line x1="506" y1="66" x2="564" y2="66" marker-end="url(#ar)"/>
+          <line x1="644" y1="66" x2="702" y2="66" marker-end="url(#ar)"/>
+          <line x1="782" y1="66" x2="840" y2="66" marker-end="url(#ar)"/>
+        </g>
+        <g>
+          <rect x="20" y="48" width="72" height="36" fill="none" stroke="var(--rule)" stroke-width="2.5"/>
+          <text x="56" y="65">Th-232</text><text x="56" y="78" font-size="10.5" fill="var(--dim)">1,4·10¹⁰ л</text>
+          <rect x="152" y="48" width="78" height="36" fill="none" stroke="var(--break)" stroke-width="3.5"/>
+          <text x="191" y="65">Ra-228</text><text x="191" y="78" font-size="10.5" fill="var(--dim)">5,75 года</text>
+          <rect x="290" y="48" width="78" height="36" fill="none" stroke="var(--rule)" stroke-width="2.5"/>
+          <text x="329" y="65">Ac-228</text><text x="329" y="78" font-size="10.5" fill="var(--dim)">6,15 ч</text>
+          <rect x="428" y="48" width="78" height="36" fill="none" stroke="var(--break)" stroke-width="3.5"/>
+          <text x="467" y="65">Th-228</text><text x="467" y="78" font-size="10.5" fill="var(--dim)">1,91 года</text>
+          <rect x="566" y="48" width="78" height="36" fill="none" stroke="var(--rule)" stroke-width="2.5"/>
+          <text x="605" y="65">Rn-220</text><text x="605" y="78" font-size="10.5" fill="var(--dim)">55,6 с</text>
+          <rect x="704" y="48" width="78" height="36" fill="none" stroke="var(--rule)" stroke-width="2.5"/>
+          <text x="743" y="65">Pb-212</text><text x="743" y="78" font-size="10.5" fill="var(--dim)">10,6 ч</text>
+          <rect x="842" y="48" width="78" height="36" fill="none" stroke="var(--rule)" stroke-width="2.5"/>
+          <text x="881" y="65">Bi-212</text><text x="881" y="78" font-size="10.5" fill="var(--dim)">60,6 мин</text>
+        </g>
+        <!-- ветвление -->
+        <g stroke="var(--rule)" stroke-width="2.5" fill="none" color="var(--rule)">
+          <path d="M881 84 L881 108 L800 108 L800 128" marker-end="url(#ar)"/>
+          <path d="M881 84 L881 108 L962 108 L962 128" marker-end="url(#ar)"/>
+        </g>
+        <rect x="752" y="130" width="96" height="34" fill="none" stroke="var(--rule)" stroke-width="2.5"/>
+        <text x="800" y="151" font-weight="700">Tl-208</text>
+        <text x="800" y="180" font-size="12" fill="var(--break)" font-weight="700">35,94 %</text>
+        <rect x="914" y="130" width="96" height="34" fill="none" stroke="var(--rule-soft)" stroke-width="2.5"/>
+        <text x="962" y="151" fill="var(--dim)">Po-212</text>
+        <text x="962" y="180" font-size="12" fill="var(--dim)">64,06 %</text>
+        <text x="600" y="151" font-size="12.5" text-anchor="start" fill="var(--dim)" font-family="var(--sans)">ветвление Bi-212 —</text>
+        <text x="600" y="168" font-size="12.5" text-anchor="start" fill="var(--dim)" font-family="var(--sans)">не сдвиг равновесия</text>
+      </g>
+      <text x="191" y="30" font-size="11.5" font-family="var(--sans)" fill="var(--break)" text-anchor="middle" font-weight="700">разделение Ra / Th</text>
+      <line x1="191" y1="36" x2="467" y2="36" stroke="var(--break)" stroke-width="2" stroke-dasharray="5 4"/>
+
+      <!-- РЯД УРАНА -->
+      <text x="20" y="238" font-family="var(--mono)" font-size="14" font-weight="700" fill="var(--u)">РЯД УРАНА-238 — три точки разрыва</text>
+      <g font-size="13" font-family="var(--mono)" fill="var(--ink)" text-anchor="middle">
+        <g stroke="var(--u)" stroke-width="3" fill="none" color="var(--u)">
+          <line x1="92" y1="288" x2="150" y2="288" marker-end="url(#ar)"/>
+          <line x1="230" y1="288" x2="288" y2="288" marker-end="url(#ar)"/>
+          <line x1="368" y1="288" x2="426" y2="288" marker-end="url(#ar)"/>
+          <line x1="506" y1="288" x2="564" y2="288" marker-end="url(#ar)"/>
+          <line x1="644" y1="288" x2="702" y2="288" marker-end="url(#ar)"/>
+          <line x1="782" y1="288" x2="840" y2="288" marker-end="url(#ar)"/>
+        </g>
+        <g>
+          <rect x="20" y="270" width="72" height="36" fill="none" stroke="var(--rule)" stroke-width="2.5"/>
+          <text x="56" y="287">U-238</text><text x="56" y="300" font-size="10.5" fill="var(--dim)">4,47·10⁹ л</text>
+          <rect x="152" y="270" width="78" height="36" fill="none" stroke="var(--rule)" stroke-width="2.5"/>
+          <text x="191" y="287">U-234</text><text x="191" y="300" font-size="10.5" fill="var(--dim)">2,5·10⁵ л</text>
+          <rect x="290" y="270" width="78" height="36" fill="none" stroke="var(--rule)" stroke-width="2.5"/>
+          <text x="329" y="287">Th-230</text><text x="329" y="300" font-size="10.5" fill="var(--dim)">7,6·10⁴ л</text>
+          <rect x="428" y="270" width="78" height="36" fill="none" stroke="var(--break)" stroke-width="3.5"/>
+          <text x="467" y="287">Ra-226</text><text x="467" y="300" font-size="10.5" fill="var(--dim)">1600 лет</text>
+          <rect x="566" y="270" width="78" height="36" fill="none" stroke="var(--break)" stroke-width="3.5"/>
+          <text x="605" y="287">Rn-222</text><text x="605" y="300" font-size="10.5" fill="var(--dim)">3,82 сут</text>
+          <rect x="704" y="270" width="78" height="36" fill="none" stroke="var(--rule)" stroke-width="2.5"/>
+          <text x="743" y="287">Pb-214</text><text x="743" y="300" font-size="10.5" fill="var(--dim)">27,1 мин</text>
+          <rect x="842" y="270" width="78" height="36" fill="none" stroke="var(--rule)" stroke-width="2.5"/>
+          <text x="881" y="287">Bi-214</text><text x="881" y="300" font-size="10.5" fill="var(--dim)">19,7 мин</text>
+        </g>
+        <g stroke="var(--u)" stroke-width="3" fill="none" color="var(--u)">
+          <path d="M881 306 L881 336 L560 336 L560 356" marker-end="url(#ar)"/>
+        </g>
+        <rect x="500" y="358" width="120" height="36" fill="none" stroke="var(--break)" stroke-width="3.5"/>
+        <text x="560" y="375">Pb-210</text><text x="560" y="388" font-size="10.5" fill="var(--dim)">22,2 года</text>
+      </g>
+      <g font-size="11.5" font-family="var(--sans)" fill="var(--break)" font-weight="700" text-anchor="middle">
+        <text x="260" y="252">① выщелачивание урана</text>
+        <line x1="56" y1="258" x2="467" y2="258" stroke="var(--break)" stroke-width="2" stroke-dasharray="5 4"/>
+        <text x="536" y="336" text-anchor="start">② эманирование радона</text>
+        <text x="640" y="379" text-anchor="start">③ возгонка свинца при T &gt; 300 °C</text>
+      </g>
+      <text x="20" y="440" font-size="12.5" font-family="var(--sans)" fill="var(--dim)">Красной рамкой отмечены нуклиды, на которых цепочка способна разорваться на масштабе лет.</text>
+      <text x="20" y="458" font-size="12.5" font-family="var(--sans)" fill="var(--dim)">Периоды полураспада — IAEA Nuclear Data Services, запрос 28.08.2026.</text>
+    </svg>
+    <p class="cap">Рис. 1. Строение рядов и положение точек, где равновесие способно нарушиться надолго. Промежуточные звенья с периодами менее суток опущены.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <span class="num-tag">3 · Ряд тория</span>
+  <h2>Равновесен почти всегда</h2>
+  <p class="sec-lead">Единственное узкое место — пара радий-228 и торий-228; всё остальное садится на родителя за часы.</p>
+
+  <div class="two">
+    <div>
+      <p>Комментарии к нормам радиационной безопасности формулируют это прямо: природный торий чаще бывает в равновесии со своими продуктами распада, а нарушение возможно лишь при химической переработке и высокотемпературном переделе сырья.</p>
+      <p>Радий и торий — разные элементы и разделяются обычной химией: при сернокислотном вскрытии торий остаётся в растворе, радий выпадает в осадок. После такого разделения активность тория-228 падает до 42 % от равновесной примерно за 4,5 года и возвращается к равновесию лишь за два десятилетия.</p>
+      <p>В готовой конструкции этого не происходит, поэтому для стены из природного материала все отношения принимаются равными единице.</p>
+    </div>
+    <div>
+      <table>
+        <caption>Отношение активности к активности тория-232 при вековом равновесии</caption>
+        <thead><tr><th>Нуклид</th><th class="n">Отношение</th></tr></thead>
+        <tbody>
+          <tr><td>Ra-228, Ac-228, Th-228</td><td class="n">1,00</td></tr>
+          <tr><td>Ra-224, Rn-220, Pb-212, Bi-212</td><td class="n">1,00</td></tr>
+          <tr><td><b>Tl-208</b></td><td class="n"><b>0,3594</b></td></tr>
+        </tbody>
+      </table>
+      <table>
+        <caption>Измеренные отношения активности тория-228 к радию-228</caption>
+        <thead><tr><th>Объект</th><th class="n">Отношение</th></tr></thead>
+        <tbody>
+          <tr><td>Почвы, 390 образцов</td><td class="n">1,015 ± 0,038</td></tr>
+          <tr><td>Гранитоиды</td><td class="n">1,00 в пределах 1σ</td></tr>
+          <tr><td>Фосфогипс, мелкая фракция</td><td class="n">0,08 … 0,28</td></tr>
+          <tr><td>Фосфогипс, грубая фракция</td><td class="n">до 0,89</td></tr>
+        </tbody>
+      </table>
+      <p class="cap">Систематических измерений по бетону и кирпичу в литературе нет: работы по строительным материалам публикуют одно число «торий-232» и вопроса о равновесии внутри ряда не ставят. Равенство единице опирается на данные по почвам и породам.</p>
+      <div class="warn">
+        <h3>Частая ошибка чтения</h3>
+        <p>Висмут-212 распадается двумя путями: 64,06 % в полоний-212 и 35,94 % в таллий-208. Поэтому отношение Tl-208 / Pb-212, равное 0,36, означает <b>идеальное равновесие</b>, а не дефицит таллия на две трети.</p>
+        <p>Величина задаётся ядерными данными и подгонке не подлежит. Оценки разных ядерных библиотек расходятся в третьем знаке — от 35,93 до 36,00 %, — что укладывается в заявленные неопределённости.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <span class="num-tag">4 · Ряд урана</span>
+  <h2>Не равновесен практически никогда</h2>
+  <p class="sec-lead">Три механизма нарушения, причём два из них работают без всякого химического передела.</p>
+
+  <div class="scroll">
+    <table>
+      <caption>Механизмы нарушения равновесия и наблюдаемые отношения активностей</caption>
+      <thead>
+        <tr><th>Разрыв</th><th>Механизм</th><th>Материал</th><th class="n">Отношение</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>U-238 / Ra-226</td><td>уран подвижен в окисленной форме и выщелачивается</td><td>фосфатная порода</td><td class="n">1,06</td></tr>
+        <tr><td></td><td></td><td>фосфогипс</td><td class="n">2,4 … 14,5</td></tr>
+        <tr><td></td><td></td><td>отходы нефтегазовой отрасли</td><td class="n">&gt; 1000</td></tr>
+        <tr><td>Ra-226 / Rn-222</td><td>эманирование радона из открытых пор</td><td>бетон, кирпич, гипс</td><td class="n">см. раздел 5</td></tr>
+        <tr><td>Ra-226 / Pb-210</td><td>возгонка при T &gt; 300 °C, полная при T &gt; 700 °C</td><td>зола-унос ТЭС</td><td class="n">1,28</td></tr>
+        <tr><td></td><td></td><td>шлак той же ТЭС</td><td class="n">0,42</td></tr>
+        <tr><td></td><td></td><td>лигнит (исходное топливо)</td><td class="n">1,04</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <p><b>Зола и шлак — зеркальная пара.</b> Свинец-210 наиболее летуч среди природных нуклидов золы: он покидает топку в газовой форме и конденсируется при остывании преимущественно на мелких частицах, у которых выше отношение поверхности к объёму. Поэтому зола-унос им обогащена, а шлак обеднён. Пара уран — радий при этом остаётся практически равновесной в обоих потоках.</p>
+  </div>
+
+  <div class="warn">
+    <h3>Гамма-спектрометрия ряда урана измеряет радон, а не радий</h3>
+    <ul>
+      <li>Свинец-214 и висмут-214 дают около 97 % гамма-излучения ряда, а собственная линия радия-226 слаба и перекрыта ураном-235.</li>
+      <li>Дочерние садятся на радон за три часа, поэтому они всегда в равновесии с радоном и никогда автоматически — с радием.</li>
+      <li>При полном уходе радона ряд перестаёт светить: относительный вклад падает с 1,0000 до 0,0039.</li>
+      <li>Отсюда требование стандартов герметизировать пробу не менее чем на три недели до накопления радона.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="sec">
+  <span class="num-tag">5 · Эманирование</span>
+  <h2>Сколько радона уходит из материала</h2>
+  <p class="sec-lead">Три разные величины, которые постоянно смешивают: доля, вышедшая из зерна; доля, покинувшая изделие; и дефицит гамма-излучающих дочерних.</p>
+
+  <p>Радон, оставшийся в поре внутри материала, распадается там же и даёт те же кванты, что и не эманировавший. Поэтому спектрометр видит не коэффициент эманирования, а долю, реально покинувшую толщу. Она определяется отношением толщины к длине диффузии.</p>
+
+  <div class="two">
+    <div>
+      <table>
+        <caption>Измеренные коэффициенты эманирования радона-222</caption>
+        <thead><tr><th>Материал</th><th class="n">ε</th></tr></thead>
+        <tbody>
+          <tr><td>Бетон, европейская база</td><td class="n">0,24</td></tr>
+          <tr><td>Бетон, лабораторные измерения</td><td class="n">0,09 … 0,14</td></tr>
+          <tr><td>Бетон тяжёлый, плотный</td><td class="n">0,02 … 0,04</td></tr>
+          <tr><td>Газобетон ячеистый</td><td class="n">0,10 … 0,27</td></tr>
+          <tr><td>Кирпич</td><td class="n">0,025 … 0,12</td></tr>
+          <tr><td>Керамическая плитка</td><td class="n">0,006</td></tr>
+          <tr><td>Гипс природный</td><td class="n">0,13 … 0,3</td></tr>
+          <tr><td>Фосфогипс</td><td class="n">0,35</td></tr>
+          <tr><td>Зола-унос</td><td class="n">0,01 … 0,03</td></tr>
+          <tr><td>Гранит, сухой</td><td class="n">0,04 … 0,27</td></tr>
+        </tbody>
+      </table>
+      <p class="cap">Значения из разных сводок расходятся: для кирпича медиана одной работы 0,025 против среднего 0,12 европейской базы. Единого числа нет.</p>
+    </div>
+    <div>
+      <table>
+        <caption>Доля радона, покидающая бетонную стену. Расчёт по стационарной диффузии с распадом</caption>
+        <thead><tr><th>Толщина</th><th class="n">верхняя оценка</th><th class="n">нижняя оценка</th></tr></thead>
+        <tbody>
+          <tr><td>100 мм</td><td class="n">0,98</td><td class="n">0,81</td></tr>
+          <tr><td>200 мм</td><td class="n">0,89</td><td class="n">0,54</td></tr>
+          <tr><td>300 мм</td><td class="n">0,67</td><td class="n">0,38</td></tr>
+          <tr><td>500 мм</td><td class="n">0,36</td><td class="n">0,23</td></tr>
+        </tbody>
+      </table>
+      <p class="cap">Доля вышедшего φ = (2L/d)·th(d/2L), где L — длина диффузии, d — толщина. Две ветви отвечают коэффициентам диффузии конструкции и однородного образца; расхождение имеющимися данными не разрешается.</p>
+    </div>
+  </div>
+
+  <div class="note">
+    <p><b>Ключевые зависимости.</b> Эманирует лишь радий из приповерхностного слоя зерна толщиной порядка пробега отдачи — в кварце это 34 нм. Отсюда обратная зависимость от размера зерна и рост эманирования у выветрелого материала на порядок. Зависимость от влажности немонотонна: рост до насыщения около 10 % по массе, у фосфогипса максимум при 3–8 % с последующим спадом. Обжиг снижает эманирование линейно в интервале 750–1500 °C, чем и объясняется, почему у обожжённого кирпича оно на порядок ниже, чем у исходной глины.</p>
+  </div>
+
+  <h3>Торон — отдельный случай</h3>
+  <p>Период полураспада торона составляет 55,6 с, поэтому выйти успевает лишь тончайший приповерхностный слой. Измеренные коэффициенты эманирования соответственно малы: бетон 1,2 ± 0,6 %, цемент 1,6 ± 0,6 %, керамика 0,3 ± 0,4 %, гранит 1,1 ± 1,4 %.</p>
+  <p>Парадокс в том, что поверхностная эксхаляция торона у гранитов на три порядка превышает радоновую. Торон выходит интенсивно, но из настолько тонкого слоя, что объёмного дефицита дочерних продуктов не создаёт. Отсюда практическое следствие: при определении тория-228 по свинцу-212 герметизация пробы не требуется, тогда как для радия-226 та же методика предписывает выдержку не менее 23 суток.</p>
+</section>
+
+<section class="sec">
+  <span class="num-tag">6 · Применение</span>
+  <h2>Что задавать, а что подгонять</h2>
+  <p class="sec-lead">Правила для разложения спектра естественного фона по нуклидным шаблонам.</p>
+
+  <ul class="rules">
+    <li><b>Ториевый ряд задавать равновесным</b><span>Отношение активности тория-228 к радию-228 принимается равным единице для конструкций из природного сырья. Для материалов с техногенной добавкой — золой, шлаком, фосфогипсом — умолчание неприменимо.</span></li>
+    <li><b>Ветвление таллия-208 — константа</b><span>Отношение 0,3594 задано ядерными данными. Подгонять его означает подгонять коэффициент ветвления висмута-212.</span></li>
+    <li><b>Эманирование торона принимать нулевым</b><span>Из-за периода полураспада 55,6 с эманирует лишь тончайший приповерхностный слой. Для объёмных конструкций это рабочее приближение; для плёнок и порошков оно неверно.</span></li>
+    <li><b>Дефицит дочерних радона задавать из литературы</b><span>Для бетона толщиной 100–300 мм ориентир 0,06–0,15. Неопределённость определяется незнанием коэффициента эманирования конкретного материала и снимается только измерением.</span></li>
+    <li><b>Помнить, что на сцинтилляторе родители не наблюдаемы</b><span>Радий-226 закрыт наложением на уран-235, актиний-228 даёт плечо на комптоновском континууме. Свободная подгонка загоняет их в ноль — это свойство задачи, а не дефект решателя.</span></li>
+    <li><b>Дочерних радона не может быть больше радия</b><span>Контроль действует для сегмента «радий-226 — дочерние радона» без привноса извне. Для цепочки в целом отношение больше единицы возможно: свинец-210 в золе-уносе даёт 1,28 за счёт возгонки.</span></li>
+  </ul>
+</section>
+
+<section class="sec">
+  <span class="num-tag">7 · Границы</span>
+  <h2>Ограничения справки</h2>
+  <div class="warn">
+    <h3>Чего эти данные не дают</h3>
+    <ul>
+      <li>Приведённые коэффициенты эманирования — ориентир порядка величины. Международное руководство прямо требует измерять эту величину для каждого изучаемого материала: разброс между сводками достигает пяти раз для одного и того же класса.</li>
+      <li>Оценка доли ушедшего радона выполнена для плоского слоя с нулевой концентрацией на обеих поверхностях, то есть для внутренней перегородки. Наружная стена с отделкой отдаёт меньше.</li>
+      <li>Систематических измерений отношения торий-228 к радию-228 именно по строительным материалам в литературе нет: работы по бетону и кирпичу публикуют одно число «торий-232». Равенство единице опирается на механизм и на данные по почвам и породам, а не на прямую статистику по стройматериалам.</li>
+      <li>Количественная связь дефицита свинца-210 с эманированием именно в строительных материалах не измерена, механизм описан лишь качественно.</li>
+      <li>Нормативная оценка расходится по назначению материала: для строительных материалов класс определяется в расчёте на восстановление равновесия, то есть по максимуму, а для производственных отходов — по реальному содержанию с поправкой на эманирование.</li>
+    </ul>
+  </div>
+</section>
+
+<footer class="foot">
+  <p>Справка составлена 28.08.2026 в ходе работ по разложению спектра естественного фона на модели детектора. Смежная страница — <a href="../thorium-232-secular-equilibrium/">равновесие ряда тория-232 в объёмных контрольных источниках</a>, где рассматривается противоположный случай: намеренно нарушенное разделением равновесие в изделии с паспортом.</p>
+  <p>Ядерные данные — IAEA Nuclear Data Services, запрос 28.08.2026. Числовые оценки долей проверены независимым пересчётом; мутационная проверка расчётного стенда пройдена.</p>
+  <ol>
+    <li>Стамат И. П., Лисаченко Э. П. Эффективная удельная активность природных радионуклидов в средах с нарушенным радиоактивным равновесием в рядах урана и тория.</li>
+    <li>Комментарии к нормам радиационной безопасности (НРБ-99/2009).</li>
+    <li>СП 321.1325800.2017. Здания жилые и общественные. Правила проектирования противорадоновой защиты.</li>
+    <li>Коган Р. М. Основы гамма-спектрометрии природных сред. — 1991.</li>
+    <li>UNSCEAR 2000 Report, Vol. I, Annex B: Exposures from natural radiation sources.</li>
+    <li>IAEA. Measurement and Calculation of Radon Releases from NORM Residues. Technical Reports Series No. 474. — 2013.</li>
+    <li>IAEA. Radiation Protection and NORM Residue Management in the Phosphate Industry. Safety Reports Series No. 78. — 2013.</li>
+    <li>European Commission. Radiation Protection 112: Radiological protection principles concerning the natural radioactivity of building materials. — 1999.</li>
+    <li>Döse M. Reducing Radon Gas Emissions in Concrete. Doctoral Thesis, KTH. — 2022.</li>
+    <li>Di Carlo C., Maiorana A., Bochicchio F. Indoor Radon: Sources, Transport Mechanisms and Influencing Parameters. IntechOpen. — 2023.</li>
+    <li>Karangelos D. J. et al. Technologically enhanced natural radioactivity of fly-ash produced in lignite-fired power plants. NTUA, Athens.</li>
+    <li>Szajerski P. Distribution of uranium and thorium chains radionuclides in different fractions of phosphogypsum grains. — 2020.</li>
+    <li>Соколов П. Э., Сентенберг С. А. Оценка влияния тепловой обработки на коэффициент эманирования радона-222 строительных материалов. — 2018.</li>
+    <li>Schkade U.-K., Heckel A., Wershofen H. Gamma spectrometric determination of the activities of natural radionuclides. BfS / PTB, ред. июнь 2018.</li>
+    <li>Landis J. D. Data for modern soil chronometry using fallout radionuclides. Earth System Science Data. — 2025. — Vol. 17. — P. 4821–4833.</li>
+    <li>Frutos-Puerto S. et al. Radon and thoron exhalation rate, emanation factor and radioactivity risks of building materials of the Iberian Peninsula. PeerJ. — 2020. — Vol. 8. — e10331.</li>
+    <li>Hassan N. M. et al. Simultaneous Measurement of Radon and Thoron Released from Building Materials Used in Japan. Progress in Nuclear Science and Technology. — 2011. — Vol. 1. — P. 404–407.</li>
+  </ol>
+</footer>
+
+</div>
+</body>
+</html>
