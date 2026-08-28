@@ -267,25 +267,19 @@ code{font-family:var(--mono);font-size:.93em;background:var(--sunk);padding:1px 
     <svg id="corr" viewBox="0 0 880 700" role="img" aria-label="Матрица корреляций форм шаблонов"></svg>
     <p class="cap">Попарная корреляция форм шаблонов. Чем темнее клетка, тем сильнее два шаблона похожи друг на друга и тем хуже подгонка их различает.</p>
   </div>
-  <div class="two">
-    <div>
-      <div class="scroll">
+  <div class="scroll">
       <table id="freeTable">
-        <caption>Те же данные, свободные амплитуды. Критерий тот же — минимум χ²/n.d.f.</caption>
-        <thead><tr><th>Нуклид</th><th class="n">Активность</th><th class="n">Погрешность</th></tr></thead>
+        <caption>Обе подгонки рядом: «связанная» — соотношения внутри рядов заданы, «свободная» — девять амплитуд варьируются независимо. Критерий в обеих один, минимум χ²/n.d.f. Погрешность приведена для свободной.</caption>
+        <thead><tr><th>Нуклид</th><th class="n">Связанная</th><th class="n">Свободная</th><th class="n">Погрешность</th></tr></thead>
         <tbody></tbody>
-      </table>
-      </div>
-    </div>
-    <div>
-      <div class="warn" style="margin-top:0">
-        <h3>Признаки нефизичности решения</h3>
+  </table>
+  </div>
+  <div class="warn">
+    <h3>Признаки нефизичности решения</h3>
         <ul>
           <li><b>Активность дочернего нуклида не может превышать активность материнского</b> при непрерывном его образовании. В свободной подгонке активность Bi-212 превышает активность Pb-212 более чем в девять раз, тогда как оба нуклида принадлежат одному ряду и в равновесии их активности совпадают.</li>
           <li><b>Амплитуды Ra-226 и Ac-228 обращаются в нуль</b>: подгонка перераспределяет их вклад на соседние шаблоны, неразличимые по форме.</li>
-        </ul>
-      </div>
-    </div>
+    </ul>
   </div>
   <div class="note">
     <p><b>Причина вырожденности информационная, а не вычислительная.</b> На интервал 20–300 кэВ приходится около 91 % полного числа отсчётов, и в этой области континуум комптоновского рассеяния практически одинаков для всех членов рядов: попарные корреляции форм достигают <span id="corrMax"></span>, число обусловленности матрицы <span id="condTxt"></span>. Десятикратное увеличение статистики шаблонов погрешности амплитуд не снизило, тогда как при шумовой природе ошибки они уменьшились бы втрое. Отсюда следует, что предел разделения задаётся информационным содержанием спектра, а не объёмом вычислений.</p>
@@ -461,25 +455,6 @@ code{font-family:var(--mono);font-size:.93em;background:var(--sunk);padding:1px 
   <h3>Чего метод не даёт</h3>
   <p>Собственная радиоактивность материалов детектора в модель не входит и отдельным слагаемым не выделяется; её вклад неизбежно распределяется между прочими составляющими. Величина χ²/n.d.f. порядка 28 означает, что форма спектра воспроизводится не полностью, и приведённые погрешности отражают только статистику подгонки, но не систематику модели. Отношение активностей внутри рядов из измерения не восстанавливается — соответствующая проверка приведена в разделе о свободном равновесии.</p>
 
-  <h3>Источники</h3>
-  <ol class="refs">
-    <li>Agostinelli S. et al. Geant4 — a simulation toolkit. Nuclear Instruments and Methods in Physics Research A, 2003, vol. 506. Ссылка на инструментарий, использованный для розыгрыша.</li>
-    <li>Particle Data Group. Atomic and Nuclear Properties of Materials: cesium iodide (CsI). pdg.lbl.gov/2023/AtomicNuclearProperties/HTML/cesium_iodide_CsI.html</li>
-    <li>Groom D.E., Klein S.R. Passage of Particles Through Matter. Review of Particle Physics, гл. 34, редакция августа 2023.</li>
-    <li>Cecchini S., Spurio M. Atmospheric muons: experimental aspects. arXiv:1208.1171.</li>
-    <li>Alvarez-Muñiz J. et al. Cosmic Rays. Review of Particle Physics, гл. 30, редакция марта 2024.</li>
-    <li>Groom D.E., Mokhov N.V., Striganov S. Muon stopping power and range tables 10 MeV–100 TeV. Atomic Data and Nuclear Data Tables.</li>
-    <li>IAEA Nuclear Data Services, база nds.iaea.org: периоды полураспада и коэффициенты ветвления членов рядов урана-238 и тория-232.</li>
-    <li>UNSCEAR. Sources and Effects of Ionizing Radiation. Report 2000, vol. I, Annex B: Exposures from natural radiation sources.</li>
-    <li>IAEA. Measurement and Calculation of Radon Releases from NORM Residues. Technical Reports Series No. 474. Vienna, 2013.</li>
-    <li>European Commission. Radiation Protection 112: Radiological protection principles concerning the natural radioactivity of building materials. Luxembourg, 1999.</li>
-    <li>Стамат И.П., Лисаченко Э.П. Эффективная удельная активность природных радионуклидов в средах с нарушенным радиоактивным равновесием в рядах урана и тория. НИИ радиационной гигиены имени П.В. Рамзаева.</li>
-    <li>Коган Р.М., Назаров И.М., Фридман Ш.Д. Основы гамма-спектрометрии природных сред. 1991. Разделы 2.7 и 6.3.</li>
-    <li>Bossew P. The radon emanation power of building materials, soils and rocks. Applied Radiation and Isotopes, 2003, vol. 59, pp. 389–392.</li>
-    <li>Sakoda A., Ishimori Y., Yamaoka K. A comprehensive review of radon emanation measurements for mineral, rock, soil, mill tailing and fly ash. Applied Radiation and Isotopes, 2011, vol. 69, pp. 1422–1435.</li>
-    <li>Breitenmoser D. Towards Monte Carlo based Full Spectrum Modeling of Airborne Gamma-Ray Spectrometry Systems. 2024. Приводится как пример полного спектрального моделирования; условия аэрогамма-съёмки от рассматриваемых отличаются.</li>
-    <li>Обзор опубликованных данных о сдвиге равновесия в рядах радия и тория в строительных материалах, подготовленный в рамках настоящей работы: репозиторий <code>Verter73/geant4-detector-models</code>, файл <code>skills/geant4-spectrum-pipeline/references/natural-series-equilibrium.md</code>.</li>
-  </ol>
 </section>
 
 <section class="sec">
@@ -522,6 +497,28 @@ code{font-family:var(--mono);font-size:.93em;background:var(--sunk);padding:1px 
       </div>
     </div>
   </div>
+</section>
+
+<section class="sec">
+  <h3>Источники</h3>
+  <ol class="refs">
+    <li>Agostinelli S. et al. Geant4 — a simulation toolkit. Nuclear Instruments and Methods in Physics Research A, 2003, vol. 506. Ссылка на инструментарий, использованный для розыгрыша.</li>
+    <li>Particle Data Group. Atomic and Nuclear Properties of Materials: cesium iodide (CsI). pdg.lbl.gov/2023/AtomicNuclearProperties/HTML/cesium_iodide_CsI.html</li>
+    <li>Groom D.E., Klein S.R. Passage of Particles Through Matter. Review of Particle Physics, гл. 34, редакция августа 2023.</li>
+    <li>Cecchini S., Spurio M. Atmospheric muons: experimental aspects. arXiv:1208.1171.</li>
+    <li>Alvarez-Muñiz J. et al. Cosmic Rays. Review of Particle Physics, гл. 30, редакция марта 2024.</li>
+    <li>Groom D.E., Mokhov N.V., Striganov S. Muon stopping power and range tables 10 MeV–100 TeV. Atomic Data and Nuclear Data Tables.</li>
+    <li>IAEA Nuclear Data Services, база nds.iaea.org: периоды полураспада и коэффициенты ветвления членов рядов урана-238 и тория-232.</li>
+    <li>UNSCEAR. Sources and Effects of Ionizing Radiation. Report 2000, vol. I, Annex B: Exposures from natural radiation sources.</li>
+    <li>IAEA. Measurement and Calculation of Radon Releases from NORM Residues. Technical Reports Series No. 474. Vienna, 2013.</li>
+    <li>European Commission. Radiation Protection 112: Radiological protection principles concerning the natural radioactivity of building materials. Luxembourg, 1999.</li>
+    <li>Стамат И.П., Лисаченко Э.П. Эффективная удельная активность природных радионуклидов в средах с нарушенным радиоактивным равновесием в рядах урана и тория. НИИ радиационной гигиены имени П.В. Рамзаева.</li>
+    <li>Коган Р.М., Назаров И.М., Фридман Ш.Д. Основы гамма-спектрометрии природных сред. 1991. Разделы 2.7 и 6.3.</li>
+    <li>Bossew P. The radon emanation power of building materials, soils and rocks. Applied Radiation and Isotopes, 2003, vol. 59, pp. 389–392.</li>
+    <li>Sakoda A., Ishimori Y., Yamaoka K. A comprehensive review of radon emanation measurements for mineral, rock, soil, mill tailing and fly ash. Applied Radiation and Isotopes, 2011, vol. 69, pp. 1422–1435.</li>
+    <li>Breitenmoser D. Towards Monte Carlo based Full Spectrum Modeling of Airborne Gamma-Ray Spectrometry Systems. 2024. Приводится как пример полного спектрального моделирования; условия аэрогамма-съёмки от рассматриваемых отличаются.</li>
+    <li>Обзор опубликованных данных о сдвиге равновесия в рядах радия и тория в строительных материалах, подготовленный в рамках настоящей работы: репозиторий <code>Verter73/geant4-detector-models</code>, файл <code>skills/geant4-spectrum-pipeline/references/natural-series-equilibrium.md</code>.</li>
+  </ol>
 </section>
 
 </div><!-- /tab-bg -->
@@ -960,7 +957,11 @@ document.getElementById("kpis").innerHTML = kpis.map(function(k){
     if(a===0) note=' <span style="color:var(--faint)">— обнулена</span>';
     else if(s!==null && s>a) note=' <span style="color:var(--faint)">— не определена</span>';
     var tr=document.createElement("tr");
+    // Рядом со свободной амплитудой — значение связанной подгонки: без него
+    // не с чем сравнить и не видно, насколько решение разъезжается.
+    var ch=D.chain.act[n];
     tr.innerHTML='<td><span class="swatch" style="background:'+col(n)+'"></span>'+D.ru[n]+note+'</td>'+
+      '<td class="n">'+(ch==null?"—":fmt(ch, ch<50?2:1)+unit)+'</td>'+
       '<td class="n">'+fmt(a, a<50?2:1)+unit+'</td>'+
       '<td class="n">'+(s===null?"—":"± "+fmt(s,2))+'</td>';
     tb.appendChild(tr);
