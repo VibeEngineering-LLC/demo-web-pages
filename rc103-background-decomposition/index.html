@@ -739,6 +739,12 @@ document.getElementById("kpis").innerHTML = kpis.map(function(k){
     D.parts[a].forEach(function(v){sa+=v;});
     D.parts[b].forEach(function(v){sb+=v;});
     return sb-sa; });
+  // Мюоны — на задний план. По суммарному вкладу они малы и при общей
+  // сортировке попадали в конец очереди, то есть рисовались поверх всех:
+  // их сплошная подложка накрывала низ каждого нуклидного звена. Здесь они
+  // ложатся первыми, а нуклиды — поверх.
+  var iMu = order.indexOf("mu");
+  if(iMu > 0) order.unshift(order.splice(iMu,1)[0]);
 
   var on = {};                       // включённые нуклиды
   CURVES.forEach(function(n){ on[n] = true; });
