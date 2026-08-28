@@ -205,7 +205,7 @@ code{font-family:var(--mono);font-size:.93em;background:var(--sunk);padding:1px 
 <section class="sec">
   <span class="num-tag">02 · результат</span>
   <h2>Разложение измеренного спектра</h2>
-  <p class="sec-lead">Чёрной линией показан измеренный спектр, красной — сумма модели, заливками — вклады отдельных нуклидов. Ординаты по умолчанию линейные и отсчитываются от нуля: так видно действительное соотношение вкладов, три четверти которого приходятся на мягкую часть. Кнопка «шкала» переключает на логарифмический масштаб — он нужен, чтобы рассмотреть жёсткую часть спектра, где скорость счёта на три порядка ниже и на линейной шкале неразличима. <b>Нуклиды в легенде отключаются</b>; сумма модели пересчитывается по оставшимся, что позволяет оценить вклад каждого звена в отдельности.</p>
+  <p class="sec-lead">Чёрной линией показан измеренный спектр, красной — сумма модели, заливками — вклады отдельных нуклидов. Ординат логарифмический: в жёсткой части спектра скорость счёта на три порядка ниже, чем в мягкой, и при линейной шкале неразличима. <b>Нуклиды в легенде отключаются</b>; сумма модели пересчитывается по оставшимся, что позволяет оценить вклад каждого звена в отдельности.</p>
   <div class="fig">
     <svg id="spec" viewBox="0 0 1120 560" role="img" aria-label="Измеренный спектр фона и его разложение по нуклидам"></svg>
     <div class="legend" id="specLegend"></div>
@@ -548,9 +548,7 @@ document.getElementById("kpis").innerHTML = kpis.map(function(k){
   var x=D.energy, meas=D.measured, mod=D.model;
   var lo=1e-5, hi=0;
   meas.forEach(function(v){ if(v>hi) hi=v; });
-  // Линейный масштаб от нуля — по умолчанию (указание оператора 28.08.2026):
-  // на логарифмической шкале низ обрезан по 1e-5 и вклады у нуля не видны.
-  var logY=false;                    // масштаб ординат, переключается кнопкой
+  var logY=true;                     // масштаб ординат, переключается кнопкой
   var grid=css.getPropertyValue("--grid").trim();
   var faint=css.getPropertyValue("--faint").trim();
   var dim=css.getPropertyValue("--dim").trim();
@@ -690,7 +688,7 @@ document.getElementById("kpis").innerHTML = kpis.map(function(k){
     box.appendChild(b);
   });
   var bScale=document.createElement("button");
-  bScale.type="button"; bScale.textContent="шкала: лин";
+  bScale.type="button"; bScale.textContent="шкала: лог";
   bScale.title="Логарифмический масштаб ординат показывает жёсткую часть спектра, линейный — соотношение вкладов в мягкой";
   bScale.addEventListener("click", function(){
     logY=!logY;
