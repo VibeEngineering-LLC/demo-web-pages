@@ -263,13 +263,11 @@ code{font-family:var(--mono);font-size:.93em;background:var(--sunk);padding:1px 
   <span class="num-tag">04 · ограничение метода</span>
   <h2>Вырожденность базиса шаблонов</h2>
   <p class="sec-lead">При снятии соотношений равновесия и независимом варьировании девяти амплитуд формальное качество подгонки незначительно улучшается, однако решение теряет физический смысл.</p>
+  <div class="fig" style="margin-top:0">
+    <svg id="corr" viewBox="0 0 880 700" role="img" aria-label="Матрица корреляций форм шаблонов"></svg>
+    <p class="cap">Попарная корреляция форм шаблонов. Чем темнее клетка, тем сильнее два шаблона похожи друг на друга и тем хуже подгонка их различает.</p>
+  </div>
   <div class="two">
-    <div>
-      <div class="fig" style="margin-top:0">
-        <svg id="corr" viewBox="0 0 520 460" role="img" aria-label="Матрица корреляций форм шаблонов"></svg>
-        <p class="cap">Попарная корреляция форм шаблонов. Чем темнее клетка, тем сильнее два шаблона похожи друг на друга и тем хуже подгонка их различает.</p>
-      </div>
-    </div>
     <div>
       <div class="scroll">
       <table id="freeTable">
@@ -278,7 +276,9 @@ code{font-family:var(--mono);font-size:.93em;background:var(--sunk);padding:1px 
         <tbody></tbody>
       </table>
       </div>
-      <div class="warn">
+    </div>
+    <div>
+      <div class="warn" style="margin-top:0">
         <h3>Признаки нефизичности решения</h3>
         <ul>
           <li><b>Активность дочернего нуклида не может превышать активность материнского</b> при непрерывном его образовании. В свободной подгонке активность Bi-212 превышает активность Pb-212 более чем в девять раз, тогда как оба нуклида принадлежат одному ряду и в равновесии их активности совпадают.</li>
@@ -922,7 +922,9 @@ document.getElementById("kpis").innerHTML = kpis.map(function(k){
 
 /* ---------- матрица корреляций ---------- */
 (function(){
-  var W=520,H=460,L=92,T=76,R=14,B=14, svg=document.getElementById("corr");
+  // Матрица занимает всю ширину листа: в половинной колонке клетки выходили
+  // около 34 px, и числа в них не читались.
+  var W=880,H=700,L=132,T=118,R=18,B=18, svg=document.getElementById("corr");
   var names=D.corr_names, C=D.corr, n=names.length;
   var cw=(W-L-R)/n, chh=(H-T-B)/n, mx=0;
   var dark = css.getPropertyValue("--ink").trim();
@@ -932,16 +934,16 @@ document.getElementById("kpis").innerHTML = kpis.map(function(k){
     el("rect",{x:L+j*cw,y:T+i*chh,width:cw-1,height:chh-1,fill:dark,
       "fill-opacity":(0.06+0.88*t).toFixed(3)},svg);
     if(cw>34){
-      el("text",{x:L+j*cw+cw/2,y:T+i*chh+chh/2+3.5,"text-anchor":"middle","font-size":9,
+      el("text",{x:L+j*cw+cw/2,y:T+i*chh+chh/2+5,"text-anchor":"middle","font-size":15,
         "font-family":"var(--mono)",fill:t>0.55?css.getPropertyValue("--paper").trim():dark},svg)
         .textContent=v.toFixed(2).replace("0.",",");
     }
   }
   names.forEach(function(nm,i){
-    el("text",{x:L-7,y:T+i*chh+chh/2+3.5,"text-anchor":"end","font-size":10.5,
+    el("text",{x:L-10,y:T+i*chh+chh/2+5,"text-anchor":"end","font-size":15,
       fill:css.getPropertyValue("--dim").trim()},svg).textContent=nm;
-    el("text",{x:L+i*cw+cw/2,y:T-8,"text-anchor":"start","font-size":10.5,
-      transform:"rotate(-60 "+(L+i*cw+cw/2)+" "+(T-8)+")",
+    el("text",{x:L+i*cw+cw/2,y:T-10,"text-anchor":"start","font-size":15,
+      transform:"rotate(-60 "+(L+i*cw+cw/2)+" "+(T-10)+")",
       fill:css.getPropertyValue("--dim").trim()},svg).textContent=nm;
   });
   el("rect",{x:L,y:T,width:W-L-R,height:H-T-B,fill:"none",
