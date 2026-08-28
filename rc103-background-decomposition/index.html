@@ -223,7 +223,7 @@ code{font-family:var(--mono);font-size:.93em;background:var(--sunk);padding:1px 
 <section class="sec">
   <span class="num-tag">02 · результат</span>
   <h2>Разложение измеренного спектра</h2>
-  <p class="sec-lead">Чёрной линией показан измеренный спектр, красной — сумма модели, заливками — вклады отдельных нуклидов. Ординат логарифмический: в жёсткой части спектра скорость счёта на три порядка ниже, чем в мягкой, и при линейной шкале неразличима. <b>Нуклиды в легенде отключаются</b>; сумма модели пересчитывается по оставшимся, что позволяет оценить вклад каждого звена в отдельности.</p>
+  <p class="sec-lead">Чёрной линией показан измеренный спектр, красной — сумма модели, заливками — вклады отдельных нуклидов. Ординат логарифмический: в жёсткой части спектра скорость счёта на три порядка ниже, чем в мягкой, и при линейной шкале неразличима. У самого низа масштаб переходит в линейный и доводится до нуля — иначе нижняя граница оставалась бы условной, и слабые звенья упирались бы в неё вместо того, чтобы обращаться в нуль. <b>Нуклиды в легенде отключаются</b>; сумма модели пересчитывается по оставшимся, что позволяет оценить вклад каждого звена в отдельности.</p>
   <div class="fig">
     <svg id="spec" viewBox="0 0 1120 560" role="img" aria-label="Измеренный спектр фона и его разложение по нуклидам"></svg>
     <div class="legend" id="specLegend"></div>
@@ -670,16 +670,28 @@ document.getElementById("kpis").innerHTML = kpis.map(function(k){
   var svg=document.getElementById("spec");
   var x=D.energy, meas=D.measured, mod=D.model;
   var lo=1e-5, hi=0;
+  // Верхнюю границу берём по ОБЕИМ кривым: прежде она считалась только по
+  // измерению, а сумма модели его превышает — и её вершина срезалась рамкой.
+  // Плюс запас, чтобы максимум не упирался в верхний край поля.
   meas.forEach(function(v){ if(v>hi) hi=v; });
+  mod.forEach(function(v){ if(v>hi) hi=v; });
+  hi *= 1.45;
   var logY=true;                     // масштаб ординат, переключается кнопкой
   var grid=css.getPropertyValue("--grid").trim();
   var faint=css.getPropertyValue("--faint").trim();
   var dim=css.getPropertyValue("--dim").trim();
   var X=function(e){ return L + (e-x[0])/(x[x.length-1]-x[0])*(W-L-R); };
+  // Ордината логарифмическая, но доведена до нуля: выше порога lo масштаб
+  // логарифмический, ниже — линейный до самого нуля (приём symlog). На чистом
+  // логарифме нуля не существует, и нижняя граница была условной константой,
+  // о которую упирались слабые звенья.
+  var LIN_FRAC = 0.10;               // доля высоты поля под линейный участок
   var Y=function(v){
-    if(logY){ v=Math.max(v,lo);
-      return T + (Math.log10(hi)-Math.log10(v))/(Math.log10(hi)-Math.log10(lo))*(H-T-B); }
-    return T + (1 - v/hi)*(H-T-B);
+    var plot = H-T-B;
+    if(!logY) return T + (1 - v/hi)*plot;
+    var span = Math.log10(hi)-Math.log10(lo);
+    if(v >= lo) return T + (Math.log10(hi)-Math.log10(v))/span*plot*(1-LIN_FRAC);
+    return T + plot*(1-LIN_FRAC) + (1 - Math.max(v,0)/lo)*plot*LIN_FRAC;
   };
   // Оси перерисовываются вместе с данными: при линейном масштабе подписи
   // ординат другие, поэтому рисовать их один раз при загрузке нельзя.
@@ -693,6 +705,11 @@ document.getElementById("kpis").innerHTML = kpis.map(function(k){
         el("text",{x:L-8,y:yy+4,"text-anchor":"end","font-size":11,
           "font-family":"var(--mono)",fill:faint},gAxis).textContent="1e"+d;
       }
+      // Нуль — на самом низу линейного участка.
+      var y0=Y(0);
+      el("line",{x1:L,y1:y0,x2:W-R,y2:y0,stroke:grid,"stroke-width":1},gAxis);
+      el("text",{x:L-8,y:y0+4,"text-anchor":"end","font-size":11,
+        "font-family":"var(--mono)",fill:faint},gAxis).textContent="0";
     } else {
       for(var k=0;k<=5;k++){
         var v=hi*k/5, y2=Y(v);
@@ -745,9 +762,9 @@ document.getElementById("kpis").innerHTML = kpis.map(function(k){
     var paths = {};
     order.forEach(function(n){
       if(!on[n]) return;
-      var p=D.parts[n], d="M "+X(x[0])+" "+Y(lo);
+      var p=D.parts[n], d="M "+X(x[0])+" "+Y(0);
       for(var i=0;i<x.length;i++) d+=" L "+X(x[i]).toFixed(1)+" "+Y(p[i]).toFixed(1);
-      d+=" L "+X(x[x.length-1])+" "+Y(lo)+" Z";
+      d+=" L "+X(x[x.length-1])+" "+Y(0)+" Z";
       paths[n]=d;
       // Девять полупрозрачных заливок, наложенных друг на друга, смешиваются
       // в общий мутный тон, и цвет каждой перестаёт быть собой. Поэтому
