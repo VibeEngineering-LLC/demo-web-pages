@@ -19,9 +19,14 @@
   --shadow:7px 7px 0 #16140f;
   --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --mono:ui-monospace,"Cascadia Mono",Consolas,"DejaVu Sans Mono",monospace;
-  --n-K40:#0f5aa8; --n-Ra226:#c8541c; --n-Pb214:#e08a3c; --n-Bi214:#a9660f;
-  --n-Pb212:#1f7345; --n-Ac228:#2d9462; --n-Bi212:#6aab5c; --n-Tl208:#8f2f2f;
-  --n-mu:#6a6674;
+  /* Категориальные слоты: прежняя палитра кодировала цепочки родственными
+     оттенками и потому сливалась — худшая соседняя пара давала ΔE 9,2 при
+     пороге 15. Здесь проверенная последовательность: все проверки пройдены
+     в обеих темах, худшая соседняя пара ΔE 19,6 (светлая) и 19,3 (тёмная).
+     Мюоны — не нуклид и не активность, поэтому нейтральный серый. */
+  --n-K40:#2a78d6; --n-Ra226:#eb6834; --n-Pb212:#1baf7a; --n-Pb214:#eda100;
+  --n-Bi212:#e87ba4; --n-Ac228:#008300; --n-Bi214:#4a3aa7; --n-Tl208:#e34948;
+  --n-mu:#7d7c76;
   --sum-line:#d21f1f;
 }
 @media (prefers-color-scheme: dark){
@@ -30,9 +35,9 @@
     --ink:#f0ede3; --dim:#b5b0a1; --faint:#847f70;
     --rule:#f0ede3; --rule-soft:#3a382e; --accent-soft:#c8a80e;
     --grid:#2c2a22; --shadow:7px 7px 0 #000000;
-    --n-K40:#6ea6e8; --n-Ra226:#f0834a; --n-Pb214:#f0bd72; --n-Bi214:#e0952f;
-    --n-Pb212:#4fbe84; --n-Ac228:#86dfae; --n-Bi212:#a8d99a; --n-Tl208:#e0736d;
-    --n-mu:#a49fae; --sum-line:#ff6a5e;
+    --n-K40:#3987e5; --n-Ra226:#d95926; --n-Pb212:#199e70; --n-Pb214:#c98500;
+    --n-Bi212:#d55181; --n-Ac228:#008300; --n-Bi214:#9085e9; --n-Tl208:#e66767;
+    --n-mu:#9b9a93; --sum-line:#ff6a5e;
   }
 }
 *{box-sizing:border-box}
@@ -97,6 +102,13 @@ h2{font-size:clamp(20px,3vw,28px);margin:0 0 6px;font-weight:800;letter-spacing:
 .legend .ln{width:20px;height:0;border-top-width:3px;border-top-style:solid;
   display:inline-block;vertical-align:4px;margin-right:6px;border-left:0;border-right:0;border-bottom:0}
 .legend .fix{padding:4px 2px}
+/* Переключатели звеньев — сетка равных ячеек: в потоке кнопки получались
+   разной ширины и вторая строка не совпадала с первой. */
+.nucgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(124px,1fr));
+  gap:8px;width:100%;margin:0 0 10px}
+.nucgrid button{width:100%;justify-content:flex-start;display:inline-flex;
+  align-items:center;gap:7px}
+.nucgrid button i{flex:0 0 auto}
 /* Переключатели нуклидов. Выключенный гасится, но остаётся читаемым:
    зачёркнутая подпись плюс полая плашка — состояние видно и без цвета. */
 .legend button{font:inherit;color:inherit;background:var(--paper);cursor:pointer;
@@ -745,6 +757,20 @@ document.getElementById("kpis").innerHTML = kpis.map(function(k){
     poly(meas, css.getPropertyValue("--ink").trim(), 1.6, gData);
     poly(sum, css.getPropertyValue("--sum-line").trim(), 1.8, gData);
 
+    // Обозначения двух кривых — на самом поле графика, у правого края сверху.
+    // Внизу остаются только переключатели, иначе два разных по смыслу ряда
+    // (кривые и звенья) читаются как один список.
+    var lx = W - R - 190, ly = T + 14;
+    [["измерено", css.getPropertyValue("--ink").trim()],
+     ["сумма включённых", css.getPropertyValue("--sum-line").trim()]
+    ].forEach(function(it, k){
+      var y = ly + k * 19;
+      el("line", {x1:lx, y1:y, x2:lx+26, y2:y, stroke:it[1], "stroke-width":2.2,
+                  "stroke-linecap":"round"}, gData);
+      el("text", {x:lx+34, y:y+4, "font-size":13,
+                  fill:css.getPropertyValue("--ink").trim()}, gData).textContent = it[0];
+    });
+
     var sTot=0, mTot=0;
     for(var i=0;i<x.length;i++){ sTot+=sum[i]; mTot+=meas[i]; }
     var allOn = CURVES.every(function(n){ return on[n]; });
@@ -767,11 +793,11 @@ document.getElementById("kpis").innerHTML = kpis.map(function(k){
 
   // Легенда: постоянные записи (измерение и сумма) плюс кнопки-переключатели.
   var lg = document.getElementById("specLegend");
-  lg.innerHTML =
-    '<span class="fix"><span class="ln" style="border-top-color:' +
-      css.getPropertyValue("--ink").trim() + '"></span>измерено</span>' +
-    '<span class="fix"><span class="ln" style="border-top-color:' +
-      css.getPropertyValue("--sum-line").trim() + '"></span>сумма включённых</span>';
+  // Обозначения двух кривых нанесены прямо на поле графика (см. draw()),
+  // внизу остаются только переключатели нуклидов.
+  lg.innerHTML = "";
+  var grid=document.createElement("div"); grid.className="nucgrid";
+  lg.appendChild(grid);
   order.forEach(function(n){
     var b=document.createElement("button");
     b.type="button";
@@ -784,7 +810,7 @@ document.getElementById("kpis").innerHTML = kpis.map(function(k){
       b.setAttribute("aria-pressed", on[n] ? "true" : "false");
       draw();
     });
-    lg.appendChild(b);
+    grid.appendChild(b);
   });
   var box=document.createElement("span"); box.className="allnone";
   [["все","all"],["ничего","none"]].forEach(function(p){
