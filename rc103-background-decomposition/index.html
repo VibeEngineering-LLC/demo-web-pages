@@ -737,12 +737,28 @@ document.getElementById("kpis").innerHTML = kpis.map(function(k){
   function draw(){
     drawAxes();
     while(gData.firstChild) gData.removeChild(gData.firstChild);
+    // Два прохода. Непрозрачные заливки перекрывают друг друга — при одном
+    // проходе видимость звеньев оказалась от 8 % каналов (Ra-226) до 100 %
+    // (мюоны), то есть половина состава пропадала под соседями. Поэтому
+    // сначала кладутся все заливки, а поверх них — контуры ВСЕХ звеньев:
+    // каждое опознаётся по своей линии даже там, где его площадь закрыта.
+    var paths = {};
     order.forEach(function(n){
       if(!on[n]) return;
       var p=D.parts[n], d="M "+X(x[0])+" "+Y(lo);
       for(var i=0;i<x.length;i++) d+=" L "+X(x[i]).toFixed(1)+" "+Y(p[i]).toFixed(1);
       d+=" L "+X(x[x.length-1])+" "+Y(lo)+" Z";
-      el("path",{d:d,fill:col(n),"fill-opacity":.30,stroke:col(n),"stroke-width":1.1},gData);
+      paths[n]=d;
+      // Девять полупрозрачных заливок, наложенных друг на друга, смешиваются
+      // в общий мутный тон, и цвет каждой перестаёт быть собой. Поэтому
+      // опознаётся кривая — сплошная линия в полную силу цвета, а заливка
+      // оставлена лишь как слабая подложка, показывающая занимаемую область.
+      el("path",{d:d,fill:col(n),stroke:"none"},gData);
+    });
+    order.forEach(function(n){
+      if(!on[n] || !paths[n]) return;
+      el("path",{d:paths[n],fill:"none",stroke:col(n),"stroke-width":2,
+                 "stroke-linejoin":"round","stroke-linecap":"round"},gData);
     });
     // Сумма — ТОЛЬКО по включённым звеньям. Рисовать полную сумму поверх
     // частичного набора заливок значило бы показывать одно, а подписывать
