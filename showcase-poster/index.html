@@ -44,9 +44,9 @@
       <span class="sortbox">
         <label for="sort">Сортировка</label>
         <select id="sort">
-          <option value="default">по порядку</option>
-          <option value="date-desc">сначала новые</option>
+          <option value="date-desc" selected>сначала новые</option>
           <option value="date-asc">сначала старые</option>
+          <option value="default">по порядку</option>
         </select>
       </span>
       <button type="button" class="reset" id="reset">Сбросить фильтр</button>
@@ -478,6 +478,7 @@ function apply() {
   }
 
   apply();
+  applySort();
 })();
 </script>
 </body>

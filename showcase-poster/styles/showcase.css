@@ -182,5 +182,23 @@ a{color:var(--ink)}
   *{animation-duration:.01ms !important; transition-duration:.01ms !important}
 }
 .row-date{display:inline-block;margin-right:.6em;opacity:.75;font-variant-numeric:tabular-nums;}
-.sortbox{display:inline-flex;align-items:center;gap:.4em;margin-left:auto;font-size:.9em;}
-.sortbox select{font:inherit;padding:.15em .4em;}
+.sortbox{display:inline-flex; align-items:center; gap:.5rem; margin-left:auto}
+.sortbox label{
+  font:700 11px/1.45 var(--mono); text-transform:uppercase;
+  letter-spacing:.06em; color:var(--ink);
+}
+.sortbox select{
+  appearance:none; -webkit-appearance:none;
+  padding:.34rem 1.6rem .34rem .55rem;
+  border:2px solid var(--rule); border-radius:0;
+  background-color:var(--paper); color:var(--ink); cursor:pointer;
+  font:800 12px/1 var(--sans); letter-spacing:.04em; text-transform:uppercase;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--ink) 50%),
+    linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+  background-position:right .68rem center, right .45rem center;
+  background-size:5px 5px, 5px 5px;
+  background-repeat:no-repeat;
+}
+.sortbox select:hover{background-color:var(--accent-soft); color:#16140f}
+.sortbox select:focus-visible{outline:2px solid var(--ink); outline-offset:2px}
