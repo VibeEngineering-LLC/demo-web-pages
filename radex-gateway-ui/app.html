@@ -1,0 +1,2212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Radex MR107ion</title>
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/radex.css">
+  <!-- превью: демо-данные вместо /api/*; ?notch=47 подставляет вырез вручную,
+       на устройстве его высоту даёт env(safe-area-inset-*) -->
+  <script>
+    (function(){
+      var q = new URLSearchParams(location.search);
+      var n = q.get('notch'), l = q.get('left');
+      var r = document.documentElement.style;
+      if (n) {
+        r.setProperty('--safe-top', n + 'px');
+        r.setProperty('--safe-bottom', Math.round(n / 2) + 'px');
+      }
+      /* Превью: ?tab=multi открывает нужную вкладку сразу — в альбомном кадре
+         показывается именно «Графики». */
+      var tab = q.get('tab');
+      if (tab) document.addEventListener('DOMContentLoaded', function(){ setTimeout(function(){ switchTab(tab); }, 60); });
+      /* Альбомная ориентация: вырез уходит на боковую сторону. */
+      if (l) {
+        r.setProperty('--safe-left', l + 'px');
+        r.setProperty('--safe-bottom', '21px');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="tab-container">
+      <ul class="tabs" role="tablist">
+        <li class="tab" role="tab" aria-selected="true" data-tab="data"><span class="t-long">Показания</span><span class="t-short">Данные</span></li>
+        <li class="tab" role="tab" aria-selected="false" data-tab="method"><span class="t-long">Рациональный метод</span><span class="t-short">Метод</span></li>
+        <li class="tab" role="tab" aria-selected="false" data-tab="settings"><span class="t-long">Интеграции</span><span class="t-short">Связь</span></li>
+        <li class="tab" role="tab" aria-selected="false" data-tab="multi"><span class="t-long">Графики</span><span class="t-short">Графики</span></li>
+        <li class="tab" role="tab" aria-selected="false" data-tab="system"><span class="t-long">Системные</span><span class="t-short">Система</span></li>
+      </ul>
+    </div>
+
+    <!-- Показания -->
+    
+
+    <div id="data-content" class="tab-content" aria-hidden="false">
+      <div class="grid">
+        <div class="card">
+          <div class="card-title">ОА текущая</div>
+          <div class="card-value large" id="radon-last">—</div><span class="sub" id="radon-last-unit" style="font-size:var(--fs-xs)"> Бк/м³</span>
+        </div>
+        <div class="card">
+          <div class="card-title">Среднее расчётное ОА</div>
+          <div class="card-value" id="radon-mean">—</div><span class="sub" id="radon-mean-unc" style="font-size:var(--fs-md)"></span><span class="sub" id="radon-mean-unit" style="font-size:var(--fs-xs)"> Бк/м³</span>
+        </div>
+        <div class="card card-climate">
+          <div>
+            <div class="card-title">Температура</div>
+            <div class="card-value" id="temperature">—</div><span class="sub" style="font-size:var(--fs-xs)"> °C</span>
+          </div>
+          <div>
+            <div class="card-title">Влажность</div>
+            <div class="card-value" id="humidity">—</div><span class="sub" style="font-size:var(--fs-xs)"> %</span>
+          </div>
+
+          <div class="status-bar">
+            <div class="status-dot" id="status-dot"></div>
+            <div class="status-text" id="status-text">Данных от прибора ещё не было</div>
+            <div class="status-short" id="status-short">нет данных</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-controls" id="period-controls">
+          <button data-period="1" aria-pressed="true">Сутки</button>
+          <button data-period="7" aria-pressed="false">7 дней</button>
+          <button data-period="30" aria-pressed="false">30 дней</button>
+          <button data-period="365" aria-pressed="false">Год</button>
+          <button data-period="all" aria-pressed="false">Всё</button>
+        </div>
+        <div class="chart-row">
+          <canvas id="chart"></canvas>
+          <!-- Шкала уровней: зелёная зона до половины норматива, жёлтая до
+               норматива, красная выше. Полоски — текущая ОА и среднее. -->
+          <div class="levels" id="levels" aria-hidden="true">
+            <div class="levels-bar">
+              <div class="levels-mean" id="levels-mean" style="display:none"></div>
+              <div class="levels-now" id="levels-now" style="display:none"></div>
+            </div>
+            <div class="levels-scale">
+              <span id="levels-top">—</span>
+              <span id="levels-norm">—</span>
+              <span>0</span>
+            </div>
+          </div>
+        </div>
+          <div class="chart-legend">
+            <span class="lg-data">данные</span>
+            <span class="lg-mean">среднее ± погрешность</span>
+            <span class="lg-limit">норматив</span>
+          </div>
+      </div>
+
+      <div class="assessment-card" id="assessment">
+        <div class="color-bar"></div>
+        <div class="content">
+          <div class="title">Оценка среднегодового содержания радона</div>
+          <div class="text" id="assessment-text">Данных пока недостаточно для оценки</div>
+        </div>
+      </div>
+
+
+      <table id="averages">
+        <thead>
+          <tr>
+            <th>Период</th>
+            <th>Средняя ОА</th>
+            <th>Покрытие</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Сутки</td>
+            <td class="row-value" id="avg-d1">—</td>
+            <td class="row-coverage" id="cov-d1">—</td>
+          </tr>
+          <tr>
+            <td>7 дней</td>
+            <td class="row-value" id="avg-d7">—</td>
+            <td class="row-coverage" id="cov-d7">—</td>
+          </tr>
+          <tr>
+            <td>30 дней</td>
+            <td class="row-value" id="avg-d30">—</td>
+            <td class="row-coverage" id="cov-d30">—</td>
+          </tr>
+          <tr>
+            <td>Год</td>
+            <td class="row-value" id="avg-d365">—</td>
+            <td class="row-coverage" id="cov-d365">—</td>
+          </tr>
+          <tr>
+            <td>Всё время</td>
+            <td class="row-value" id="avg-all">—</td>
+            <td class="row-coverage" id="cov-all">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+<div id="method-content" class="tab-content" aria-hidden="true">
+  <h1 class="page-title">Рациональный метод оценки среднегодового содержания радона</h1>
+
+  <!-- Две колонки от 900 px: слева заключение и управление замером, справа
+       параметры. Раньше всё шло одним столбцом, и правая половина экрана
+       пустовала, а пояснение к неопределённости вытягивало страницу. -->
+  <div class="method-cols">
+    <div class="method-main">
+      <div class="card verdict" id="verdict_card" style="border-left:4px solid var(--dim);padding-left:16px">
+        <div id="verdict_title" style="font-size:20px;font-weight:600">—</div>
+        <div id="verdict_text" class="sub" style="margin-top:6px"></div>
+        <div id="verdict_meta" class="sub" style="margin-top:10px;font-size:12px"></div>
+      </div>
+      <div id="test_state" class="test-state"></div>
+      <div class="btn-row">
+        <button id="btn_test_start" class="btn-primary">Начать замер</button>
+        <button id="btn_test_reset" class="btn-danger">Сброс</button>
+      </div>
+      <div class="sub" style="margin-top:10px">Замер идёт непрерывно и уточняется сам: чем он дольше, тем меньше поправка на сезонные колебания радона. Заключение может смениться без каких-либо действий.</div>
+      <div class="sub" style="margin-top:10px">Заключение строится не по одному измерению, а по средней объёмной активности за весь период замера, с поправкой на сезонные колебания радона и погрешность прибора. Чем дольше идёт замер, тем меньше поправка: за неделю она превышает 100 %, за девять месяцев падает до 17 %. Поэтому короткое измерение почти никогда не даёт заключения «соответствует» — это свойство метода, а не сбой прибора.</div>
+    </div>
+
+    <div class="card method-params">
+      <h2 class="section-title">Параметры оценки</h2>
+      <form id="assessment-form">
+        <div class="form-group">
+          <label for="normative">Норматив</label>
+          <select id="normative">
+            <option value="200">200 Бк/м³ — новые и реконструированные здания</option>
+            <option value="400">400 Бк/м³ — эксплуатируемые здания</option>
+          </select>
+          <div class="sub" style="font-size:12px;margin-top:4px">НРБ-99/2009 даёт две планки: 200 для новых и реконструированных зданий, 400 для эксплуатируемых. При сомнении берите более строгую — 200.</div>
+        </div>
+        <div class="form-group">
+          <label for="uncertainty">Неопределённость для методики, % (k=2)</label>
+          <input type="number" id="uncertainty" min="20" max="50" value="30">
+          <div class="sub" style="font-size:12px;margin-top:4px">Без собственных данных поверки берите 30; ниже 20 методика не разрешает.</div>
+          <details class="note"><summary>Откуда берётся число</summary><div class="sub" style="font-size:12px;margin-top:4px">Паспортные 20 % Radex — заводская спецификация при высокой концентрации и длительном наборе; метрологические испытания партии бытовых мониторов дают до 30 %. Межгодовые колебания радона сами по себе 15–20 %, поэтому меньше 20 брать нельзя.</div></details>
+        </div>
+        <div class="form-group">
+          <label for="mode">Режим вентиляции</label>
+          <select id="mode">
+            <option value="0">Обычная эксплуатация</option>
+            <option value="1">Окна и двери постоянно закрыты</option>
+          </select>
+        </div>
+        <button type="submit">Сохранить</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Источники и ссылки нужны раз в жизни: сворачиваются, а не занимают экран. -->
+  <details class="note method-refs">
+    <summary>О методике и источники</summary>
+    <div class="sub" style="font-size:12px;margin:8px 0 10px">Оценка соответствия помещений зданий требованиям Норм радиационной безопасности по ограничению содержания радона в воздухе. Методика радиационного контроля (проект). — АНРИ, 2025, № 1(120), с. 76–95. Практическое руководство: Цапалов А. А. и др., там же.</div>
+    <ul style="font-size:12px;margin-bottom:10px">
+      <li><a href="http://www.doza.ru/anri/" target="_blank" rel="noopener">Журнал АНРИ</a></li>
+      <li><a href="https://www.radhyg.ru/jour/article/view/538" target="_blank" rel="noopener">Цапалов А. А. Неопределённость результатов контроля радона (открытый доступ)</a></li>
+      <li><a href="https://www.radhyg.ru/jour/article/view/274" target="_blank" rel="noopener">Цапалов А. А. Оценка среднегодовой ЭРОА по краткосрочным измерениям (открытый доступ)</a></li>
+    </ul>
+    <div class="sub" style="font-size:12px">Текст самой методики распространяется журналом и здесь не размещён. Прошивка и документация: <a href="https://github.com/VibeEngineering-LLC/radex-esp32" target="_blank" rel="noopener">github.com/VibeEngineering-LLC/radex-esp32</a></div>
+  </details>
+</div>
+
+    <!-- Интеграции: Home Assistant и Народмон. Параметры оценки живут на
+         вкладке метода — они относятся к измерению, а не к передаче данных. -->
+    <div id="settings-content" class="tab-content" aria-hidden="true">
+      
+
+      <h2 class="section-title">Home Assistant</h2>
+      <form id="ha-form">
+        <div class="form-group">
+          <label for="ha-host">Адрес брокера</label>
+          <input type="text" id="ha-host" placeholder="192.168.1.100">
+        </div>
+        <div class="form-group">
+          <label for="ha-user">Пользователь</label>
+          <input type="text" id="ha-user" placeholder="admin">
+        </div>
+        <div class="form-group">
+          <label for="ha-pass">Пароль</label>
+          <input type="password" id="ha-pass" placeholder="пароль">
+        </div>
+        <button type="submit">Сохранить и перезагрузить</button>
+      </form>
+
+      <h2 class="section-title">Народмон</h2>
+      <form id="narodmon-form">
+        <div class="form-group">
+          <label for="nm-host">Адрес станции</label>
+          <input type="text" id="nm-host" placeholder="narodmon.ru">
+        </div>
+        <div class="form-group">
+          <label for="nm-interval">Интервал (минуты)</label>
+          <input type="number" id="nm-interval" min="10" max="60" value="30">
+        </div>
+        <button type="submit">Сохранить</button>
+        <button type="button" id="nm-enable-btn">Включить отправку</button>
+      </form>
+    </div>
+
+    <!-- Системные -->
+    <div id="system-content" class="tab-content" aria-hidden="true">
+      <h2 class="section-title">Диагностика</h2>
+      <div class="diag-grid">
+      <div class="card">
+        <div class="card-title">Значений принято</div>
+        <div class="card-value" id="samples">—</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Чтений и ошибок</div>
+        <div class="card-value" id="reads-errors">—</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Разрывов связи</div>
+        <div class="card-value" id="disconnects">—</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Время работы платы</div>
+        <div class="card-value" id="uptime">—</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Слышимость роутера</div>
+        <div class="card-value" id="wifi-rssi">—</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Мощность передатчиков</div>
+        <div class="card-value" id="tx-power">—</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Свободная память</div>
+        <div class="card-value" id="free-heap">—</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Размер файла истории</div>
+        <div class="card-value" id="history-size">—</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Число точек в истории</div>
+        <div class="card-value" id="history-points">—</div>
+      </div>
+        <div class="card">
+          <div class="card-title">Среднее прибора (радон)</div>
+          <div class="card-value" id="radon-avg">—</div><span class="sub" id="radon-avg-unit" style="font-size:var(--fs-xs)"> Бк/м³</span>
+          <div class="sub" id="radon-avg-share" style="font-size:12px;margin-top:4px">считается прибором от его включения, не сбрасывается</div>
+        </div>
+      </div>
+
+      <a href="/api/export.csv" download class="btn-download">Скачать историю (CSV)</a>
+
+      <button type="button" id="show-log-btn">Показать лог платы</button>
+      <div class="log-container" id="log-container" style="display:none;"></div>
+    </div>
+
+
+    <!-- #RADEX-58: разбор нескольких выгрузок сразу. История платы дробится при
+         перепрошивках и сбросах, а методика требует месяцев наблюдения — здесь
+         файлы сравниваются между собой либо склеиваются в один непрерывный ряд. -->
+    <div id="multi-content" class="tab-content" aria-hidden="true">
+      <div class="card">
+        <div class="chart-controls">
+          <button id="multi-add-board" type="button">Вся история платы</button>
+          <input type="date" id="multi-from" class="range-date" aria-label="начало интервала на флеш">
+          <input type="date" id="multi-to" class="range-date" aria-label="конец интервала на флеш">
+          <button id="multi-add-range" type="button">Добавить</button>
+          <button id="multi-clear" type="button">Очистить</button>
+          <label class="sub" style="display:flex;align-items:center;gap:6px">
+            <input type="checkbox" id="multi-merge" style="width:auto;min-height:0"> Объединить
+          </label>
+          <label class="sub" style="display:flex;align-items:center;gap:6px">
+            СМА
+            <input type="number" id="multi-sma" value="0" min="0" max="96" step="1" class="range-date" style="width:70px" aria-label="окно скользящего среднего в точках, 0 — выключено">
+          </label>
+        </div>
+        <canvas id="multi-chart"></canvas>
+        <div id="multi-legend" class="sub" style="margin-top:8px"></div>
+        <div class="sub" id="multi-hint" style="margin-top:6px;font-size:var(--fs-xs)">Колесо мыши — масштаб по времени, перетаскивание — сдвиг, двойное нажатие — сброс.</div>
+      </div>
+      <table id="multi-stats"></table>
+    </div>
+    <!-- Сканер -->
+    <div id="scan-content" class="tab-content" aria-hidden="true">
+      <div class="scan-card">
+        <h2>Выберите прибор</h2>
+        <div class="scan-list" id="scan-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── превью вне платы: подменяем /api/* правдоподобными ответами ──
+    (function(){
+      const H=[];{let t=Math.floor(Date.now()/1000)-86400;for(let i=0;i<110;i++)H.push({t:t+i*780,r:112+38*Math.sin(i/9)+Math.random()*16,c:21.4+Math.sin(i/17),h:44+3*Math.cos(i/11)});}
+      const A={verdict:'uncertain',uv:0.42,crit1:198.3,days:36,c:129.4,c_rl:200};
+      const M={'/api/data':{radon_last:126.4,radon_avg:118.2,temperature:21.6,humidity:45,valid:true,age_ms:240000,samples:318,reads_ok:1204,read_errors:3,disconnects:1},
+        '/api/system':{uptime_sec:441200,wifi_rssi:-58,wifi_tx_dbm:11,ble_tx_dbm:9,free_heap:142312},
+        '/api/history':{points:H},
+        '/api/stats':{periods:{d1:{valid:true,mean:126.4,span:86400,points:24},d7:{valid:true,mean:131.8,span:604800,points:160},d30:{valid:true,mean:129.1,span:2592000,points:640},d365:{valid:false,points:0,span:0},all:{valid:true,mean:129.4,span:3110400,points:702}},assess:A,test:{started:true},storage:{bytes:842104,points:702}},
+        '/api/ha':{status:'ok'},'/api/narodmon':{status:'ok'},
+        '/api/scan':{has_target:true,scanning:false,found:[]},
+        '/api/assess':Object.assign({},A,{verdict:'complies',days:214,c:112.7}),
+        '/api/log':'I (10432) radex: preview build\nW (10500) radex: демо-режим, платы нет\nI (10820) radex: history 702 points'};
+      window.fetch=function(u){const k=String(u).split('?')[0].replace('/api/history/range','/api/history');const v=M[k];
+        return Promise.resolve({ok:true,status:200,json:()=>Promise.resolve(typeof v==='string'?{}:(v||{})),text:()=>Promise.resolve(typeof v==='string'?v:'')});};
+    })();
+
+    // Объект для хранения данных
+    let data = {};
+    let system = {};
+    let history = {};
+    let stats = {};
+    let haStatus = '';
+    let nmStatus = '';
+    let currentTab = 'data';
+    let currentRow = 'radon';
+    let chartCanvas = null;
+    let chartCtx = null;
+
+    // Инициализация
+    document.addEventListener('DOMContentLoaded', () => {
+      // Установка начальной вкладки из localStorage или по умолчанию
+      const savedTab = localStorage.getItem('radex_tab');
+      if (savedTab && ['data', 'settings', 'system'].includes(savedTab)) {
+        currentTab = savedTab;
+      }
+      switchTab(currentTab);
+
+      // Привязка событий вкладок
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          switchTab(tab.dataset.tab);
+        });
+      });
+
+      // Обновление данных каждые 30 секунд
+      updateAllData();
+      setInterval(updateAllData, 30000);
+
+      // Привязка форм
+      document.getElementById('assessment-form').addEventListener('submit', saveAssessmentSettings);
+      document.getElementById('ha-form').addEventListener('submit', saveHaSettings);
+      document.getElementById('narodmon-form').addEventListener('submit', saveNarodmonSettings);
+      document.getElementById('nm-enable-btn').addEventListener('click', enableNarodmon);
+
+      // Кнопка показа лога
+      document.getElementById('show-log-btn').addEventListener('click', showLog);
+
+
+      // Инициализация canvas
+      chartCanvas = document.getElementById('chart');
+      chartCtx = chartCanvas.getContext('2d');
+
+      // История для графика живёт на флеш, а не в оперативной памяти платы:
+      // при перезагрузке кольцевой буфер обнулялся и график начинался с нуля.
+      // Эта же привязка ставит период по умолчанию и рисует первый график.
+      bindPeriodControls();
+      bindAssessControls();   // #RADEX-40: оценка по выбранному интервалу истории
+      multiBind();            // #RADEX-58: вкладка сравнения и склейки выгрузок
+
+      // Обновление размера canvas при изменении размера окна
+      window.addEventListener('resize', () => {
+        drawChart();
+      });
+    });
+
+    function switchTab(tabName) {
+      currentTab = tabName;
+      localStorage.setItem('radex_tab', tabName);
+
+      // Скрыть все контенты
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.setAttribute('aria-hidden', 'true');
+      });
+
+      // Показать нужный контент
+      document.getElementById(`${tabName}-content`).setAttribute('aria-hidden', 'false');
+
+      // Обновить активную вкладку
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.setAttribute('aria-selected', tab.dataset.tab === tabName);
+      });
+
+      /* Пока вкладка была скрыта, холст рисовать было нечем: перерисовываем
+         при возврате, иначе график остаётся пустым до следующего опроса. */
+      if (tabName === 'data' && chartCtx) drawChart();
+      if (tabName === 'multi' && typeof multiRedraw === 'function') multiRedraw();
+    }
+
+    function updateAllData() {
+      Promise.all([
+        fetch('/api/data', {cache: 'no-store'}),
+        fetch('/api/system', {cache: 'no-store'}),
+        fetch('/api/history', {cache: 'no-store'}),
+        fetch('/api/stats', {cache: 'no-store'}),
+        fetch('/api/ha', {cache: 'no-store'}),
+        fetch('/api/narodmon', {cache: 'no-store'}),
+        fetch('/api/scan', {cache: 'no-store'})
+      ])
+      .then(responses => Promise.all(responses.map(r => r.json())))
+      .then(([dataRes, systemRes, historyRes, statsRes, haRes, nmRes, scanRes]) => {
+        data = dataRes;
+        system = systemRes;
+        // history НЕ перетираем ответом /api/history: график берёт данные
+        // с флеш через /api/history/range, у него свой период и свой объём.
+        stats = statsRes;
+        // Точек мало не из-за сбоя: прибор пересчитывает радон циклами
+        // 10-60 минут, а повторы в историю не пишутся — иначе одно измерение
+        // вошло бы в среднее несколько раз. Пишем это прямо под графиком,
+        // чтобы пустоватый график не читался как поломка.
+        // подпись под графиком обновляет updateChartNote() — см. loadHistoryRange
+        haStatus = haRes.status || '';
+        nmStatus = nmRes.status || '';
+
+        updateDataDisplay();
+        methodTick();
+        updateSystemDisplay();
+        updateStatsDisplay();
+        updateScanDisplay(scanRes);
+      })
+      .catch(err => {
+        console.error('Ошибка обновления данных:', err);
+      });
+    }
+
+    function updateDataDisplay() {
+      // Обновление показаний
+      document.getElementById('radon-last').textContent = data.radon_last !== null ? data.radon_last.toFixed(0) : '—';
+      document.getElementById('radon-avg').textContent = data.radon_avg !== null ? data.radon_avg.toFixed(0) : '—';
+      // #RADEX-17: цвет по доле от норматива. Норматив берём из ответа оценки
+      // (statsData) — он задаётся человеком в настройках и бывает 200 или 400.
+      // Пока оценка не пришла, не красим вовсе: цвет по неизвестному нормативу
+      // хуже отсутствия цвета.
+      paintByNorm('radon-last', 'radon-last-share', data.radon_last);
+      paintByNorm('radon-avg',  'radon-avg-share',  data.radon_avg);
+      document.getElementById('temperature').textContent = data.temperature !== null ? data.temperature.toFixed(1) : '—';
+      document.getElementById('humidity').textContent = data.humidity !== null ? data.humidity : '—';
+
+      // Обновление статуса
+      const statusDot = document.getElementById('status-dot');
+      const statusText = document.getElementById('status-text');
+      const statusShort = document.getElementById('status-short');
+
+      if (!data.valid) {
+        statusDot.className = 'status-dot';
+        statusText.textContent = 'Данных от прибора ещё не было';
+        if (statusShort) statusShort.textContent = 'нет данных';
+      } else if (data.age_ms > 22 * 60 * 1000) {
+        statusDot.className = 'status-dot error';
+        const mins = Math.round(data.age_ms / 60000);
+        statusText.textContent = `Пропущен плановый опрос: последние данные ${mins} мин назад`;
+        if (statusShort) statusShort.textContent = `${mins} мин назад`;
+      } else {
+        statusDot.className = 'status-dot connected';
+        const mins = Math.round(data.age_ms / 60000);
+        const nextMins = Math.max(1, 10 - mins);
+        statusText.textContent = `Опрос раз в 10 минут · последний ${mins} мин назад · следующий примерно через ${nextMins} мин`;
+        if (statusShort) statusShort.textContent = `${mins} мин назад`;
+      }
+
+      updateLevels();
+
+      // Обновление графика
+      drawChart();
+    }
+
+    // Объём в единицах, которые читаются с одного взгляда: «8472391 байт»
+    // требует считать разряды, «8,1 МБ» — нет. Порог выбирается по величине,
+    // дробная часть только там, где она что-то значит.
+    function formatBytes(n) {
+      if (n === null || n === undefined || isNaN(n)) return '—';
+      if (n < 1024) return `${n} Б`;
+      if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} КБ`;
+      return `${(n / (1024 * 1024)).toFixed(1)} МБ`;
+    }
+
+    function updateSystemDisplay() {
+      // Счётчики обмена приходят в /api/data (это состояние связи с прибором),
+      // а не в /api/system (это состояние самой платы). Раньше брались из
+      // system и всегда были пустыми.
+      document.getElementById('samples').textContent =
+        (data && data.samples !== undefined) ? data.samples : '—';
+      document.getElementById('reads-errors').textContent =
+        (data && data.reads_ok !== undefined) ? `${data.reads_ok} / ${data.read_errors}` : '—';
+      document.getElementById('disconnects').textContent =
+        (data && data.disconnects !== undefined) ? data.disconnects : '—';
+      document.getElementById('uptime').textContent = formatUptime(system.uptime_sec);
+      document.getElementById('wifi-rssi').textContent = system.wifi_rssi ? `${system.wifi_rssi} dBm` : '—';
+      document.getElementById('tx-power').textContent = system.wifi_tx_dbm !== null && system.ble_tx_dbm !== null ?
+        `Wi-Fi +${system.wifi_tx_dbm} dBm · BLE +${system.ble_tx_dbm} dBm` : '—';
+      document.getElementById('free-heap').textContent = system.free_heap ? formatBytes(system.free_heap) : '—';
+      document.getElementById('history-size').textContent = stats.storage && stats.storage.bytes ? formatBytes(stats.storage.bytes) : '—';
+      document.getElementById('history-points').textContent = stats.storage && stats.storage.points ? stats.storage.points : '—';
+    }
+
+    function updateStatsDisplay() {
+  // Преобразование секунд в человекочитаемый формат
+  function formatDuration(seconds) {
+    if (seconds < 3600) {
+      // Меньше часа — минуты
+      const minutes = Math.floor(seconds / 60);
+      return `${minutes} мин`;
+    } else if (seconds < 86400) {
+      // Меньше суток — часы и минуты
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      if (minutes === 0) {
+        return `${hours} ч`;
+      }
+      return `${hours} ч ${minutes} мин`;
+    } else {
+      // Сутки и больше — сутки и часы
+      const days = Math.floor(seconds / 86400);
+      const hours = Math.floor((seconds % 86400) / 3600);
+      if (hours === 0) {
+        return `${days} сут`;
+      }
+      return `${days} сут ${hours} ч`;
+    }
+  }
+
+  // Обновление средних значений
+  const periods = ['d1', 'd7', 'd30', 'd365', 'all'];
+  periods.forEach(period => {
+    /* Таблица средних убрана с «Показаний»: элементов больше нет, заполнять
+       нечего. Остальную часть обновления это ронять не должно. */
+    if (!document.getElementById('avg-' + period)) return;
+    const periodData = stats.periods[period];
+    if (periodData && periodData.valid) {
+      document.getElementById(`avg-${period}`).textContent = periodData.mean.toFixed(0);
+      document.getElementById(`avg-${period}`).className = 'row-value';
+      // Показываем охват в секундах, преобразованный в человекочитаемый формат
+      const span = periodData.span || 0;
+      const pts = periodData.points || 0;
+      document.getElementById(`cov-${period}`).textContent = `${pts} изм. за ${formatDuration(span)}`;
+      document.getElementById(`cov-${period}`).className = 'row-coverage';
+    } else {
+      document.getElementById(`avg-${period}`).className = 'row-value invalid';
+      document.getElementById(`avg-${period}`).textContent = '—';
+      document.getElementById(`cov-${period}`).className = 'row-coverage invalid';
+      // Ноль точек и «мало точек» — разные вещи, и подписи должны различаться:
+      // «данных 0 %» при полном отсутствии измерений читалось как поломка.
+      const pts = (periodData && periodData.points) || 0;
+      const span = (periodData && periodData.span) || 0;
+      if (pts === 0) {
+        document.getElementById(`cov-${period}`).textContent = 'измерений нет';
+      } else {
+        // Период недостоверен, но измерения есть — показываем «мало данных»
+        document.getElementById(`cov-${period}`).textContent = `мало данных: ${pts} изм. за ${formatDuration(span)}`;
+      }
+    }
+  });
+
+  // Обновление оценки
+  const assess = stats.assess;
+  if (assess) {
+    const card = document.getElementById('assessment');
+    const textEl = document.getElementById('assessment-text');
+    const metaEl = document.getElementById('assessment-meta');
+
+    card.className = `assessment-card ${assess.verdict}`;
+
+    switch(assess.verdict) {
+      case 'complies':
+        textEl.textContent = 'Соответствует нормативу';
+        if (metaEl) metaEl.textContent = `методика: рациональный метод, АНРИ 2025 · неопределённость периода ${assess.uv > 0 ? assess.uv : '—'} · порог ${assess.crit1 > 0 ? assess.crit1 + ' Бк/м³' : '—'} · измерений ${assess.days} сут`;
+        break;
+      case 'exceeds':
+        textEl.textContent = 'Не соответствует нормативу — нужны защитные мероприятия';
+        if (metaEl) metaEl.textContent = `методика: рациональный метод, АНРИ 2025 · неопределённость периода ${assess.uv > 0 ? assess.uv : '—'} · порог ${assess.crit1 > 0 ? assess.crit1 + ' Бк/м³' : '—'} · измерений ${assess.days} сут`;
+        break;
+      case 'uncertain':
+        textEl.textContent = 'Решение неопределённое';
+        if (metaEl) metaEl.textContent = `методика: рациональный метод, АНРИ 2025 · неопределённость периода ${assess.uv > 0 ? assess.uv : '—'} · порог ${assess.crit1 > 0 ? assess.crit1 + ' Бк/м³' : '—'} · измерений ${assess.days} сут`;
+        break;
+      case 'too_short':
+        textEl.textContent = 'Измерений пока недостаточно для оценки';
+        if (metaEl) metaEl.textContent = `методика: рациональный метод, АНРИ 2025 · неопределённость периода ${assess.uv > 0 ? assess.uv : '—'} · порог ${assess.crit1 > 0 ? assess.crit1 + ' Бк/м³' : '—'} · измерений ${assess.days} сут`;
+        break;
+    }
+  }
+}
+
+    function updateScanDisplay(scanRes) {
+      const scanList = document.getElementById('scan-list');
+
+      /* Вкладку переключаем ТОЛЬКО при смене состояния «прибор выбран».
+         Раньше switchTab вызывался при каждом обновлении, то есть каждые
+         30 секунд страницу выбрасывало на «Показания», где бы человек ни
+         находился — читать настройки или журнал было невозможно. */
+      const targetNow = !!scanRes.has_target;
+      const changed = (window.__hadTarget === undefined) || (window.__hadTarget !== targetNow);
+      window.__hadTarget = targetNow;
+
+      if (targetNow) {
+        // Прибор только что выбран — уводим со страницы поиска. Если человек
+        // уже сам ушёл на другую вкладку, не мешаем ему.
+        if (changed && currentTab === 'scan') switchTab('data');
+        return;
+      }
+
+      if (changed) switchTab('scan');
+
+      if (!scanRes.scanning) {
+        scanList.innerHTML = '<div class="scan-placeholder">идёт поиск приборов…</div>';
+        return;
+      }
+
+      if (scanRes.found && scanRes.found.length > 0) {
+        scanList.innerHTML = '';
+        scanRes.found.forEach(device => {
+          const item = document.createElement('div');
+          item.className = 'scan-item';
+          item.innerHTML = `
+            <div class="scan-item-name">${device.name || 'Без имени'}</div>
+            <div class="scan-item-mac">${device.mac}</div>
+            <div class="scan-item-rssi">Сигнал: ${device.rssi} dBm</div>
+          `;
+          item.addEventListener('click', () => {
+            selectDevice(device.mac);
+          });
+          scanList.appendChild(item);
+        });
+      } else {
+        scanList.innerHTML = '<div class="scan-placeholder">идёт поиск приборов…</div>';
+      }
+    }
+
+    function selectDevice(mac) {
+      fetch('/api/target', {
+        method: 'POST',
+        body: mac
+      })
+      .then(() => {
+        alert('Прибор выбран, плата перезагружается');
+        setTimeout(updateAllData, 5000);
+      });
+    }
+
+    async function loadHistoryRange(from, to) {
+  const params = new URLSearchParams();
+  if (from !== 0) params.append('from', from);
+  if (to !== 0) params.append('to', to);
+  params.append('max', 300);
+
+  const url = `/api/history/range?${params.toString()}`;
+
+  try {
+    const response = await fetch(url, { cache: 'no-store' });
+    const data = await response.json();
+    history = { points: data.points };
+    drawChart();
+    updateChartNote();
+  } catch (error) {
+    console.error('Ошибка загрузки истории:', error);
+    history = { points: [] };
+    drawChart();
+    updateChartNote();
+  }
+}
+
+
+/* Подпись под графиком относится к данным ГРАФИКА, поэтому обновляется здесь,
+   а не в общем цикле опроса: там история диапазона ещё не загружена, и под
+   полным графиком стояла надпись «данных пока нет». */
+/* Шкала уровней справа от графика. Зоны заданы нормативом: до половины —
+   зелёная, до норматива — жёлтая, выше — красная. Верх шкалы всегда выше и
+   норматива, и самих значений, иначе полоска упиралась бы в край. */
+function updateLevels() {
+  const bar = document.getElementById('levels');
+  if (!bar) return;
+  const a = (typeof statsData === 'object' && statsData && statsData.assess) ? statsData.assess : null;
+  const norm = (a && a.c_rl) ? a.c_rl : 0;
+  const now = (typeof data === 'object' && data && isFinite(data.radon_last)) ? data.radon_last : null;
+  const mean = (a && isFinite(a.c)) ? a.c : null;
+  if (!norm) { bar.style.visibility = 'hidden'; return; }
+  bar.style.visibility = '';
+  const top = Math.max(norm * 1.3, (now || 0) * 1.1, (mean || 0) * 1.1);
+  const pc = function (v) { return Math.max(0, Math.min(100, v / top * 100)); };
+  bar.style.setProperty('--green', pc(norm / 2) + '%');
+  bar.style.setProperty('--yellow', pc(norm) + '%');
+  const put = function (id, v) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (v === null) { el.style.display = 'none'; return; }
+    el.style.display = '';
+    el.style.bottom = pc(v) + '%';
+    el.title = Math.round(v) + ' Бк/м³';
+  };
+  put('levels-now', now);
+  put('levels-mean', mean);
+  const t = document.getElementById('levels-top');
+  const n = document.getElementById('levels-norm');
+  if (t) t.textContent = Math.round(top);
+  if (n) { n.textContent = norm; n.style.bottom = 'calc(' + pc(norm) + '% - 6px)'; }
+}
+
+function updateChartNote() {
+  const note = document.getElementById('chart_note');
+  if (!note) return;
+  const n = (history && history.points) ? history.points.length : 0;
+  note.textContent = n === 0
+    ? 'данных пока нет — первая точка появится, когда прибор пересчитает значение'
+    : 'точек: ' + n + ' · новая появляется, когда прибор пересчитает значение (раз в 10-60 минут)';
+}
+
+function bindPeriodControls() {
+  const periodButtons = document.querySelectorAll('[data-period]');
+  /* Выбор интервала живёт на вкладке «Графики»: на «Показаниях» остались
+     только готовые периоды. */
+
+  function updateActiveButton(activeButton) {
+    periodButtons.forEach(btn => {
+      btn.setAttribute('aria-pressed', btn === activeButton ? 'true' : 'false');
+      btn.classList.toggle('active', btn === activeButton);
+    });
+  }
+
+  periodButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      /* Сравниваем сырое значение: parseInt('all') даёт NaN, и проверка
+         period === 'all' не срабатывала никогда — на плату уходил запрос
+         ?from=NaN, то есть «вся история» не работала вовсе. */
+      const raw = button.dataset.period;
+      let from = 0, to = 0;
+
+      if (raw !== 'all') {
+        from = Math.floor(Date.now() / 1000) - parseInt(raw, 10) * 24 * 3600;
+      }
+
+      chartRange = { from: from, to: to };
+      updateActiveButton(button);
+      loadHistoryRange(from, to);
+    });
+  });
+
+  // Загрузка данных по умолчанию — за последние сутки
+  const now = Math.floor(Date.now() / 1000);
+  chartRange = { from: now - 24 * 3600, to: 0 };
+  loadHistoryRange(chartRange.from, chartRange.to);
+}
+
+/* Цвета графика берутся из тех же токенов темы, что и вся страница. Раньше они
+   были зашиты литералами в коде рисования: смена темы меняла таблицу и карточки,
+   а график оставался прежним — расхождение, которое никто не заметил бы до первой
+   смены палитры. Читаем один раз за отрисовку: обращение к стилям на каждую точку
+   стоило бы дороже самой отрисовки. */
+/* Холст хранит физические пиксели, рисуем в CSS-пикселях: одна точка входа
+   для обоих графиков, иначе dpr приходится помнить в каждой функции. */
+function fitCanvas(cv, ctx) {
+  const w = cv.clientWidth, hh = cv.clientHeight;
+  /* Вкладка скрыта (display:none) — размеров нет. Обнулять битмап нельзя:
+     график остался бы пустым до следующего опроса. */
+  if (!w || !hh) return null;
+  cv.width = Math.round(w * devicePixelRatio);
+  cv.height = Math.round(hh * devicePixelRatio);
+  ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+  ctx.clearRect(0, 0, w, hh);
+  return {w: w, h: hh};
+}
+
+function drawMeanLine(ctx, points, geom, colors) {
+  // Сбор данных, исключая null значения
+  const validPoints = points.filter(p => p.r !== null);
+  if (validPoints.length === 0) return;
+
+  // Вычисление среднего значения
+  let sum = 0;
+  for (const point of validPoints) {
+    sum += point.r;
+  }
+  const mean = sum / validPoints.length;
+
+  // Статистическая погрешность: стандартное отклонение выборки, делённое на корень из n,
+  // затем нормированное на среднее значение
+  let u_stat = 0;
+  if (validPoints.length > 1) {
+    let sumSq = 0;
+    for (const point of validPoints) {
+      const diff = point.r - mean;
+      sumSq += diff * diff;
+    }
+    const variance = sumSq / (validPoints.length - 1); // выборочная дисперсия
+    const stdDev = Math.sqrt(variance);
+    u_stat = (stdDev / Math.sqrt(validPoints.length)) / mean;
+  }
+
+  /* Погрешность ДАННЫХ — паспортная погрешность прибора (по умолчанию 20 %).
+     Поле #uncertainty к этому отношения не имеет: там 30 % — метрологическая
+     величина рационального метода (испытания партии, k=2), она применяется
+     только в заключении о соответствии, а не при показе измерений. */
+  const uncertaintyElement = document.getElementById('uncertainty');
+  const u_inst = uncertaintyElement ? parseFloat(uncertaintyElement.value) / 100 : 0.3;
+
+  // Суммарная относительная погрешность: квадратично складываются независимые составляющие
+  // (дисперсии складываются, а не сами ошибки)
+  const U = Math.sqrt(u_stat * u_stat + u_inst * u_inst);
+
+  // Абсолютная полуширина погрешности
+  const absError = mean * U;
+
+  // Вычисление координаты y для среднего значения на графике
+  const y = geom.height - geom.bottomMargin - (mean - geom.minVal) * geom.scale;
+
+  // Рисование полосы суммарной погрешности: прямоугольник во всю ширину поля данных
+  ctx.fillStyle = colors.band;
+  ctx.globalAlpha = 0.12;
+  const topY = Math.max(geom.topMargin, y - absError * geom.scale);
+  const bottomY = Math.min(geom.height - geom.bottomMargin, y + absError * geom.scale);
+  ctx.fillRect(
+    geom.leftMargin,
+    topY,
+    geom.width - geom.leftMargin - geom.rightMargin,
+    bottomY - topY
+  );
+  ctx.globalAlpha = 1;
+
+  // Рисование линии среднего значения
+  ctx.strokeStyle = colors.mean;
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([]);
+  ctx.beginPath();
+  ctx.moveTo(geom.leftMargin, y);
+  ctx.lineTo(geom.width - geom.rightMargin, y);
+  ctx.stroke();
+
+}
+
+let series = [];
+let visibleRange = null;
+let hoverT = null;        /* время под курсором; null — курсора нет */
+let multiGeom = null;     /* поле рисования последней отрисовки — для пересчёта курсора */
+let multiCtx = null;
+let multiCanvas = null;
+let lastX = 0;
+let isDragging = false;
+
+const COLORS = ['#22C55E', '#60A5FA', '#F59E0B', '#F87171', '#A78BFA', '#2DD4BF'];
+
+function multiAddSeries(name, csvText) {
+  const lines = csvText.split('\n').filter(l => l.trim());
+  if (lines.length < 1) {
+    series.push({ name, points: [], visible: true, error: 'не удалось разобрать' });
+    multiRedraw();
+    multiUpdateLegend();
+    multiUpdateStats();
+    return;
+  }
+
+  const header = lines[0].split(',');
+  if (header.length < 5 || header[0] !== 'time' || header[1] !== 'radon' || header[2] !== 'radon_avg' || header[3] !== 'temp' || header[4] !== 'hum') {
+    series.push({ name, points: [], visible: true, error: 'не удалось разобрать' });
+    multiRedraw();
+    multiUpdateLegend();
+    multiUpdateStats();
+    return;
+  }
+
+  const points = [];
+  for (let i = 1; i < lines.length; i++) {
+    const parts = lines[i].split(',');
+    if (parts.length < 5) continue;
+
+    const t = Number(parts[0]);
+    const r = Number(parts[1]);
+    if (isNaN(t) || isNaN(r)) continue;
+    if (r === 255 || r === NaN) continue;
+
+    points.push({ t, r });
+  }
+
+  points.sort((a, b) => a.t - b.t);
+
+  visibleRange = null;
+  series.push({ name, points, visible: true, error: points.length ? '' : 'не удалось разобрать' });
+
+  multiRedraw();
+  multiUpdateLegend();
+  multiUpdateStats();
+}
+
+function multiRedraw() {
+  if (!multiCtx) {
+    multiCanvas = document.getElementById('multi-chart');
+    if (!multiCanvas) return;              /* вкладки нет — рисовать нечего */
+    multiCtx = multiCanvas.getContext('2d');
+    if (!multiCtx) return;
+  }
+
+  /* Класс is-empty задаёт высоту холста (90 px против 260-320), поэтому
+     переключается ДО замера: иначе битмап остаётся от прежнего состояния
+     и браузер растягивает его на весь бокс — график становится размытым. */
+  const box = document.getElementById('multi-content');
+  if (box) box.classList.toggle('is-empty', series.length === 0);
+
+  const rect = fitCanvas(multiCanvas, multiCtx);
+  if (!rect) return;                      /* вкладка скрыта — размеров нет */
+  if (series.length === 0) {
+    multiCtx.fillStyle = chartColors().axis;
+    multiCtx.font = '16px sans-serif';
+    multiCtx.textAlign = 'center';
+    multiCtx.fillText('загружаем историю с платы…', rect.w / 2, rect.h / 2);
+    return;
+  }
+
+  const visibleSeries = series.filter(s => s.visible);
+  if (visibleSeries.length === 0) {
+    multiCtx.fillStyle = chartColors().axis;
+    multiCtx.font = '16px sans-serif';
+    multiCtx.textAlign = 'center';
+    multiCtx.fillText('загружаем историю с платы…', rect.w / 2, rect.h / 2);
+    return;
+  }
+
+  let minTime = Infinity;
+  let maxTime = -Infinity;
+  let allPoints = [];
+
+  if (document.getElementById('multi-merge').checked) {
+    visibleSeries.forEach(s => {
+      allPoints = allPoints.concat(s.points);
+    });
+    allPoints.sort((a, b) => a.t - b.t);
+
+    // Удаляем точки с совпадающими метками времени
+    const uniquePoints = [];
+    let prevTime = null;
+    for (const p of allPoints) {
+      if (p.t !== prevTime) {
+        uniquePoints.push(p);
+        prevTime = p.t;
+      }
+    }
+    allPoints = uniquePoints;
+
+    if (allPoints.length > 0) {
+      minTime = allPoints[0].t;
+      maxTime = allPoints[allPoints.length - 1].t;
+    }
+  } else {
+    visibleSeries.forEach(s => {
+      if (s.points.length > 0) {
+        const first = s.points[0].t;
+        const last = s.points[s.points.length - 1].t;
+        minTime = Math.min(minTime, first);
+        maxTime = Math.max(maxTime, last);
+      }
+    });
+  }
+
+  if (minTime === Infinity || maxTime === -Infinity) {
+    return;
+  }
+
+  /* Окно просмотра задаёт человек жестами. Раньше оно переписывалось границами
+     данных на каждой отрисовке, и масштаб отскакивал назад сразу после жеста. */
+  if (visibleRange) {
+    minTime = visibleRange.min;
+    maxTime = visibleRange.max;
+  } else {
+    visibleRange = { min: minTime, max: maxTime };
+  }
+
+  const timeSpan = maxTime - minTime;
+  const margin = timeSpan * 0.02;
+  minTime -= margin;
+  maxTime += margin;
+
+  const width = rect.w, height = rect.h;
+  const C = chartColors();
+  const merged = document.getElementById('multi-merge').checked;
+
+  /* Поля под подписи. Раньше поле рисования занимало весь холст: подписи
+     значений стояли поверх данных у правого края, подписи времени — поверх
+     линии, а крайние обрезались границей холста. */
+  const mL = 50, mR = 14, mT = 14, mB = 26;
+  const pW = width - mL - mR, pH = height - mT - mB;
+  if (pW <= 0 || pH <= 0) return;
+
+  /* Промах масштабом не должен выглядеть как отказ прибора. */
+  const inWindow = visibleSeries.some(function(s) {
+    return s.points.some(function(p) { return p.t >= minTime && p.t <= maxTime; });
+  });
+  if (!inWindow) {
+    multiCtx.fillStyle = C.axis;
+    multiCtx.font = '13px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
+    multiCtx.textAlign = 'center';
+    multiCtx.textBaseline = 'middle';
+    multiCtx.fillText('в этом окне нет точек — отдалите масштаб или нажмите дважды', width / 2, height / 2);
+    multiCtx.textBaseline = 'alphabetic';
+    return;
+  }
+
+  const vr = visibleSeries.reduce(function(acc, s) {
+    for (var i = 0; i < s.points.length; i++) {
+      var v = s.points[i].r;
+      if (v === null || isNaN(v)) continue;
+      if (v < acc[0]) acc[0] = v;
+      if (v > acc[1]) acc[1] = v;
+    }
+    return acc;
+  }, [Infinity, -Infinity]);
+  if (vr[0] === Infinity) { vr[0] = 0; vr[1] = 100; }
+  if (vr[0] === vr[1]) { vr[0] -= 1; vr[1] += 1; }
+  var vpad = (vr[1] - vr[0]) * 0.08;
+  vr[0] = Math.max(0, vr[0] - vpad);   /* отрицательной активности не бывает */
+  vr[1] += vpad;
+
+  const span = maxTime - minTime;
+  const xOf = function(t) { return mL + pW * (t - minTime) / span; };
+  const yOf = function(v) { return mT + pH - pH * (v - vr[0]) / (vr[1] - vr[0]); };
+
+  /* Число подписей — по ширине поля: шесть подписей с полной датой и секундами
+     налезали друг на друга даже на ноутбуке. */
+  const vTicks = 4;
+  const tTicks = pW < 420 ? 2 : pW < 720 ? 3 : 4;
+
+  multiCtx.strokeStyle = C.grid;
+  multiCtx.lineWidth = 1;
+  multiCtx.beginPath();
+  for (let i = 0; i <= vTicks; i++) { const y = Math.round(mT + pH * i / vTicks) + 0.5; multiCtx.moveTo(mL, y); multiCtx.lineTo(mL + pW, y); }
+  for (let i = 0; i <= tTicks; i++) { const x = Math.round(mL + pW * i / tTicks) + 0.5; multiCtx.moveTo(x, mT); multiCtx.lineTo(x, mT + pH); }
+  multiCtx.stroke();
+
+  multiCtx.fillStyle = C.axis;
+  multiCtx.font = '11px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
+  multiCtx.textAlign = 'right';
+  multiCtx.textBaseline = 'middle';
+  for (let i = 0; i <= vTicks; i++) {
+    const v = vr[1] - (vr[1] - vr[0]) * i / vTicks;
+    multiCtx.fillText(String(Math.round(v)), mL - 8, mT + pH * i / vTicks);
+  }
+
+  /* Формат времени — по длительности показанного интервала: внутри суток
+     важны часы, за месяцы — дни, за годы — месяцы. */
+  const fmt = span < 2 * 86400
+    ? function(t) { return new Date(t * 1000).toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'}); }
+    : span < 300 * 86400
+      ? function(t) { return new Date(t * 1000).toLocaleDateString('ru-RU', {day: '2-digit', month: '2-digit'}); }
+      : function(t) { return new Date(t * 1000).toLocaleDateString('ru-RU', {month: '2-digit', year: '2-digit'}); };
+  multiCtx.textBaseline = 'alphabetic';
+  for (let i = 0; i <= tTicks; i++) {
+    multiCtx.textAlign = i === 0 ? 'left' : i === tTicks ? 'right' : 'center';
+    multiCtx.fillText(fmt(minTime + span * i / tTicks), mL + pW * i / tTicks, height - 8);
+  }
+
+  /* Линии обрезаются полем рисования, а не краем холста: иначе ряд с выбросом
+     заходил на подписи. */
+  multiCtx.save();
+  multiCtx.beginPath();
+  multiCtx.rect(mL, mT, pW, pH);
+  multiCtx.clip();
+  multiGeom = { mL: mL, pW: pW, minTime: minTime, maxTime: maxTime };
+  const smaW = Math.max(0, parseInt((document.getElementById('multi-sma') || {}).value, 10) || 0);
+  const smaOf = function(pts, w) {
+    /* Скользящее среднее по последним w точкам; точка ставится на конец окна. */
+    const q = pts.filter(function(p) { return p.r !== null && isFinite(p.r); });
+    const out = [];
+    let acc = 0;
+    for (let i = 0; i < q.length; i++) {
+      acc += q[i].r;
+      if (i >= w) acc -= q[i - w].r;
+      if (i >= w - 1) out.push({ t: q[i].t, r: acc / w });
+    }
+    return out;
+  };
+  const drawSeries = function(pts, color, lw, alpha) {
+    multiCtx.strokeStyle = color;
+    multiCtx.lineWidth = lw || 2;
+    multiCtx.globalAlpha = alpha == null ? 1 : alpha;
+    multiCtx.lineJoin = 'round';
+    multiCtx.beginPath();
+    let first = true;
+    for (let i = 0; i < pts.length; i++) {
+      const p = pts[i];
+      if (p.r === null || isNaN(p.r)) continue;
+      const x = xOf(p.t), y = yOf(p.r);
+      if (first) { multiCtx.moveTo(x, y); first = false; } else { multiCtx.lineTo(x, y); }
+    }
+    multiCtx.stroke();
+    multiCtx.globalAlpha = 1;
+  };
+  /* При включённой СМА сырые данные приглушаются, сглаженная линия — поверх.
+     Объединённый ряд рисовался чёрным (#000) и на тёмном фоне не был виден:
+     берём цвет данных темы. */
+  const rows = merged ? [{ points: allPoints, color: C.line }]
+    : visibleSeries.map(function(s, i) { return { points: s.points, color: COLORS[i % COLORS.length] }; });
+  rows.forEach(function(row) {
+    drawSeries(row.points, row.color, smaW > 1 ? 1.5 : 2, smaW > 1 ? 0.32 : 1);
+    if (smaW > 1) drawSeries(smaOf(row.points, smaW), row.color, 2.5, 1);
+  });
+
+  /* Указатель: ближайшая по времени точка, вертикаль, маркер и сноска
+     со временем и значением. */
+  if (hoverT !== null && hoverT >= minTime && hoverT <= maxTime) {
+    let best = null, bestRow = -1;
+    rows.forEach(function(row, ri) {
+      for (let i = 0; i < row.points.length; i++) {
+        const p = row.points[i];
+        if (p.r === null || !isFinite(p.r)) continue;
+        if (!best || Math.abs(p.t - hoverT) < Math.abs(best.t - hoverT)) { best = p; bestRow = ri; }
+      }
+    });
+    if (best) {
+      const hx = xOf(best.t), hy = yOf(best.r);
+      multiCtx.strokeStyle = C.axis;
+      multiCtx.lineWidth = 1;
+      multiCtx.setLineDash([3, 3]);
+      multiCtx.beginPath();
+      multiCtx.moveTo(hx, mT);
+      multiCtx.lineTo(hx, mT + pH);
+      multiCtx.stroke();
+      multiCtx.setLineDash([]);
+      multiCtx.fillStyle = rows[bestRow].color;
+      multiCtx.beginPath();
+      multiCtx.arc(hx, hy, 4, 0, Math.PI * 2);
+      multiCtx.fill();
+      const when = new Date(best.t * 1000).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+      const txt = when + ' · ' + Math.round(best.r) + ' Бк/м³';
+      multiCtx.font = '11px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
+      multiCtx.textBaseline = 'middle';
+      const tw2 = multiCtx.measureText(txt).width;
+      let bx = hx + 10;
+      if (bx + tw2 + 12 > mL + pW) bx = hx - tw2 - 22;
+      const by = Math.max(mT + 10, Math.min(mT + pH - 10, hy - 14));
+      multiCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--card2').trim() || '#1E293B';
+      multiCtx.globalAlpha = 0.95;
+      multiCtx.fillRect(bx, by - 9, tw2 + 12, 18);
+      multiCtx.globalAlpha = 1;
+      multiCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--ink').trim() || '#F8FAFC';
+      multiCtx.textAlign = 'left';
+      multiCtx.fillText(txt, bx + 6, by);
+      multiCtx.textBaseline = 'alphabetic';
+    }
+  }
+  multiCtx.restore();
+
+  /* Среднее видимых точек с суммарной погрешностью — та же величина, что в
+     таблице ниже: полоса показывает, насколько разброс перекрывает норматив. */
+  const mPts = [];
+  if (merged) { for (const p of allPoints) mPts.push(p); }
+  else visibleSeries.forEach(function(s) { for (const p of s.points) mPts.push(p); });
+  const mVals = mPts.filter(function(p) { return p.t >= minTime && p.t <= maxTime; })
+                    .map(function(p) { return p.r; })
+                    .filter(function(v) { return v !== null && isFinite(v); });
+  if (mVals.length > 1) {
+    const mean = mVals.reduce(function(a, b) { return a + b; }, 0) / mVals.length;
+    const uInput = document.getElementById('uncertainty');
+    const uInst = uInput ? parseFloat(uInput.value) / 100 : 0.3;
+    const dv = mVals.reduce(function(a, v) { return a + (v - mean) * (v - mean); }, 0) / (mVals.length - 1);
+    const uStat = mean > 0 ? (Math.sqrt(dv) / Math.sqrt(mVals.length)) / mean : 0;
+    const U = Math.sqrt(uStat * uStat + uInst * uInst);
+    const yTop = yOf(mean * (1 + U)), yBot = yOf(mean * (1 - U)), yM = yOf(mean);
+    multiCtx.save();
+    multiCtx.beginPath();
+    multiCtx.rect(mL, mT, pW, pH);
+    multiCtx.clip();
+    multiCtx.globalAlpha = 0.12;
+    multiCtx.fillStyle = C.mean;
+    multiCtx.fillRect(mL, Math.min(yTop, yBot), pW, Math.abs(yBot - yTop));
+    multiCtx.globalAlpha = 1;
+    multiCtx.strokeStyle = C.mean;
+    multiCtx.lineWidth = 1.5;
+    multiCtx.beginPath();
+    multiCtx.moveTo(mL, yM);
+    multiCtx.lineTo(mL + pW, yM);
+    multiCtx.stroke();
+    multiCtx.restore();
+    const lbl = 'среднее ' + Math.round(mean) + ' ± ' + Math.round(mean * U) + ' Бк/м³';
+    multiCtx.font = '11px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
+    multiCtx.textAlign = 'left';
+    multiCtx.textBaseline = 'middle';
+    const tw = multiCtx.measureText(lbl).width;
+    const ty = yM - 12 < mT + 10 ? yM + 12 : yM - 12;
+    multiCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || '#0F172A';
+    multiCtx.globalAlpha = 0.92;
+    multiCtx.fillRect(mL + 4, ty - 9, tw + 10, 18);
+    multiCtx.globalAlpha = 1;
+    multiCtx.fillStyle = C.mean;
+    multiCtx.fillText(lbl, mL + 9, ty);
+    multiCtx.textBaseline = 'alphabetic';
+  }
+}
+
+function multiUpdateLegend() {
+  const legendEmpty = document.getElementById('multi-legend');
+  if (legendEmpty && series.length === 0) {
+    legendEmpty.textContent = 'ряд не выбран';
+  }
+  const legend = document.getElementById('multi-legend');
+  if (series.length === 0) {
+    legend.innerHTML = '<p>ряд не выбран</p>';
+    return;
+  }
+
+  let html = '';
+  series.forEach((s, index) => {
+    if (s.error) {
+      html += `<div><span style="color: var(--err);">${s.name}: ${s.error}</span></div>`;
+    } else {
+      html += `
+        <div>
+          <input type="checkbox" id="series-${index}" ${s.visible ? 'checked' : ''}>
+          <label for="series-${index}">
+            <span style="display: inline-block; width: 10px; height: 10px; background-color: ${COLORS[index % COLORS.length]};"></span>
+            ${s.name}
+          </label>
+        </div>`;
+    }
+  });
+
+  legend.innerHTML = html;
+
+  series.forEach((s, index) => {
+    const checkbox = document.getElementById(`series-${index}`);
+    if (checkbox) {
+      checkbox.addEventListener('change', () => {
+        s.visible = checkbox.checked;
+        multiRedraw();
+        multiUpdateStats();
+      });
+    }
+  });
+}
+
+function multiUpdateStats() {
+  const statsEmpty = document.getElementById('multi-stats');
+  if (statsEmpty && series.length === 0) {
+    statsEmpty.textContent = 'Возьмите историю с флеш платы целиком или интервалом — интервалы можно сравнить между собой и склеить в один ряд.';
+    return;
+  }
+  const statsTable = document.getElementById('multi-stats');
+  if (series.length === 0) {
+    statsTable.innerHTML = '';
+    return;
+  }
+
+  const mergeChecked = document.getElementById('multi-merge').checked;
+
+  if (mergeChecked) {
+    const visibleSeries = series.filter(s => s.visible);
+    let allPoints = [];
+    visibleSeries.forEach(s => {
+      allPoints = allPoints.concat(s.points);
+    });
+    allPoints.sort((a, b) => a.t - b.t);
+
+    // Удаляем точки с совпадающими метками времени
+    const uniquePoints = [];
+    let prevTime = null;
+    for (const p of allPoints) {
+      if (p.t !== prevTime) {
+        uniquePoints.push(p);
+        prevTime = p.t;
+      }
+    }
+
+    allPoints = uniquePoints;
+
+    if (allPoints.length === 0) {
+      statsTable.innerHTML = '';
+      return;
+    }
+
+    const mean = allPoints.reduce((sum, p) => sum + p.r, 0) / allPoints.length;
+    /* Обе составляющие приводим к ОТНОСИТЕЛЬНЫМ величинам: складывать разброс
+       измерений в Бк/м³ с паспортной долей прибора нельзя, это разные
+       размерности. Поле неопределённости хранит проценты — делим на сто
+       (раньше бралось «30» как доля, и погрешность выходила в тридцать раз
+       больше среднего). Дисперсия по (n-1) — несмещённая оценка. */
+    const nPts = allPoints.length;
+    const variance = nPts > 1
+      ? allPoints.reduce((sum, p) => sum + Math.pow(p.r - mean, 2), 0) / (nPts - 1)
+      : 0;
+    const stdDev = Math.sqrt(variance);
+    const uStatRel = (nPts > 1 && mean > 0) ? (stdDev / Math.sqrt(nPts)) / mean : 0;
+    const uInstRel = (parseFloat((document.getElementById('uncertainty') || {}).value) || 30) / 100;
+    const totalRel = Math.sqrt(uStatRel * uStatRel + uInstRel * uInstRel);
+    const totalError = mean * totalRel;
+
+    const firstTime = allPoints[0].t;
+    const lastTime = allPoints[allPoints.length - 1].t;
+    const duration = lastTime - firstTime;
+
+    let durationStr = '';
+    if (duration < 60) {
+      durationStr = `${Math.round(duration)} сек`;
+    } else if (duration < 3600) {
+      durationStr = `${Math.round(duration / 60)} мин`;
+    } else if (duration < 86400) {
+      durationStr = `${Math.round(duration / 3600)} ч`;
+    } else {
+      durationStr = `${Math.round(duration / 86400)} сут`;
+    }
+
+    statsTable.innerHTML = `
+      <tr>
+        <th>Ряд</th>
+        <th>Измерений</th>
+        <th>Охват</th>
+        <th>Среднее ± погрешность</th>
+      </tr>
+      <tr>
+        <td>Объединённый ряд</td>
+        <td>${allPoints.length}</td>
+        <td>${durationStr}</td>
+        <td>${mean.toFixed(1)} ± ${totalError.toFixed(1)} Бк/м³ (${Math.round(totalRel * 100)} %)</td>
+      </tr>`;
+  } else {
+    let html = `
+      <tr>
+        <th>Ряд</th>
+        <th>Измерений</th>
+        <th>Охват</th>
+        <th>Среднее ± погрешность</th>
+      </tr>`;
+
+    series.filter(s => s.visible).forEach(s => {
+      if (s.points.length === 0) {
+        html += `
+          <tr>
+            <td>${s.name}</td>
+            <td>0</td>
+            <td>-</td>
+            <td>-</td>
+          </tr>`;
+        return;
+      }
+
+      const mean = s.points.reduce((sum, p) => sum + p.r, 0) / s.points.length;
+      /* Обе составляющие приводим к ОТНОСИТЕЛЬНЫМ величинам: складывать разброс
+         измерений в Бк/м³ с паспортной долей прибора нельзя, это разные
+         размерности. Поле неопределённости хранит проценты — делим на сто
+         (раньше бралось «30» как доля, и погрешность выходила в тридцать раз
+         больше среднего). Дисперсия по (n-1) — несмещённая оценка. */
+      const nPts = s.points.length;
+      const variance = nPts > 1
+        ? s.points.reduce((sum, p) => sum + Math.pow(p.r - mean, 2), 0) / (nPts - 1)
+        : 0;
+      const stdDev = Math.sqrt(variance);
+      const uStatRel = (nPts > 1 && mean > 0) ? (stdDev / Math.sqrt(nPts)) / mean : 0;
+      const uInstRel = (parseFloat((document.getElementById('uncertainty') || {}).value) || 30) / 100;
+      const totalRel = Math.sqrt(uStatRel * uStatRel + uInstRel * uInstRel);
+      const totalError = mean * totalRel;
+
+      const firstTime = s.points[0].t;
+      const lastTime = s.points[s.points.length - 1].t;
+      const duration = lastTime - firstTime;
+
+      let durationStr = '';
+      if (duration < 60) {
+        durationStr = `${Math.round(duration)} сек`;
+      } else if (duration < 3600) {
+        durationStr = `${Math.round(duration / 60)} мин`;
+      } else if (duration < 86400) {
+        durationStr = `${Math.round(duration / 3600)} ч`;
+      } else {
+        durationStr = `${Math.round(duration / 86400)} сут`;
+      }
+
+      html += `
+        <tr>
+          <td>${s.name}</td>
+          <td>${s.points.length}</td>
+          <td>${durationStr}</td>
+          <td>${mean.toFixed(1)} ± ${totalError.toFixed(1)} Бк/м³ (${Math.round(totalRel * 100)} %)</td>
+        </tr>`;
+    });
+
+    statsTable.innerHTML = html;
+  }
+}
+
+function multiBind() {
+  const filesInput = document.getElementById('multi-files');
+  if (filesInput) filesInput.addEventListener('change', function(e) {
+    const files = e.target.files;
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        multiAddSeries(file.name, e.target.result);
+      };
+      reader.readAsText(file);
+    }
+  });
+
+  /* История платы приходит JSON-ом, а не CSV: прежняя версия отдавала текст
+     ответа в разборщик CSV, и серия всегда получалась пустой. Точки берём
+     из разобранного ответа напрямую. */
+  async function multiAddFromBoard(name, from, to) {
+    const q = ['max=1000'];
+    if (from) q.push('from=' + from);
+    if (to) q.push('to=' + to);
+    try {
+      const response = await fetch('/api/history/range?' + q.join('&'), {cache: 'no-store'});
+      if (!response.ok) throw new Error('плата ответила ' + response.status);
+      const data = await response.json();
+      const pts = (data.points || [])
+        .filter(p => p && p.r !== null && isFinite(p.r))
+        .map(p => ({t: p.t, r: p.r}));
+      if (!pts.length) {
+        series.push({name: name, points: [], visible: true, error: 'за этот интервал записей нет'});
+      } else {
+        series.push({name: name, points: pts, visible: true, error: ''});
+      }
+    } catch (error) {
+      /* Молчать нельзя: человек ждёт данные, которых не будет. */
+      series.push({name: name, points: [], visible: true, error: 'не удалось получить: ' + error.message});
+    }
+    visibleRange = null;   /* новый ряд показываем целиком */
+    multiRedraw();
+    multiUpdateLegend();
+    multiUpdateStats();
+  }
+
+  document.getElementById('multi-add-board').addEventListener('click', function() {
+    multiAddFromBoard('вся история платы', 0, 0);
+  });
+
+  const addRangeBtn = document.getElementById('multi-add-range');
+  if (addRangeBtn) {
+    addRangeBtn.addEventListener('click', function() {
+      const f = document.getElementById('multi-from').value;
+      const t = document.getElementById('multi-to').value;
+      /* Конец интервала — плюс сутки минус секунда, чтобы последний день
+         входил целиком, а не обрывался на полуночи. */
+      const from = f ? Math.floor(Date.parse(f) / 1000) : 0;
+      const to = t ? Math.floor(Date.parse(t) / 1000) + 86399 : 0;
+      const name = (f || 'начало') + ' — ' + (t || 'сейчас');
+      multiAddFromBoard(name, from, to);
+    });
+  }
+
+  document.getElementById('multi-clear').addEventListener('click', function() {
+    series = [];
+    visibleRange = null;
+    multiRedraw();
+    multiUpdateLegend();
+    multiUpdateStats();
+  });
+
+  document.getElementById('multi-merge').addEventListener('change', function() {
+    multiRedraw();
+    multiUpdateStats();
+  });
+
+  const smaInput = document.getElementById('multi-sma');
+  if (smaInput) smaInput.addEventListener('input', function() { multiRedraw(); });
+
+  const cv = document.getElementById('multi-chart');
+  cv.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    if (!visibleRange) return;
+    /* Масштаб меняет ДЛИНУ окна вокруг точки под курсором. Прежняя формула
+       умножала на множитель саму метку времени (~1.79e9), и одного тика хватало,
+       чтобы уехать на два с половиной года от данных: график становился пустым. */
+    const rect = cv.getBoundingClientRect();
+    const frac = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+    const span = visibleRange.max - visibleRange.min;
+    const c = visibleRange.min + span * frac;
+    const ns = span * (e.deltaY > 0 ? 1.25 : 0.8);
+    if (ns > 600) {                       /* мельче десяти минут точек нет */
+      visibleRange = { min: c - ns * frac, max: c + ns * (1 - frac) };
+      multiRedraw();
+    }
+  }, { passive: false });
+
+  cv.addEventListener('mousedown', function(e) {
+    isDragging = true;
+    lastX = e.clientX;
+  });
+
+  document.addEventListener('mousemove', function(e) {
+    if (!isDragging || !visibleRange) return;
+
+    const dx = (e.clientX - lastX) * devicePixelRatio;
+    const width = cv.getBoundingClientRect().width * devicePixelRatio;
+    const delta = (dx / width) * (visibleRange.max - visibleRange.min);
+
+    visibleRange.min -= delta;
+    visibleRange.max -= delta;
+
+    lastX = e.clientX;
+    multiRedraw();
+  });
+
+  document.addEventListener('mouseup', function() {
+    isDragging = false;
+  });
+
+  /* Наведение: показываем ближайшую точку. Во время перетаскивания не мешаем. */
+  cv.addEventListener('mousemove', function(e) {
+    if (isDragging || !multiGeom) return;
+    const r = cv.getBoundingClientRect();
+    const x = e.clientX - r.left;
+    const frac = (x - multiGeom.mL) / multiGeom.pW;
+    hoverT = (frac < 0 || frac > 1) ? null : multiGeom.minTime + frac * (multiGeom.maxTime - multiGeom.minTime);
+    multiRedraw();
+  });
+  cv.addEventListener('mouseleave', function() {
+    if (hoverT !== null) { hoverT = null; multiRedraw(); }
+  });
+
+  /* Щипок двумя пальцами: на телефоне колеса нет, а масштаб нужен так же. */
+  let pinchD = 0;
+  cv.addEventListener('touchstart', function(e) {
+    if (e.touches.length === 2) {
+      pinchD = Math.abs(e.touches[0].clientX - e.touches[1].clientX);
+      e.preventDefault();
+    }
+  }, { passive: false });
+  cv.addEventListener('touchmove', function(e) {
+    if (e.touches.length !== 2 || !visibleRange) return;
+    e.preventDefault();
+    const r = cv.getBoundingClientRect();
+    const d = Math.abs(e.touches[0].clientX - e.touches[1].clientX);
+    if (pinchD < 12 || d < 12) { pinchD = d; return; }
+    const frac = ((e.touches[0].clientX + e.touches[1].clientX) / 2 - r.left) / r.width;
+    const span = visibleRange.max - visibleRange.min;
+    const c = visibleRange.min + span * frac;
+    const ns = span * (pinchD / d);
+    pinchD = d;
+    if (ns > 600) {
+      visibleRange = { min: c - ns * frac, max: c + ns * (1 - frac) };
+      multiRedraw();
+    }
+  }, { passive: false });
+
+  cv.addEventListener('dblclick', function() {
+    // Сброс к полному диапазону
+    if (series.length > 0) {
+      const visibleSeries = series.filter(s => s.visible);
+      if (visibleSeries.length > 0) {
+        let minTime = Infinity;
+        let maxTime = -Infinity;
+
+        visibleSeries.forEach(s => {
+          if (s.points.length > 0) {
+            const first = s.points[0].t;
+            const last = s.points[s.points.length - 1].t;
+            minTime = Math.min(minTime, first);
+            maxTime = Math.max(maxTime, last);
+          }
+        });
+
+        if (minTime !== Infinity && maxTime !== -Infinity) {
+          visibleRange = null;      /* дальше границы берутся из данных */
+          multiRedraw();
+        }
+      }
+    }
+  });
+
+  /* Вкладка открывается на данных текущей сессии: пустой график читался как
+     поломка, а первое, что нужно человеку, — своя история, а не выбор источника. */
+  multiRedraw();
+  multiUpdateLegend();
+  multiUpdateStats();
+  multiAddFromBoard('данные сессии', 0, 0);
+}
+
+window.multiAddSeries = multiAddSeries;   /* нужна проверкам шлюза */
+
+function chartColors() {
+  const css = getComputedStyle(document.documentElement);
+  const pick = (name, fallback) => (css.getPropertyValue(name).trim() || fallback);
+  return {
+    line:  pick('--data-line',  '#22C55E'),
+    band:  pick('--data-band',  '#22C55E'),
+    limit: pick('--data-limit', '#F87171'),
+    grid:  pick('--data-grid',  '#334155'),
+    axis:  pick('--data-axis',  '#94A3B8'),
+    mean:  pick('--data-mean',  '#60A5FA')
+  };
+}
+
+/* График на «Показаниях» — обзорный: показывает выбранный кнопкой период
+   целиком, без жестов. Разбор с масштабом и сдвигом живёт на «Графиках». */
+let chartRange = { from: 0, to: 0 };
+
+function drawChart() {
+  if (!chartCtx) return;
+  const C = chartColors();
+  if (!fitCanvas(chartCanvas, chartCtx)) return;
+  const width = chartCanvas.clientWidth;
+  const height = chartCanvas.clientHeight;
+  const all = (history && history.points) ? history.points : [];
+
+  chartCtx.font = '14px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
+  chartCtx.fillStyle = C.axis;
+  chartCtx.textAlign = 'center';
+  chartCtx.textBaseline = 'alphabetic';
+  if (all.length === 0) {
+    chartCtx.fillText('данных пока нет — первая точка появится после ближайшего опроса', width / 2, height / 2);
+    return;
+  }
+
+  const leftMargin = 38, rightMargin = 12, topMargin = 12, bottomMargin = 26;
+  const chartWidth = width - leftMargin - rightMargin;
+  const chartHeight = height - topMargin - bottomMargin;
+
+  /* Границы окна по времени. Точки за окном не рисуются; x считается по
+     времени точки, а не по её номеру — при неравномерном опросе номера врут. */
+  const vFrom = all[0].t;
+  const vTo = all[all.length - 1].t;
+  const spanT = Math.max(1, vTo - vFrom);
+  const pts = all;
+  const xOf = t => leftMargin + (t - vFrom) / spanT * chartWidth;
+  const pickVal = p => currentRow === 'radon' ? p.r : currentRow === 'temperature' ? p.c : p.h;
+
+  chartCtx.strokeStyle = C.grid;
+  chartCtx.lineWidth = 1;
+  chartCtx.beginPath();
+  for (let i = 0; i < 5; i++) {
+    const y = topMargin + (i * chartHeight / 4);
+    chartCtx.moveTo(leftMargin, y);
+    chartCtx.lineTo(width - rightMargin, y);
+  }
+  for (let i = 0; i < 5; i++) {
+    const x = leftMargin + (i * chartWidth / 4);
+    chartCtx.moveTo(x, topMargin);
+    chartCtx.lineTo(x, height - bottomMargin);
+  }
+  chartCtx.stroke();
+
+  /* Подписи времени — по границам окна: внутри двух суток часы, дальше даты. */
+  const fmtT = spanT < 2 * 86400
+    ? t => new Date(t * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    : t => new Date(t * 1000).toLocaleDateString([], { day: '2-digit', month: '2-digit' });
+  chartCtx.fillStyle = C.axis;
+  chartCtx.font = '11px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
+  for (let i = 0; i < 3; i++) {
+    chartCtx.textAlign = i === 0 ? 'left' : i === 2 ? 'right' : 'center';
+    chartCtx.fillText(fmtT(vFrom + spanT * i / 2), leftMargin + (i * chartWidth / 2), height - 8);
+  }
+
+  if (pts.length === 0) {
+    chartCtx.textAlign = 'center';
+    chartCtx.font = '13px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
+    chartCtx.fillText('в этом окне нет точек — отдалите масштаб', width / 2, height / 2);
+    return;
+  }
+
+  /* Границы шкалы — по видимым точкам. */
+  let minVal = Infinity, maxVal = -Infinity;
+  for (const p of pts) {
+    const v = pickVal(p);
+    if (v !== null && isFinite(v)) { if (v < minVal) minVal = v; if (v > maxVal) maxVal = v; }
+  }
+  if (!isFinite(minVal)) return;
+
+  /* Шкала обязана вместить полосу погрешности среднего, а не только значения. */
+  if (currentRow === 'radon') {
+    const vals = pts.map(pt => pt.r).filter(v => v !== null && isFinite(v));
+    if (vals.length) {
+      const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+      const uInput = document.getElementById('uncertainty');
+      const uInst = uInput ? parseFloat(uInput.value) / 100 : 0.3;
+      let uStat = 0;
+      if (vals.length > 1) {
+        const d = vals.reduce((a, v) => a + (v - mean) * (v - mean), 0) / (vals.length - 1);
+        uStat = (Math.sqrt(d) / Math.sqrt(vals.length)) / mean;
+      }
+      const U = Math.sqrt(uStat * uStat + uInst * uInst);
+      minVal = Math.min(minVal, mean * (1 - U));
+      maxVal = Math.max(maxVal, mean * (1 + U));
+    }
+  }
+
+  if (minVal === maxVal) { minVal -= 1; maxVal += 1; }
+  else { const pad = (maxVal - minVal) * 0.05; minVal -= pad; maxVal += pad; }
+  if (minVal < 0) minVal = 0;
+  const scale = chartHeight / (maxVal - minVal);
+
+  /* Подписи шкалы — в столбце слева, по итоговым границам. */
+  chartCtx.fillStyle = C.axis;
+  chartCtx.textAlign = 'right';
+  chartCtx.textBaseline = 'middle';
+  for (let i = 0; i <= 4; i++) {
+    const gy = topMargin + i * chartHeight / 4;
+    const gv = maxVal - i * (maxVal - minVal) / 4;
+    chartCtx.fillText(currentRow === 'radon' ? String(Math.round(gv)) : gv.toFixed(1), leftMargin - 6, gy);
+  }
+  chartCtx.textBaseline = 'alphabetic';
+
+  if (currentRow === 'radon') {
+    const normative = (stats && stats.assess && stats.assess.c_rl) ? stats.assess.c_rl : 0;
+    let normAbove = false;
+    if (normative > maxVal) {
+      if (normative <= maxVal * 2.0) maxVal = normative * 1.05;
+      else normAbove = true;
+    }
+    chartCtx.fillStyle = C.limit;
+    chartCtx.font = '12px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
+    chartCtx.textAlign = 'right';
+    if (normative > 0) {
+      if (normAbove) {
+        chartCtx.fillText('норматив ' + normative + ' Бк/м³ — выше шкалы', width - rightMargin - 6, topMargin + 12);
+      } else {
+        chartCtx.strokeStyle = C.limit;
+        chartCtx.setLineDash([6, 4]);
+        const normY = height - bottomMargin - ((normative - minVal) * scale);
+        chartCtx.beginPath();
+        chartCtx.moveTo(leftMargin, normY);
+        chartCtx.lineTo(width - rightMargin, normY);
+        chartCtx.stroke();
+        chartCtx.setLineDash([]);
+        chartCtx.fillText('норматив ' + normative + ' Бк/м³', width - rightMargin - 6, normY - 5);
+      }
+    }
+    drawMeanLine(chartCtx, pts,
+      {leftMargin, rightMargin, topMargin, bottomMargin, width, height, minVal, maxVal, scale},
+      {mean: C.mean, band: C.mean});
+  }
+
+  chartCtx.beginPath();
+  chartCtx.strokeStyle = C.line;
+  chartCtx.lineWidth = 2;
+  chartCtx.lineJoin = 'round';
+  let started = false;
+  for (const p of pts) {
+    const v = pickVal(p);
+    if (v === null || !isFinite(v)) continue;
+    const x = xOf(p.t), y = height - bottomMargin - ((v - minVal) * scale);
+    if (!started) { chartCtx.moveTo(x, y); started = true; } else chartCtx.lineTo(x, y);
+  }
+  chartCtx.stroke();
+
+  /* Кружки точек — пока их немного; на сотнях они сливаются в жирную колбасу. */
+  if (pts.length <= 240) {
+    chartCtx.fillStyle = C.line;
+    for (const p of pts) {
+      const v = pickVal(p);
+      if (v === null || !isFinite(v)) continue;
+      chartCtx.beginPath();
+      chartCtx.arc(xOf(p.t), height - bottomMargin - ((v - minVal) * scale), 2.5, 0, Math.PI * 2);
+      chartCtx.fill();
+    }
+  }
+}
+
+function formatUptime(seconds) {
+      const days = Math.floor(seconds / 86400);
+      const hours = Math.floor((seconds % 86400) / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const secs = seconds % 60;
+
+      if (days > 0) {
+        return `${days} д ${hours} ч`;
+      } else if (hours > 0) {
+        return `${hours} ч ${minutes} мин`;
+      } else if (minutes > 0) {
+        return `${minutes} мин ${secs} сек`;
+      } else {
+        return `${secs} сек`;
+      }
+    }
+
+    function saveAssessmentSettings(e) {
+      e.preventDefault();
+      const normative = document.getElementById('normative').value;
+      const uncertainty = document.getElementById('uncertainty').value;
+      const mode = document.getElementById('mode').value;
+
+      fetch('/api/stats', {
+        method: 'POST',
+        body: `${normative}|${uncertainty}|${mode}`
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.ok) {
+          alert('Настройки сохранены');
+        } else {
+          alert(data.message || 'Проверьте значения: норматив 50…1000, неопределённость 20…50 %');
+        }
+      });
+    }
+
+    function saveHaSettings(e) {
+      e.preventDefault();
+      const host = document.getElementById('ha-host').value;
+      const user = document.getElementById('ha-user').value;
+      const pass = document.getElementById('ha-pass').value;
+
+      fetch('/api/ha', {
+        method: 'POST',
+        body: JSON.stringify({host, user, pass})
+      })
+      .then(() => {
+        alert('Настройки Home Assistant сохранены. Перезагрузка...');
+        setTimeout(updateAllData, 3000);
+      });
+    }
+
+    function saveNarodmonSettings(e) {
+      e.preventDefault();
+      const host = document.getElementById('nm-host').value;
+      const interval = document.getElementById('nm-interval').value;
+
+      fetch('/api/narodmon', {
+        method: 'POST',
+        body: JSON.stringify({host, interval})
+      })
+      .then(() => {
+        alert('Настройки Народмон сохранены');
+      });
+    }
+
+    function enableNarodmon() {
+      if (confirm('Включить отправку показаний на narodmon.ru? Данные уйдут на внешний сервер.')) {
+        fetch('/api/narodmon', {
+          method: 'POST',
+          body: JSON.stringify({enable: true})
+        })
+        .then(() => {
+          alert('Отправка включена');
+        });
+      }
+    }
+
+function applyAssess(a, source) {
+  const card = document.getElementById('assessment');
+  if (!card) return;
+  
+  card.className = `assessment-card ${a.verdict}`;
+  
+  const textEl = document.getElementById('assessment-text');
+  const metaEl = document.getElementById('assessment-meta');
+  const sourceEl = document.getElementById('assess-source');
+  
+  if (textEl) {
+    switch (a.verdict) {
+      case 'complies': textEl.textContent = 'Соответствует нормативу'; break;
+      case 'exceeds': textEl.textContent = 'Не соответствует нормативу — нужны защитные мероприятия'; break;
+      case 'uncertain': textEl.textContent = 'Решение неопределённое'; break;
+      case 'too_short': textEl.textContent = 'Измерений пока недостаточно для оценки'; break;
+      default: textEl.textContent = '';
+    }
+  }
+  
+  if (metaEl) {
+    const uvStr = a.uv ? ` · неопределённость периода ⟨${a.uv}⟩` : '';
+    const critStr = a.crit1 ? ` · порог ⟨${a.crit1}⟩ Бк/м³` : '';
+    const daysStr = a.days ? ` · измерений ⟨${a.days}⟩ сут` : '';
+    const avgStr = a.c ? ` · средняя ⟨${a.c.toFixed(0)}⟩ Бк/м³` : '';
+    metaEl.textContent = `методика: рациональный метод, АНРИ 2025${uvStr}${critStr}${daysStr}${avgStr}`;
+  }
+  
+  if (sourceEl) {
+    if (source) {
+      const from = a.from ? new Date(a.from * 1000).toLocaleDateString('ru-RU') : 'начало истории';
+      const to = a.to ? new Date(a.to * 1000).toLocaleDateString('ru-RU') : 'настоящее время';
+      sourceEl.textContent = `источник данных: интервал ${from} — ${to}`;
+    } else {
+      sourceEl.textContent = 'источник данных: текущий замер';
+    }
+  }
+}
+
+function bindAssessControls() {
+  const applyBtn = document.getElementById('assess-apply');
+  const currentBtn = document.getElementById('assess-current');
+  const fromInput = document.getElementById('assess-from');
+  const toInput = document.getElementById('assess-to');
+  
+  if (!applyBtn || !currentBtn) return;
+  
+  applyBtn.addEventListener('click', async () => {
+    if (!fromInput || !toInput) return;
+    
+    const fromVal = fromInput.value;
+    const toVal = toInput.value;
+    
+    let fromSec = 0;
+    let toSec = 0;
+    
+    if (fromVal) {
+      fromSec = Math.floor(Date.parse(fromVal) / 1000);
+    }
+    
+    if (toVal) {
+      const toDate = new Date(toVal);
+      toDate.setDate(toDate.getDate() + 1);
+      toDate.setSeconds(toDate.getSeconds() - 1);
+      toSec = Math.floor(toDate.getTime() / 1000);
+    }
+    
+    applyBtn.classList.add('busy');
+    
+    try {
+      const params = new URLSearchParams();
+      if (fromSec) params.append('from', fromSec);
+      if (toSec) params.append('to', toSec);
+      
+      const response = await fetch(`/api/assess?${params}`, { cache: 'no-store' });
+      const data = await response.json();
+      
+      applyAssess(data, true);
+    } catch (error) {
+      console.error('Ошибка получения оценки:', error);
+      const sourceEl = document.getElementById('assess-source');
+      if (sourceEl) sourceEl.textContent = 'не удалось получить оценку за интервал';
+    } finally {
+      applyBtn.classList.remove('busy');
+    }
+  });
+  
+  currentBtn.addEventListener('click', () => {
+    if (typeof stats !== 'undefined' && stats.assess) {
+      applyAssess(stats.assess, false);
+      if (fromInput) fromInput.value = '';
+      if (toInput) toInput.value = '';
+    }
+  });
+}
+
+    function showLog() {
+  const logContainer = document.getElementById('log-container');
+  const button = document.getElementById('show-log-btn');
+
+  if (logContainer.style.display === 'none') {
+    // Запрос лога с отключённым кэшированием
+    fetch('/api/log', { cache: 'no-store' })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text();
+      })
+      .then(text => {
+        // Очистка контейнера перед наполнением
+        logContainer.textContent = '';
+
+        // Разделение текста по строкам и фильтрация пустых
+        const lines = text.split('\n').filter(line => line.trim() !== '');
+
+        // Если лог пустой или запрос не удался — показываем сообщение
+        if (lines.length === 0) {
+          const msg = document.createElement('div');
+          msg.textContent = 'лог платы пуст';
+          msg.style.whiteSpace = 'pre-wrap';
+          msg.style.wordBreak = 'break-word';
+          msg.style.padding = '1px 0';
+          logContainer.appendChild(msg);
+        } else {
+          // Добавляем каждую запись как отдельный элемент div
+          lines.forEach(line => {
+            const div = document.createElement('div');
+            div.textContent = line;
+            div.style.whiteSpace = 'pre-wrap';
+            div.style.wordBreak = 'break-word';
+            div.style.padding = '1px 0';
+
+            // Выделение строк по уровню
+            if (line.startsWith('W (')) {
+              div.style.color = 'var(--warn)';
+            } else if (line.startsWith('E (')) {
+              div.style.color = 'var(--err)';
+            }
+
+            logContainer.appendChild(div);
+          });
+        }
+
+        // Установка стилей контейнера
+        logContainer.style.maxHeight = '50vh';
+        logContainer.style.overflowY = 'auto';
+        logContainer.style.display = 'block';
+
+        // Прокрутка к последней записи для удобства чтения
+        logContainer.scrollTop = logContainer.scrollHeight;
+      })
+      .catch(error => {
+        // Очистка и показ сообщения об ошибке
+        logContainer.textContent = '';
+        const msg = document.createElement('div');
+        msg.textContent = `не удалось получить лог: ${error.message}`;
+        msg.style.whiteSpace = 'pre-wrap';
+        msg.style.wordBreak = 'break-word';
+        msg.style.padding = '1px 0';
+        logContainer.appendChild(msg);
+        logContainer.style.maxHeight = '50vh';
+        logContainer.style.overflowY = 'auto';
+        logContainer.style.display = 'block';
+      });
+  } else {
+    // Скрытие контейнера при повторном нажатии
+    logContainer.style.display = 'none';
+  }
+}
+  
+let statsData = null;
+
+async function methodTick() {
+  try {
+    const response = await fetch('/api/stats', {cache: 'no-store'});
+    if (!response.ok) throw new Error('Network response was not ok');
+    statsData = await response.json();
+
+    // Обновление заключения
+    const verdictCard = document.getElementById('verdict_card');
+    const verdictTitle = document.getElementById('verdict_title');
+    const verdictText = document.getElementById('verdict_text');
+    const verdictMeta = document.getElementById('verdict_meta');
+
+    const assess = statsData.assess;
+    let borderLeft, title, text, meta;
+
+    switch (assess.verdict) {
+      case 'complies':
+        borderLeft = '--ok';
+        title = 'Соответствует нормативу';
+        text = `Средняя объёмная активность радона за ${assess.days} суток — ${assess.c.toFixed(0)} Бк/м³ при нормативе ${assess.c_rl}. С учётом сезонных колебаний и погрешности прибора превышение маловероятно.`;
+        break;
+      case 'exceeds':
+        borderLeft = '--err';
+        title = 'Не соответствует нормативу — нужны защитные мероприятия';
+        text = `Средняя объёмная активность за ${assess.days} суток — ${assess.c.toFixed(0)} Бк/м³ при нормативе ${assess.c_rl}. Рекомендуется проветривание и меры по снижению поступления радона.`;
+        break;
+      case 'uncertain':
+        borderLeft = '--warn';
+        title = 'Решение неопределённое';
+        text = 'Измерений пока мало, чтобы судить уверенно. Продолжайте наблюдение — надёжная оценка требует нескольких месяцев.';
+        break;
+      case 'too_short':
+        borderLeft = '--dim';
+        title = 'Измерений пока недостаточно для оценки';
+        text = 'Нужно не меньше четырёх суток непрерывных измерений.';
+        break;
+      default:
+        borderLeft = '--dim';
+        title = '—';
+        text = '';
+    }
+
+    verdictCard.style.borderLeftColor = `var(${borderLeft})`;
+    /* Класс вердикта красит блок целиком: цвет заключения должен читаться
+       до чтения текста, как и на «Показаниях». */
+    verdictCard.className = 'card verdict ' + assess.verdict;
+    verdictTitle.textContent = title;
+    verdictText.textContent = text;
+    meta = `методика: рациональный метод, АНРИ 2025 · неопределённость периода ${assess.uv > 0 ? assess.uv : '—'} · порог ${assess.crit1 > 0 ? assess.crit1 + ' Бк/м³' : '—'} · измерений ${assess.days} сут`;
+    verdictMeta.textContent = meta;
+
+    // Среднее расчётное ОА — то же число, по которому строится заключение,
+    // вынесенное в показания. Суммарная погрешность: инструментальная
+    // (паспорт прибора, k=2) и неопределённость периода складываются
+    // квадратично — источники независимы, поэтому не арифметически.
+    const meanEl = document.getElementById('radon-mean');
+    if (meanEl) {
+      const meanUnc = document.getElementById('radon-mean-unc');
+      const meanUnit = document.getElementById('radon-mean-unit');
+      if (assess.c) {
+        meanEl.textContent = assess.c.toFixed(0);
+        const share = assess.c_rl ? assess.c / assess.c_rl : 0;
+        const col = share >= 1 ? 'var(--err)' : share >= 0.5 ? 'var(--warn)' : 'var(--ok)';
+        meanEl.style.color = col;
+        if (meanUnit) meanUnit.style.color = col;
+        if (meanUnc) {
+          const uInput = document.getElementById('uncertainty');
+          const uI = uInput ? parseFloat(uInput.value) / 100 : 0.3;
+          const uV = assess.uv > 0 ? assess.uv : 0;
+          const uT = Math.sqrt(uI * uI + uV * uV);
+          meanUnc.textContent = ' ± ' + Math.round(assess.c * uT);
+          meanUnc.style.color = col;
+        }
+      } else {
+        meanEl.textContent = '—';
+        meanEl.style.color = '';
+        if (meanUnit) meanUnit.style.color = '';
+        if (meanUnc) { meanUnc.textContent = ''; meanUnc.style.color = ''; }
+      }
+    }
+
+    // Обновление состояния замера
+    updateLevels();   /* норматив пришёл только сейчас — шкала ждала его */
+
+    const testState = document.getElementById('test_state');
+    if (statsData.test.started) {
+      testState.className = 'test-state running';
+      testState.textContent = `Замер идёт ${assess.days} суток`;
+    } else {
+      testState.className = 'test-state';
+      testState.textContent = 'Замер не начат — оценка идёт по всем накопленным данным';
+    }
+
+
+  } catch (error) {
+    console.error('Ошибка при получении данных:', error);
+  }
+}
+
+document.getElementById('btn_test_start').addEventListener('click', async () => {
+  if (statsData?.test?.started && !confirm('Начать замер заново? Прежние данные останутся в файле, но в оценку больше не войдут.')) return;
+
+  try {
+    const btn = document.getElementById('btn_test_start');
+    if (btn) btn.classList.add('busy');
+    const response = await fetch('/api/test', {
+      method: 'POST',
+      // Прошивка ждёт простое слово в теле, не объект: разбор через strcmp.
+      headers: {'Content-Type': 'text/plain'},
+      body: 'start'
+    }).finally(() => { if (btn) btn.classList.remove('busy'); });
+    const result = await response.json();
+    if (!result.ok) {
+      alert(result.error);
+    } else {
+    }
+  } catch (error) {
+    console.error('Ошибка при запуске замера:', error);
+  }
+});
+
+document.getElementById('btn_test_reset').addEventListener('click', async () => {
+  if (!confirm('Стереть всю историю показаний? Это нельзя отменить.')) return;
+
+  try {
+    const btnR = document.getElementById('btn_test_reset');
+    if (btnR) btnR.classList.add('busy');
+    const response = await fetch('/api/test', {
+      method: 'POST',
+      headers: {'Content-Type': 'text/plain'},
+      body: 'reset'
+    }).finally(() => { if (btnR) btnR.classList.remove('busy'); });
+    const result = await response.json();
+    if (!result.ok) {
+      alert(result.error);
+    } else {
+    }
+  } catch (error) {
+    console.error('Ошибка при сбросе замера:', error);
+  }
+});
+
+// Красит значение объёмной активности по отношению к нормативу и подписывает
+// долю числом. Цвет НЕ единственный признак: доля пишется текстом всегда —
+// иначе человек с нарушением цветовосприятия теряет весь смысл подсветки,
+// а речь идёт о безопасности жилья.
+function paintByNorm(valueId, shareId, value) {
+  const el = document.getElementById(valueId);
+  const un = document.getElementById(valueId + '-unit');
+  const sh = document.getElementById(shareId);
+  if (!el) return;
+  const norm = (typeof statsData === 'object' && statsData && statsData.assess)
+               ? statsData.assess.c_rl : 0;
+  if (value === null || value === undefined || !norm) {
+    el.style.color = '';
+    if (un) un.style.color = '';
+    if (sh) sh.textContent = '';
+    return;
+  }
+  const share = value / norm;
+  el.style.color = share >= 1 ? 'var(--err)' : (share >= 0.5 ? 'var(--warn)' : 'var(--ok)');
+  if (un) un.style.color = el.style.color;
+  if (sh) sh.textContent = Math.round(share * 100) + ' % норматива ' + norm.toFixed(0) + ' Бк/м³';
+}
+</script>
+</body>
+</html>

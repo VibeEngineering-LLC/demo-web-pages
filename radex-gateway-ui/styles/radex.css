@@ -1,0 +1,146 @@
+/* Страница шлюза Radex MR107ion: график с периодами и нормативом, заключение
+   по методике, таблица средних, вкладка «Графики», диагностика, лог платы,
+   сканер приборов. Подключается ПОСЛЕ базового. */
+
+/* Диагностика: много коротких пар «название — значение». Два столбца на
+   телефоне, дальше по месту. */
+.diag-grid{display:grid;gap:var(--sp-2);margin-bottom:var(--sp-3);grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr))}
+.diag-grid .card{margin-bottom:0}
+.diag-grid .card-title{margin-bottom:2px}
+.diag-grid .card-value{font-size:var(--fs-lg);font-weight:600}
+@media(min-width:640px){.diag-grid{gap:10px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}}
+
+/* Легенда графика. Подпись со средним стояла прямо на кривой и не читалась;
+   здесь она рядом с холстом, а цвет мазка совпадает с цветом на графике. */
+.chart-legend{display:flex;flex-wrap:wrap;gap:4px var(--sp-3);margin-top:6px;font-size:11px;color:var(--dim)}
+.chart-legend>span{display:inline-flex;align-items:center;gap:6px}
+.chart-legend>span::before{content:"";width:16px;height:2px;border-radius:1px;background:var(--sw,var(--dim))}
+.chart-legend .lg-data{--sw:var(--data-line)}
+.chart-legend .lg-mean{--sw:var(--data-mean)}
+.chart-legend .lg-limit{--sw:var(--data-limit)}
+/* Норматив на графике — пунктир, мазок в легенде тоже. */
+.chart-legend .lg-limit::before{background:repeating-linear-gradient(90deg,var(--data-limit) 0 5px,transparent 5px 8px)}
+
+.chart-controls{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:var(--sp-3)}
+.chart-controls>button{flex:1 1 auto}
+/* Ряд периодов и интервала длиннее телефона. Перенос давал блок в пол-экрана
+   высотой, поэтому ряд прокручивается по горизонтали, а с 1024 px
+   раскладывается обычным переносом. */
+#period-controls{flex-wrap:nowrap;align-items:center;gap:5px;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;padding-bottom:2px;margin-bottom:6px}
+#period-controls::-webkit-scrollbar{display:none}
+#period-controls>*{flex:0 0 auto}
+/* Пять периодов делят ширину карточки на равные доли: ряд заканчивается там же,
+   где заканчивается график, и прокручивать его не нужно. */
+#period-controls button{flex:1 1 0;min-width:0;min-height:38px;padding:6px 6px;font-size:var(--fs-sm)}
+@media(min-width:640px){#period-controls button{padding:7px 12px}}
+@media(min-width:1024px){#period-controls{flex-wrap:wrap;overflow:visible}}
+/* Выбранный период виден и без цвета: рамка и жирность, не только фон. */
+.chart-controls button[aria-pressed=true],.chart-button.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+/* #RADEX-46: поля дат наследовали input{width:100%} и растягивались на всю
+   строку. Ширина — по содержимому, то есть по дате. */
+.range-date{width:auto;min-width:132px;max-width:170px;min-height:40px;padding:var(--sp-2) 10px;border-radius:8px;flex:0 0 auto}
+@media(min-width:1024px){.range-date{min-height:36px;font-size:var(--fs-sm);min-width:120px}}
+
+.assessment-card{display:flex;align-items:stretch;gap:var(--sp-3)}
+.assessment-card .color-bar{flex:0 0 4px;border-radius:2px;background:var(--dim)}
+.assessment-card .content{flex:1;min-width:0}
+.assessment-card .title{font-size:var(--fs-md);font-weight:700;margin-bottom:2px}
+@media(min-width:640px){.assessment-card .title{font-size:var(--fs-lg)}}
+.assessment-card .text{font-size:var(--fs-md);color:var(--dim);line-height:1.45}
+.assessment-card .meta{font-size:var(--fs-xs);color:var(--dim);margin-top:var(--sp-2)}
+/* Вердикт по рациональному методу красит блок целиком: подложка, полоса и
+   заголовок. Цвет — не единственный признак, текст вердикта стоит рядом. */
+/* --v объявляется на самой карточке: на дочерней полосе он не разрешался в
+   правиле фона, color-mix становился невалидным и обнулял базовый background. */
+.assessment-card.complies,.verdict.complies{--v:var(--ok)}
+.assessment-card.exceeds,.verdict.exceeds{--v:var(--err)}
+.assessment-card.uncertain,.verdict.uncertain{--v:var(--warn)}
+.assessment-card.too_short,.verdict.too_short{--v:var(--dim)}
+.assessment-card .color-bar{background:var(--v,var(--dim))}
+.assessment-card.complies,.assessment-card.exceeds,.assessment-card.uncertain{background:color-mix(in oklab,var(--v) 10%,var(--card))}
+.assessment-card.complies .title{color:var(--ok)}
+.assessment-card.exceeds .title{color:var(--err)}
+.assessment-card.uncertain .title{color:var(--warn)}
+.verdict{border-left-color:var(--v,var(--dim))!important}
+.verdict.complies,.verdict.exceeds,.verdict.uncertain{background:color-mix(in oklab,var(--v) 10%,var(--card))}
+.verdict.complies #verdict_title{color:var(--ok)}
+.verdict.exceeds #verdict_title{color:var(--err)}
+.verdict.uncertain #verdict_title{color:var(--warn)}
+
+/* Числовые столбцы по центру: край таблицы им не ориентир, а по центру
+   значения стоят одной вертикалью против своих заголовков. */
+.row-value{font-weight:700;white-space:nowrap;text-align:center}
+.row-coverage{text-align:center;font-size:var(--fs-xs);color:var(--dim)}
+#averages th:nth-child(2),#averages th:nth-child(3){text-align:center}
+.row-value.invalid,.row-coverage.invalid{color:var(--dim);font-weight:400}
+
+/* Вкладка «Графики». Ряд управления самый длинный на странице: кнопки, две
+   даты, выбор файлов, переключатель и поле погрешности. На телефоне он идёт
+   столбцом блоками по смыслу, от 640 px — одной строкой с переносом, где
+   кнопки держат свою ширину, а «Очистить» уходит к правому краю: это действие
+   противоположно остальным и не должно стоять с ними вплотную. */
+#multi-content .chart-controls{display:grid;gap:var(--sp-2);align-items:center;margin-bottom:var(--sp-3)}
+#multi-content .chart-controls>button{width:100%}
+#multi-content .chart-controls label{display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-sm);min-height:44px}
+#multi-files{width:100%;max-width:none;min-height:44px;padding:var(--sp-2) 10px;font-size:var(--fs-sm)}
+#multi-files::file-selector-button{margin-right:10px;background:var(--card2);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:6px 10px;font:inherit;font-size:var(--fs-sm);cursor:pointer}
+#device-uncertainty{min-width:72px;max-width:88px}
+/* Тулбар укладывается в одну строку: «Очистить» больше не отжимается к правому
+   краю — из-за этого поле СМА уезжало на вторую строку. Элементы сжаты до
+   размера, при котором подписи ещё читаются. */
+@media(min-width:640px){
+  #multi-content .chart-controls{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2) 10px}
+  #multi-content .chart-controls>button{flex:0 0 auto;width:auto;min-height:34px;padding:6px 11px;font-size:var(--fs-sm)}
+  #multi-content .chart-controls>span{font-size:var(--fs-xs);color:var(--dim)}
+  #multi-content .chart-controls label{white-space:nowrap;min-height:34px;font-size:var(--fs-xs);gap:6px}
+  #multi-content .range-date{min-width:100px;max-width:112px;min-height:34px;padding:5px 6px;font-size:var(--fs-sm)}
+  #multi-sma{min-width:54px;max-width:62px;min-height:34px;padding:5px 6px;font-size:var(--fs-sm)}
+}
+/* Пустой холст во весь рост читается как дыра в странице: пока рядов нет,
+   график занимает минимум места, а объяснение стоит на виду. */
+#multi-chart{height:260px}
+@media(min-width:640px){#multi-chart{height:320px}}
+#multi-content.is-empty #multi-chart{height:90px}
+/* Альбом: экран 844×390, главный объект — график. Боковая панель ему только
+   мешала: узкие кнопки в столбец выходили выше холста, и вкладку приходилось
+   листать. Всё управление укладывается в один ряд-тулбар высотой 30 px над
+   графиком, а холсту остаются вся ширина и почти вся высота экрана. */
+@media(max-height:520px){
+  #multi-content>.card{padding:8px 10px}
+  #multi-content .chart-controls{display:flex;flex-wrap:wrap;align-items:center;gap:5px 6px;margin:0 0 6px}
+  #multi-content .chart-controls>button,#multi-content .chart-controls>label{width:auto;min-height:30px;padding:4px 8px;font-size:11px}
+  #multi-content .range-date{width:auto;min-width:96px;max-width:112px;min-height:30px;padding:4px 6px;font-size:11px}
+  #multi-content .chart-controls>span{font-size:11px}
+  #multi-sma{min-width:50px;max-width:58px;min-height:30px;padding:4px 6px;font-size:11px}
+  #multi-chart{height:250px}
+  #multi-legend{margin-top:4px}
+  #multi-legend label{min-height:22px}
+  #multi-hint{margin-top:2px}
+  #multi-stats{margin-top:var(--sp-2)}
+}
+#multi-legend{display:flex;flex-wrap:wrap;gap:var(--sp-3);margin-top:var(--sp-2)}
+#multi-legend label{display:inline-flex;align-items:center;gap:var(--sp-1);min-height:32px}
+#multi-legend input{width:auto;min-height:0}
+#multi-legend p{margin:0}
+/* Таблица сравнения рядов: на телефоне прокручивается сама, а не растягивает
+   страницу; шире — занимает всю ширину, иначе четыре столбца жались к левому
+   краю посреди пустого места. */
+#multi-stats{display:block;width:100%;margin-top:var(--sp-3);overflow-x:auto}
+@media(min-width:640px){#multi-stats{display:table;overflow:visible}}
+#multi-stats td:nth-child(2),#multi-stats td:nth-child(3),#multi-stats td:nth-child(4),
+#multi-stats th:nth-child(2),#multi-stats th:nth-child(3),#multi-stats th:nth-child(4){text-align:center}
+#multi-hint{margin-top:6px;font-size:var(--fs-xs)}
+@media(pointer:coarse){#multi-hint{display:none}}
+@media(max-width:639px),(max-height:520px){
+  #multi-files,#multi-content .chart-controls>span:nth-of-type(2){display:none}
+}
+
+.scan-card{text-align:center}
+.scan-list{display:grid;gap:var(--sp-2);margin-top:var(--sp-3)}
+.scan-item{background:var(--card2);border-radius:8px;padding:var(--sp-3);min-height:56px;text-align:left;cursor:pointer}
+.scan-item:hover,.scan-item:active{background:var(--line)}
+.scan-item-name{font-weight:700;margin-bottom:2px}
+.scan-item-mac,.scan-item-rssi{font-size:var(--fs-xs);color:var(--dim)}
+.scan-item-rssi{margin-top:var(--sp-1)}
+.scan-placeholder{color:var(--dim);font-style:italic}
+@media(min-width:640px){.scan-list{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}}
