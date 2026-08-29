@@ -181,3 +181,6 @@ a{color:var(--ink)}
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms !important; transition-duration:.01ms !important}
 }
+.row-date{display:inline-block;margin-right:.6em;opacity:.75;font-variant-numeric:tabular-nums;}
+.sortbox{display:inline-flex;align-items:center;gap:.4em;margin-left:auto;font-size:.9em;}
+.sortbox select{font:inherit;padding:.15em .4em;}
