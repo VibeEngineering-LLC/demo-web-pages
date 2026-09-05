@@ -1694,10 +1694,16 @@ body.multi-fs-lock{overflow:hidden}
           };
           break;
         case '/api/tests':
+          /* #RADEX-258: второй (архивный) замер показывается, ТОЛЬКО когда он
+             действительно другой. Без --csv2 сборщик подставляет сюда тот же
+             файл, и в перечне появлялись два одинаковых замера по 7983 записи —
+             витрина показывала то, чего на плате не бывает. */
           body = [
-            { start: START, points: 7983, span_sec: 29542373, active: true, label: "podval" },
-            { start: ARCH, points: 7983, span_sec: 29542373, active: false, label: "arhiv" }
+            { start: START, points: 7983, span_sec: 29542373, active: true, label: "podval" }
           ];
+          if (ARCH !== START) {
+            body.push({ start: ARCH, points: 7983, span_sec: 29542373, active: false, label: "arhiv" });
+          }
           break;
         case '/api/tests/points': {
           /* Точки того замера, который спросили: список отдаёт два, и «Добавить
