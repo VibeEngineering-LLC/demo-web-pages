@@ -23,16 +23,18 @@
     font:17px/1.65 Georgia,"Times New Roman",serif;
     -webkit-font-smoothing:antialiased;
   }
-  .wrap{max-width:960px; margin:0 auto; padding:56px 20px 72px}
+  /* Длину строки ограничивает КОНТЕЙНЕР, а не отдельные абзацы: текст должен
+     заполнять ширину блока по обоим краям, вровень с таблицами и рисунками. */
+  .wrap{max-width:840px; margin:0 auto; padding:56px 24px 72px}
 
-  /* Типографика: выключка ТОЛЬКО влево, у каждого текстового блока предел длины строки */
+  /* Выключка ТОЛЬКО влево; justify не применять никогда. */
   body,p,li,td,th,figcaption,caption,blockquote{text-align:left}
-  p,li{max-width:78ch;text-wrap:pretty}
-  .note p,.note li,.abstract p{max-width:74ch}
+  p,li{max-width:none;text-wrap:pretty}
+  .note p,.note li,.abstract p{max-width:none}
 
   header{border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:30px}
   h1{font-size:27px; line-height:1.28; margin:0 0 14px; font-weight:600}
-  .lede{color:var(--muted); font-size:16px; margin:0 0 10px; max-width:74ch}
+  .lede{color:var(--muted); font-size:16px; margin:0 0 10px}
   .meta{color:var(--muted); font-size:14.5px; margin:14px 0 0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
 
   h2{font-size:20px; margin:38px 0 12px; font-weight:600; line-height:1.3}
@@ -41,7 +43,7 @@
 
   .abstract{background:var(--note-bg); border-left:3px solid var(--accent); padding:18px 22px; margin:0 0 24px; border-radius:0 6px 6px 0}
   .abstract h2{margin:0 0 10px; font-size:17px}
-  .keywords{font-size:15.5px; color:var(--muted); margin:0 0 30px; max-width:78ch}
+  .keywords{font-size:15.5px; color:var(--muted); margin:0 0 30px}
   .keywords b{color:var(--ink)}
 
   .note{background:var(--note-bg); border:1px solid var(--line); border-radius:8px; padding:16px 20px; margin:20px 0}
@@ -50,14 +52,14 @@
 
   figure{margin:26px 0; padding:0}
   figure img{width:100%; height:auto; border:1px solid var(--line); border-radius:6px; background:#fff}
-  figcaption{font-size:14.5px; color:var(--muted); margin-top:9px; max-width:78ch;
+  figcaption{font-size:14.5px; color:var(--muted); margin-top:9px;
              font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
   figcaption b{color:var(--ink)}
 
   .tw{overflow-x:auto; margin:20px 0}
   table{border-collapse:collapse; width:100%; font-size:15px;
         font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-  caption{font-size:14.5px; color:var(--muted); margin-bottom:8px; max-width:78ch;
+  caption{font-size:14.5px; color:var(--muted); margin-bottom:8px;
           font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
   caption b{color:var(--ink)}
   th,td{border:1px solid var(--line); padding:7px 10px; vertical-align:top}
@@ -72,9 +74,9 @@
   code{font:14.5px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace; background:var(--note-bg); padding:1px 5px; border-radius:3px}
   a{color:var(--accent-ink)}
   .refs{font-size:15.5px}
-  .refs li{margin:10px 0; max-width:78ch}
+  .refs li{margin:10px 0}
   footer{margin-top:48px; padding-top:20px; border-top:1px solid var(--line); color:var(--muted); font-size:14.5px}
-  footer p{max-width:78ch}
+  footer p{margin-bottom:10px}
 </style>
 </head>
 <body>
