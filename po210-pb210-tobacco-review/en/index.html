@@ -1,0 +1,1816 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polonium-210 and Lead-210 in Tobacco and Tobacco Smoke — A Review
+of Sources</title>
+<meta name="description" content="Review of primary sources from
+1964–2024 on 210Po, 210Pb and accompanying radionuclides in tobacco,
+their uptake pathways into the plant, transfer to smoke, behaviour in
+the airways and smoker radiation dose, compared with herbaceous
+vegetation.">
+<link rel="alternate" hreflang="ru" href="../">
+<style>
+/* Оформление «плакат»: тёплая небелёная бумага, чернота вместо серых,
+   линейки 3px, тень 7x7 без размытия, единственный акцент — жёлтая плашка.
+   Цветной текст не используется: цвет несут только схемы и плашки данных. */
+:root{
+  color-scheme: light dark;
+  --paper:#f5f2ea; --sunk:#ebe7dc;
+  --ink:#16140f; --dim:#4c493f; --faint:#6a6558;
+  --rule:#16140f; --rule-soft:#c9c4b4; --accent-soft:#f6d31c;
+  --shadow:7px 7px 0 #16140f;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"Cascadia Mono",Consolas,"DejaVu Sans Mono",monospace;
+  --u:#c8541c; --th:#1f7345; --break:#d21f1f; --ok:#0f5aa8;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#161511; --sunk:#1f1d17;
+    --ink:#f0ede3; --dim:#b5b0a1; --faint:#847f70;
+    --rule:#f0ede3; --rule-soft:#3a382e; --accent-soft:#c8a80e;
+    --shadow:7px 7px 0 #000000;
+    --u:#f0834a; --th:#4fbe84; --break:#ff6a5e; --ok:#6ea6e8;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.5;padding:28px 18px 64px}
+/* ТИПОГРАФИКА (указания оператора 28.08.2026).
+   1. Меру набора задаёт ЛИСТ, а не отдельный блок: ограничение ширины у
+      каждого абзаца оставляло текст узкой лентой у левого края при пустом
+      поле справа.
+   2. Основной текст выключается ПО ФОРМАТУ. Это отменяет прежнее правило
+      проекта, запрещавшее justify. Чтобы выключка не рвала строки «реками»
+      пробелов, включены автоматические переносы (hyphens:auto работает по
+      lang="ru" в корне документа) — без них justify на длинных русских
+      терминах и давал тот дефект, из-за которого его прежде запретили.
+   3. Выключка по формату применяется к связному тексту. Заголовки, подписи,
+      ячейки таблиц и числовые колонки остаются с выключкой влево или вправо:
+      растягивать короткую строку между полями нечем. */
+.sheet{max-width:1100px;margin:0 auto}  /* rn-article-style #TXT-2: широкая полоса */
+body,p,li,td,th,figcaption,caption{text-align:left}
+p,li,.abstract p,.note p,.warn p,.warn li,.rules span,.foot p,.foot li,
+.sec-lead,.stand{text-align:justify;hyphens:auto;-webkit-hyphens:auto;
+  -moz-hyphens:auto;overflow-wrap:break-word}
+p,li,.cap,.sec-lead,caption,.stand,.abstract p,.note p,.warn p,.warn li,
+.warn h3,.kpi .l,.foot p,.foot li,.rules span{max-width:none}
+/* Короткие строки в таблицах и подписях не выключаются по формату. */
+th,td,caption,figcaption,.cap,.kpi .l,.num-tag,.eyebrow{text-align:left;hyphens:manual}
+
+.ai-note{font-size:14px;color:var(--faint);margin:14px 0 0;border-left:3px solid var(--rule-soft);
+  padding-left:12px}
+.ai-note a{color:inherit}
+.top{border-bottom:6px solid var(--rule);padding-bottom:18px;margin-bottom:26px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);margin:0 0 10px}
+h1{font-size:clamp(28px,5vw,54px);line-height:1.05;margin:0 0 12px;
+  font-weight:800;letter-spacing:-.02em}
+.stand{font-size:clamp(15px,2vw,19px);color:var(--dim);margin:0}
+.mark{background:var(--accent-soft);color:#16140f;padding:0 .22em;
+  box-decoration-break:clone;-webkit-box-decoration-break:clone}
+
+h2{font-size:clamp(20px,3vw,28px);margin:0 0 6px;font-weight:800;letter-spacing:-.01em}
+h3{font-size:17px;margin:22px 0 8px}
+.sec{margin:44px 0 0;padding-top:20px;border-top:3px solid var(--rule)}
+.sec-lead{color:var(--dim);margin:0 0 18px}
+.num-tag{font-family:var(--mono);font-size:12px;color:var(--faint);
+  letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:4px}
+
+
+.fig{border:3px solid var(--rule);background:var(--paper);padding:16px;margin:20px 0 0;
+  box-shadow:var(--shadow)}
+.fig svg{display:block;width:100%;height:auto;overflow:visible}
+.cap{font-size:13.5px;color:var(--dim);margin:12px 2px 0}
+
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin-top:6px}
+caption{text-align:left;font-size:13px;color:var(--faint);padding-bottom:8px}
+th,td{border-bottom:1.5px solid var(--rule-soft);padding:8px 10px;text-align:right}
+th:first-child,td:first-child{text-align:left}
+thead th{border-bottom:3px solid var(--rule);font-size:12.5px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--dim);white-space:nowrap}
+tbody tr:last-child td{border-bottom:3px solid var(--rule)}
+td.n,th.n{font-family:var(--mono);white-space:nowrap}
+.scroll{overflow-x:auto}
+
+/* Одна колонка. Две колонки давали разную высоту: под короткой оставалась
+   пустота, а таблицы и врезки в узкой колонке набирались слишком плотно. */
+.two{display:block}
+.two > div + div{margin-top:26px}
+
+.note{border-left:6px solid var(--accent-soft);background:var(--sunk);
+  padding:14px 16px;margin:20px 0 0}
+.note p{margin:0 0 8px} .note p:last-child{margin:0}
+.warn{border:3px solid var(--rule);background:var(--sunk);padding:16px 18px;margin:20px 0 0}
+.warn h3{margin:0 0 10px;font-size:17px}
+.warn ul{margin:0;padding-left:20px} .warn li{margin:0 0 8px}
+.warn li:last-child{margin:0}
+
+.rules{list-style:none;padding:0;margin:18px 0 0}
+.rules li{border:3px solid var(--rule);background:var(--paper);padding:13px 15px;
+  margin:0 0 12px;box-shadow:var(--shadow);max-width:none}
+.rules b{display:block;font-size:15px;margin-bottom:4px}
+.rules span{font-size:14px;color:var(--dim);display:block}
+.rules code{white-space:nowrap}
+
+code{font-family:var(--mono);font-size:.93em;background:var(--sunk);padding:1px 5px}
+.abstract{border-left:6px solid var(--rule);padding:2px 0 2px 20px;margin:26px 0 0}
+.abstract .ab-h{font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);margin:0 0 10px;font-weight:700}
+.abstract p{margin:0 0 10px;font-size:15px}
+.abstract p:last-child{margin:0}
+.abstract .kw{color:var(--dim);font-size:14px}
+.foot{margin-top:52px;padding-top:18px;border-top:3px solid var(--rule);
+  font-size:13px;color:var(--faint)}
+.foot a{color:inherit}
+.foot ol{padding-left:20px;margin:10px 0 0}
+.foot li{margin:0 0 6px}
+
+/* Дополнения обзора Po-210/Pb-210: переключатель языка, рамки таблиц,
+   список литературы, разметка pandoc (--section-divs). */
+.top{position:relative}
+.top .eyebrow{margin-right:90px}
+.btn{position:absolute;top:0;right:0;font-family:var(--mono);font-size:14px;font-weight:700;
+  letter-spacing:.08em;color:var(--ink);background:var(--paper);border:3px solid var(--rule);
+  padding:6px 14px;text-decoration:none;box-shadow:4px 4px 0 var(--rule)}
+.btn:hover,.btn:focus-visible{background:var(--accent-soft);color:#16140f;outline:none}
+.tbl{border:3px solid var(--rule);padding:14px 16px;margin:22px 0 8px;box-shadow:var(--shadow);overflow-x:auto}
+.tbl table{margin:0}
+h2.sec{margin:0 0 10px;padding:0;border:0}  /* pandoc дублирует класс секции на заголовок */
+.abstract .ab-h{display:block}
+.refs ol{padding-left:24px;margin:10px 0 0;font-size:14px}
+.refs li{margin:0 0 7px;text-align:left;hyphens:manual;overflow-wrap:anywhere}
+.lvl{font-family:var(--mono);font-size:11.5px;border:1.5px solid var(--rule-soft);padding:0 5px;white-space:nowrap}
+a{color:inherit;text-underline-offset:2px}
+p{margin:0 0 12px}
+</style>
+</head>
+<body>
+<div class="sheet">
+<header class="top">
+<a class="btn" href="../" hreflang="ru" lang="ru">RU</a>
+<p class="eyebrow">Radioecology · natural radionuclides · literature
+review · edition 3</p>
+<h1>Polonium-210 and Lead-210 in Tobacco and Tobacco Smoke: A Review of
+Sources</h1>
+<p class="stand">Content in tobacco, uptake pathways into the plant,
+transfer to smoke, behaviour in the airways and the smoker’s radiation
+dose according to primary sources from 1964–2024. The specific activity
+of <sup>210</sup>Po in cigarette tobacco <mark>measured in the 1960s and
+in the 2000s–2020s lies in the same interval, 12–25 Bq/kg, within the
+range measured for herbaceous biomass; no consistent long-term trend has
+been established across studies</mark>; the spread of calculated
+effective dose estimates arises mainly not from the measured activity
+but from assumptions about the inhaled fraction and dose
+coefficients.</p>
+<p class="ai-note"><strong>Automated analysis.</strong> Prepared by a
+language model from the full texts of the sources and independently
+self-audited — see the <a href="#ai">AI use statement</a>.</p>
+</header>
+<div class="abstract">
+<p><span class="ab-h">Abstract</span></p>
+<p>The object of review is the natural radionuclides polonium-210
+(<sup>210</sup>Po) and lead-210 (<sup>210</sup>Pb) in raw tobacco,
+cigarette smoke and the smoker’s body. The topic is relevant because
+estimates of smokers’ exposure published since 1964 differ by more than
+three orders of magnitude, and part of the difference arises not from
+the physics of the process but from the incomparability of the measured
+quantities and from differing calculation assumptions. The aim of this
+work is to consolidate, from primary sources, measurements of specific
+activity, data on uptake pathways into the plant, on transfer to smoke
+and on behaviour in the airways, and dose estimates, separating measured
+values from modelled ones and primary sources from paraphrases.</p>
+<p>The review covers direct measurements of <sup>210</sup>Po,
+<sup>210</sup>Pb, <sup>226</sup>Ra, <sup>228</sup>Ra and
+<sup>228</sup>Th in tobacco; activity balances between ash, butt,
+filter, mainstream and sidestream smoke; two versions of isotope uptake
+into the leaf — root and atmospheric; tissue concentrations; and local,
+mean and effective doses. A comparison is made with measurements of
+<sup>210</sup>Pb and <sup>210</sup>Po in herbaceous vegetation.</p>
+<p>Methods: reading full texts where available and abstracts otherwise;
+comparison of sources without averaging discrepancies; checking every
+reference against the content of the primary source; recalculation of
+units, ratios and doses by an independent calculation.</p>
+<p>Conclusion: the specific activity of <sup>210</sup>Po in the
+cigarette tobacco of most brands studied is 12–25 Bq/kg (14–22 mBq per
+cigarette); values obtained in the 1960s and in the 2000s–2020s lie in
+the same interval, no consistent long-term trend has been established
+across studies, and values up to 40–60 Bq/kg refer to unprocessed raw
+tobacco and to particular markets. This interval lies within the range
+measured for herbaceous biomass, and a <sup>210</sup>Pb/<sup>226</sup>Ra
+ratio of typically 2–4 shows that lead enters the leaf independently of
+soil radium. Mainstream smoke carries 3–36 % of the <sup>210</sup>Po
+activity depending on the brand and smoking regime; values of 50–75 %
+refer to total smoke including the sidestream. Effective doses from
+<sup>210</sup>Po and <sup>210</sup>Pb for a pack-a-day smoker calculated
+with explicit assumptions, 0.06–0.8 mSv/year, differ mainly in the
+assumed inhaled fraction (0.07–0.75, up to 1.0 for some authors) and in
+dose coefficients, not in the activity of the tobacco. The local dose to
+the epithelium of bronchial bifurcations is a quantity of a different
+kind, and comparing it with the effective dose without qualification is
+incorrect.</p>
+<p><span class="kw"><strong>Keywords:</strong> polonium-210, lead-210,
+thorium-228, radium-226, tobacco, cigarette smoke, natural
+radioactivity, trichomes, radon-222, phosphate fertiliser, transfer
+factor, herbaceous vegetation, effective dose, local dose</span></p>
+</div>
+<section id="intro" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Section 1</span> Introduction</h2>
+<p>The presence of <sup>210</sup>Po in tobacco and its transfer to
+cigarette smoke were demonstrated experimentally by Radford and Hunt in
+January 1964 [1]. The response was immediate and varied: by May of the
+same year an editorial in Circulation listed polonium among smoke
+constituents “that may be significant in the genesis of lung cancer in
+heavy smokers” [37]; in December 1965 the first Soviet study with direct
+measurements appeared [4], and its editorial afterword refuted the
+figure of “25 rem per pack of cigarettes” popularised by a
+popular-science magazine — such a dose, the editors noted, accumulates
+only over several decades [4]; tobacco manufacturers, as internal
+industry documents later showed, had confirmed the published levels with
+their own measurements by 1968 [15].</p>
+<p>Dozens of studies measuring the activity of <sup>210</sup>Po and its
+parent <sup>210</sup>Pb in raw tobacco, ash, filter, smoke and tissues
+have since been published, yet no consistent picture of the quantitative
+contribution of these isotopes to smokers’ exposure has emerged. A 2019
+systematic review states that the data on radionuclide content of
+tobacco and smoke are robust, but that the field “has been
+scientifically stagnant for the last 40 years”, and that a subset of
+contemporary authors suggests individual risks about a thousand times
+higher than internationally accepted models support [29]. Part of the
+discrepancy is methodological: under the single heading of “transfer to
+smoke” different studies measure different quantities, and under the
+heading of “dose” either the local tissue dose, the mean organ dose or
+the effective dose.</p>
+<p>This review is organised by questions rather than by sources: how
+much radionuclide tobacco contains (Section 2); where it enters the leaf
+from (Section 3) and how the <sup>210</sup>Po/<sup>210</sup>Pb ratio
+changes with time (Section 4); what a comparison with herbaceous
+vegetation, for which an independent body of data exists, shows (Section
+5); what part of the activity passes into smoke and into which stream
+(Section 6); what happens to the isotopes in the airways (Section 7);
+how dose estimates are derived from these data and why they differ
+(Section 8); and what is known about the industry’s position (Section
+9). Discrepancies between sources are not averaged: values are given
+with their method and percentage basis.</p>
+</section>
+<section id="activity" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Section 2</span> Radionuclides in
+tobacco</h2>
+<section id="polonium-210" class="level3">
+<h3>Polonium-210</h3>
+<p>The first measurements of the 1960s and modern studies give values in
+the same interval for cigarette tobacco. Ferri and Baratta (1966, U.S.
+Public Health Service) obtained for six cigarette types a mean of 0.43
+pCi <sup>210</sup>Po per gram of tobacco (15.9 Bq/kg) and 0.37 pCi per
+cigarette (13.7 mBq); the same paper cites the Radford and Hunt mean of
+0.425 pCi per cigarette (15.7 mBq) with an 85 % material balance [28].
+Ermolaeva-Makovskaya, Pertsov and Popov (1965) found 3.0–5.6 ×
+10<sup>−13</sup> Ci per cigarette (11–21 mBq) for twelve domestic
+cigarette brands and 5.0–17.8 × 10<sup>−13</sup> Ci (19–66 mBq) for nine
+foreign ones; the mean concentration in domestic cigarette tobacco was
+(4.3 ± 1.0) × 10<sup>−13</sup> Ci/g, i.e. 15.9 Bq/kg [4]. According to
+Nikolova’s compilation (1970), US tobacco leaf in 1938–1963 contained on
+average 0.345 and 0.551 pCi/g <sup>210</sup>Po (12.8 and 20.4 Bq/kg) in
+two measurement series; the same compilation gives, citing
+Ermolaeva-Makovskaya, a mean of 1.127 pCi/g (41.7 Bq/kg; 0.600 to 1.600
+pCi/g) for raw tobacco of the USSR and 0.754 pCi/g (27.9 Bq/kg) for
+Rhodesia [14]. Philip Morris’s internal measurements gave 0.33–0.36
+pCi/g (12–13 Bq/kg) by 1968 — a value matching the published one
+[15].</p>
+<p>Modern studies: Berthet et al. (Lausanne, 2022) found for thirteen
+brands on the Swiss market 15.0 ± 2.3 mBq per cigarette, or 25.2 ± 2.6
+mBq/g (n = 15; 12.7–21.2 mBq per cigarette by brand) [2]; Khater (2004)
+found for ten brands on the Egyptian market 16.3 ± 3.2 mBq per cigarette
+(21.0 ± 4.0 mBq/g; 9.7–22.5 mBq by brand) and, comparing the result with
+a 1968 measurement for the same Egyptian cigarettes (14.1 mBq),
+concluded that modern tobacco processing has not reduced the
+<sup>210</sup>Po content [7]. Skwarzec et al. (2001) found up to 24.1
+mBq per cigarette for the 14 best-selling brands on the Polish market
+[35]; Horváth et al. (2017) — 9.7 ± 1.2 to 26.5 ± 4.6 mBq per cigarette
+for 17 brands sold in Iran [3]; Cankurt and Görgün (2020) — 16.1 to 37.6
+mBq, mean 22.4 ± 1.5 mBq, for 16 brands in Turkey [31];
+Ghanbar-Moghaddam and Fathivand (2020) — a mean of 38.4 mBq/g for
+Iranian and 20.0 mBq/g for imported cigarettes [36]. Compilations:
+according to Khater and to Skwarzec et al., world data lie in the range
+2.8–37 Bq/kg [7], [35]; Persson and Holm (2011) give a literature mean
+of 13 ± 2 Bq/kg and note that it is “rather constant over time and
+geographical origin” [5]; Beckman’s textbook gives 55 Bq/kg for tobacco
+without citing a source [27]; the review by Felix and Ntarisa (2024),
+covering 40 studies from 2000–2023, gives a <sup>210</sup>Po mean of
+20.4 mBq/g with a range of 0.4–128.6 mBq/g, <sup>210</sup>Pb 15.4
+(2.0–78.8) mBq/g and <sup>226</sup>Ra 5.9 (2.0–16.0) mBq/g [30].</p>
+<div class="tbl">
+<table>
+<caption>Table 1 — Specific activity of <sup>210</sup>Po in tobacco from
+direct measurements, 1964–2024. Conversion: 1 pCi = 37 mBq; 1 Ci = 3.7 ×
+10<sup>10</sup> Bq. Tobacco mass per cigarette 0.6–1.4 g according to
+[4], about 0.6 g according to [6].</caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Source</th>
+<th style="text-align: left;">Object</th>
+<th style="text-align: right;"><sup>210</sup>Po activity</th>
+<th style="text-align: right;">Bq/kg, converted</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Radford, Hunt, 1964, per [28]</td>
+<td style="text-align: left;">USA, mean</td>
+<td style="text-align: right;">0.425 pCi/cig.</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ferri, Baratta, 1966 [28]</td>
+<td style="text-align: left;">USA, 6 cigarette types, mean</td>
+<td style="text-align: right;">0.37 pCi/cig.; 0.43 pCi/g</td>
+<td style="text-align: right;">15.9</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ermolaeva-Makovskaya et al., 1965 [4]</td>
+<td style="text-align: left;">USSR, cigarette tobacco, mean</td>
+<td style="text-align: right;">(4.3 ± 1.0) × 10<sup>−13</sup> Ci/g</td>
+<td style="text-align: right;">15.9</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ermolaeva-Makovskaya et al., 1965 [4]</td>
+<td style="text-align: left;">Cigarettes: 12 domestic / 9 foreign</td>
+<td style="text-align: right;">3.0–5.6 / 5.0–17.8 × 10<sup>−13</sup>
+Ci/cig.</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ermolaeva-Makovskaya et al., 1965 [4]</td>
+<td style="text-align: left;">USSR, raw tobacco, domestic grades</td>
+<td style="text-align: right;">6.0–16.0 × 10<sup>−13</sup> Ci/g; mean
+11.27 × 10<sup>−13</sup></td>
+<td style="text-align: right;">22–59; 41.7</td>
+</tr>
+<tr>
+<td style="text-align: left;">Nikolova, 1970 [14], compilation</td>
+<td style="text-align: left;">Tobacco leaf, USA, 1938–1963, two
+series</td>
+<td style="text-align: right;">0.345; 0.551 pCi/g</td>
+<td style="text-align: right;">12.8; 20.4</td>
+</tr>
+<tr>
+<td style="text-align: left;">Nikolova, 1970 [14], compilation</td>
+<td style="text-align: left;">Raw tobacco, Rhodesia</td>
+<td style="text-align: right;">0.754 pCi/g</td>
+<td style="text-align: right;">27.9</td>
+</tr>
+<tr>
+<td style="text-align: left;">Philip Morris, 1968, per [15]</td>
+<td style="text-align: left;">Internal measurements</td>
+<td style="text-align: right;">0.33–0.36 pCi/g</td>
+<td style="text-align: right;">12–13</td>
+</tr>
+<tr>
+<td style="text-align: left;">Skwarzec et al., 2001 [35]</td>
+<td style="text-align: left;">Poland, 14 brands, maximum</td>
+<td style="text-align: right;">24.1 mBq/cig.</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">Khater, 2004 [7]</td>
+<td style="text-align: left;">Egypt, 10 brands, mean</td>
+<td style="text-align: right;">16.3 ± 3.2 mBq/cig.; 21.0 ± 4.0
+mBq/g</td>
+<td style="text-align: right;">21.0</td>
+</tr>
+<tr>
+<td style="text-align: left;">Berthet et al., 2022 [2]</td>
+<td style="text-align: left;">Switzerland, 13 brands, n = 15</td>
+<td style="text-align: right;">15.0 ± 2.3 mBq/cig.; 25.2 ± 2.6
+mBq/g</td>
+<td style="text-align: right;">25.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">Horváth et al., 2017 [3]</td>
+<td style="text-align: left;">17 brands sold in Iran</td>
+<td style="text-align: right;">9.7 ± 1.2 … 26.5 ± 4.6 mBq/cig.</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cankurt, Görgün, 2020 [31]</td>
+<td style="text-align: left;">Turkey, 16 brands</td>
+<td style="text-align: right;">22.4 ± 1.5 (16.1–37.6) mBq/cig.</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ghanbar-Moghaddam, Fathivand, 2020
+[36]</td>
+<td style="text-align: left;">Iran: local / imported cigarettes</td>
+<td style="text-align: right;">38.4 / 20.0 mBq/g</td>
+<td style="text-align: right;">38 / 20</td>
+</tr>
+<tr>
+<td style="text-align: left;">Persson, Holm, 2011 [5]</td>
+<td style="text-align: left;">Literature compilation</td>
+<td style="text-align: right;">13 ± 2 Bq/kg</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr>
+<td style="text-align: left;">Felix, Ntarisa, 2024 [30]</td>
+<td style="text-align: left;">Review of 40 studies, 2000–2023</td>
+<td style="text-align: right;">20.4 (0.4–128.6) mBq/g</td>
+<td style="text-align: right;">20</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The spread between brands within a single study reaches a factor of
+several (for foreign cigarettes in Ermolaeva-Makovskaya et al., from 5.0
+to 17.8 × 10<sup>−13</sup> Ci, a factor of 3.6 [4]) and is comparable
+with the difference between the means of different decades: the means
+for cigarette tobacco of the 1960s (0.33–0.55 pCi/g, 12–20 Bq/kg) and of
+the 2000s–2020s (13–25 Bq/kg) lie in the same interval. Unprocessed raw
+tobacco lies above this interval: in Ermolaeva-Makovskaya et
+al. domestic raw tobacco grades contain 6.0–16.0 × 10<sup>−13</sup> Ci/g
+(22–59 Bq/kg, mean 41.7 Bq/kg) [4], which Nikolova attributes to the
+decay of <sup>210</sup>Po during fermentation and storage [14]; among
+market cigarettes, local Iranian brands (mean 38 Bq/kg) [36] and
+individual Turkish brands (up to 37.6 mBq per cigarette) [31]. Cankurt
+and Görgün report an increase in <sup>210</sup>Po in cigarettes on the
+Turkish market over the last two decades [31], Persson and Holm, from a
+literature compilation, constancy over time [5]; across studies no
+consistent long-term trend has been established.</p>
+</section>
+<section id="other-radionuclides" class="level3">
+<h3>Other radionuclides</h3>
+<p>Ferri and Baratta measured <sup>226</sup>Ra, <sup>210</sup>Pb,
+<sup>210</sup>Bi and <sup>210</sup>Po in the same cigarettes: per
+cigarette, <sup>226</sup>Ra 0.11–0.17 pCi (4.1–6.3 mBq),
+<sup>210</sup>Pb 0.33–0.49 pCi (12.2–18.1 mBq; for three of the six
+types <sup>210</sup>Pb was taken equal to the measured
+<sup>210</sup>Bi), <sup>210</sup>Po 0.32–0.48 pCi (11.8–17.8 mBq) [28].
+Papastefanou (2009) measured by gamma spectrometry 17 samples of tobacco
+leaf from the 1990 harvest in 15 regions of Greece: <sup>226</sup>Ra
+1.80–7.57 Bq/kg (mean 3.38), <sup>228</sup>Ra 1.10–6.52 (mean 3.83),
+<sup>210</sup>Pb 6.34–18.2 (mean 14.12), <sup>40</sup>K 273–2080 (mean
+823), <sup>137</sup>Cs 1.20–7.00 Bq/kg (mean 3.40) — against 70–180
+Bq/kg <sup>137</sup>Cs in 1986 leaf according to a tobacco factory
+certificate [11].</p>
+<p>Petushkov, Zel’tser and Medvedovsky (1972) noted that the total alpha
+activity of tobacco exceeds that of polonium alone by a factor of 4–5,
+and determined by an emanation method <sup>228</sup>Th (radiothorium) in
+four brands of cigarettes and papirosy: 0.36–0.55 pCi/g (13–20 Bq/kg),
+i.e. of the same order as <sup>210</sup>Po; 0.09 pCi remained in the ash
+of a smoked cigarette [40]. More than forty years later Kubalek et
+al. (2016) measured uranium, thorium, radium, lead and polonium isotopes
+in Slovenian cigarettes and estimated that the contribution of thorium
+isotopes to the effective dose (6, 47 and 37 µSv/year from
+<sup>228</sup>Th, <sup>230</sup>Th and <sup>232</sup>Th, 90 in total)
+exceeds that of the <sup>210</sup>Po + <sup>210</sup>Pb pair (61 + 9
+µSv/year) [16]. The review by Felix and Ntarisa of 40 studies gives
+<sup>232</sup>Th 8.1 (0.3–41.0) mBq/g and <sup>238</sup>U 15.2
+(0.2–82.0) mBq/g in tobacco, and a mean annual dose of 889.7 µSv from
+<sup>232</sup>Th against 295 µSv from <sup>210</sup>Po [30].
+Papastefanou pointed out that the contribution of radium isotopes is
+usually disregarded in the literature, although it is of the same order
+as that of <sup>210</sup>Pb [11]. Thus <sup>210</sup>Po is the most
+studied, but not the only alpha emitter in tobacco.</p>
+</section>
+</section>
+<section id="pathway" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Section 3</span> Uptake pathways
+into the plant: root or atmosphere</h2>
+<p>The pathway by which <sup>210</sup>Po and <sup>210</sup>Pb enter the
+tobacco leaf has been debated since the mid-1960s, and the first studies
+already contained both versions. Ermolaeva-Makovskaya et al. (1965)
+concluded that the <sup>210</sup>Po in cigarettes is in equilibrium with
+<sup>210</sup>Pb “released on the surface of tobacco leaves”, and that
+<sup>210</sup>Pb “forms in the air from radon emanating from the soil”
+[4]. Berger, Erhardt and Francis (1965), on the basis of soil-extract
+analyses, reached the same conclusion in cautious form: there are
+indications that <sup>210</sup>Po or its precursors are taken up not by
+the roots but by sorption in dead, moist plant material at the
+atmosphere–plant interface; <sup>210</sup>Po could not be detected in
+green tobacco leaf, whereas cured leaf and soils contained it [10]. Tso,
+Harley and Alexander (1966), in an experiment with a chamber enriched in
+radon-222, in fields with different phosphate fertilisers and in culture
+with <sup>210</sup>Pb in the nutrient solution, reached the opposite
+conclusion: the major portion of <sup>210</sup>Pb in the plant was
+probably absorbed through the roots, while airborne radon and its
+daughters contributed much less; the final <sup>210</sup>Po content was
+affected by the stage of leaf development and the curing method [9]. As
+reported by Ferri and Baratta, Marsden (1964) considered the
+contribution of atmospheric polonium fallout minor compared with root
+uptake [28]; Nikolova (1970), on the contrary, notes that the absence of
+a link between the alpha activity of grass and soil “emphasises the
+importance of the non-root pathway” [14].</p>
+<p>Ferri and Baratta found <sup>210</sup>Pb/<sup>226</sup>Ra activity
+ratios of 1.9–4.1 in cigarettes (4.3 in pipe tobacco) and concluded that
+<sup>210</sup>Pb reaches tobacco by direct uptake from soil and air
+rather than merely as the daughter of radium in the tobacco itself [28].
+Martell (1974) formulated the mechanism that later became generally
+accepted: airborne <sup>210</sup>Pb is concentrated on small Aitken
+particles that accumulate on tobacco trichomes; curing and the
+combustion of trichomes produce insoluble particles of high
+<sup>210</sup>Pb activity that the smoker inhales [13]. Papastefanou
+(2009) notes that about 85 % of tobacco leaf trichomes have glandular
+heads coated with sticky exudate and, on the basis of his own
+measurements, assigns nuclides to origins: <sup>210</sup>Pb is deposited
+from the air and trapped by trichomes; radium isotopes enter through the
+roots from soil or with fertilisers; <sup>40</sup>K through the roots;
+<sup>137</sup>Cs and <sup>134</sup>Cs through the roots, since four
+years after the Chernobyl accident they remained in the soil [11].
+Persson and Holm (2011) distinguish polonium supported by uptake from
+soil from unsupported polonium deposited from the atmosphere; for leafy
+plants the <sup>210</sup>Po level is particularly high owing to direct
+deposition [5]. Berthet et al. adopt the atmospheric version in their
+introduction [2]; Cankurt and Görgün (2020), who determined
+<sup>210</sup>Po monthly in tobacco from the Aegean region of Turkey,
+proceed from the capture of aerosols by sticky trichomes on both leaf
+surfaces; they found in the leaf a mean of 14.1 ± 1.1 Bq/kg dry mass
+(from 8.3 in June to 21.7 in July), 7.6 in the stem, 14.3 in the root
+and 34.4 Bq/kg in the soil, a soil-to-leaf transfer factor of 0.22–0.65,
+and a negative relationship between <sup>210</sup>Po in the leaf and
+rainfall [31]. Ghanbar-Moghaddam and Fathivand (2020) name drying of
+tobacco in direct contact with fossil-fuel flue gases as an additional
+source of <sup>210</sup>Po [36].</p>
+<p>The role of phosphate fertilisers is not generally accepted in the
+sources reviewed. According to the U.S. Environmental Protection Agency,
+the specific activity of <sup>226</sup>Ra in phosphate fertilisers is
+approximately 0.185–1.11 Bq/g (5–30 pCi/g) depending on the blend;
+during processing of phosphate rock about 80 % of the <sup>226</sup>Ra
+concentrates in phosphogypsum [12]. Papastefanou gives <sup>238</sup>U
+312–936 Bq/kg, <sup>226</sup>Ra 19–1129 Bq/kg and <sup>40</sup>K 53–6370
+Bq/kg for phosphate fertilisers [11]. Zagà et al. (2011) list
+fertilisers among the main sources “according to several studies” and,
+citing a 1980 internal industry document, report that Martell’s
+recommendation to replace calcium phosphate fertilisers with ammonium
+phosphate was known to manufacturers and regarded as “an expensive
+point” [8]. The brief review by Zagà, Cattaruzza and Gallus (2024)
+arranges the pathways in a hierarchy: principal — deposition of
+radon-222 decay products on the leaf with capture by trichomes; a
+smaller share — root uptake; additional — fertilisers from raw material
+rich in uranium [38].</p>
+</section>
+<section id="equilibrium" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Section 4</span> The
+<sup>210</sup>Po/<sup>210</sup>Pb ratio and storage time of the
+leaf</h2>
+<p>The half-life of <sup>210</sup>Po (138.4 d) is short compared with
+that of <sup>210</sup>Pb (22.2 years), so after harvest the
+<sup>210</sup>Pb activity is practically constant and the activity ratio
+relaxes to unity according to R(t) = 1 + (R<sub>0</sub> −
+1)·e<sup>−λt</sup>, where R<sub>0</sub> is the ratio at harvest and λ is
+the decay constant of <sup>210</sup>Po. For R<sub>0</sub> = 0.32 this
+formula gives 0.72, 0.89 and 0.98 after 180, 365 and 730 d; for
+R<sub>0</sub> = 1.54, 1.22, 1.09 and 1.01.</p>
+<p>Measurements on tobacco agree. Ferri and Baratta described the effect
+directly: in pipe tobacco <sup>210</sup>Pb and <sup>210</sup>Po were not
+in equilibrium (0.41 and 0.20 pCi/g, a ratio of 0.49; <sup>210</sup>Pb
+taken equal to the measured <sup>210</sup>Bi), which the authors
+attributed to the tobacco being sold before equilibrium was established,
+whereas ageing of cigarette tobacco for about two years allows
+<sup>210</sup>Pb and its daughters <sup>210</sup>Bi and <sup>210</sup>Po
+to reach equilibrium; in the cigarettes in which all three isotopes were
+measured (three types of six), their activities agreed within the
+uncertainty [28]. Khater states that more than two years usually pass
+between harvest and cigarette production — by his estimate 6–7
+half-lives of <sup>210</sup>Po (two years correspond to 5.3 half-lives)
+— and polonium approaches secular equilibrium with lead [7]; Berthet et
+al. measured a ratio of 1.06 ± 0.05 in cigarettes on the Swiss market
+[2]. Nikolova, by contrast, explained the lower <sup>210</sup>Po content
+in finished products compared with leaf by decay of polonium during
+fermentation and warehouse storage [14] — possible only for leaf in
+which polonium exceeded lead at harvest (R<sub>0</sub> &gt; 1), as in
+Slovenian silage (Section 5).</p>
+<p>Practical consequence: the <sup>210</sup>Po activity in smoked
+tobacco is determined by the activity of <sup>210</sup>Pb accumulated by
+the leaf during growth, not by the polonium content at harvest. It also
+follows that <sup>210</sup>Pb matters for the smoker’s exposure no less
+than polonium: it determines both the <sup>210</sup>Po activity in the
+cigarette and — through insoluble smoke particles — the ingrowth of
+polonium in the tissues themselves (Section 7).</p>
+</section>
+<section id="analogy" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Section 5</span> Comparison with
+data for herbaceous vegetation</h2>
+<p>Tobacco leaf is the above-ground leafy biomass of an annual plant.
+For such biomass (forage, hay, silage, wild medicinal herbs) a body of
+<sup>210</sup>Pb and <sup>210</sup>Po measurements exists that was
+obtained independently of the smoking problem. The comparison is made on
+five criteria: specific activity level,
+<sup>210</sup>Po/<sup>210</sup>Pb ratio, uptake pathway, the role of
+soil radium, and the strength of binding of deposited lead. The
+conclusions of this section are the interpretation of the present
+review, not statements of the cited works.</p>
+<section id="specific-activity-level" class="level3">
+<h3>Specific activity level</h3>
+<div class="tbl">
+<table>
+<caption>Table 2 — Specific activity of <sup>210</sup>Po and
+<sup>210</sup>Pb in tobacco and herbaceous biomass. Vegetation on a
+dry-mass basis; tobacco filler is conditioned leaf, the mass basis is
+not identical and the comparison is valid to order of
+magnitude.</caption>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Object</th>
+<th style="text-align: left;">Region</th>
+<th style="text-align: left;">Nuclide</th>
+<th style="text-align: right;">Bq/kg</th>
+<th style="text-align: left;">Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Tobacco leaf before cigarette production,
+1990 harvest</td>
+<td style="text-align: left;">Greece, 15 regions</td>
+<td style="text-align: left;"><sup>210</sup>Pb / <sup>226</sup>Ra</td>
+<td style="text-align: right;">14.1 (6.3–18.2) / 3.4 (1.8–7.6)</td>
+<td style="text-align: left;">[11]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Growing tobacco leaf, monthly</td>
+<td style="text-align: left;">Turkey, Manisa</td>
+<td style="text-align: left;"><sup>210</sup>Po</td>
+<td style="text-align: right;">14.1 ± 1.1 (8.3–21.7)</td>
+<td style="text-align: left;">[31]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Tobacco filler</td>
+<td style="text-align: left;">Switzerland</td>
+<td style="text-align: left;"><sup>210</sup>Po</td>
+<td style="text-align: right;">25.2 ± 2.6</td>
+<td style="text-align: left;">[2]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cigarette tobacco</td>
+<td style="text-align: left;">USSR</td>
+<td style="text-align: left;"><sup>210</sup>Po</td>
+<td style="text-align: right;">15.9</td>
+<td style="text-align: left;">[4]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cigarette tobacco</td>
+<td style="text-align: left;">USA</td>
+<td style="text-align: left;"><sup>210</sup>Po</td>
+<td style="text-align: right;">15.9</td>
+<td style="text-align: left;">[28]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Tobacco, literature compilation</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;"><sup>210</sup>Po</td>
+<td style="text-align: right;">13 ± 2</td>
+<td style="text-align: left;">[5]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Forage (grass)</td>
+<td style="text-align: left;">Brazil, Poços de Caldas plateau</td>
+<td style="text-align: left;"><sup>210</sup>Pb / <sup>226</sup>Ra</td>
+<td style="text-align: right;">26 ± 2 (9.4–83) / 8.2 ± 3</td>
+<td style="text-align: left;">[18], per [24]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Hay</td>
+<td style="text-align: left;">Slovenia, Žirovski Vrh</td>
+<td style="text-align: left;"><sup>210</sup>Pb / <sup>210</sup>Po /
+<sup>226</sup>Ra</td>
+<td style="text-align: right;">14.4 ± 0.9 / 4.54 ± 0.19 / 0.60 ±
+0.04</td>
+<td style="text-align: left;">[19], per [24]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Silage</td>
+<td style="text-align: left;">Slovenia, Žirovski Vrh</td>
+<td style="text-align: left;"><sup>210</sup>Pb / <sup>210</sup>Po /
+<sup>226</sup>Ra</td>
+<td style="text-align: right;">14.7 ± 0.9 / 22.6 ± 0.85 / 1.28 ±
+0.08</td>
+<td style="text-align: left;">[19], per [24]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Wild medicinal herbs, 13 species (maxima —
+birch leaf)</td>
+<td style="text-align: left;">Ukraine</td>
+<td style="text-align: left;"><sup>210</sup>Pb / <sup>210</sup>Po</td>
+<td style="text-align: right;">0.44–28.4 / 2.28–37.7</td>
+<td style="text-align: left;">[20]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Medicinal herbaceous plants</td>
+<td style="text-align: left;">India, coastal Karnataka</td>
+<td style="text-align: left;"><sup>210</sup>Pb / <sup>210</sup>Po</td>
+<td style="text-align: right;">12.0–406 / 3.3–63.7</td>
+<td style="text-align: left;">[21]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Grass, high-rainfall areas, per [14]</td>
+<td style="text-align: left;">England and Wales (Hill, 1960)</td>
+<td style="text-align: left;"><sup>210</sup>Po</td>
+<td style="text-align: right;">over 370 (over 10 000 pCi/kg)</td>
+<td style="text-align: left;">[14]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The specific activity of <sup>210</sup>Po in cigarette tobacco (12–25
+Bq/kg) lies within the wide range for herbaceous biomass — from
+fractions of a becquerel to hundreds of becquerels per kilogram — and is
+close to the values for Brazilian forage and Slovenian hay (14–26 Bq/kg
+<sup>210</sup>Pb); for maize silage and alfalfa grown on phosphatic clay
+soils (Staples et al., 1994) the compilation [24] gives much lower
+<sup>210</sup>Pb values, 0.52–1.04 Bq/kg dry mass. The most direct
+comparison is provided by tobacco leaf measured before fermentation and
+cigarette production: <sup>210</sup>Pb in Greek leaf averages 14.1 Bq/kg
+[11] and <sup>210</sup>Po in growing Turkish leaf 14.1 ± 1.1 Bq/kg [31]
+— practically the same value as <sup>210</sup>Pb in Slovenian hay and
+silage (14.4 and 14.7 Bq/kg [19]). No accumulation mechanism specific to
+tobacco is needed to explain this level.</p>
+</section>
+<section id="the-210po210pb-ratio-and-time-after-harvest"
+class="level3">
+<h3>The <sup>210</sup>Po/<sup>210</sup>Pb ratio and time after
+harvest</h3>
+<p>In freshly harvested biomass <sup>210</sup>Po and <sup>210</sup>Pb
+are not in equilibrium: the activity ratio is 0.32 in Slovenian hay and
+1.54 in silage [19]. By the formula of Section 4 both values reach
+0.98–1.01 after two years of storage — the same ratio as measured in
+cigarettes (1.06 ± 0.05 [2]) and predicted by the roughly two-year
+ageing of cigarette tobacco [7], [28]. The disequilibrium in pipe
+tobacco (0.49 relative to <sup>210</sup>Bi [28]) corresponds by the same
+formula to storage of about two months at R<sub>0</sub> ≈ 0.3, typical
+of hay.</p>
+</section>
+<section id="uptake-pathway" class="level3">
+<h3>Uptake pathway</h3>
+<p>For herbaceous vegetation the sources indicate a predominance of the
+atmospheric pathway. According to Beckman, the main pathway of
+vegetation contamination with <sup>210</sup>Pb is deposition on
+above-ground parts with aerosols (about 85 %), the root pathway about 15
+%, and the <sup>210</sup>Pb content of grass is determined by the amount
+of precipitation rather than by the soil content [27]. According to
+Bakhur et al., root uptake accounts for up to 20 % of <sup>210</sup>Po
+and up to 14 % of <sup>210</sup>Pb; <sup>210</sup>Pb accumulates mainly
+in the upper, young above-ground parts, and the roots of bilberry and
+marsh tea contain 2–3 times less polonium and 3–4 times less lead than
+the above-ground part [26]. Pietrzak-Fliś and Skowrońska-Smolak (1995),
+in an experiment comparing an open field with a polyethylene tent, found
+that in the above-ground parts of plants on the open field the
+<sup>210</sup>Pb and <sup>210</sup>Po activities were higher than under
+the tent, whereas in the roots they were nearly the same; the authors
+regard transfer via the root system as negligible and name atmospheric,
+mainly wet, deposition as the main source [23]; according to Persson’s
+compilation (2013), the deposition transfer factor for grass and leafy
+plants is 0.5–1 (Bq/kg plant per Bq/m² deposited), 0.1–0.5 for less
+leafy plants and straw, below 0.2 and below 0.003 for grain and root
+crops, and about three times higher for <sup>210</sup>Po than for
+<sup>210</sup>Pb [24]. Jovanovič (2011), on the tailings of the former
+Žirovski Vrh uranium mine, found that the measured <sup>210</sup>Pb
+activity in grass was up to a hundred times higher than that calculated
+from the soil content, and attributed this to deposition of radon-222
+decay products from the air [22].</p>
+<p>Tobacco leaf is broad and densely covered with glandular trichomes
+[11], so by its surface properties it presumably intercepts airborne
+particles no less effectively than grass. By analogy, the data for
+herbaceous vegetation support the atmospheric version [2], [4], [5],
+[10], [13] and are inconsistent with the conclusion of Tso et al. [9].
+The analogy does not, however, refute the result of a controlled
+experiment: no paired open-field versus shelter measurements on tobacco
+were found in the sources reviewed, and the radon-chamber experiment of
+Tso et al. is the only controlled experiment on tobacco itself.</p>
+</section>
+<section id="soil-radium-and-fertilisers" class="level3">
+<h3>Soil radium and fertilisers</h3>
+<p>According to the IAEA handbook (Technical Reports Series No. 472),
+the mean soil-to-plant transfer factor for stems and shoots of grasses
+(category Grasses) in temperate climates is 0.31 for lead (N = 17) and
+0.13 for radium (N = 62), and for pasture vegetation 0.092 for lead,
+0.12 for polonium (N = 10) and 0.071 for radium [25]. The soil-to-leaf
+factor for <sup>210</sup>Po in tobacco, 0.22–0.65 [31], is of the same
+order. With such values root uptake from soil radium is limited, and
+raising the soil radium content through fertilisers presumably affects
+<sup>210</sup>Pb and <sup>210</sup>Po in the leaf mainly through radon
+emanation from the soil and deposition of its decay products on the
+leaf. The tailings case [22] shows this mechanism in its extreme form:
+the radium of the substrate affects <sup>210</sup>Pb in grass through
+the air, not through the root.</p>
+<p>In paired measurements of forage and hay the
+<sup>210</sup>Pb/<sup>226</sup>Ra ratio is 3.2 [18], 11.5 and 24 [19]
+(per [24]), whereas in the soil under the Brazilian forage
+<sup>210</sup>Pb and <sup>226</sup>Ra are close (104 and 135 Bq/kg
+[24]), i.e. <sup>210</sup>Pb in above-ground biomass greatly exceeds the
+level supported by the radium of the sample itself. In cigarettes this
+ratio is 1.9–4.1, in pipe tobacco 4.3 [28], and in Greek tobacco leaf
+before production 4.2 on average (14.1 and 3.4 Bq/kg) [11]: the same
+sign of disequilibrium and the same order as in forage. It follows that
+<sup>210</sup>Pb in tobacco cannot be estimated from the
+<sup>226</sup>Ra content of the leaf or soil; this is consistent with
+Papastefanou’s conclusion that radium in tobacco leaf is of root origin
+[11].</p>
+</section>
+<section id="strength-of-binding-of-deposited-lead" class="level3">
+<h3>Strength of binding of deposited lead</h3>
+<p>According to Persson’s compilation (2013), after thorough washing 82
+± 20 % of atmospherically deposited <sup>210</sup>Pb and 60 ± 20 % of
+root-derived <sup>210</sup>Pb remain in the plant [24]. Tobacco data
+agree with this from an unexpected direction: according to Philip Morris
+internal documents of the mid-1970s, washing the leaf with non-polar
+solvents reduced its radioactivity by 10–40 %, and according to the
+testimony of a former company scientist about half could be washed off —
+“the other half was inside the tobacco” [15]. Lead deposited on the leaf
+is not an easily removable surface contamination either in grass or in
+tobacco.</p>
+</section>
+</section>
+<section id="smoke" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Section 6</span> Transfer to
+cigarette smoke</h2>
+<section id="three-quantities-under-one-heading" class="level3">
+<h3>Three quantities under one heading</h3>
+<p>Under the common heading of “transfer to smoke” the literature gives
+different quantities: the activity fraction in the mainstream (inhaled)
+smoke; the fraction in total smoke, including the sidestream released
+into the air between puffs; and the fraction not remaining in the ash,
+butt and filter — which depends on whether the cigarette is smoked down
+to the filter. In addition, the percentage is calculated sometimes
+relative to the activity of the whole cigarette and sometimes relative
+to the activity of the smoke. Figures on different bases are not
+comparable, and Table 3 arranges them by balance component.</p>
+<div class="tbl">
+<table>
+<caption>Table 3 — <sup>210</sup>Po balance in smoking, % of the
+cigarette activity (tobacco with paper). In Khater the “total smoke”
+fraction is obtained by subtracting ash and filter and includes
+everything not left in them; in Berthet et al. the sidestream is the
+fraction missing from the balance. For brand D of Ferri and Baratta only
+mainstream smoke was measured. For work [4] the fractions were
+calculated in this review from the ash and filter activity per
+cigarette. Values are not averaged.</caption>
+<colgroup>
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Source</th>
+<th style="text-align: left;">Method</th>
+<th style="text-align: right;">Ash</th>
+<th style="text-align: right;">Butt</th>
+<th style="text-align: right;">Filter</th>
+<th style="text-align: right;">Mainstream</th>
+<th style="text-align: right;">Sidestream</th>
+<th style="text-align: right;">Total smoke</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Radford, Hunt, 1964, per [14]</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">50</td>
+</tr>
+<tr>
+<td style="text-align: left;">Rajewsky, Stahlhofen, per [14]</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">50</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ferri, Baratta, 1966 [28], brand B,
+unfiltered</td>
+<td style="text-align: left;">authors’ apparatus, 10 puffs of 3 s,
+checked against smokers’ cigarette residues</td>
+<td style="text-align: right;">46.7 (ash + butt)</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">22.2</td>
+<td style="text-align: right;">24.5</td>
+<td style="text-align: right;">46.7</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ferri, Baratta, 1966 [28], brand C,
+filtered</td>
+<td style="text-align: left;">same</td>
+<td style="text-align: right;">38.8 (ash + butt)</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">13.7</td>
+<td style="text-align: right;">15.1</td>
+<td style="text-align: right;">32.9</td>
+<td style="text-align: right;">48.0</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ferri, Baratta, 1966 [28], brand D</td>
+<td style="text-align: left;">same</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">18.1</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ferri, Baratta, 1966 [28], brand E</td>
+<td style="text-align: left;">same</td>
+<td style="text-align: right;">50.3 (ash + butt)</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">11.0</td>
+<td style="text-align: right;">40.8</td>
+<td style="text-align: right;">51.8</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ferri, Baratta, 1966 [28], brand F</td>
+<td style="text-align: left;">same</td>
+<td style="text-align: right;">32.2 (ash + butt)</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">8.8</td>
+<td style="text-align: right;">30.7</td>
+<td style="text-align: right;">32.4</td>
+<td style="text-align: right;">63.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Berthet et al., 2022 [2], Camel
+Filter</td>
+<td style="text-align: left;">Health Canada Intense regime, 11 puffs of
+55 mL</td>
+<td style="text-align: right;">19.0</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">19.0</td>
+<td style="text-align: right;">13.3</td>
+<td style="text-align: right;">49.0 (by difference)</td>
+<td style="text-align: right;">62</td>
+</tr>
+<tr>
+<td style="text-align: left;">Berthet et al., 2022 [2], mean of 24
+runs</td>
+<td style="text-align: left;">same</td>
+<td style="text-align: right;">≈20</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">≈20</td>
+<td style="text-align: right;">13.6 ± 4.2</td>
+<td style="text-align: right;">≈50 (by difference)</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">Khater, 2004 [7], mean of 10 brands</td>
+<td style="text-align: left;">cigarettes smoked by volunteers; smoke by
+difference</td>
+<td style="text-align: right;">20.7</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">4.6</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">74.7</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ermolaeva-Makovskaya et al., 1965 [4]</td>
+<td style="text-align: left;">cigarettes smoked; ash and filter
+measured</td>
+<td style="text-align: right;">≈5</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">16–18</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Mainstream.</strong> Ferri and Baratta, on an apparatus of
+their own design checked against the cigarette residues of three
+smokers, obtained 11.0 to 30.7 % of the activity of the whole cigarette
+in inhaled smoke depending on the brand (up to 35.7 % in the paper’s
+summary), with a material balance of 93–104 % [28]. Berthet et al., on a
+smoking machine in an intense regime, obtained 13.6 ± 4.2 % for
+<sup>210</sup>Po (n = 24; 9.4–15.6 % for the three brands listed in the
+paper’s table) and 7 % for <sup>210</sup>Pb [2]; Horváth et al. obtained
+15 ± 10 % with a brand-to-brand spread of 3–36 % and pointed out that
+standard smoking machines are not suited to quantitative trapping of
+<sup>210</sup>Po [3]. Kubalek et al., collecting smoke, exhaled air, ash
+and butts from volunteers, found that about 22 % of the cigarette’s
+<sup>210</sup>Po is retained in the smoker’s body [16]. In the
+introduction to Khater’s paper, citing Radford and Hunt (1964) and
+Mussalo-Rauhamaa and Jaakkola (1985), it is stated that 6.5–22 % of the
+cigarette’s <sup>210</sup>Po is found in mainstream smoke, 3.7 to 58 %
+according to other authors, and that according to Parfenov (1974) on
+average about 50 % of <sup>210</sup>Po passes into smoke, 35 % remains
+in the butt and about 15 % in the ash [7]; Zagà et al. reproduce the
+same ranges [8]. Kelley (1965), smoking eleven brands in a standardised
+manner, found that the <sup>210</sup>Po content of mainstream smoke was
+related not to the presence or design of a filter but to the amount of
+particulate matter in the smoke [34].</p>
+<p><strong>Total smoke.</strong> The “50 % to smoke” figure going back
+to Radford and Hunt and reproduced by Rajewsky and Stahlhofen and by
+Parfenov [7], [14] refers, as Table 3 shows, to the sum of mainstream
+and sidestream with the butt counted separately: in Ferri and Baratta
+the sum of the streams is 47–63 %, in Berthet et al. about 62 %
+(sidestream by difference). Khater’s 74.7 % was obtained by difference
+between the activity of tobacco with paper and that of ash with filter
+after volunteers smoked the cigarettes, and includes everything not left
+in the ash and filter; the author notes that the result depends on
+smoking habits and on the activity of the non-inhaled sidestream [7].
+The apparent spread of “from a few per cent to 75 %” found in the review
+literature arises largely from mixing these bases.</p>
+</section>
+<section id="filter" class="level3">
+<h3>Filter</h3>
+<div class="tbl">
+<table>
+<caption>Table 4 — Retention of <sup>210</sup>Po by the filter according
+to different studies. The bases differ: fraction of cigarette activity,
+fraction of smoke activity, ratio of intakes from filtered and
+unfiltered cigarettes.</caption>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Source</th>
+<th style="text-align: left;">Quantity</th>
+<th style="text-align: right;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Ferri, Baratta, 1966 [28]</td>
+<td style="text-align: left;">Fraction of cigarette activity in the
+filter, brands C and F</td>
+<td style="text-align: right;">13.7; 8.8 %</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ferri, Baratta, 1966 [28]</td>
+<td style="text-align: left;">Mainstream intake of filtered relative to
+unfiltered cigarettes</td>
+<td style="text-align: right;">58.5 % (cellulose), 45.1 % (with
+charcoal)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ermolaeva-Makovskaya et al., 1965 [4]</td>
+<td style="text-align: left;">Fraction of smoke <sup>210</sup>Po
+retained by the filter</td>
+<td style="text-align: right;">≈17 %</td>
+</tr>
+<tr>
+<td style="text-align: left;">Berthet et al., 2022 [2]</td>
+<td style="text-align: left;">Fraction of cigarette activity retained by
+the filter</td>
+<td style="text-align: right;">18–20 %</td>
+</tr>
+<tr>
+<td style="text-align: left;">Khater, 2004 [7]</td>
+<td style="text-align: left;">Fraction of activity left in the filter
+after smoking</td>
+<td style="text-align: right;">4.6 %</td>
+</tr>
+<tr>
+<td style="text-align: left;">Philip Morris, 1976, per [15]</td>
+<td style="text-align: left;">Removal of <sup>210</sup>Po from smoke by
+a cellulose acetate filter</td>
+<td style="text-align: right;">40–50 %</td>
+</tr>
+<tr>
+<td style="text-align: left;">R. J. Reynolds, per [15]</td>
+<td style="text-align: left;">Reduction of <sup>210</sup>Po and
+particulates by a tourmaline filter</td>
+<td style="text-align: right;">≈30 %</td>
+</tr>
+<tr>
+<td style="text-align: left;">Nikolova, 1970 [14], after Radford,
+Hunt</td>
+<td style="text-align: left;">Filter retention</td>
+<td style="text-align: right;">8 %</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Ermolaeva-Makovskaya et al. concluded that filters “practically do
+not retain” <sup>210</sup>Po, and that only about 20 % of the polonium
+sorbed by the filter is associated with tarry substances [4]; Khater
+assessed the filter efficiency as “quite low” [7]. Nikolova noted that
+the lower <sup>210</sup>Po content of inhaled smoke from filtered
+cigarettes does not yet imply a significant protective effect [14]. The
+industry’s internal research gave 40–50 % removal of polonium from smoke
+by a cellulose acetate filter, but not of “appreciable quantities” of
+the insoluble fraction; ion-exchange and copper-containing filters
+proved ineffective [15].</p>
+</section>
+<section id="volatility-and-disequilibrium-in-smoke" class="level3">
+<h3>Volatility and disequilibrium in smoke</h3>
+<p>Berthet et al., heating tobacco uniformly over 50–600 °C, found that
+half of the <sup>210</sup>Po is lost already at 255.9 ± 2.2 °C, whereas
+for <sup>210</sup>Pb the same fraction is lost at 531 ± 17 °C; at 300 °C
+about 80 % of the polonium is released [2]. The difference in
+volatility, in the authors’ assessment, may partly explain why 13.6 % of
+<sup>210</sup>Po but only 7 % of <sup>210</sup>Pb pass into mainstream
+smoke, and why the isotopes are not in equilibrium in the smoke itself:
+the lead-supported fraction of polonium in mainstream smoke averaged 52
+± 16 % with a spread of 38–83 % between runs [2]. Ermolaeva-Makovskaya
+et al., extracting filters with ether, established that <sup>210</sup>Po
+is “practically not associated with the products of dry distillation of
+tobacco” [4]; Kelley related it to the mass of particulate matter [34];
+Martell and Radford — to insoluble particles from sintered trichome
+tips, enriched in <sup>210</sup>Pb, from which polonium is stripped on
+combustion [13], [32].</p>
+</section>
+<section id="heated-tobacco" class="level3">
+<h3>Heated tobacco</h3>
+<p>For heated tobacco (IQOS Heets, a separate product) Berthet et
+al. obtained a mainstream transfer of 1.8 ± 0.3 % of <sup>210</sup>Po
+and about 1.5 % of <sup>210</sup>Pb, with a <sup>210</sup>Po content of
+23.7 ± 2.1 mBq/g in the stick — the same as in cigarettes; 78 % of the
+activity remained in the unconsumed tobacco [2]. The difference is
+explained not by specific countermeasures of the manufacturer but by the
+fact that only about 15 % of the tobacco in the stick is heated to the
+target temperature of 330 °C; uniform heating to 300 °C would release
+about 80 % of the <sup>210</sup>Po [2], [6], [38]. The authors caution
+that the lower dose does not mean lower danger, since the calculation
+does not take the smoker’s habits or possible increased consumption into
+account [6].</p>
+</section>
+</section>
+<section id="lungs" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Section 7</span> In the airways
+and tissues</h2>
+<p>The cigarette smoke aerosol has a particle diameter of about 300 nm
+[17]; according to measurements by Desorgher et al., 92 % of mainstream
+<sup>210</sup>Po is retained by a 0.8 µm filter, and the median of the
+size distribution adopted in their model is 0.43 µm [6]. In both
+radon-exposed miners and smokers, 75 % of lung tumours are found in the
+branching airways of the bronchial tree and 15 % in the gas exchange
+region [17]. Deposition in the bronchial region, according to the
+calculation of Desorgher et al., is about 13 % of the inhaled activity —
+noticeably more than in the standard ICRP models [6].</p>
+<p>Little, Radford, McCombs and Hunt (1965) measured <sup>210</sup>Po in
+the lung tissues of smokers and non-smokers; according to later
+accounts, the highest local concentrations were found in the bronchial
+epithelium of segmental bifurcations, “the pulmonary sites where
+bronchogenic carcinomas frequently arise” [15], [33]. Desorgher et
+al. note that in sixty years these remain the only measurements of the
+localisation of <sup>210</sup>Po in the bronchi of deceased smokers, and
+that in the absence of such data dosimetry has to rely on general models
+[6]. Martell (1974) and Radford and Martell (1975) linked local
+accumulation to insoluble particles enriched in <sup>210</sup>Pb:
+polonium is stripped from them on combustion and grows in again after
+inhalation, so the <sup>210</sup>Po/<sup>210</sup>Pb ratio in the
+particles serves as a clock; preliminary data on three smokers and two
+non-smokers gave a residence time of the particles in bronchial
+epithelium of 3–5 months, an estimate the authors consider likely to be
+low [13], [32].</p>
+<p>Mean organ concentrations are given in Table 5. In Ferri and Baratta,
+<sup>210</sup>Po in the lung parenchyma of smokers is three times that
+of the non-smoker, 2.8 times in the pulmonary lymph nodes and 2.4 times
+in the liver, with small samples that, in the authors’ words, can show
+only a trend [28]. The UNSCEAR 2000 report states that the
+<sup>210</sup>Po concentration in the lung parenchyma of smokers is
+about three times that of non-smokers [17]; according to internal
+industry documents, mean tissue concentrations in smokers are “more than
+double” [15]. Petushkov et al. measured the thoron concentration in
+exhaled air: 0.28 ± 0.03 pCi/L in smokers against 0.14 ± 0.02 pCi/L in
+non-smokers (10 persons each), attributing the difference to
+<sup>228</sup>Th in tobacco [40]. For comparison of levels: Antonova
+(1971), for residents of Leningrad without regard to smoking, obtained
+<sup>210</sup>Po of 147 ± 6 in hair, 46 ± 3 in bone tissue and 23 ± 2
+pCi/kg in liver (5.4; 1.7; 0.85 Bq/kg) [39]. Smoking is not the only
+intake route for <sup>210</sup>Po: according to data cited by Zagà et
+al. from Spencer (1977), for an adult male smoker 77.3 % of daily
+<sup>210</sup>Po intake comes from food and 17.4 % from cigarette smoke
+[8].</p>
+<div class="tbl">
+<table>
+<caption>Table 5 — <sup>210</sup>Po concentration in tissues of smokers
+and non-smokers, pCi/g wet tissue (1 pCi/g = 37 Bq/kg). Smokers aged
+36–75, 22–40 years of smoking at 1–3 packs per day [28].</caption>
+<thead>
+<tr>
+<th style="text-align: left;">Tissue</th>
+<th style="text-align: right;">Smokers</th>
+<th style="text-align: right;">Non-smokers</th>
+<th style="text-align: right;">Ratio</th>
+<th style="text-align: left;">Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Lung parenchyma</td>
+<td style="text-align: right;">0.0079 (n = 8)</td>
+<td style="text-align: right;">0.0025 (n = 1)</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: left;">[28]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Bronchi</td>
+<td style="text-align: right;">0.0128 (n = 7)</td>
+<td style="text-align: right;">0.0099 (n = 4)</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">[28]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Pulmonary lymph nodes</td>
+<td style="text-align: right;">0.107 (n = 7)</td>
+<td style="text-align: right;">0.038 (n = 4)</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: left;">[28]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Liver</td>
+<td style="text-align: right;">0.0143 (n = 6)</td>
+<td style="text-align: right;">0.0060 (n = 3)</td>
+<td style="text-align: right;">2.4</td>
+<td style="text-align: left;">[28]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Kidney</td>
+<td style="text-align: right;">0.0088 (n = 6)</td>
+<td style="text-align: right;">0.0057 (n = 3)</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">[28]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Lung parenchyma</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">≈3</td>
+<td style="text-align: left;">[17]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Tissues, mean</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">&gt; 2</td>
+<td style="text-align: left;">[15], after Holtzman, Ilcewicz, 1966</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="dose" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Section 8</span> Radiation dose to
+the smoker</h2>
+<p>Dose estimates in the literature refer to three different quantities:
+the local tissue dose at deposition sites, the mean lung dose and the
+effective dose. They differ by orders of magnitude and cannot be
+compared without qualification.</p>
+<section id="local-doses-to-the-bronchial-epithelium" class="level3">
+<h3>Local doses to the bronchial epithelium</h3>
+<p>The first estimate belongs to Radford and Hunt: according to the
+abstract, for a person smoking two packs a day the dose to the bronchial
+epithelium “probably is at least seven times” that from background
+sources, and in localised areas may reach 1000 rem or more in 25 years
+[1]. The abstract gives no value for the diffuse dose, and accounts
+differ: Nikolova gives about 36 rem in 25 years [14], Petushkov et
+al. 200 rem in 25 years [40]; the latter value coincides with the
+estimate of Little and Radford (1967) for the epithelium of lower-lobe
+bifurcations — 2 Sv over 25 years of smoking, cited by Zagà et al. [8].
+Other estimates of the same class collected by Nikolova and Zagà: 1 rem
+in 25 years according to Rajewsky and 1 rem per year according to Hill
+(1965) [14]; 80 mSv/year to the epithelium at bifurcations for one and a
+half packs a day according to Winters and DiFranza (1982) [11]; about 16
+Sv (80 rad) of cumulative alpha dose at the bifurcations of smokers who
+died of lung cancer according to Martell [8]. Zagà et al. (2011) cite
+from Radford and Hunt only the maximum value — up to 0.4 Sv a year or 10
+Sv over 25 years — without indicating its local character [8].</p>
+</section>
+<section id="mean-lung-dose" class="level3">
+<h3>Mean lung dose</h3>
+<p>Ferri and Baratta calculated the mean dose to the lungs as a whole
+(mass 1200 g, all inhaled material retained, effective half-time 18 d)
+for two packs a day: 33–92 mrem/year (0.33–0.92 mSv/year) depending on
+the brand; for the brand containing pipe tobacco the paper’s table gives
+92 and the text 95 mrem/year [28]. The authors state that, allowing for
+the fraction of aerosol deposited in and cleared from the lungs, the
+values could be high by as much as a factor of eight, and that
+non-homogeneous deposition may produce local doses much greater than the
+mean [28].</p>
+</section>
+<section id="effective-dose" class="level3">
+<h3>Effective dose</h3>
+<div class="tbl">
+<table style="width:100%;">
+<caption>Table 6 — Estimates of the annual effective dose to the smoker
+(from <sup>210</sup>Po and <sup>210</sup>Pb unless the row states
+otherwise), with calculation assumptions where given in the source. A
+dash means the assumption is not given in the text read.</caption>
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Source</th>
+<th style="text-align: right;">Cigarettes per day</th>
+<th style="text-align: left;">Activity in the calculation</th>
+<th style="text-align: left;">Inhaled fraction</th>
+<th style="text-align: left;">Dose coefficient, µSv/Bq</th>
+<th style="text-align: right;">Dose, µSv/year</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Khater, 2004 [7]</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">12.3 mBq <sup>210</sup>Po per cigarette in
+smoke (74.7 % of 16.6 mBq); <sup>210</sup>Pb assumed equal</td>
+<td style="text-align: left;">50 % of smoke inhaled, i.e. 0.37 of the
+cigarette activity</td>
+<td style="text-align: left;">4.3 (Po); 5.6 (Pb)</td>
+<td style="text-align: right;">193 + 251 = 444</td>
+</tr>
+<tr>
+<td style="text-align: left;">Desorgher et al., 2023 [6]</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">1.95 mBq <sup>210</sup>Po and 1.05 mBq
+<sup>210</sup>Pb inhaled per cigarette</td>
+<td style="text-align: left;">measured: 13.6 % (Po), 7 % (Pb)</td>
+<td style="text-align: left;">6.5 (Po); 29.2 (Pb), own model, slow
+absorption</td>
+<td style="text-align: right;">93 + 224 = 317</td>
+</tr>
+<tr>
+<td style="text-align: left;">Desorgher et al., 2023 [6]</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">same</td>
+<td style="text-align: left;">same</td>
+<td style="text-align: left;">moderate absorption</td>
+<td style="text-align: right;">72</td>
+</tr>
+<tr>
+<td style="text-align: left;">Desorgher et al., 2023 [6], heated
+tobacco</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">1.8 % (Po), 1.6 % (Pb)</td>
+<td style="text-align: left;">as above</td>
+<td style="text-align: right;">30 (slow), 5 (moderate)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Papastefanou, 2009 [11]</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: left;">leaf: 14.1 Bq/kg <sup>210</sup>Pb; 3.4
+<sup>226</sup>Ra; 3.8 <sup>228</sup>Ra</td>
+<td style="text-align: left;">0.75</td>
+<td style="text-align: left;">1.1 (Pb); 3.5 (<sup>226</sup>Ra); 2.6
+(<sup>228</sup>Ra)</td>
+<td style="text-align: right;">105 (<sup>210</sup>Pb) + 80
+(<sup>226</sup>Ra) + 67 (<sup>228</sup>Ra) = 252; <sup>210</sup>Po not
+included</td>
+</tr>
+<tr>
+<td style="text-align: left;">Kubalek et al., 2016 [16]</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: left;">measured in cigarettes</td>
+<td style="text-align: left;">measured in volunteers: 22 % of
+<sup>210</sup>Po retained</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">61 + 9 (Po + Pb); 90 (Th isotopes)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Horváth et al., 2017 [3]</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">Iran, 17 brands</td>
+<td style="text-align: left;">measured: 15 ± 10 %</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">≈59</td>
+</tr>
+<tr>
+<td style="text-align: left;">Skwarzec et al., 2001 [35]</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">Poland, 14 brands; 20–215 mBq/day of each
+nuclide inhaled</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">35 + 70 = 105; up to 471 at 40
+cig./day</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cankurt, Görgün, 2020 [31]</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: left;">Turkey</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">188.5 ± 12.4 (Po)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Felix, Ntarisa, 2024 [30]</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">mean of 40 studies</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">295 + 74.1; <sup>232</sup>Th 889.7</td>
+</tr>
+<tr>
+<td style="text-align: left;">Compiled by Desorgher et al. [6]: Tiwari
+2016; Iwaoka, Yonehara 2012; Christobher 2020; Mandic 2016</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">300; 270; 150; 770</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ferri, Baratta, 1966 [28]</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: left;">mean lung dose, not effective</td>
+<td style="text-align: left;">11–31 % measured</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">330–920 (lungs)</td>
+</tr>
+<tr>
+<td style="text-align: left;">UNSCEAR, 2000 [17]</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: left;">general population, U and Th series in
+tissues</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">120</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The data of Table 6 show that the more than tenfold spread of
+effective doses (0.06–0.8 mSv/year) arises mainly not from the activity
+of the tobacco, which is of the same order for most authors (10–38 mBq
+per cigarette), but from three assumptions. The first is the inhaled
+fraction: Khater assumed 74.7 % in smoke and 50 % inhalation, i.e. 0.37
+of the cigarette activity; Papastefanou 0.75; Desorgher et al. the
+measured 0.136 for polonium and 0.07 for lead. Desorgher et
+al. explicitly note that some authors use a transfer factor of 0.7–1.0,
+whereas measurements give less than 0.15, and that estimates in the
+literature range from 30 µSv to tens of mSv per year [6]; the upper part
+of this range lies outside Table 6. The second is the dose coefficient:
+for <sup>210</sup>Pb it differs by a factor of about 27 (1.1 µSv/Bq in
+Papastefanou against 29.2 in Desorgher), depending on the absorption
+type assumed and on whether the enhanced deposition in the bronchial
+region is taken into account. The third is the absorption regime: moving
+from slow to moderate absorption, one and the same model gives 0.317 and
+0.072 mSv/year [6]. Laking’s systematic review (2019) puts it the same
+way: the results remain sensitive to pharmacological assumptions about
+absorption and redistribution of inhaled radionuclides and to
+radiobiological assumptions, and a subset of contemporary authors still
+suggests individual health risks about 1000 times higher than
+internationally accepted models support [29].</p>
+<p>The UNSCEAR 2000 report estimates the annual effective dose from
+uranium- and thorium-series radionuclides in body tissues at 120 µSv,
+the main contributor being <sup>210</sup>Po; the value refers to the
+general population, no smoker-specific dose estimate is given in Volume
+I, but it is noted that tobacco “greatly increases” the intake of
+<sup>210</sup>Pb and <sup>210</sup>Po by smokers [17]. The same report
+states that the combined effect of smoking and radon on lung cancer risk
+is the only case for which epidemiological data clearly call for
+allowance for a more-than-additive effect [17].</p>
+<p>A local dose of 10 Sv over 25 years (400 mSv/year) exceeds the
+effective doses of Table 6 for conventional cigarettes by a factor of
+500–6800; this compares unlike quantities — a tissue dose at the
+deposition site and a dose averaged over organs with weighting factors.
+Ferri and Baratta made this distinction explicitly in 1966: their
+calculation refers “to the average dose over the entire lung tissue”,
+whereas non-homogeneous deposition gives local doses “much greater”
+[28].</p>
+</section>
+<section id="risk-and-share-of-cases" class="level3">
+<h3>Risk and share of cases</h3>
+</section>
+<section id="attribution-of-12-of-lung-cancer-cases"
+class="level3 warn">
+<h3>Attribution of “1–2 % of lung cancer cases”</h3>
+<p>The statement that <sup>210</sup>Po is responsible for 2 % of
+smoking-induced lung cancer cases appears in popular accounts without
+reference to a specific study. The nearest published estimate of this
+kind is Radford’s letter to the New England Journal of Medicine (1982),
+according to which <sup>210</sup>Po is responsible for about 1 % of lung
+cancers in the United States; Muggli et al., citing this estimate,
+convert it into more than 1600 deaths a year in the United States and 11
+700 worldwide [15]. No peer-reviewed study substantiating the 2 % figure
+by calculation was found in preparing this review. Zagà et al. estimate
+the risk differently — 4 × 10<sup>−4</sup> cases per year per smoker,
+i.e. 4 cases per 10 000 smokers per year, noting that the estimate does
+not account for the co-carcinogenic action [8]. The comparison with “300
+chest X-rays a year” for one and a half packs a day, going back to
+Winters and DiFranza (1982) [15], depends on the dose assumed per
+radiograph (0.034 mSv in Zagà et al. [8]) and should not be reproduced
+without stating that basis.</p>
+</section>
+</section>
+<section id="industry" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Section 9</span> The tobacco
+industry’s position</h2>
+<p>Criticism of Radford and Hunt’s original estimates in the
+peer-reviewed literature consists mainly of methodological work on the
+transfer of the isotope to smoke (Section 6) and on dosimetric
+assumptions (Section 8), rather than of a refutation of the hypothesis
+of its contribution to exposure. Muggli et al. (2008), using about 1500
+internal industry documents, showed that manufacturers learned of the
+presence of polonium in tobacco more than 40 years before publication,
+confirmed the published levels with their own measurements, attempted to
+remove it — by washing the leaf (10–40 %), selecting raw material,
+filters and genetic engineering of the plant — and failed; Philip
+Morris’s <sup>210</sup>Po monitoring laboratory, operating from
+1981–1982, was closed around 1986 because of the risk of “producing
+evidence that could compromise the company in litigation” [15]. The
+article’s title — “Waking a Sleeping Giant” — reproduces the wording of
+a 1978 internal note on the undesirability of publishing the company’s
+own results “for fear of waking a sleeping giant” [8], [15]. The authors
+propose a radiation-exposure warning on cigarette packs [15].</p>
+</section>
+<section id="limits" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Section 10</span> Limitations of
+the review</h2>
+<p>The works of Radford and Hunt [1], Tso et al. [9], Berger et
+al. [10], Kelley [34], Martell [13], Radford and Martell [32] and Laking
+[29] are cited from their abstracts; the work of Little et al. [33] from
+the accounts in [6], [15]; the work of Horváth et al. [3] from its
+abstract and the publisher’s highlights; the works of Persson and Holm
+[5], Kubalek et al. [16], Skwarzec et al. [35], Felix and Ntarisa [30],
+Cankurt and Görgün [31] and Ghanbar-Moghaddam and Fathivand [36] from
+their abstracts. Internal industry documents, Radford’s 1982 estimate,
+and the works of Winters and DiFranza, Spencer, Little and Radford
+(1967), Holtzman and Ilcewicz, Parfenov, Rajewsky and Stahlhofen, and
+Hill are cited from the accounts in [7], [8], [11], [14], [15].</p>
+<p>Data for herbaceous vegetation (Section 5) are cited for works [18]
+and [19] from the tables of the compilation [24], and for works
+[20]–[23] from abstracts; the review article [26] and the textbook [27]
+from their text without checking their primary sources. The mass basis
+of tobacco filler and of dried biomass is not identical; the comparison
+in Section 5 is valid to order of magnitude, but not at the level of
+individual percentages. In Table 6 assumptions are given only where they
+are visible in the text read; for works read from abstracts the
+assumption columns are empty.</p>
+</section>
+<section id="conclusion" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Section 11</span> Conclusion</h2>
+<p>The presence of <sup>210</sup>Po and <sup>210</sup>Pb in tobacco and
+the transfer of part of their activity to smoke have been confirmed by
+independent measurements over sixty years in different countries. The
+mean specific activities of <sup>210</sup>Po in cigarette tobacco
+obtained in the 1960s (12–20 Bq/kg) and in the 2000s–2020s (13–25 Bq/kg)
+lie in the same interval; higher values, up to 40–60 Bq/kg, refer to
+unprocessed raw tobacco and to particular markets, and no consistent
+long-term trend has been established across studies. This interval lies
+within the range measured for herbaceous biomass; the
+<sup>210</sup>Pb/<sup>226</sup>Ra ratio in tobacco, typically 2–4,
+matches that of forage in sign and order and shows that lead enters the
+leaf independently of soil radium; the <sup>210</sup>Po/<sup>210</sup>Pb
+ratio, close to unity in cigarettes and below unity in pipe tobacco, is
+consistent with ingrowth of polonium during storage of the leaf.
+Alongside polonium, tobacco contains <sup>228</sup>Th, <sup>226</sup>Ra
+and <sup>228</sup>Ra at activities of the same order, whose dose
+contribution is rarely taken into account.</p>
+<p>The pathway of isotope uptake into the leaf remains a matter of
+disagreement between sources: the only controlled experiment on tobacco
+(1966) pointed to the roots, whereas measurements on tobacco and on
+herbaceous vegetation, where atmospheric uptake of <sup>210</sup>Pb
+predominates even on a substrate with high radium content, support the
+version of deposition of radon decay products on trichomes. Mainstream
+smoke carries 3–36 % of the <sup>210</sup>Po activity depending on the
+brand and smoking regime; values around 50 % refer to the sum of
+mainstream and sidestream, up to 75 % to everything not left in the ash
+and filter. Polonium is more volatile than lead, so the isotopes are not
+in equilibrium in smoke, and in the bronchi polonium grows in again from
+insoluble particles enriched in <sup>210</sup>Pb.</p>
+<p>Effective doses from <sup>210</sup>Po and <sup>210</sup>Pb for a
+pack-a-day smoker calculated with explicit assumptions, 0.06–0.8
+mSv/year, differ mainly in the assumed inhaled fraction (from the
+measured 0.07–0.14 to the assumed 0.75, up to 1.0 for some authors) and
+in dose coefficients, not in the activity of the tobacco; the local dose
+to the epithelium of bronchial bifurcations is a quantity of a different
+kind, and comparing the two without qualification is misleading. The
+figure of “2 % of lung cancer cases” has no verified link to a
+peer-reviewed calculation; the nearest published estimate is about 1 %,
+from Radford’s 1982 letter.</p>
+</section>
+<section id="ai" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Section 12</span> Statement on the
+use of artificial intelligence</h2>
+<p>The review was prepared by an agentic session based on the Claude
+language model (Anthropic) under the direction of the operator. Role of
+the model: decomposing the question into independent search directions;
+collecting sources with background agents assigned to separate subject
+areas; in edition 3, re-reading all sources with four independent agents
+from full texts (where available), producing line-by-line extracts of
+figures and quotations; consolidating the findings; typesetting. Before
+publication the text underwent a self-audit: independent passes by
+checking agents with different scopes (bibliography and reference
+matching; numerical content against the primary sources) and an
+independent recalculation of units, ratios and doses; the discrepancies
+found were corrected. Role of the operator: setting the task, requiring
+priority for highly cited sources, deciding on the review structure,
+instructing that tobacco be compared with data for herbaceous
+vegetation, providing the full texts of works [4], [7], [28], [37]–[40]
+and the author’s manuscript of work [11] (the text uses the figures of
+the published article; the manuscript differs from it in the
+<sup>228</sup>Ra maximum — 6.62 against 6.52 Bq/kg — and in lacking
+<sup>40</sup>K data), pointing to related publications in PubMed,
+instructing that all sources be re-read, and deciding on publication.
+Citation counts of key works were obtained from the Crossref database on
+25 September 2026.</p>
+</section>
+<section id="refs" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Section 13</span> References</h2>
+<div class="refs">
+<ol type="1">
+<li>Radford E. P., Hunt V. R. Polonium-210: A Volatile Radioelement in
+Cigarettes // Science. 1964. Vol. 143, No. 3603. P. 247–249. <a
+href="https://doi.org/10.1126/science.143.3603.247">doi.org/10.1126/science.143.3603.247</a>
+<span class="lvl">149 cit., Crossref</span></li>
+<li>Berthet A. et al. <sup>210</sup>Po and <sup>210</sup>Pb content in
+the smoke of Heated Tobacco Products versus Conventional Cigarette
+smoking // Scientific Reports. 2022. Vol. 12. Art. 10314. <a
+href="https://doi.org/10.1038/s41598-022-14200-2">doi.org/10.1038/s41598-022-14200-2</a></li>
+<li>Horváth M., Shahrokhi A., Bátor P., Tóth-Bodrogi E., Kovács T.
+Determination of <sup>210</sup>Po content in cigarette smoke using a
+smoking machine: A case study of Iranian cigarettes // Journal of
+Environmental Radioactivity. 2017. Vol. 174. P. 66–70. <a
+href="https://doi.org/10.1016/j.jenvrad.2017.01.023">doi.org/10.1016/j.jenvrad.2017.01.023</a></li>
+<li>Ermolaeva-Makovskaya A. P., Pertsov L. A., Popov D. K. On the
+polonium-210 content of tobacco // Gigiena i Sanitariya. 1965. Vol. 30,
+No. 12. P. 40–43 (in Russian). PMID 5874395. <a
+href="https://cyberleninka.ru/article/n/k-voprosu-o-soderzhanii-poloniya-210-v-tabake">cyberleninka.ru</a></li>
+<li>Persson B. R. R., Holm E. Polonium-210 and lead-210 in the
+terrestrial environment: a historical review // Journal of Environmental
+Radioactivity. 2011. Vol. 102, No. 5. P. 420–429. <a
+href="https://doi.org/10.1016/j.jenvrad.2011.01.005">doi.org/10.1016/j.jenvrad.2011.01.005</a>
+<span class="lvl">235 cit., Crossref</span></li>
+<li>Desorgher L., Berthet A., Rossier J., Bochud F., Froidevaux P.
+Dosimetry in the lungs of alpha-particles (<sup>210</sup>Po) and
+beta-particles (<sup>210</sup>Pb) present in the tobacco smoke of
+conventional cigarettes and heated tobacco products // Journal of
+Environmental Radioactivity. 2023. Vol. 263. Art. 107178. <a
+href="https://doi.org/10.1016/j.jenvrad.2023.107178">doi.org/10.1016/j.jenvrad.2023.107178</a></li>
+<li>Khater A. E. M. Polonium-210 budget in cigarettes // Journal of
+Environmental Radioactivity. 2004. Vol. 71, No. 1. P. 33–41. <a
+href="https://doi.org/10.1016/S0265-931X(03)00118-8">doi.org/10.1016/S0265-931X(03)00118-8</a>
+<span class="lvl">88 cit., Crossref</span></li>
+<li>Zagà V., Lygidakis C., Chaouachi K., Gattavecchia E. Polonium and
+Lung Cancer // Journal of Oncology. 2011. Art. 860103. <a
+href="https://doi.org/10.1155/2011/860103">doi.org/10.1155/2011/860103</a></li>
+<li>Tso T. C., Harley N., Alexander L. T. Source of Lead-210 and
+Polonium-210 in Tobacco // Science. 1966. Vol. 153, No. 3738. P.
+880–882. <a
+href="https://doi.org/10.1126/science.153.3738.880">doi.org/10.1126/science.153.3738.880</a>
+<span class="lvl">59 cit., Crossref</span></li>
+<li>Berger K. C., Erhardt W. H., Francis C. W. Polonium-210 analyses of
+vegetables, cured and uncured tobacco, and associated soils // Science.
+1965. Vol. 150, No. 3704. P. 1738–1739. <a
+href="https://doi.org/10.1126/science.150.3704.1738">doi.org/10.1126/science.150.3704.1738</a></li>
+<li>Papastefanou C. Radioactivity of tobacco leaves and radiation dose
+induced from smoking // International Journal of Environmental Research
+and Public Health. 2009. Vol. 6, No. 2. P. 558–567. <a
+href="https://doi.org/10.3390/ijerph6020558">doi.org/10.3390/ijerph6020558</a></li>
+<li>U.S. Environmental Protection Agency. TENORM: Fertilizer and
+Fertilizer Production Wastes (updated 29 December 2025). <a
+href="https://www.epa.gov/radiation/tenorm-fertilizer-and-fertilizer-production-wastes">epa.gov</a></li>
+<li>Martell E. A. Radioactivity of tobacco trichomes and insoluble
+cigarette smoke particles // Nature. 1974. Vol. 249, No. 5454. P.
+215–217. <a
+href="https://doi.org/10.1038/249215a0">doi.org/10.1038/249215a0</a></li>
+<li>Nikolova M. E. The radioactive factor of tobacco smoke // Gigiena i
+Sanitariya. 1970. Vol. 35, No. 8. P. 89–93 (in Russian). PMID 5502723.
+<a
+href="https://cyberleninka.ru/article/n/radioaktivnyy-faktor-tabachnogo-dyma">cyberleninka.ru</a></li>
+<li>Muggli M. E., Ebbert J. O., Robertson C., Hurt R. D. Waking a
+Sleeping Giant: The Tobacco Industry’s Response to the Polonium-210
+Issue // American Journal of Public Health. 2008. Vol. 98, No. 9. P.
+1643–1650. <a
+href="https://doi.org/10.2105/AJPH.2007.130963">doi.org/10.2105/AJPH.2007.130963</a>
+<span class="lvl">38 cit., Crossref</span></li>
+<li>Kubalek D., Serša G., Štrok M., Benedik L., Jeran Z. Radioactivity
+of cigarettes and the importance of <sup>210</sup>Po and thorium
+isotopes for radiation dose assessment due to smoking // Journal of
+Environmental Radioactivity. 2016. Vol. 155–156. P. 97–104. <a
+href="https://doi.org/10.1016/j.jenvrad.2016.02.015">doi.org/10.1016/j.jenvrad.2016.02.015</a></li>
+<li>UNSCEAR. Sources and Effects of Ionizing Radiation. UNSCEAR 2000
+Report to the General Assembly. Vol. I. Annex A, paras. 70–71; Annex B,
+paras. 85–86, 140, 143. New York: United Nations, 2000. <a
+href="https://www.unscear.org/unscear/uploads/documents/unscear-reports/UNSCEAR_2000_Report_Vol.I.pdf">unscear.org</a></li>
+<li>Amaral E. C. S., Carvalho Z. L., Godoy J. M. Transfer of
+<sup>226</sup>Ra and <sup>210</sup>Pb to Forage and Milk in a Brazilian
+High Natural Radioactivity Region // Radiation Protection Dosimetry.
+1988. Vol. 24, No. 1–4. P. 119–121. <a
+href="https://doi.org/10.1093/oxfordjournals.rpd.a080254">doi.org/10.1093/oxfordjournals.rpd.a080254</a></li>
+<li>Štrok M., Smodiš B. Transfer of natural radionuclides from hay and
+silage to cow’s milk in the vicinity of a former uranium mine // Journal
+of Environmental Radioactivity. 2012. Vol. 110. P. 64–68. <a
+href="https://doi.org/10.1016/j.jenvrad.2012.02.009">doi.org/10.1016/j.jenvrad.2012.02.009</a></li>
+<li>Moniakowska A., Konieczyński P., Block K. et al. The presence of
+radiotoxic <sup>210</sup>Po and <sup>210</sup>Pb in Ukrainian wild
+medicinal plants and the assessment of related dose and cancer risk //
+Journal of Environmental Quality. 2024. Vol. 53, No. 3. P. 378–389. <a
+href="https://doi.org/10.1002/jeq2.20555">doi.org/10.1002/jeq2.20555</a></li>
+<li>Chandrashekara K., Somashekarappa H. M. <sup>210</sup>Po and
+<sup>210</sup>Pb in medicinal plants in the region of Karnataka,
+Southern India // Journal of Environmental Radioactivity. 2016. Vol.
+160. P. 87–92. <a
+href="https://doi.org/10.1016/j.jenvrad.2016.04.036">doi.org/10.1016/j.jenvrad.2016.04.036</a></li>
+<li>Jovanovič P. Transfer of natural radionuclides from soil to the
+grass around uranium mine area Žirovski vrh, Slovenia //
+Radioprotection. 2011. Vol. 46, No. 6. P. S295–S299. <a
+href="https://doi.org/10.1051/radiopro/20116754s">doi.org/10.1051/radiopro/20116754s</a></li>
+<li>Pietrzak-Fliś Z., Skowrońska-Smolak M. Transfer of <sup>210</sup>Pb
+and <sup>210</sup>Po to plants via root system and above-ground
+interception // Science of the Total Environment. 1995. Vol. 162,
+No. 2–3. P. 139–147. <a
+href="https://doi.org/10.1016/0048-9697(95)04445-7">doi.org/10.1016/0048-9697(95)04445-7</a></li>
+<li>Persson B. R. R. Transfer analysis of <sup>210</sup>Po and
+<sup>210</sup>Pb in the terrestrial environment // Acta Scientiarum
+Lundensia. 2013. V2013-002. P. 1–42. <a
+href="https://lup.lub.lu.se/search/files/3451310/8232914.pdf">lup.lub.lu.se</a></li>
+<li>Handbook of Parameter Values for the Prediction of Radionuclide
+Transfer in Terrestrial and Freshwater Environments. IAEA Technical
+Reports Series No. 472. Vienna: IAEA, 2010. Table 17. <a
+href="https://www-pub.iaea.org/MTCD/Publications/PDF/trs472_web.pdf">iaea.org</a></li>
+<li>Bakhur A. E., Manuilova L. I., Ovsyannikova T. M. Po-210 and Pb-210
+in environmental objects. Methods of determination // ANRI. 2009. No. 1.
+P. 29–40 (in Russian).</li>
+<li>Beckman I. N. Ecological Radiochemistry and Radioecology. 2015 (in
+Russian).</li>
+<li>Ferri E. S., Baratta E. J. Polonium 210 in tobacco, cigarette smoke,
+and selected human organs // Public Health Reports. 1966. Vol. 81,
+No. 2. P. 121–127. PMID 4954992. <a
+href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1919781/">pmc.ncbi.nlm.nih.gov/articles/PMC1919781</a></li>
+<li>Laking G. R. Human Exposure to Radioactivity From Tobacco Smoke:
+Systematic Review // Nicotine &amp; Tobacco Research. 2019. Vol. 21,
+No. 9. P. 1172–1180. <a
+href="https://doi.org/10.1093/ntr/nty111">doi.org/10.1093/ntr/nty111</a></li>
+<li>Felix A. T., Ntarisa A. V. Review of natural radioactivity in
+tobacco cigarette brands // Journal of Environmental Radioactivity.
+2024. Vol. 272. Art. 107348. <a
+href="https://doi.org/10.1016/j.jenvrad.2023.107348">doi.org/10.1016/j.jenvrad.2023.107348</a></li>
+<li>Cankurt S., Görgün A. U. Determination and distribution of
+<sup>210</sup>Po in different morphological parts of tobacco plants and
+radiation dose assessment from cigarettes in Turkey // Ecotoxicology and
+Environmental Safety. 2020. Vol. 197. Art. 110603. <a
+href="https://doi.org/10.1016/j.ecoenv.2020.110603">doi.org/10.1016/j.ecoenv.2020.110603</a></li>
+<li>Radford E. P., Martell E. A. Polonium-210: lead-210 ratios as an
+index of residence times of insoluble particles from cigarette smoke in
+bronchial epithelium // Inhaled Particles. 1975. Vol. 4, Pt 2. P.
+567–581. PMID 1236240.</li>
+<li>Little J. B., Radford E. P., McCombs H. L., Hunt V. R. Distribution
+of polonium-210 in pulmonary tissues of cigarette smokers // New England
+Journal of Medicine. 1965. Vol. 273, No. 25. P. 1343–1351. <a
+href="https://doi.org/10.1056/NEJM196512162732501">doi.org/10.1056/NEJM196512162732501</a></li>
+<li>Kelley T. F. Polonium-210 content of mainstream cigarette smoke //
+Science. 1965. Vol. 149, No. 3683. P. 537–538. <a
+href="https://doi.org/10.1126/science.149.3683.537">doi.org/10.1126/science.149.3683.537</a></li>
+<li>Skwarzec B., Ulatowski J., Strumińska D. I., Boryło A. Inhalation of
+<sup>210</sup>Po and <sup>210</sup>Pb from cigarette smoking in Poland
+// Journal of Environmental Radioactivity. 2001. Vol. 57, No. 3. P.
+221–230. <a
+href="https://doi.org/10.1016/s0265-931x(01)00018-2">doi.org/10.1016/s0265-931x(01)00018-2</a></li>
+<li>Ghanbar-Moghaddam B., Fathivand A. Study of polonium-210 in Persian
+cigarette and tobacco crops // Radiation Protection Dosimetry. 2020.
+Vol. 191, No. 3. P. 335–340. <a
+href="https://doi.org/10.1093/rpd/ncaa130">doi.org/10.1093/rpd/ncaa130</a></li>
+<li>Wakerlin G. E. Cigarette Smoking and the Role of the Physician //
+Circulation. 1964. Vol. 29, May. P. 651–656.</li>
+<li>Zagà V., Cattaruzza M. S., Gallus S. Polonium-210 and lead-210 in
+heated tobacco smoke // Tabaccologia. 2024. Vol. 22, No. 3. P. 32–36. <a
+href="https://doi.org/10.53127/tblg-2024-A016">doi.org/10.53127/tblg-2024-A016</a></li>
+<li>Antonova V. A. Po<sup>210</sup> in human hair, bone tissue and liver
+// Gigiena i Sanitariya. 1971. Vol. 36, No. 10. P. 52–55 (in Russian).
+PMID 5148707.</li>
+<li>Petushkov A. A., Zel’tser M. R., Medvedovsky A. P. On the content of
+Th<sup>228</sup> in tobacco and in the human body // Gigiena i
+Sanitariya. 1972. Vol. 37, No. 4. P. 113–114 (in Russian). PMID
+5052176.</li>
+</ol>
+</div>
+<div class="foot">
+<p>Prepared by an agentic session based on Claude (Anthropic) under the
+direction of the operator. Edition 3 of 25 September 2026. The review is
+not medical advice.</p>
+</div>
+</section>
+</div>
+</body>
+</html>

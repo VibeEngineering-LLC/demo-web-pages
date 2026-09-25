@@ -1,238 +1,1797 @@
 <!doctype html>
-<html lang="ru" data-lang="ru">
+<html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Полоний-210 и свинец-210 в табаке и табачном дыме — обзор источников</title>
-<meta name="description" content="Обзор рецензируемых источников по содержанию 210Po и 210Pb в табаке, механизму накопления и дозе облучения курильщика.">
+<title>Полоний-210 и свинец-210 в табаке и табачном дыме — обзор
+источников</title>
+<meta name="description" content="Обзор первоисточников 1964–2024 годов
+о содержании 210Po, 210Pb и сопутствующих радионуклидов в табаке, о
+путях их поступления в растение, переходе в дым, поведении в дыхательных
+путях и дозе облучения курильщика; сопоставление с травянистой
+растительностью.">
+<link rel="alternate" hreflang="en" href="en/">
 <style>
-:root{--fg:#1b1b1b;--muted:#5a5a5a;--bg:#fbfaf7;--line:#dcd6c8;--accent:#7a3b1e;--note:#f4efe4}
+/* Оформление «плакат»: тёплая небелёная бумага, чернота вместо серых,
+   линейки 3px, тень 7x7 без размытия, единственный акцент — жёлтая плашка.
+   Цветной текст не используется: цвет несут только схемы и плашки данных. */
+:root{
+  color-scheme: light dark;
+  --paper:#f5f2ea; --sunk:#ebe7dc;
+  --ink:#16140f; --dim:#4c493f; --faint:#6a6558;
+  --rule:#16140f; --rule-soft:#c9c4b4; --accent-soft:#f6d31c;
+  --shadow:7px 7px 0 #16140f;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"Cascadia Mono",Consolas,"DejaVu Sans Mono",monospace;
+  --u:#c8541c; --th:#1f7345; --break:#d21f1f; --ok:#0f5aa8;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#161511; --sunk:#1f1d17;
+    --ink:#f0ede3; --dim:#b5b0a1; --faint:#847f70;
+    --rule:#f0ede3; --rule-soft:#3a382e; --accent-soft:#c8a80e;
+    --shadow:7px 7px 0 #000000;
+    --u:#f0834a; --th:#4fbe84; --break:#ff6a5e; --ok:#6ea6e8;
+  }
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.6}
-.wrap{max-width:1100px;margin:0 auto;padding:40px 28px 72px}
-header.top{border-bottom:2px solid var(--line);padding-bottom:18px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
-h1{font-size:1.7em;line-height:1.25;margin:0 0 6px}
-.subtitle{color:var(--muted);font-size:0.95em;margin:0}
-.langsw{flex:0 0 auto}
-.langsw button{font-family:Georgia,serif;font-size:0.9em;padding:6px 14px;border:1px solid var(--line);background:#fff;cursor:pointer;border-radius:3px}
-.langsw button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-p,li{max-width:none;text-align:justify;text-justify:inter-word;hyphens:auto;-webkit-hyphens:auto;text-wrap:pretty}
-h1,h2,h3,td,th,figcaption,caption{text-align:left;hyphens:manual}
-h2{font-size:1.28em;margin:2em 0 0.6em;padding-top:0.4em;border-top:1px solid var(--line)}
-h2 .num{color:var(--accent);margin-right:8px}
-h3{font-size:1.08em;margin:1.3em 0 0.4em}
-p{margin:0 0 1em}
-.lede{font-size:1.02em;color:var(--muted)}
-.abstract{background:var(--note);border-left:3px solid var(--accent);padding:16px 20px;margin:0 0 28px}
-.abstract h3{margin-top:0}
-.kw{font-size:0.92em;color:var(--muted);margin-top:10px}
-table{border-collapse:collapse;width:100%;margin:1em 0 1.4em;font-size:0.92em}
-th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
-th{background:var(--note)}
-td.num,th.num{text-align:right}
-caption{caption-side:top;text-align:left;font-weight:bold;margin-bottom:6px}
-figcaption{font-size:0.88em;color:var(--muted);margin-top:4px}
-.note{background:var(--note);border-left:3px solid var(--accent);padding:10px 16px;margin:1em 0;font-size:0.94em}
-.note p{margin:0.3em 0}
-a{color:var(--accent)}
-a:visited{color:#5a2c15}
-.lvl{display:inline-block;font-size:0.82em;padding:0 5px;border-radius:2px;margin-left:3px}
-.lvl-a{background:#e5efe5}
-.lvl-b{background:#eee7d6}
-ol.refs{padding-left:1.6em}
-ol.refs li{margin-bottom:0.7em;text-align:left;hyphens:manual;font-size:0.95em}
-footer.bottom{margin-top:3em;padding-top:1.2em;border-top:1px solid var(--line);font-size:0.85em;color:var(--muted)}
-[data-lang-block]{display:none}
-html[data-lang="ru"] [data-lang-block="ru"]{display:block}
-html[data-lang="en"] [data-lang-block="en"]{display:block}
-@media (max-width:640px){body{font-size:15.5px}.wrap{padding:24px 16px 48px}}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.5;padding:28px 18px 64px}
+/* ТИПОГРАФИКА (указания оператора 28.08.2026).
+   1. Меру набора задаёт ЛИСТ, а не отдельный блок: ограничение ширины у
+      каждого абзаца оставляло текст узкой лентой у левого края при пустом
+      поле справа.
+   2. Основной текст выключается ПО ФОРМАТУ. Это отменяет прежнее правило
+      проекта, запрещавшее justify. Чтобы выключка не рвала строки «реками»
+      пробелов, включены автоматические переносы (hyphens:auto работает по
+      lang="ru" в корне документа) — без них justify на длинных русских
+      терминах и давал тот дефект, из-за которого его прежде запретили.
+   3. Выключка по формату применяется к связному тексту. Заголовки, подписи,
+      ячейки таблиц и числовые колонки остаются с выключкой влево или вправо:
+      растягивать короткую строку между полями нечем. */
+.sheet{max-width:1100px;margin:0 auto}  /* rn-article-style #TXT-2: широкая полоса */
+body,p,li,td,th,figcaption,caption{text-align:left}
+p,li,.abstract p,.note p,.warn p,.warn li,.rules span,.foot p,.foot li,
+.sec-lead,.stand{text-align:justify;hyphens:auto;-webkit-hyphens:auto;
+  -moz-hyphens:auto;overflow-wrap:break-word}
+p,li,.cap,.sec-lead,caption,.stand,.abstract p,.note p,.warn p,.warn li,
+.warn h3,.kpi .l,.foot p,.foot li,.rules span{max-width:none}
+/* Короткие строки в таблицах и подписях не выключаются по формату. */
+th,td,caption,figcaption,.cap,.kpi .l,.num-tag,.eyebrow{text-align:left;hyphens:manual}
+
+.ai-note{font-size:14px;color:var(--faint);margin:14px 0 0;border-left:3px solid var(--rule-soft);
+  padding-left:12px}
+.ai-note a{color:inherit}
+.top{border-bottom:6px solid var(--rule);padding-bottom:18px;margin-bottom:26px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);margin:0 0 10px}
+h1{font-size:clamp(28px,5vw,54px);line-height:1.05;margin:0 0 12px;
+  font-weight:800;letter-spacing:-.02em}
+.stand{font-size:clamp(15px,2vw,19px);color:var(--dim);margin:0}
+.mark{background:var(--accent-soft);color:#16140f;padding:0 .22em;
+  box-decoration-break:clone;-webkit-box-decoration-break:clone}
+
+h2{font-size:clamp(20px,3vw,28px);margin:0 0 6px;font-weight:800;letter-spacing:-.01em}
+h3{font-size:17px;margin:22px 0 8px}
+.sec{margin:44px 0 0;padding-top:20px;border-top:3px solid var(--rule)}
+.sec-lead{color:var(--dim);margin:0 0 18px}
+.num-tag{font-family:var(--mono);font-size:12px;color:var(--faint);
+  letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:4px}
+
+
+.fig{border:3px solid var(--rule);background:var(--paper);padding:16px;margin:20px 0 0;
+  box-shadow:var(--shadow)}
+.fig svg{display:block;width:100%;height:auto;overflow:visible}
+.cap{font-size:13.5px;color:var(--dim);margin:12px 2px 0}
+
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin-top:6px}
+caption{text-align:left;font-size:13px;color:var(--faint);padding-bottom:8px}
+th,td{border-bottom:1.5px solid var(--rule-soft);padding:8px 10px;text-align:right}
+th:first-child,td:first-child{text-align:left}
+thead th{border-bottom:3px solid var(--rule);font-size:12.5px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--dim);white-space:nowrap}
+tbody tr:last-child td{border-bottom:3px solid var(--rule)}
+td.n,th.n{font-family:var(--mono);white-space:nowrap}
+.scroll{overflow-x:auto}
+
+/* Одна колонка. Две колонки давали разную высоту: под короткой оставалась
+   пустота, а таблицы и врезки в узкой колонке набирались слишком плотно. */
+.two{display:block}
+.two > div + div{margin-top:26px}
+
+.note{border-left:6px solid var(--accent-soft);background:var(--sunk);
+  padding:14px 16px;margin:20px 0 0}
+.note p{margin:0 0 8px} .note p:last-child{margin:0}
+.warn{border:3px solid var(--rule);background:var(--sunk);padding:16px 18px;margin:20px 0 0}
+.warn h3{margin:0 0 10px;font-size:17px}
+.warn ul{margin:0;padding-left:20px} .warn li{margin:0 0 8px}
+.warn li:last-child{margin:0}
+
+.rules{list-style:none;padding:0;margin:18px 0 0}
+.rules li{border:3px solid var(--rule);background:var(--paper);padding:13px 15px;
+  margin:0 0 12px;box-shadow:var(--shadow);max-width:none}
+.rules b{display:block;font-size:15px;margin-bottom:4px}
+.rules span{font-size:14px;color:var(--dim);display:block}
+.rules code{white-space:nowrap}
+
+code{font-family:var(--mono);font-size:.93em;background:var(--sunk);padding:1px 5px}
+.abstract{border-left:6px solid var(--rule);padding:2px 0 2px 20px;margin:26px 0 0}
+.abstract .ab-h{font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);margin:0 0 10px;font-weight:700}
+.abstract p{margin:0 0 10px;font-size:15px}
+.abstract p:last-child{margin:0}
+.abstract .kw{color:var(--dim);font-size:14px}
+.foot{margin-top:52px;padding-top:18px;border-top:3px solid var(--rule);
+  font-size:13px;color:var(--faint)}
+.foot a{color:inherit}
+.foot ol{padding-left:20px;margin:10px 0 0}
+.foot li{margin:0 0 6px}
+
+/* Дополнения обзора Po-210/Pb-210: переключатель языка, рамки таблиц,
+   список литературы, разметка pandoc (--section-divs). */
+.top{position:relative}
+.top .eyebrow{margin-right:90px}
+.btn{position:absolute;top:0;right:0;font-family:var(--mono);font-size:14px;font-weight:700;
+  letter-spacing:.08em;color:var(--ink);background:var(--paper);border:3px solid var(--rule);
+  padding:6px 14px;text-decoration:none;box-shadow:4px 4px 0 var(--rule)}
+.btn:hover,.btn:focus-visible{background:var(--accent-soft);color:#16140f;outline:none}
+.tbl{border:3px solid var(--rule);padding:14px 16px;margin:22px 0 8px;box-shadow:var(--shadow);overflow-x:auto}
+.tbl table{margin:0}
+h2.sec{margin:0 0 10px;padding:0;border:0}  /* pandoc дублирует класс секции на заголовок */
+.abstract .ab-h{display:block}
+.refs ol{padding-left:24px;margin:10px 0 0;font-size:14px}
+.refs li{margin:0 0 7px;text-align:left;hyphens:manual;overflow-wrap:anywhere}
+.lvl{font-family:var(--mono);font-size:11.5px;border:1.5px solid var(--rule-soft);padding:0 5px;white-space:nowrap}
+a{color:inherit;text-underline-offset:2px}
+p{margin:0 0 12px}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="sheet">
 <header class="top">
-  <div>
-    <h1 data-lang-block="ru" style="display:block">Полоний-210 и свинец-210 в табаке и табачном дыме: обзор источников</h1>
-    <h1 data-lang-block="en">Polonium-210 and Lead-210 in Tobacco and Tobacco Smoke: A Review of Sources</h1>
-    <p class="subtitle" data-lang-block="ru" style="display:block">Содержание, механизм накопления и вклад в дозу облучения курильщика по рецензируемым публикациям</p>
-    <p class="subtitle" data-lang-block="en">Content, accumulation pathway and contribution to smoker radiation dose according to peer-reviewed literature</p>
-  </div>
-  <div class="langsw">
-    <button id="btn-ru" onclick="setLang('ru')">RU</button>
-    <button id="btn-en" onclick="setLang('en')">EN</button>
-  </div>
+<a class="btn" href="en/" hreflang="en" lang="en">EN</a>
+<p class="eyebrow">Радиоэкология · естественные радионуклиды · обзор
+литературы · редакция 3</p>
+<h1>Полоний-210 и свинец-210 в табаке и табачном дыме: обзор
+источников</h1>
+<p class="stand">Содержание в табаке, пути поступления в растение,
+переход в дым, поведение в дыхательных путях и доза облучения курильщика
+по первоисточникам 1964–2024 годов. Удельная активность <sup>210</sup>Po
+в сигаретном табаке <mark>по измерениям 1960-х и 2000–2020-х годов лежит
+в одном интервале, 12–25 Бк/кг, в пределах диапазона, измеренного для
+травянистой фитомассы; устойчивой многолетней тенденции по совокупности
+работ не установлено</mark>; разброс расчётных оценок эффективной дозы
+порождён главным образом не измеренной активностью, а допущениями о
+вдыхаемой доле и дозовых коэффициентах.</p>
+<p class="ai-note"><strong>Автоматизированный анализ.</strong>
+Подготовлен языковой моделью по полным текстам источников, прошёл
+независимый самоаудит — <a href="#ai">заявление об использовании
+ИИ</a>.</p>
 </header>
-<div data-lang-block="ru" style="display:block">
 <div class="abstract">
-<h3>Реферат</h3>
-<p>Объект рассмотрения — природные альфа- и бета-излучающие радионуклиды полоний-210 (<sup>210</sup>Po) и свинец-210 (<sup>210</sup>Pb) в листьях табака, сигаретном дыме и организме курильщика. Актуальность обусловлена продолжающейся с 1964 года научной дискуссией о величине вклада этих изотопов в канцерогенез при курении и расхождением методических оценок современных публикаций более чем на порядок. Цель работы — свести опубликованные измеренные значения активности, механизмы накопления изотопов в растении и оценки дозы облучения бронхиального эпителия курильщика, разведя измеренное и модельное, первоисточник и пересказ.</p>
-<p>Рассмотрены прямые измерения активности <sup>210</sup>Po и <sup>210</sup>Pb в табачном наполнителе и основном потоке дыма на сигаретных машинах (Швейцария, Иран, Египет), два конкурирующих механизма поступления изотопов в растение (корневое поглощение через фосфатные удобрения против атмосферного осаждения продуктов распада радона-222 на трихомы листа), а также цепочка оценок дозы от первой работы Рэдфорда и Ханта (1964) до современной дозиметрии нагреваемого табака.</p>
-<p>Методы — сопоставление рецензируемых источников по правилу разведения расхождений без усреднения, с проверкой цитируемой атрибуции числовых значений первоисточнику (citation-green) и независимой верификацией числового расхождения между двумя пересказами одной работы.</p>
-<p>Вывод: средняя активность <sup>210</sup>Po в табачном наполнителе современных сигарет по независимым измерениям близка к 15-25 мБк на сигарету; доля, переходящая в основной поток дыма при курении, расходится между исследованиями от 3,7 до 74,7 %, что объясняется отсутствием унифицированной методики пробоотбора; механизм накопления в растении остаётся предметом расхождения между двумя работами 1960-х годов; широко цитируемая оценка «2 % случаев рака лёгких от <sup>210</sup>Po» не имеет проверенной привязки к оригинальной работе Рэдфорда и Ханта.</p>
+<p><span class="ab-h">Реферат</span></p>
+<p>Объект рассмотрения — природные радионуклиды полоний-210
+(<sup>210</sup>Po) и свинец-210 (<sup>210</sup>Pb) в табачном сырье,
+сигаретном дыме и организме курильщика. Актуальность определяется тем,
+что опубликованные с 1964 года оценки облучения курильщика различаются
+более чем на три порядка величины, а часть различий порождена не физикой
+процесса, а несопоставимостью измеряемых величин и различием расчётных
+допущений. Цель работы — свести по первоисточникам измерения удельной
+активности, данные о путях поступления изотопов в растение, о переходе в
+дым и о поведении в дыхательных путях, а также оценки дозы, разведя
+измеренное и модельное, первоисточник и пересказ.</p>
+<p>Рассмотрены прямые измерения <sup>210</sup>Po, <sup>210</sup>Pb,
+<sup>226</sup>Ra, <sup>228</sup>Ra и <sup>228</sup>Th в табаке; балансы
+активности между золой, окурком, фильтром, основным и побочным потоками
+дыма; две версии поступления изотопов в лист — корневая и атмосферная;
+данные о содержании в тканях; локальные, средние и эффективные дозы.
+Выполнено сопоставление с измерениями <sup>210</sup>Pb и
+<sup>210</sup>Po в травянистой растительности.</p>
+<p>Методы — чтение полных текстов там, где они доступны, и аннотаций в
+остальных случаях; сопоставление источников без усреднения расхождений;
+сверка каждой ссылки с содержанием первоисточника; пересчёт единиц,
+отношений и доз независимым расчётом.</p>
+<p>Вывод: удельная активность <sup>210</sup>Po в сигаретном табаке
+большинства изученных марок составляет 12–25 Бк/кг (14–22 мБк на
+сигарету); значения, полученные в 1960-х и в 2000–2020-х годах, лежат в
+одном интервале, устойчивой многолетней тенденции по совокупности работ
+не установлено, а значения до 40–60 Бк/кг относятся к необработанному
+сырью и отдельным рынкам. Этот интервал находится в пределах диапазона,
+измеренного для травянистой фитомассы, а отношение
+<sup>210</sup>Pb/<sup>226</sup>Ra, как правило 2–4, показывает, что
+свинец поступает в лист независимо от радия почвы. В основной поток дыма
+переходит 3–36 % активности <sup>210</sup>Po в зависимости от марки и
+режима курения; величины 50–75 % относятся ко всему дыму, включая
+побочный поток. Эффективные дозы от <sup>210</sup>Po и <sup>210</sup>Pb
+для курильщика пачки в сутки, рассчитанные с явными допущениями,
+0,06–0,8 мЗв/год, различаются главным образом принятой вдыхаемой долей
+(0,07–0,75, у части авторов до 1,0) и дозовыми коэффициентами, а не
+активностью табака. Локальная доза на эпителий бронхиальных бифуркаций —
+величина иного рода, и её сопоставление с эффективной дозой без оговорки
+некорректно.</p>
+<p><span class="kw"><strong>Ключевые слова:</strong> полоний-210,
+свинец-210, торий-228, радий-226, табак, сигаретный дым, естественная
+радиоактивность, трихомы, радон-222, фосфатные удобрения, коэффициент
+перехода, травянистая растительность, эффективная доза, локальная
+доза</span></p>
 </div>
-<p class="kw"><b>Ключевые слова:</b> полоний-210, свинец-210, табак, сигаретный дым, естественная радиоактивность, доза облучения, радон-222, фосфатные удобрения, курение, дозиметрия</p>
-</div>
-<div data-lang-block="en">
-<div class="abstract">
-<h3>Abstract</h3>
-<p>The object of review is the naturally occurring alpha- and beta-emitting radionuclides polonium-210 (<sup>210</sup>Po) and lead-210 (<sup>210</sup>Pb) in tobacco leaves, cigarette smoke and the smoker body. The topic remains relevant because the scientific debate on the magnitude of these isotopes contribution to smoking-related carcinogenesis, opened in 1964, is unresolved, and modern methodological estimates diverge by more than an order of magnitude. The aim of this work is to consolidate published measured activity values, the accumulation pathway of the isotopes in the plant, and dose estimates to the bronchial epithelium of smokers, separating measured values from modelled ones and primary sources from paraphrases.</p>
-<p>The review covers direct measurements of <sup>210</sup>Po and <sup>210</sup>Pb activity in tobacco filler and mainstream smoke obtained with smoking machines (Switzerland, Iran, Egypt), two competing mechanisms of isotope uptake by the plant (root absorption via phosphate fertiliser versus atmospheric deposition of radon-222 decay products on leaf trichomes), and the chain of dose estimates from the original Radford and Hunt (1964) work to modern dosimetry of heated tobacco products.</p>
-<p>Methods: comparison of peer-reviewed sources under the rule of resolving discrepancies without averaging, verification that a cited numerical value is actually attributable to its claimed primary source (citation-green), and independent verification of a numerical discrepancy between two paraphrases of the same work.</p>
-<p>Conclusion: the average <sup>210</sup>Po activity in the tobacco filler of modern cigarettes, by independent measurements, is close to 15-25 mBq per cigarette; the fraction transferred to mainstream smoke during smoking diverges between studies from 3.7 to 74.7 %, explained by the absence of a unified sampling methodology; the accumulation mechanism in the plant remains disputed between two 1960s studies; the widely cited estimate of "2 % of smoking-related lung cancers attributable to <sup>210</sup>Po" has no verified attribution to the original Radford and Hunt work.</p>
-</div>
-<p class="kw"><b>Keywords:</b> polonium-210, lead-210, tobacco, cigarette smoke, natural radioactivity, radiation dose, radon-222, phosphate fertiliser, smoking, dosimetry</p>
-</div><div data-lang-block="ru" style="display:block">
-<h2><span class="num">1</span>Введение</h2>
-<p>Присутствие природных радионуклидов уранового и ториевого рядов в табаке установлено экспериментально более шестидесяти лет назад: в 1964 году Рэдфорд и Хант впервые показали, что полоний-210 переходит из табака в сигаретный дым и преимущественно оседает на бронхиальном эпителии курильщика [1]. С тех пор опубликованы десятки работ, измеряющих активность <sup>210</sup>Po и его материнского изотопа <sup>210</sup>Pb в табачном сырье, золе, фильтре и дыме, однако единой согласованной картины по количественному вкладу этих изотопов в риск рака лёгких у курильщиков не сложилось. Настоящий обзор сводит опубликованные измерения, разбирает механизм поступления изотопов в растение и прослеживает историю оценки дозы облучения от первой работы 1964 года до дозиметрии современных продуктов нагревания табака.</p>
-<p>Особенность темы — систематическое расхождение методик измерения между лабораториями и десятилетиями, из-за чего прямое сравнение чисел из разных источников требует явного указания метода. Обзор придерживается принципа: расхождение источников не усредняется и не разрешается выбором «удобного» числа — оба значения приводятся с указанием методики.</p>
-<h2><span class="num">2</span>Активность <sup>210</sup>Po и <sup>210</sup>Pb в табаке: прямые измерения</h2>
-<p>Наиболее методически полная современная работа — измерение Бертэ и соавторов (2022, Лозаннский университетский госпиталь, Швейцария) на 15 образцах обычных сигарет: средняя активность <sup>210</sup>Po в табачном наполнителе составила 15,0 плюс-минус 2,3 мБк на сигарету, или 25,2 плюс-минус 2,6 мБк на грамм табака; отношение активностей <sup>210</sup>Po/<sup>210</sup>Pb оказалось близким к секулярному равновесию (1,06 плюс-минус 0,05) [2]. Для сравнения, измерение на иранских сигаретах семнадцати марок дало более широкий диапазон — от 9,7 плюс-минус 1,2 до 26,5 плюс-минус 4,6 мБк на сигарету [3], что указывает на зависимость содержания изотопа от сорта табака и, вероятно, от условий выращивания (раздел 4).</p>
-<p>Советские измерения 1965 года на отечественных сигаретах дали среднюю концентрацию (4,3 плюс-минус 1,0)·10<sup>-13</sup> Ки/г, что в пересчёте составляет 0,43 пКи/г, или порядка 16 мБк/г табака [4] — величина того же порядка, что и современные швейцарские и иранские данные, несмотря на разделяющие измерения полвека и смену сортового состава табака. Диапазон по отдельным сортам сырья в той же работе — от 2,8 до 17,4·10<sup>-13</sup> Ки/г для отечественных сортов и от 2,3 до 9,2·10<sup>-13</sup> Ки/г для зарубежных [4].</p>
+<section id="intro" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Раздел 1</span> Введение</h2>
+<p>Присутствие <sup>210</sup>Po в табаке и его переход в сигаретный дым
+экспериментально показаны Рэдфордом и Хантом в январе 1964 года [1].
+Отклик был немедленным и разноплановым: уже в мае того же года
+редакционная статья журнала Circulation упоминала полоний среди
+составляющих дыма, «которые могут иметь значение в генезе рака лёгких у
+злостных курильщиков» [37]; в декабре 1965 года вышла первая советская
+работа с прямыми измерениями [4], причём её редакционное послесловие
+опровергало растиражированную научно-популярным журналом цифру «25 бэр
+на пачку сигарет» — такая доза, по замечанию редакции, набирается лишь
+за несколько десятилетий [4]; производители табака, как показали позднее
+внутренние документы отрасли, к 1968 году подтвердили опубликованные
+уровни собственными измерениями [15].</p>
+<p>С тех пор опубликованы десятки работ, измеряющих активность
+<sup>210</sup>Po и его материнского изотопа <sup>210</sup>Pb в табачном
+сырье, золе, фильтре, дыме и тканях, однако согласованной картины
+количественного вклада этих изотопов в облучение курильщика не
+сложилось. Систематический обзор 2019 года констатирует, что данные о
+содержании радионуклидов в табаке и дыме надёжны, но исследование
+предмета «в научном отношении стояло на месте последние сорок лет», а
+часть современных авторов приводит индивидуальные риски примерно в
+тысячу раз выше, чем допускают международно принятые модели [29]. Часть
+расхождений объясняется методически: разные работы под одним названием
+«переход в дым» измеряют разные величины, а под названием «доза» — то
+локальную тканевую, то среднюю по органу, то эффективную.</p>
+<p>Настоящий обзор построен по вопросам, а не по источникам: сколько
+радионуклидов содержится в табаке (раздел 2); откуда они попадают в лист
+(раздел 3) и как со временем меняется отношение
+<sup>210</sup>Po/<sup>210</sup>Pb (раздел 4); что даёт сопоставление с
+травянистой растительностью, для которой накоплен независимый массив
+данных (раздел 5); какая часть активности переходит в дым и в какой его
+поток (раздел 6); что происходит с изотопами в дыхательных путях (раздел
+7); как из этих данных получаются оценки дозы и почему они расходятся
+(раздел 8); что известно о позиции отрасли (раздел 9). Расхождения
+источников не усредняются: значения приводятся с указанием методики и
+базиса.</p>
+</section>
+<section id="activity" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Раздел 2</span> Радионуклиды в
+табаке</h2>
+<section id="полоний-210" class="level3">
+<h3>Полоний-210</h3>
+<p>Первые измерения 1960-х годов и современные работы дают для
+сигаретного табака значения одного интервала. Ферри и Баратта (1966,
+Служба общественного здравоохранения США) для шести типов сигарет
+получили в среднем 0,43 пКи <sup>210</sup>Po на грамм табака (15,9
+Бк/кг) и 0,37 пКи на сигарету (13,7 мБк); там же приведено среднее
+Рэдфорда и Ханта — 0,425 пКи на сигарету (15,7 мБк) при материальном
+балансе 85 % [28]. Ермолаева-Маковская, Перцов и Попов (1965) для
+двенадцати отечественных сортов сигарет получили от 3,0 до
+5,6·10<sup>−13</sup> Ки на сигарету (11–21 мБк), для девяти зарубежных —
+от 5,0 до 17,8·10<sup>−13</sup> Ки (19–66 мБк); средняя концентрация в
+отечественном сигаретном табаке составила (4,3 ± 1,0)·10<sup>−13</sup>
+Ки/г, то есть 15,9 Бк/кг [4]. По сводке Николовой (1970), в листьях
+табака США в 1938–1963 годах содержалось в среднем 0,345 и 0,551 пКи/г
+<sup>210</sup>Po (12,8 и 20,4 Бк/кг) по двум сериям измерений; в той же
+сводке для табачного сырья СССР со ссылкой на Ермолаеву-Маковскую
+приведено в среднем 1,127 пКи/г (41,7 Бк/кг; от 0,600 до 1,600 пКи/г),
+для Родезии — 0,754 пКи/г (27,9 Бк/кг) [14]. Внутренние измерения
+компании Philip Morris к 1968 году дали 0,33–0,36 пКи/г (12–13 Бк/кг) —
+величину, совпадающую с опубликованной [15].</p>
+<p>Современные работы: Бертэ и соавторы (Лозанна, 2022) для тринадцати
+марок швейцарского рынка — 15,0 ± 2,3 мБк на сигарету, или 25,2 ± 2,6
+мБк/г (n = 15; по маркам от 12,7 до 21,2 мБк на сигарету) [2]; Хатер
+(2004) для десяти марок египетского рынка — 16,3 ± 3,2 мБк на сигарету
+(21,0 ± 4,0 мБк/г; по маркам 9,7–22,5 мБк) — и, сравнив результат с
+измерением 1968 года для тех же египетских сигарет (14,1 мБк), заключил,
+что современные способы обработки табака содержания <sup>210</sup>Po не
+снизили [7]. Скварец и соавторы (2001) для 14 наиболее продаваемых марок
+польского рынка нашли до 24,1 мБк на сигарету [35]; Хорват и соавторы
+(2017) для 17 марок, распространяемых в Иране, — от 9,7 ± 1,2 до 26,5 ±
+4,6 мБк на сигарету [3]; Джанкурт и Гёргюн (2020) для 16 марок в Турции
+— от 16,1 до 37,6 мБк при среднем 22,4 ± 1,5 мБк [31]; Ганбар-Могаддам и
+Фативанд (2020) — в среднем 38,4 мБк/г для иранских и 20,0 мБк/г для
+импортных сигарет [36]. Сводки: по Хатеру и Скварцу и соавторам, мировые
+данные лежат в диапазоне 2,8–37 Бк/кг [7], [35]; Перссон и Хольм (2011)
+приводят среднее по литературе 13 ± 2 Бк/кг и отмечают, что оно
+«довольно постоянно во времени и по географическому происхождению» [5];
+учебник Бекмана приводит для табака 55 Бк/кг без указания источника
+[27]; обзор Феликса и Нтарисы (2024), охвативший 40 работ 2000–2023
+годов, даёт для <sup>210</sup>Po среднее 20,4 мБк/г при диапазоне
+0,4–128,6 мБк/г, для <sup>210</sup>Pb — 15,4 (2,0–78,8) мБк/г, для
+<sup>226</sup>Ra — 5,9 (2,0–16,0) мБк/г [30].</p>
+<div class="tbl">
 <table>
-<caption>Таблица 1 — Активность <sup>210</sup>Po в табачном наполнителе сигарет по прямым измерениям</caption>
-<tr><th>Источник</th><th>Регион / марка</th><th class="num">Активность</th><th>Метод</th></tr>
-<tr><td>Berthet et al., 2022 [2]</td><td>Швейцария, обычные сигареты (n=15)</td><td class="num">15,0 ± 2,3 мБк/сиг.</td><td>Альфа-спектрометрия после химического выделения</td></tr>
-<tr><td>Horvath et al., 2017 [3]</td><td>Иран, 17 марок</td><td class="num">9,7-26,5 мБк/сиг.</td><td>Сигаретная машина ISO-3308/3402/4387</td></tr>
-<tr><td>Ермолаева-Маковская и др., 1965 [4]</td><td>СССР, готовые сигареты</td><td class="num">≈16 мБк/г табака</td><td>Радиохимическое выделение, альфа-счёт</td></tr>
-<tr><td>Persson &amp; Holm, 2011 (обзор) [5]</td><td>Сводная мировая оценка</td><td class="num">13 ± 2 Бк/кг (≈13 мБк/г)</td><td>Метаанализ опубликованных измерений</td></tr>
+<caption>Таблица 1 — Удельная активность <sup>210</sup>Po в табаке по
+прямым измерениям 1964–2024 годов. Пересчёт: 1 пКи = 37 мБк; 1 Ки =
+3,7·10<sup>10</sup> Бк. Масса табака в сигарете по разным работам
+0,6–1,4 г [4], около 0,6 г [6].</caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Источник</th>
+<th style="text-align: left;">Объект</th>
+<th style="text-align: right;">Активность <sup>210</sup>Po</th>
+<th style="text-align: right;">Бк/кг, пересчёт</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Radford, Hunt, 1964, по [28]</td>
+<td style="text-align: left;">США, среднее</td>
+<td style="text-align: right;">0,425 пКи/сиг.</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ferri, Baratta, 1966 [28]</td>
+<td style="text-align: left;">США, сигареты 6 типов, среднее</td>
+<td style="text-align: right;">0,37 пКи/сиг.; 0,43 пКи/г</td>
+<td style="text-align: right;">15,9</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ермолаева-Маковская и др., 1965 [4]</td>
+<td style="text-align: left;">СССР, сигаретный табак, среднее</td>
+<td style="text-align: right;">(4,3 ± 1,0)·10<sup>−13</sup> Ки/г</td>
+<td style="text-align: right;">15,9</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ермолаева-Маковская и др., 1965 [4]</td>
+<td style="text-align: left;">Сигареты: 12 отечественных / 9
+зарубежных</td>
+<td style="text-align: right;">3,0–5,6 / 5,0–17,8 ·10<sup>−13</sup>
+Ки/сиг.</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ермолаева-Маковская и др., 1965 [4]</td>
+<td style="text-align: left;">СССР, табачное сырьё, отечественные
+сорта</td>
+<td style="text-align: right;">6,0–16,0·10<sup>−13</sup> Ки/г; среднее
+11,27·10<sup>−13</sup></td>
+<td style="text-align: right;">22–59; 41,7</td>
+</tr>
+<tr>
+<td style="text-align: left;">Николова, 1970 [14], сводка</td>
+<td style="text-align: left;">Лист табака, США, 1938–1963, две
+серии</td>
+<td style="text-align: right;">0,345; 0,551 пКи/г</td>
+<td style="text-align: right;">12,8; 20,4</td>
+</tr>
+<tr>
+<td style="text-align: left;">Николова, 1970 [14], сводка</td>
+<td style="text-align: left;">Табачное сырьё, Родезия</td>
+<td style="text-align: right;">0,754 пКи/г</td>
+<td style="text-align: right;">27,9</td>
+</tr>
+<tr>
+<td style="text-align: left;">Philip Morris, 1968, по [15]</td>
+<td style="text-align: left;">Внутренние измерения</td>
+<td style="text-align: right;">0,33–0,36 пКи/г</td>
+<td style="text-align: right;">12–13</td>
+</tr>
+<tr>
+<td style="text-align: left;">Skwarzec et al., 2001 [35]</td>
+<td style="text-align: left;">Польша, 14 марок, максимум</td>
+<td style="text-align: right;">24,1 мБк/сиг.</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">Khater, 2004 [7]</td>
+<td style="text-align: left;">Египет, 10 марок, среднее</td>
+<td style="text-align: right;">16,3 ± 3,2 мБк/сиг.; 21,0 ± 4,0
+мБк/г</td>
+<td style="text-align: right;">21,0</td>
+</tr>
+<tr>
+<td style="text-align: left;">Berthet et al., 2022 [2]</td>
+<td style="text-align: left;">Швейцария, 13 марок, n = 15</td>
+<td style="text-align: right;">15,0 ± 2,3 мБк/сиг.; 25,2 ± 2,6
+мБк/г</td>
+<td style="text-align: right;">25,2</td>
+</tr>
+<tr>
+<td style="text-align: left;">Horváth et al., 2017 [3]</td>
+<td style="text-align: left;">17 марок, распространяемых в Иране</td>
+<td style="text-align: right;">9,7 ± 1,2 … 26,5 ± 4,6 мБк/сиг.</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cankurt, Görgün, 2020 [31]</td>
+<td style="text-align: left;">Турция, 16 марок</td>
+<td style="text-align: right;">22,4 ± 1,5 (16,1–37,6) мБк/сиг.</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ghanbar-Moghaddam, Fathivand, 2020
+[36]</td>
+<td style="text-align: left;">Иран: местные / импортные сигареты</td>
+<td style="text-align: right;">38,4 / 20,0 мБк/г</td>
+<td style="text-align: right;">38 / 20</td>
+</tr>
+<tr>
+<td style="text-align: left;">Persson, Holm, 2011 [5]</td>
+<td style="text-align: left;">Сводка литературы</td>
+<td style="text-align: right;">13 ± 2 Бк/кг</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr>
+<td style="text-align: left;">Felix, Ntarisa, 2024 [30]</td>
+<td style="text-align: left;">Обзор 40 работ 2000–2023 гг.</td>
+<td style="text-align: right;">20,4 (0,4–128,6) мБк/г</td>
+<td style="text-align: right;">20</td>
+</tr>
+</tbody>
 </table>
-<h2><span class="num">3</span>Переход в сигаретный дым при курении</h2>
-<p>Доля активности <sup>210</sup>Po, переходящая из табачного наполнителя в основной поток дыма при курении, — величина с наибольшим разбросом среди рассмотренных данных. Швейцарское исследование на сертифицированной курительной машине даёт 13,6 плюс-минус 4,2 % для обычных сигарет (7,0 % для <sup>210</sup>Pb) против 1,8 плюс-минус 0,3 % для продукта нагревания табака той же марки — то есть переход в дым при нагревании табака без горения снижается примерно в семь раз [2][6]. Египетское измерение того же года даёт принципиально иную картину: 74,7 % активности переходит в дым, 20,7 % остаётся в золе и лишь 4,6 % задерживается фильтром после курения [7]. Иранское исследование — промежуточное значение 15 плюс-минус 10 % с диапазоном по маркам от 3 до 36 % [3].</p>
-<p>Авторы иранской работы прямо указывают на причину расхождения: серийные курительные машины физически не приспособлены для количественного улавливания <sup>210</sup>Po, из-за чего разные лаборатории получают несопоставимые числа в зависимости от конструкции ловушки и раствора поглотителя [3]. Это методическое замечание существенно для интерпретации всего корпуса измерений раздела: единой скорректированной оценки доли перехода в дым в литературе не сложилось, и приводимый иногда интервал «6,5-22 %» из оригинальной работы 1964 года [1] не следует принимать как современный консенсус — более поздние измерения дают диапазон от 3,7 до 74,7 % [3][7][8].</p>
-<div class="note"><p><b>Обычные фильтры малоэффективны.</b> Стандартный ацетатно-целлюлозный фильтр снижает активность <sup>210</sup>Po в дыме в среднем лишь на 4,6 % [8] — проблема, поднятая ещё в 1964 году, конструкцией современных фильтрованных сигарет практически не решена.</p></div>
-<h2><span class="num">4</span>Механизм накопления в растении: корень или атмосфера</h2>
-<p>Вопрос о том, каким путём <sup>210</sup>Po и <sup>210</sup>Pb попадают в лист табака, остаётся предметом расхождения между двумя классическими работами середины 1960-х годов, опубликованными в одном журнале. Тсо, Харли и Александер (1966) в контролируемом эксперименте с камерой, содержащей радон-222, и полями с различными фосфатными удобрениями пришли к выводу, что основная доля <sup>210</sup>Pb поглощается растением через корневую систему, а вклад атмосферного радона и его дочерних продуктов существенно меньше — как для свинца-210, так и для полония-210 [9]. Годом ранее Бергер, Эрхардт и Фрэнсис (1965), напротив, на основании химического анализа почв и растительных вытяжек отвергли прямое корневое поглощение <sup>210</sup>Po и предложили механизм сорбции изотопа на мёртвом, увлажнённом растительном материале на границе «атмосфера - растение» [10]. Настоящий обзор не разрешает это противоречие — оба источника методически самостоятельны, числовое сопоставление их выводов в открытых частях текста недоступно, и расхождение приводится как есть, без выбора предпочтительной версии.</p>
-<p>Обзорная работа Перссона и Хольма (2011) — наиболее цитируемый источник среди рассмотренных в этом обзоре (235 цитирований по данным Crossref на дату обращения) — синтезирует оба механизма: растение накапливает изотоп и поглощением из почвы («поддержанный», supported Po), и прямым осаждением радиоактивных выпадений на поверхность («неподдержанный», unsupported Po), причём для свежих облиственных растений вклад прямого осаждения особенно велик [5]. Это согласуется с более поздним указанием на роль трихом - волосистых желёзистых выростов табачного листа: их липкий экссудат физически задерживает мелкие атмосферные частицы, включая продукты распада радона [11].</p>
-<p>Отдельный, не оспариваемый в найденных источниках факт — связь содержания <sup>210</sup>Po в листе с типом применённого фосфатного удобрения. Апатитовая и фосфоритная руда, из которой изготавливают суперфосфатные удобрения, содержит радий-226 в составе уран-радиевого ряда; при переработке руды в удобрение основная часть радия-226 переходит в конечный продукт, откуда далее - в почву и растение по цепочке распада, дающей <sup>210</sup>Pb и <sup>210</sup>Po. Диапазон содержания радия-226 в фосфатных удобрениях по данным Агентства по охране окружающей среды США - приблизительно 0,185-1,11 Бк/г в зависимости от типа удобрения и происхождения фосфатной руды [12]. Гипотезу о полной цепочке «удобрение - эманация радона-222 из почвы - осаждение на трихомы табака» сформулировал Мартелл (1974) [13]; содержание этой короткой заметки в Nature не удалось прочитать напрямую из-за платного доступа, поэтому её механизм в настоящем обзоре приводится как гипотеза, а не как проверенный факт.</p>
-<h2><span class="num">5</span>Доза облучения курильщика</h2>
-<p>Первая количественная оценка дозы принадлежит самой работе Рэдфорда и Ханта (1964). Независимая проверка настоящего обзора установила, что в оригинальной работе фигурируют две разные величины, которые последующие обзоры нередко смешивают: диффузная (усреднённая по всему бронхиальному эпителию) доза при курении двух пачек сигарет в сутки оценивалась в 36 бэр (0,36 Зв) за 25 лет - примерно в семь раз выше дозы от природного фона за тот же срок; локальная доза в «горячих пятнах» - реальных местах осаждения дыма у бронхиальных бифуркаций, где активность распределена не диффузно, а сосредоточенно, - могла достигать 1000 бэр (10 Зв) за 25 лет [1][14]. Широко цитируемый впоследствии обзор Дзага и соавторов (2011) приводит только вторую, максимальную величину без квалификатора «в локальных участках», что при невнимательном чтении создаёт впечатление, будто 10 Зв - это средняя доза курильщика, а не пиковое значение в отдельных точках лёгкого [15].</p>
-<p>Современная дозиметрия даёт существенно меньшие оценки эффективной (не локальной) годовой дозы: расчёт для альфа- и бета-излучения <sup>210</sup>Po и <sup>210</sup>Pb в лёгких курильщика пачки сигарет в сутки даёт 0,317 мЗв/год при консервативном (медленном) сценарии всасывания в кровь и 0,072 мЗв/год при умеренном сценарии; для продукта нагревания табака той же марки оценка ниже примерно в десять раз - 0,030 мЗв/год [6]. Сводка по литературе в той же работе даёт диапазон эффективной дозы от разных авторов 0,1-0,8 мЗв/год [6][7][16], то есть на три порядка ниже локальной оценки Рэдфорда и Ханта - различие объясняется тем, что сравниваются принципиально разные величины (локальная тканевая доза в конкретной точке против эффективной дозы, усреднённой и взвешенной по органам всего тела в соответствии с современной методологией МКРЗ).</p>
-<p>Отчёт НКДАР ООН (UNSCEAR) за 2000 год констатирует, качественно, что измеренная концентрация <sup>210</sup>Po в лёгочной паренхиме курильщиков приблизительно втрое превышает таковую у некурящих, и называет <sup>210</sup>Po основным вкладчиком в дозу от природных источников для населения в целом (около 120 мкЗв/год для среднего жителя, независимо от курения) - количественной оценки годовой дозы именно для курильщиков отчёт не приводит [17].</p>
+</div>
+<p>Разброс между марками внутри одной работы достигает нескольких раз (у
+Ермолаевой-Маковской для зарубежных сигарет — от 5,0 до
+17,8·10<sup>−13</sup> Ки, в 3,6 раза [4]) и сопоставим с различием между
+средними разных десятилетий: средние для сигаретного табака 1960-х годов
+(0,33–0,55 пКи/г, 12–20 Бк/кг) и 2000–2020-х (13–25 Бк/кг) лежат в одном
+интервале. Выше этого интервала лежит необработанное сырьё: у
+Ермолаевой-Маковской отечественные сорта сырья содержат
+6,0–16,0·10<sup>−13</sup> Ки/г (22–59 Бк/кг, в среднем 41,7 Бк/кг) [4],
+что Николова объясняет распадом <sup>210</sup>Po при ферментации и
+хранении [14]; из сигарет рынка — местные иранские марки (в среднем 38
+Бк/кг) [36] и отдельные турецкие марки (до 37,6 мБк на сигарету) [31].
+Джанкурт и Гёргюн сообщают о росте содержания <sup>210</sup>Po в
+сигаретах турецкого рынка за последние два десятилетия [31], Перссон и
+Хольм по сводке литературы — о постоянстве во времени [5]; по
+совокупности работ устойчивой многолетней тенденции не установлено.</p>
+</section>
+<section id="другие-радионуклиды" class="level3">
+<h3>Другие радионуклиды</h3>
+<p>Ферри и Баратта измерили в одних и тех же сигаретах <sup>226</sup>Ra,
+<sup>210</sup>Pb, <sup>210</sup>Bi и <sup>210</sup>Po: на сигарету
+<sup>226</sup>Ra — 0,11–0,17 пКи (4,1–6,3 мБк), <sup>210</sup>Pb —
+0,33–0,49 пКи (12,2–18,1 мБк; для трёх типов из шести <sup>210</sup>Pb
+принят равным измеренному <sup>210</sup>Bi), <sup>210</sup>Po —
+0,32–0,48 пКи (11,8–17,8 мБк) [28]. Папастефану (2009)
+гамма-спектрометрией измерил 17 проб табачного листа урожая 1990 года из
+15 районов Греции: <sup>226</sup>Ra 1,80–7,57 Бк/кг (среднее 3,38),
+<sup>228</sup>Ra 1,10–6,52 (среднее 3,83), <sup>210</sup>Pb 6,34–18,2
+(среднее 14,12), <sup>40</sup>K 273–2080 (среднее 823), <sup>137</sup>Cs
+1,20–7,00 Бк/кг (среднее 3,40) — против 70–180 Бк/кг <sup>137</sup>Cs в
+листе 1986 года по справке табачной фабрики [11].</p>
+<p>Петушков, Зельцер и Медведовский (1972) обратили внимание, что общая
+альфа-активность табака в 4–5 раз превышает активность одного полония, и
+эманационным методом определили в четырёх сортах сигарет и папирос
+<sup>228</sup>Th (радиоторий): 0,36–0,55 пКи/г (13–20 Бк/кг), то есть
+того же порядка, что и <sup>210</sup>Po; в пепле выкуренной сигареты
+оставалось 0,09 пКи [40]. Спустя сорок с лишним лет Кубалек и соавторы
+(2016) измерили в словенских сигаретах изотопы урана, тория, радия,
+свинца и полония и оценили, что вклад изотопов тория в эффективную дозу
+(6, 47 и 37 мкЗв/год от <sup>228</sup>Th, <sup>230</sup>Th и
+<sup>232</sup>Th, всего 90) превышает вклад пары <sup>210</sup>Po +
+<sup>210</sup>Pb (61 + 9 мкЗв/год) [16]. Обзор Феликса и Нтарисы по 40
+работам приводит в табаке <sup>232</sup>Th 8,1 (0,3–41,0) мБк/г и
+<sup>238</sup>U 15,2 (0,2–82,0) мБк/г, а среднюю годовую дозу от
+<sup>232</sup>Th — 889,7 мкЗв при 295 мкЗв от <sup>210</sup>Po [30].
+Папастефану указал, что вклад изотопов радия в литературе обычно не
+учитывается, хотя имеет тот же порядок, что и вклад <sup>210</sup>Pb
+[11]. Таким образом, <sup>210</sup>Po — наиболее изученный, но не
+единственный альфа-излучатель табака.</p>
+</section>
+</section>
+<section id="pathway" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Раздел 3</span> Пути поступления в
+растение: корень или атмосфера</h2>
+<p>Вопрос о пути поступления <sup>210</sup>Po и <sup>210</sup>Pb в лист
+табака обсуждается с середины 1960-х годов, и первые работы уже
+содержали обе версии. Ермолаева-Маковская и соавторы (1965) заключили,
+что имеющийся в сигаретах <sup>210</sup>Po находится в равновесии с
+<sup>210</sup>Pb, «освобождающимся на поверхности листьев табака», а
+<sup>210</sup>Pb «образуется в воздухе из радона, эманирующего из почвы»
+[4]. Бергер, Эрхардт и Фрэнсис (1965) по результатам анализа почвенных
+вытяжек сделали тот же вывод в осторожной форме: имеются указания, что
+<sup>210</sup>Po или его предшественники поступают не через корни, а
+путём сорбции на мёртвом влажном растительном материале на границе
+«атмосфера — растение»; в образцах зелёного листа табака
+<sup>210</sup>Po обнаружить не удалось, тогда как высушенный лист и
+почвы его содержали [10]. Тсо, Харли и Александер (1966) в опыте с
+камерой, обогащённой радоном-222, на полях с разными фосфорсодержащими
+удобрениями и в культуре с <sup>210</sup>Pb в питательном растворе
+пришли к противоположному выводу: основная часть <sup>210</sup>Pb в
+растении, вероятно, поступила через корни, а радон воздуха и его
+продукты дали много меньше; на конечное содержание <sup>210</sup>Po
+влияли стадия развития листа и способ его сушки [9]. По изложению Ферри
+и Баратты, Марсден (1964) считал вклад атмосферных выпадений полония
+малым по сравнению с корневым поступлением [28]; Николова (1970),
+напротив, отмечает, что отсутствие связи между альфа-активностью травы и
+почвы «подчёркивает важность внекорневого пути» [14].</p>
+<p>Ферри и Баратта нашли отношение активностей
+<sup>210</sup>Pb/<sup>226</sup>Ra в сигаретах 1,9–4,1 (в трубочном
+табаке 4,3) и заключили, что <sup>210</sup>Pb поступает в табак путём
+прямого поглощения из почвы и воздуха, а не только как продукт распада
+радия, содержащегося в самом табаке [28]. Мартелл (1974) сформулировал
+механизм, ставший впоследствии общепринятым: атмосферный
+<sup>210</sup>Pb сконцентрирован на мелких ядрах Айткена, которые
+накапливаются на трихомах табака; при сушке табака и сгорании трихом
+образуются нерастворимые частицы с высокой активностью <sup>210</sup>Pb,
+вдыхаемые курильщиком [13]. Папастефану (2009) отмечает, что около 85 %
+трихом табачного листа имеют железистые головки, покрытые липким
+экссудатом, и по итогам собственных измерений разводит нуклиды по
+происхождению: <sup>210</sup>Pb осаждается из воздуха и задерживается
+трихомами; изотопы радия поступают через корни из почвы либо с
+удобрениями; <sup>40</sup>K — через корни; <sup>137</sup>Cs и
+<sup>134</sup>Cs — через корни, поскольку спустя четыре года после
+аварии на Чернобыльской АЭС они оставались в почве [11]. Перссон и Хольм
+(2011) различают полоний, поддержанный поглощением из почвы, и
+неподдержанный, осевший из атмосферы; для облиственных растений уровень
+<sup>210</sup>Po особенно высок вследствие прямого осаждения [5]. Бертэ
+и соавторы принимают атмосферную версию во введении своей работы [2];
+Джанкурт и Гёргюн (2020), помесячно определявшие <sup>210</sup>Po в
+табаке эгейского региона Турции, исходят из захвата аэрозолей липкими
+трихомами обеих сторон листа; в листе они нашли в среднем 14,1 ± 1,1
+Бк/кг сухой массы (от 8,3 в июне до 21,7 в июле), в стебле 7,6, в корне
+14,3, в почве 34,4 Бк/кг, коэффициент перехода «почва — лист» 0,22–0,65,
+и отрицательную связь содержания <sup>210</sup>Po в листе с количеством
+осадков [31]. Ганбар-Могаддам и Фативанд (2020) называют дополнительным
+источником <sup>210</sup>Po сушку табака в прямом контакте с дымовыми
+газами ископаемого топлива [36].</p>
+<p>Роль фосфатных удобрений в рассмотренных источниках общепринятой не
+является. По данным Агентства по охране окружающей среды США, удельная
+активность <sup>226</sup>Ra в фосфатных удобрениях составляет
+приблизительно 0,185–1,11 Бк/г (5–30 пКи/г) в зависимости от состава
+смеси; при переработке фосфатного сырья около 80 % <sup>226</sup>Ra
+концентрируется в фосфогипсе [12]. Папастефану приводит для фосфатных
+удобрений <sup>238</sup>U 312–936 Бк/кг, <sup>226</sup>Ra 19–1129 Бк/кг,
+<sup>40</sup>K 53–6370 Бк/кг [11]. Дзага и соавторы (2011) относят
+удобрения к основным источникам «по данным ряда исследований» и, по
+внутреннему документу отрасли 1980 года, указывают, что рекомендация
+Мартелла заменить кальций-фосфатные удобрения аммоний-фосфатными была
+известна производителям и признана «дорогостоящей» (an expensive point)
+[8]. Краткий обзор Дзаги, Каттаруццы и Галлуса (2024) выстраивает пути в
+иерархию: основной — осаждение продуктов распада радона-222 на лист с
+захватом трихомами; меньшая доля — корневое поглощение; дополнительный —
+удобрения из сырья, богатого ураном [38].</p>
+</section>
+<section id="equilibrium" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Раздел 4</span> Отношение
+<sup>210</sup>Po/<sup>210</sup>Pb и время выдержки сырья</h2>
+<p>Период полураспада <sup>210</sup>Po (138,4 сут) мал по сравнению с
+периодом <sup>210</sup>Pb (22,2 года), поэтому после уборки листа
+активность <sup>210</sup>Pb практически постоянна, а отношение
+активностей релаксирует к единице по закону R(t) = 1 + (R<sub>0</sub> −
+1)·e<sup>−λt</sup>, где R<sub>0</sub> — отношение при уборке, λ —
+постоянная распада <sup>210</sup>Po. Расчёт по этой формуле даёт для
+R<sub>0</sub> = 0,32 значения 0,72, 0,89 и 0,98 через 180, 365 и 730
+сут; для R<sub>0</sub> = 1,54 — 1,22, 1,09 и 1,01.</p>
+<p>Измерения на табаке этому соответствуют. Ферри и Баратта описали
+эффект прямо: в трубочном табаке <sup>210</sup>Pb и <sup>210</sup>Po не
+находились в равновесии (0,41 и 0,20 пКи/г, отношение 0,49;
+<sup>210</sup>Pb принят равным измеренному <sup>210</sup>Bi), что авторы
+объяснили поступлением табака в продажу до установления равновесия,
+тогда как выдержка сигаретного табака около двух лет позволяет
+<sup>210</sup>Pb и его дочерним <sup>210</sup>Bi и <sup>210</sup>Po
+прийти в равновесие; в тех сигаретах, где измерены все три изотопа (три
+типа из шести), их активности совпали в пределах погрешности [28]. Хатер
+указывает, что между уборкой листа и производством сигарет проходит, как
+правило, более двух лет — по его оценке, 6–7 периодов полураспада
+<sup>210</sup>Po (два года соответствуют 5,3 периода), — и полоний
+приближается к вековому равновесию со свинцом [7]; Бертэ и соавторы
+измерили в сигаретах швейцарского рынка отношение 1,06 ± 0,05 [2].
+Николова, напротив, объясняла меньшее содержание <sup>210</sup>Po в
+готовых изделиях по сравнению с листом распадом полония при ферментации
+и складской выдержке [14] — это возможно только для листа, в котором при
+уборке полоний был в избытке над свинцом (R<sub>0</sub> &gt; 1), как в
+словенском силосе (раздел 5).</p>
+<p>Практическое следствие: активность <sup>210</sup>Po в выкуриваемом
+табаке определяется активностью <sup>210</sup>Pb, накопленного листом за
+время роста, а не содержанием полония в момент уборки. Отсюда же
+следует, что для оценки облучения курильщика <sup>210</sup>Pb важен не
+менее полония: он определяет и активность <sup>210</sup>Po в сигарете, и
+— через нерастворимые частицы дыма — врастание полония уже в тканях
+(раздел 7).</p>
+</section>
+<section id="analogy" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Раздел 5</span> Сопоставление с
+данными по травянистой растительности</h2>
+<p>Табачный лист — надземная облиственная фитомасса однолетнего
+растения. Для такой фитомассы (фураж, сено, силос, дикорастущее
+лекарственное сырьё) существует массив измерений <sup>210</sup>Pb и
+<sup>210</sup>Po, полученный вне связи с проблемой курения.
+Сопоставление выполнено по пяти признакам: уровень удельной активности,
+отношение <sup>210</sup>Po/<sup>210</sup>Pb, путь поступления, роль
+радия в почве, прочность связи осевшего свинца. Выводы раздела —
+интерпретация настоящего обзора, а не утверждения цитируемых работ.</p>
+<section id="уровень-удельной-активности" class="level3">
+<h3>Уровень удельной активности</h3>
+<div class="tbl">
 <table>
-<caption>Таблица 2 — Оценки дозы облучения от <sup>210</sup>Po/<sup>210</sup>Pb табачного дыма</caption>
-<tr><th>Источник</th><th>Величина</th><th class="num">Оценка</th></tr>
-<tr><td>Рэдфорд и Хант, 1964 [1][14]</td><td>Диффузная доза на бронх. эпителий, 2 пачки/сут</td><td class="num">36 бэр / 25 лет</td></tr>
-<tr><td>Рэдфорд и Хант, 1964 [1][14]</td><td>Локальная доза в «горячих пятнах»</td><td class="num">до 1000 бэр / 25 лет</td></tr>
-<tr><td>Desorgher et al., 2023 [6]</td><td>Эффективная доза, обычные сигареты, пачка/сут</td><td class="num">0,072-0,317 мЗв/год</td></tr>
-<tr><td>Desorgher et al., 2023 [6]</td><td>Эффективная доза, нагреваемый табак</td><td class="num">0,005-0,030 мЗв/год</td></tr>
-<tr><td>Kubalek et al., 2016 [16]</td><td>Эффективная доза, реальные курильщики</td><td class="num">61 мкЗв/год (<sup>210</sup>Po) + 9 мкЗв/год (<sup>210</sup>Pb)</td></tr>
+<caption>Таблица 2 — Удельная активность <sup>210</sup>Po и
+<sup>210</sup>Pb в табаке и травянистой фитомассе. Растительность — на
+сухую массу; табачный наполнитель — кондиционированный лист, базис массы
+не тождествен, сопоставление корректно по порядку величины.</caption>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Объект</th>
+<th style="text-align: left;">Регион</th>
+<th style="text-align: left;">Нуклид</th>
+<th style="text-align: right;">Бк/кг</th>
+<th style="text-align: left;">Источник</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Лист табака до производства сигарет,
+урожай 1990 г.</td>
+<td style="text-align: left;">Греция, 15 районов</td>
+<td style="text-align: left;"><sup>210</sup>Pb / <sup>226</sup>Ra</td>
+<td style="text-align: right;">14,1 (6,3–18,2) / 3,4 (1,8–7,6)</td>
+<td style="text-align: left;">[11]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Лист растущего табака, помесячно</td>
+<td style="text-align: left;">Турция, Маниса</td>
+<td style="text-align: left;"><sup>210</sup>Po</td>
+<td style="text-align: right;">14,1 ± 1,1 (8,3–21,7)</td>
+<td style="text-align: left;">[31]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Табачный наполнитель</td>
+<td style="text-align: left;">Швейцария</td>
+<td style="text-align: left;"><sup>210</sup>Po</td>
+<td style="text-align: right;">25,2 ± 2,6</td>
+<td style="text-align: left;">[2]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Сигаретный табак</td>
+<td style="text-align: left;">СССР</td>
+<td style="text-align: left;"><sup>210</sup>Po</td>
+<td style="text-align: right;">15,9</td>
+<td style="text-align: left;">[4]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Сигаретный табак</td>
+<td style="text-align: left;">США</td>
+<td style="text-align: left;"><sup>210</sup>Po</td>
+<td style="text-align: right;">15,9</td>
+<td style="text-align: left;">[28]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Табак, сводка литературы</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;"><sup>210</sup>Po</td>
+<td style="text-align: right;">13 ± 2</td>
+<td style="text-align: left;">[5]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Фураж (трава)</td>
+<td style="text-align: left;">Бразилия, плато Посус-ди-Калдас</td>
+<td style="text-align: left;"><sup>210</sup>Pb / <sup>226</sup>Ra</td>
+<td style="text-align: right;">26 ± 2 (9,4–83) / 8,2 ± 3</td>
+<td style="text-align: left;">[18], по [24]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Сено</td>
+<td style="text-align: left;">Словения, Жировски-Врх</td>
+<td style="text-align: left;"><sup>210</sup>Pb / <sup>210</sup>Po /
+<sup>226</sup>Ra</td>
+<td style="text-align: right;">14,4 ± 0,9 / 4,54 ± 0,19 / 0,60 ±
+0,04</td>
+<td style="text-align: left;">[19], по [24]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Силос</td>
+<td style="text-align: left;">Словения, Жировски-Врх</td>
+<td style="text-align: left;"><sup>210</sup>Pb / <sup>210</sup>Po /
+<sup>226</sup>Ra</td>
+<td style="text-align: right;">14,7 ± 0,9 / 22,6 ± 0,85 / 1,28 ±
+0,08</td>
+<td style="text-align: left;">[19], по [24]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Дикорастущее лекарственное сырьё, 13 видов
+(максимумы — лист берёзы)</td>
+<td style="text-align: left;">Украина</td>
+<td style="text-align: left;"><sup>210</sup>Pb / <sup>210</sup>Po</td>
+<td style="text-align: right;">0,44–28,4 / 2,28–37,7</td>
+<td style="text-align: left;">[20]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Лекарственные травянистые растения</td>
+<td style="text-align: left;">Индия, прибрежная Карнатака</td>
+<td style="text-align: left;"><sup>210</sup>Pb / <sup>210</sup>Po</td>
+<td style="text-align: right;">12,0–406 / 3,3–63,7</td>
+<td style="text-align: left;">[21]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Трава, районы с большими осадками, по
+[14]</td>
+<td style="text-align: left;">Англия и Уэльс (Hill, 1960)</td>
+<td style="text-align: left;"><sup>210</sup>Po</td>
+<td style="text-align: right;">свыше 370 (свыше 10 000 пКи/кг)</td>
+<td style="text-align: left;">[14]</td>
+</tr>
+</tbody>
 </table>
-<div class="note"><p><b>Атрибуция «2 % случаев рака лёгких» не подтверждена.</b> Формулировка о том, что полоний-210 ответственен за 2 % индуцированных курением случаев рака лёгких, встречается в научно-популярных изложениях без ссылки на конкретную работу; независимая проверка двумя направлениями настоящего обзора не нашла рецензируемого источника, который бы приписывал эту цифру именно Рэдфорду и Ханту или обосновывал её расчётом. Единственная найденная количественная оценка риска в рецензируемом источнике сформулирована в других единицах - 4×10<sup>-4</sup> случая в год на курильщика (4 случая на 10 000 курящих в год) [15], что не сводится напрямую к «доле от всех случаев» без дополнительных эпидемиологических данных, не входящих в рассмотренные источники.</p></div>
-<h2><span class="num">6</span>Полемика и позиция табачной индустрии</h2>
-<p>Систематическая критика первоначальных оценок Рэдфорда и Ханта в рецензируемой литературе представлена методическими работами, показывающими широкий разброс доли перехода изотопа в дым (раздел 3), а не прямым опровержением исходной гипотезы о канцерогенности. Отдельная линия публикаций, отражённая в обзоре по истории вопроса, показывает, что производители табака были осведомлены о присутствии альфа-активности в дыме начиная с 1960-х годов и не раскрывали эту информацию публично; внутренний документ отрасли символично назывался «Пробуждая спящего великана» («Waking a Sleeping Giant») [18]. Полный текст этой работы защищён технической стеной сайта журнала и не был прочитан напрямую в ходе подготовки обзора; содержание приводится по дословной цитате из независимого рецензируемого обзора, ссылающегося на неё [15].</p>
-<p>Отдельного внимания заслуживает оговорка о фоновом вкладе <sup>210</sup>Po, не связанном с курением: по приводимым в обзорной литературе данным, около 77 % суточного поступления изотопа в организм человека происходит с пищей и лишь порядка 17 % - за счёт курения сигарет [15]. Изотоп обнаруживается в измеримых количествах и у людей, никогда не куривших, что осложняет однозначную атрибуцию наблюдаемых уровней <sup>210</sup>Po в организме исключительно курением и не было независимо перепроверено настоящим обзором на уровне первоисточника [19].</p>
-<h2><span class="num">7</span>Ограничения обзора</h2>
-<p>Оригинальная работа Рэдфорда и Ханта (1964) не была прочитана напрямую: сайт издателя (Science, AAAS) на протяжении всей подготовки обзора отдавал устойчивую защиту от автоматического доступа, не преодолённую ни одной из трёх независимых попыток. Числовые данные этой работы восстановлены по трём независимым цитирующим источникам, согласованным между собой (раздел 5) - уровень проверки для них соответствует библиографически подтверждённому пересказу, а не прямому чтению.</p>
-<p>Ряд количественных утверждений о содержании радия-226 в апатитовой руде и фосфатных удобрениях получен через вторичный пересказ поисковой системы, а не прямым чтением первоисточника, и помечен в тексте как менее надёжный. Гипотеза Мартелла (1974) о полном механизме переноса «удобрение - радон - трихомы» не могла быть проверена по содержанию - только по факту существования публикации. Часть источников по советским и российским измерениям взаимно цитируют друг друга с расхождением при пересчёте единиц измерения (раздел 2) - по возможности использовалось значение из первичной таблицы, а не из последующего пересказа.</p>
-<h2><span class="num">8</span>Заключение</h2>
-<p>Присутствие <sup>210</sup>Po и <sup>210</sup>Pb в табаке и переход части их активности в сигаретный дым при курении - экспериментально установленный факт, подтверждённый независимыми измерениями на протяжении более шестидесяти лет и в разных странах. Количественные оценки, однако, расходятся существенно на каждом этапе цепочки: активность в наполнителе - в пределах одного порядка величины между лабораториями; доля перехода в дым при курении - более чем на порядок из-за отсутствия унифицированной методики пробоотбора; механизм накопления изотопа в растении остаётся предметом неразрешённого противоречия между двумя классическими исследованиями; оценка вклада в риск рака лёгких зависит от того, какая именно доза (локальная тканевая или эффективная, усреднённая по организму) сопоставляется. Широко распространённая в популярных источниках цифра «2 % случаев рака лёгких» не имеет проверенной привязки к первоначальной работе 1964 года и нуждается в дальнейшей проверке по первоисточнику, если таковой вообще существует.</p>
-<h2><span class="num">9</span>Заявление об использовании искусственного интеллекта</h2>
-<p>Обзор подготовлен агентной сессией на базе языковой модели Claude (Anthropic) под управлением оператора. Роль модели: декомпозиция вопроса на независимые направления поиска, параллельный сбор источников пятью фоновыми агентами (модель Sonnet) с раздельными доменными модулями (научные статьи, нормативные отчёты, механизм накопления, русскоязычные источники, спорные и опровергнутые утверждения), адверсариальная верификация одного критичного числового расхождения отдельным агентом, сведение находок в единый текст и вёрстка страницы. Роль оператора: постановка задачи, требование о приоритете высокоцитируемых источников, решение о структуре как обзора первоисточников (не научно-популярного изложения), решение о публикации. Каждое числовое утверждение в тексте сопровождается ссылкой на источник; расхождения между источниками приведены как есть, без усреднения. Индекс цитирования ключевых источников проверен по базе Crossref на дату обращения (25 сентября 2026 года) и указан в списке литературы там, где это методически значимо.</p>
-<h2><span class="num">10</span>Литература</h2>
-<ol class="refs">
-<li>Radford E.P., Hunt V.R. Polonium-210: A Volatile Radioelement in Cigarettes // Science. 1964. Vol. 143, No. 3603. P. 247-249. <a href="https://doi.org/10.1126/science.143.3603.247" target="_blank" rel="noopener">doi.org/10.1126/science.143.3603.247</a> <span class="lvl lvl-a">149 цитирований, Crossref</span></li>
-<li>Berthet A. et al. <sup>210</sup>Po and <sup>210</sup>Pb content in the smoke of Heated Tobacco Products versus Conventional Cigarette smoking // Scientific Reports. 2022. Vol. 12. Art. 10314. <a href="https://doi.org/10.1038/s41598-022-14200-2" target="_blank" rel="noopener">doi.org/10.1038/s41598-022-14200-2</a> · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9207432/" target="_blank" rel="noopener">PMC9207432</a></li>
-<li>Horvath M., Shahrokhi A., Bator P., Toth-Bodrogi E., Kovacs T. Determination of <sup>210</sup>Po content in cigarette smoke using a smoking machine: A case study of Iranian cigarettes // Journal of Environmental Radioactivity. 2017. Vol. 174. P. 66-70. <a href="https://doi.org/10.1016/j.jenvrad.2017.01.023" target="_blank" rel="noopener">doi.org/10.1016/j.jenvrad.2017.01.023</a></li>
-<li>Ермолаева-Маковская А.П., Перцов Л.А., Попов Д.К. К вопросу о содержании полония-210 в табаке // Гигиена и санитария. 1965. № 12. С. 40. <a href="https://cyberleninka.ru/article/n/k-voprosu-o-soderzhanii-poloniya-210-v-tabake" target="_blank" rel="noopener">cyberleninka.ru</a></li>
-<li>Persson B.R.R., Holm E. Polonium-210 and lead-210 in the terrestrial environment: a historical review // Journal of Environmental Radioactivity. 2011. Vol. 102, No. 5. P. 420-429. <a href="https://doi.org/10.1016/j.jenvrad.2011.01.005" target="_blank" rel="noopener">doi.org/10.1016/j.jenvrad.2011.01.005</a> <span class="lvl lvl-a">235 цитирований, Crossref</span></li>
-<li>Desorgher L., Berthet A., Rossier J., Bochud F., Froidevaux P. Dosimetry in the lungs of alpha-particles (<sup>210</sup>Po) and beta-particles (<sup>210</sup>Pb) present in the tobacco smoke of conventional cigarettes and heated tobacco products // Journal of Environmental Radioactivity. 2023. Art. 107178. <a href="https://doi.org/10.1016/j.jenvrad.2023.107178" target="_blank" rel="noopener">doi.org/10.1016/j.jenvrad.2023.107178</a> (открытый доступ)</li>
-<li>Khater A.E.M. Polonium-210 budget in cigarettes // Journal of Environmental Radioactivity. 2004. Vol. 71, No. 1. P. 33-41. <a href="https://doi.org/10.1016/S0265-931X(03)00118-8" target="_blank" rel="noopener">doi.org/10.1016/S0265-931X(03)00118-8</a> <span class="lvl lvl-a">88 цитирований, Crossref</span></li>
-<li>Zaga V., Lygidakis C., Chaouachi K., Gattavecchia E. Polonium and Lung Cancer // Journal of Oncology. 2011. Art. 860103. <a href="https://doi.org/10.1155/2011/860103" target="_blank" rel="noopener">doi.org/10.1155/2011/860103</a> · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3136189/" target="_blank" rel="noopener">PMC3136189</a></li>
-<li>Tso T.C., Harley N., Alexander L.T. Source of Lead-210 and Polonium-210 in Tobacco // Science. 1966. Vol. 153, No. 3738. P. 880-882. <a href="https://doi.org/10.1126/science.153.3738.880" target="_blank" rel="noopener">doi.org/10.1126/science.153.3738.880</a> <span class="lvl lvl-a">59 цитирований, Crossref</span></li>
-<li>Berger K.C., Erhardt W.H., Francis C.W. Polonium-210 analyses of vegetables, cured and uncured tobacco, and associated soils // Science. 1965. Vol. 150, No. 3704. P. 1738-1739. <a href="https://doi.org/10.1126/science.150.3704.1738" target="_blank" rel="noopener">doi.org/10.1126/science.150.3704.1738</a></li>
-<li>Papastefanou C. Radioactivity of tobacco leaves and radiation dose induced from smoking // International Journal of Environmental Research and Public Health. 2009. Vol. 6, No. 2. P. 558-567. <a href="https://doi.org/10.3390/ijerph6020558" target="_blank" rel="noopener">doi.org/10.3390/ijerph6020558</a> (открытый доступ)</li>
-<li>U.S. Environmental Protection Agency. TENORM: Fertilizer and Fertilizer Production Wastes. <a href="https://www.epa.gov/radiation/tenorm-fertilizer-and-fertilizer-production-wastes" target="_blank" rel="noopener">epa.gov</a> (архивная страница, официальный источник)</li>
-<li>Martell E.A. Radioactivity of tobacco trichomes and insoluble cigarette smoke particles // Nature. 1974. Vol. 249, No. 454. P. 215-217. <a href="https://doi.org/10.1038/249215a0" target="_blank" rel="noopener">doi.org/10.1038/249215a0</a> (содержание не прочитано - платный доступ)</li>
-<li>Николова М.Е. Радиоактивный фактор табачного дыма // Гигиена и санитария. 1970. <a href="https://cyberleninka.ru/article/n/radioaktivnyy-faktor-tabachnogo-dyma" target="_blank" rel="noopener">cyberleninka.ru</a></li>
-<li>Muggli M.E., Ebbert J.O., Robertson C., Hurt R.D. Waking a Sleeping Giant: The Tobacco Industry Response to the Polonium-210 Issue // American Journal of Public Health. 2008. Vol. 98, No. 9. P. 1643-1650. <a href="https://doi.org/10.2105/AJPH.2007.130963" target="_blank" rel="noopener">doi.org/10.2105/AJPH.2007.130963</a> <span class="lvl lvl-a">38 цитирований, Crossref</span> (содержание проверено по цитатам в источнике [8], прямой доступ к оригиналу заблокирован технической защитой сайта журнала)</li>
-<li>Kubalek D. et al. Radioactivity of conventional cigarettes and heated tobacco // Journal of Environmental Radioactivity. 2016. Vol. 155. P. 97-104. <a href="https://doi.org/10.1016/j.jenvrad.2016.02.015" target="_blank" rel="noopener">doi.org/10.1016/j.jenvrad.2016.02.015</a></li>
-<li>UNSCEAR. Sources and Effects of Ionizing Radiation: UNSCEAR 2000 Report to the General Assembly, Vol. I, Annex B. New York: United Nations, 2000. Para. 85-86. <a href="https://www.unscear.org/unscear/uploads/documents/unscear-reports/UNSCEAR_2000_Report_Vol.I.pdf" target="_blank" rel="noopener">unscear.org</a></li>
-<li>Muggli M.E. et al., 2008 - см. ссылку [15].</li>
-<li>Kilthau G.F. et al. Polonium-210 in vivo study (упомянуто по вторичной выдаче, PMC7822435; содержание не проверено настоящим обзором напрямую - приведено с пометкой ограниченной проверки, раздел 7).</li>
+</div>
+<p>Удельная активность <sup>210</sup>Po в сигаретном табаке (12–25
+Бк/кг) лежит внутри широкого диапазона травянистой фитомассы — от долей
+до сотен беккерелей на килограмм — и близка к значениям для бразильского
+фуража и словенского сена (14–26 Бк/кг <sup>210</sup>Pb); для
+кукурузного силоса и люцерны с фосфатных глинистых почв (Staples и
+соавторы, 1994) сводка [24] приводит значительно меньшие значения
+<sup>210</sup>Pb, 0,52–1,04 Бк/кг сухой массы. Наиболее прямое
+сопоставление даёт табачный лист, измеренный до ферментации и
+производства сигарет: <sup>210</sup>Pb в греческом листе в среднем 14,1
+Бк/кг [11], <sup>210</sup>Po в растущем турецком — 14,1 ± 1,1 Бк/кг [31]
+— практически то же значение, что <sup>210</sup>Pb в словенском сене и
+силосе (14,4 и 14,7 Бк/кг [19]). Для объяснения этого уровня механизм
+накопления, присущий только табаку, не требуется.</p>
+</section>
+<section id="отношение-210po210pb-и-время-после-уборки" class="level3">
+<h3>Отношение <sup>210</sup>Po/<sup>210</sup>Pb и время после
+уборки</h3>
+<p>В свежеубранной фитомассе <sup>210</sup>Po и <sup>210</sup>Pb не
+находятся в равновесии: в словенском сене отношение активностей
+составляет 0,32, в силосе — 1,54 [19]. По формуле раздела 4 оба значения
+за два года выдержки приходят к 0,98–1,01 — тому же отношению, что
+измерено в сигаретах (1,06 ± 0,05 [2]) и предсказано выдержкой
+сигаретного табака около двух лет [7], [28]. Неравновесие трубочного
+табака (0,49 по <sup>210</sup>Bi [28]) соответствует, по той же формуле,
+выдержке порядка двух месяцев при R<sub>0</sub> ≈ 0,3, характерном для
+сена.</p>
+</section>
+<section id="путь-поступления" class="level3">
+<h3>Путь поступления</h3>
+<p>Для травянистой растительности источники указывают на преобладание
+атмосферного пути. По Бекману, основной путь загрязнения растительности
+<sup>210</sup>Pb — отложение на надземные части с аэрозолями (около 85
+%), корневой путь — около 15 %, а содержание <sup>210</sup>Pb в траве
+определяется количеством осадков, а не содержанием в почве [27]. По
+Бахуру и соавторам, на долю корневого поступления приходится до 20 %
+<sup>210</sup>Po и до 14 % <sup>210</sup>Pb; <sup>210</sup>Pb
+накапливается преимущественно в верхних, молодых надземных частях, а в
+корнях голубики и багульника полония в 2–3 раза и свинца в 3–4 раза
+меньше, чем в надземной части [26]. Петшак-Флись и Сковроньска-Смоляк
+(1995) в опыте с открытым полем и плёночным укрытием нашли, что в
+надземных частях растений на открытом поле активность <sup>210</sup>Pb и
+<sup>210</sup>Po выше, чем под укрытием, а в корнях практически
+одинакова; перенос через корни авторы оценивают как пренебрежимый, а
+основным источником называют атмосферные, преимущественно влажные,
+выпадения [23]; по сводке Перссона (2013), коэффициент перехода
+выпадений для травы и облиственных растений составляет 0,5–1 (Бк/кг
+растения на Бк/м² выпадений), для малооблиственных растений и соломы
+0,1–0,5, для зерна и корнеплодов — менее 0,2 и менее 0,003, а для
+<sup>210</sup>Po примерно втрое выше, чем для <sup>210</sup>Pb [24].
+Йованович (2011) на хвостохранилищах бывшего уранового рудника
+Жировски-Врх нашёл, что измеренная активность <sup>210</sup>Pb в траве
+до 100 раз выше рассчитанной по содержанию в почве, и объяснил это
+осаждением продуктов распада радона-222 из воздуха [22].</p>
+<p>Лист табака широк и густо покрыт железистыми трихомами [11], то есть
+по свойствам поверхности предположительно перехватывает атмосферные
+частицы не хуже травы. По аналогии данные по травянистой растительности
+поддерживают атмосферную версию [2], [4], [5], [10], [13] и не
+согласуются с выводом Тсо и соавторов [9]. Аналогия, однако, результат
+контролируемого опыта не опровергает: прямых парных измерений на табаке
+по схеме «открытое поле — укрытие» в рассмотренных источниках не
+найдено, а опыт Тсо и соавторов с камерой, обогащённой радоном, —
+единственный контролируемый опыт на самом табаке.</p>
+</section>
+<section id="радий-почвы-и-удобрения" class="level3">
+<h3>Радий почвы и удобрения</h3>
+<p>По справочнику МАГАТЭ (Серия технических докладов № 472), средний
+коэффициент перехода «почва — растение» для стеблей и побегов культурных
+трав (категория Grasses) в умеренном климате составляет 0,31 для свинца
+(N = 17) и 0,13 для радия (N = 62), для пастбищной растительности —
+0,092 для свинца, 0,12 для полония (N = 10) и 0,071 для радия [25].
+Коэффициент «почва — лист» для <sup>210</sup>Po в табаке, 0,22–0,65
+[31], того же порядка. При таких значениях корневое поступление из
+почвенного радия ограничено, и повышение содержания радия в почве за
+счёт удобрений предположительно сказывается на <sup>210</sup>Pb и
+<sup>210</sup>Po листа главным образом через эманацию радона из почвы и
+осаждение его продуктов распада на лист. Случай хвостохранилища [22]
+показывает этот механизм в крайнем проявлении: радий подложки влияет на
+<sup>210</sup>Pb травы через воздух, а не через корень.</p>
+<p>В парных измерениях фуража и сена отношение
+<sup>210</sup>Pb/<sup>226</sup>Ra составляет 3,2 [18], 11,5 и 24 [19]
+(по [24]), тогда как в почве под бразильским фуражом <sup>210</sup>Pb и
+<sup>226</sup>Ra близки (104 и 135 Бк/кг [24]), то есть <sup>210</sup>Pb
+в надземной фитомассе многократно превышает уровень, поддерживаемый
+радием самой пробы. В сигаретах это отношение составляет 1,9–4,1, в
+трубочном табаке 4,3 [28], в греческом табачном листе до производства —
+в среднем 4,2 (14,1 и 3,4 Бк/кг) [11]: тот же знак неравновесия и тот же
+порядок, что у фуража. Отсюда следует, что <sup>210</sup>Pb в табаке
+нельзя оценивать по содержанию <sup>226</sup>Ra в листе или почве; это
+согласуется с выводом Папастефану о корневом происхождении радия в
+табачном листе [11].</p>
+</section>
+<section id="прочность-связи-осевшего-свинца" class="level3">
+<h3>Прочность связи осевшего свинца</h3>
+<p>По сводке Перссона (2013), после тщательной отмывки в растении
+остаётся 82 ± 20 % атмосферно осевшего <sup>210</sup>Pb и 60 ± 20 %
+поступившего корневым путём [24]. Данные по табаку с этим согласуются с
+неожиданной стороны: по внутренним документам Philip Morris середины
+1970-х годов, отмывка листа неполярными растворителями снижала его
+радиоактивность на 10–40 %, а по показаниям бывшего сотрудника компании,
+смыть удавалось около половины — «другая половина была внутри табака»
+[15]. Осевший на лист <sup>210</sup>Pb не является легко удаляемым
+поверхностным загрязнением ни у травы, ни у табака.</p>
+</section>
+</section>
+<section id="smoke" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Раздел 6</span> Переход в
+сигаретный дым</h2>
+<section id="три-величины-под-одним-названием" class="level3">
+<h3>Три величины под одним названием</h3>
+<p>В литературе под общим названием «переход в дым» приводятся разные
+величины: доля активности в основном (вдыхаемом) потоке; доля во всём
+дыме, включая побочный поток, уходящий в воздух между затяжками; доля,
+не оставшаяся в золе, окурке и фильтре, — она зависит от того,
+докуривается ли сигарета до фильтра. Кроме того, процент рассчитывается
+то от активности всей сигареты, то от активности дыма. Числа разных
+базисов между собой не сопоставимы, и в таблице 3 они сведены по
+компонентам баланса.</p>
+<div class="tbl">
+<table>
+<caption>Таблица 3 — Баланс <sup>210</sup>Po при курении, % от
+активности сигареты (табак с бумагой). У Хатера доля «весь дым» получена
+вычитанием золы и фильтра и включает всё, что не осталось в них; у Бертэ
+и соавторов побочный поток получен как недостающая до баланса доля. У
+марки D Ферри и Баратты измерен только основной поток. Для работы [4]
+доли рассчитаны в настоящем обзоре по активности золы и фильтров на
+сигарету. Значения не усредняются.</caption>
+<colgroup>
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Источник</th>
+<th style="text-align: left;">Метод</th>
+<th style="text-align: right;">Зола</th>
+<th style="text-align: right;">Окурок</th>
+<th style="text-align: right;">Фильтр</th>
+<th style="text-align: right;">Основной поток</th>
+<th style="text-align: right;">Побочный поток</th>
+<th style="text-align: right;">Весь дым</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Radford, Hunt, 1964, по [14]</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">50</td>
+</tr>
+<tr>
+<td style="text-align: left;">Rajewsky, Stahlhofen, по [14]</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">50</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ferri, Baratta, 1966 [28], марка B без
+фильтра</td>
+<td style="text-align: left;">установка авторов, 10 затяжек по 3 с,
+сверена по остаткам сигарет курильщиков</td>
+<td style="text-align: right;">46,7 (зола + окурок)</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">22,2</td>
+<td style="text-align: right;">24,5</td>
+<td style="text-align: right;">46,7</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ferri, Baratta, 1966 [28], марка C с
+фильтром</td>
+<td style="text-align: left;">то же</td>
+<td style="text-align: right;">38,8 (зола + окурок)</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">13,7</td>
+<td style="text-align: right;">15,1</td>
+<td style="text-align: right;">32,9</td>
+<td style="text-align: right;">48,0</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ferri, Baratta, 1966 [28], марка D</td>
+<td style="text-align: left;">то же</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">18,1</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ferri, Baratta, 1966 [28], марка E</td>
+<td style="text-align: left;">то же</td>
+<td style="text-align: right;">50,3 (зола + окурок)</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">11,0</td>
+<td style="text-align: right;">40,8</td>
+<td style="text-align: right;">51,8</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ferri, Baratta, 1966 [28], марка F</td>
+<td style="text-align: left;">то же</td>
+<td style="text-align: right;">32,2 (зола + окурок)</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">8,8</td>
+<td style="text-align: right;">30,7</td>
+<td style="text-align: right;">32,4</td>
+<td style="text-align: right;">63,1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Berthet et al., 2022 [2], Camel
+Filter</td>
+<td style="text-align: left;">режим Health Canada Intense, 11 затяжек по
+55 мл</td>
+<td style="text-align: right;">19,0</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">19,0</td>
+<td style="text-align: right;">13,3</td>
+<td style="text-align: right;">49,0 (по разности)</td>
+<td style="text-align: right;">62</td>
+</tr>
+<tr>
+<td style="text-align: left;">Berthet et al., 2022 [2], среднее по 24
+опытам</td>
+<td style="text-align: left;">то же</td>
+<td style="text-align: right;">≈20</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">≈20</td>
+<td style="text-align: right;">13,6 ± 4,2</td>
+<td style="text-align: right;">≈50 (по разности)</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">Khater, 2004 [7], среднее по 10
+маркам</td>
+<td style="text-align: left;">сигареты выкурены добровольцами; дым — по
+разности</td>
+<td style="text-align: right;">20,7</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">4,6</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">74,7</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ермолаева-Маковская и др., 1965 [4]</td>
+<td style="text-align: left;">сигареты выкурены; зола и фильтр
+измерены</td>
+<td style="text-align: right;">≈5</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">16–18</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Основной поток.</strong> Ферри и Баратта на установке
+собственной конструкции, сверенной по остаткам сигарет трёх курильщиков,
+получили для вдыхаемого дыма от 11,0 до 30,7 % активности всей сигареты
+в зависимости от марки (в резюме работы — до 35,7 %) при материальном
+балансе 93–104 % [28]. Бертэ и соавторы на курительной машине в режиме
+интенсивного курения получили 13,6 ± 4,2 % для <sup>210</sup>Po (n = 24;
+для трёх марок, приведённых в таблице работы, 9,4–15,6 %) и 7 % для
+<sup>210</sup>Pb [2]; Хорват и соавторы — 15 ± 10 % при разбросе по
+маркам 3–36 % — и указали, что серийные курительные машины не пригодны
+для количественного улавливания <sup>210</sup>Po [3]. Кубалек и
+соавторы, собирая дым, выдыхаемый воздух, золу и окурки добровольцев,
+нашли, что в организме курильщика задерживается около 22 %
+<sup>210</sup>Po сигареты [16]. Во введении работы Хатера со ссылкой на
+Рэдфорда и Ханта (1964) и Муссало-Раухамаа и Яакколу (1985) приведено,
+что в основном потоке обнаруживается 6,5–22 % <sup>210</sup>Po сигареты,
+у других авторов — от 3,7 до 58 %, а по Парфёнову (1974) в среднем около
+50 % <sup>210</sup>Po переходит в дым, 35 % остаётся в окурке и около 15
+% — в золе [7]; те же диапазоны воспроизводят Дзага и соавторы [8].
+Келли (1965), выкуривая одиннадцать марок в стандартном режиме, нашёл,
+что содержание <sup>210</sup>Po в основном потоке связано не с наличием
+или конструкцией фильтра, а с количеством твёрдых частиц в дыме
+[34].</p>
+<p><strong>Весь дым.</strong> Величина «50 % в дым», восходящая к
+Рэдфорду и Ханту и воспроизведённая Раевским и Штальхофеном и Парфёновым
+[7], [14], относится, как видно из таблицы 3, к сумме основного и
+побочного потоков при отдельно учтённом окурке: у Ферри и Баратты сумма
+потоков составляет 47–63 %, у Бертэ и соавторов — около 62 % (побочный
+поток — по разности). Доля 74,7 % у Хатера получена по разности между
+активностью табака с бумагой и активностью золы с фильтром после
+выкуривания сигарет добровольцами и включает всё, что не осталось в золе
+и фильтре; автор оговаривает зависимость результата от манеры курения и
+от активности невдыхаемого побочного дыма [7]. Кажущийся разброс «от
+единиц до 75 %», встречающийся в обзорной литературе, в значительной
+мере порождён смешением этих базисов.</p>
+</section>
+<section id="фильтр" class="level3">
+<h3>Фильтр</h3>
+<div class="tbl">
+<table>
+<caption>Таблица 4 — Задержка <sup>210</sup>Po фильтром по данным разных
+работ. Базисы различаются: доля от активности сигареты, доля от
+активности дыма, отношение поступлений у сигарет с фильтром и без
+него.</caption>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Источник</th>
+<th style="text-align: left;">Величина</th>
+<th style="text-align: right;">Значение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Ferri, Baratta, 1966 [28]</td>
+<td style="text-align: left;">Доля активности сигареты в фильтре, марки
+C и F</td>
+<td style="text-align: right;">13,7; 8,8 %</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ferri, Baratta, 1966 [28]</td>
+<td style="text-align: left;">Поступление в основной поток у сигарет с
+фильтром относительно сигарет без фильтра</td>
+<td style="text-align: right;">58,5 % (целлюлозный), 45,1 % (с
+углём)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ермолаева-Маковская и др., 1965 [4]</td>
+<td style="text-align: left;">Доля <sup>210</sup>Po дыма, задержанная
+фильтром</td>
+<td style="text-align: right;">≈17 %</td>
+</tr>
+<tr>
+<td style="text-align: left;">Berthet et al., 2022 [2]</td>
+<td style="text-align: left;">Доля активности сигареты, задержанная
+фильтром</td>
+<td style="text-align: right;">18–20 %</td>
+</tr>
+<tr>
+<td style="text-align: left;">Khater, 2004 [7]</td>
+<td style="text-align: left;">Доля активности, оставшаяся в фильтре
+после курения</td>
+<td style="text-align: right;">4,6 %</td>
+</tr>
+<tr>
+<td style="text-align: left;">Philip Morris, 1976, по [15]</td>
+<td style="text-align: left;">Удаление <sup>210</sup>Po из дыма
+ацетатцеллюлозным фильтром</td>
+<td style="text-align: right;">40–50 %</td>
+</tr>
+<tr>
+<td style="text-align: left;">R. J. Reynolds, по [15]</td>
+<td style="text-align: left;">Снижение <sup>210</sup>Po и твёрдых частиц
+турмалиновым фильтром</td>
+<td style="text-align: right;">≈30 %</td>
+</tr>
+<tr>
+<td style="text-align: left;">Николова, 1970 [14], по Radford, Hunt</td>
+<td style="text-align: left;">Задержка фильтром</td>
+<td style="text-align: right;">8 %</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Ермолаева-Маковская и соавторы заключили, что фильтры «практически не
+задерживают» <sup>210</sup>Po, а со смолистыми веществами связано лишь
+около 20 % сорбированного фильтром полония [4]; Хатер оценил
+эффективность фильтра как «весьма низкую» [7]. Николова отметила, что
+меньшее содержание <sup>210</sup>Po во вдыхаемом дыме сигарет с фильтром
+ещё не означает значительного защитного эффекта [14]. Внутренние
+исследования отрасли дали для ацетатцеллюлозного фильтра 40–50 %
+удаления полония из дыма, но не «заметных количеств» нерастворимой
+фракции; ионообменные и медьсодержащие фильтры оказались неэффективны
+[15].</p>
+</section>
+<section id="летучесть-и-неравновесие-в-дыме" class="level3">
+<h3>Летучесть и неравновесие в дыме</h3>
+<p>Бертэ и соавторы при равномерном нагреве табака в диапазоне 50–600 °C
+нашли, что половина <sup>210</sup>Po теряется уже при 255,9 ± 2,2 °C,
+тогда как для <sup>210</sup>Pb та же доля теряется при 531 ± 17 °C; при
+300 °C уходит около 80 % полония [2]. Различие летучести, по оценке
+авторов, может отчасти объяснять, почему в основной поток переходит 13,6
+% <sup>210</sup>Po и лишь 7 % <sup>210</sup>Pb, и почему в самом дыме
+изотопы не равновесны: поддержанная свинцом доля полония в основном
+потоке составила в среднем 52 ± 16 % при разбросе 38–83 % между опытами
+[2]. Ермолаева-Маковская и соавторы, экстрагируя фильтры эфиром,
+установили, что <sup>210</sup>Po «практически не связан с продуктами
+сухой перегонки табака» [4]; Келли связал его с массой твёрдых частиц
+[34]; Мартелл и Рэдфорд — с нерастворимыми частицами из спёкшихся
+кончиков трихом, обогащёнными <sup>210</sup>Pb, с которых полоний при
+горении уходит [13], [32].</p>
+</section>
+<section id="нагреваемый-табак" class="level3">
+<h3>Нагреваемый табак</h3>
+<p>Для нагреваемого табака (IQOS Heets, отдельный продукт) Бертэ и
+соавторы получили переход в основной поток 1,8 ± 0,3 % <sup>210</sup>Po
+и около 1,5 % <sup>210</sup>Pb при содержании <sup>210</sup>Po в стике
+23,7 ± 2,1 мБк/г — таком же, как в сигаретах; 78 % активности оставалось
+в неизрасходованном табаке [2]. Различие объясняется не специальными
+мерами производителя, а тем, что до целевой температуры 330 °C
+прогревается лишь около 15 % табака в стике; при равномерном нагреве до
+300 °C высвобождалось бы около 80 % <sup>210</sup>Po [2], [6], [38].
+Авторы оговаривают, что меньшая доза не означает меньшей опасности,
+поскольку расчёт не учитывает привычки курильщика и возможного
+увеличения потребления [6].</p>
+</section>
+</section>
+<section id="lungs" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Раздел 7</span> В дыхательных
+путях и тканях</h2>
+<p>Аэрозоль сигаретного дыма имеет диаметр частиц около 300 нм [17]; по
+измерениям Десоржера и соавторов, 92 % <sup>210</sup>Po основного потока
+задерживается фильтром с порами 0,8 мкм, а медиана распределения по
+размерам, принятая в их модели, составляет 0,43 мкм [6]. Как у шахтёров,
+облучённых радоном, так и у курильщиков 75 % опухолей лёгких
+обнаруживаются в ветвящихся дыхательных путях бронхиального дерева и 15
+% — в газообменной зоне [17]. Отложение в бронхиальной области, по
+расчёту Десоржера и соавторов, составляет около 13 % вдыхаемой
+активности — заметно больше, чем в стандартных моделях МКРЗ [6].</p>
+<p>Литтл, Рэдфорд, Маккомбс и Хант (1965) измерили <sup>210</sup>Po в
+тканях лёгких курильщиков и некурящих; по изложению позднейших работ,
+наибольшие локальные концентрации обнаружены в бронхиальном эпителии
+сегментарных бифуркаций, «где часто возникают бронхогенные карциномы»
+[15], [33]. Десоржер и соавторы отмечают, что за шестьдесят лет это
+остались единственные измерения локализации <sup>210</sup>Po в бронхах
+умерших курильщиков, и в отсутствие таких данных дозиметрия вынуждена
+опираться на общие модели [6]. Мартелл (1974) и Рэдфорд и Мартелл (1975)
+связали локальное накопление с нерастворимыми частицами, обогащёнными
+<sup>210</sup>Pb: полоний при горении из них уходит и заново врастает
+после вдыхания, поэтому отношение <sup>210</sup>Po/<sup>210</sup>Pb в
+частицах служит часами; по предварительным данным на трёх курильщиках и
+двух некурящих время пребывания частиц в бронхиальном эпителии составило
+3–5 месяцев, причём авторы считают оценку заниженной [13], [32].</p>
+<p>Средние концентрации в органах приведены в таблице 5. У Ферри и
+Баратты <sup>210</sup>Po в паренхиме лёгких курильщиков втрое выше, чем
+у некурящего, в лимфатических узлах лёгких — в 2,8 раза, в печени — в
+2,4 раза, при малых выборках, позволяющих, по словам авторов, показать
+только тенденцию [28]. Доклад НКДАР ООН 2000 года констатирует, что
+концентрация <sup>210</sup>Po в лёгочной паренхиме курильщиков
+приблизительно втрое выше, чем у некурящих [17]; по внутренним
+документам отрасли, средние тканевые концентрации у курильщиков «более
+чем вдвое» выше [15]. Петушков и соавторы измерили концентрацию торона в
+выдыхаемом воздухе: 0,28 ± 0,03 пКи/л у курящих против 0,14 ± 0,02 пКи/л
+у некурящих (по 10 человек), связав разницу с <sup>228</sup>Th табака
+[40]. Для сопоставления уровней: Антонова (1971) для жителей Ленинграда
+без деления по курению получила <sup>210</sup>Po в волосах 147 ± 6, в
+костной ткани 46 ± 3 и в печени 23 ± 2 пКи/кг (5,4; 1,7; 0,85 Бк/кг)
+[39]. Курение — не единственный путь поступления <sup>210</sup>Po: по
+данным, которые приводят Дзага и соавторы со ссылкой на работу Спенсера
+(1977), у взрослого курящего мужчины 77,3 % суточного поступления
+<sup>210</sup>Po приходится на пищу и 17,4 % — на сигаретный дым
+[8].</p>
+<div class="tbl">
+<table>
+<caption>Таблица 5 — Концентрация <sup>210</sup>Po в тканях курильщиков
+и некурящих, пКи/г сырой ткани (1 пКи/г = 37 Бк/кг). Возраст курильщиков
+36–75 лет, стаж 22–40 лет при 1–3 пачках в сутки [28].</caption>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Ткань</th>
+<th style="text-align: right;">Курильщики</th>
+<th style="text-align: right;">Некурящие</th>
+<th style="text-align: right;">Отношение</th>
+<th style="text-align: left;">Источник</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Паренхима лёгких</td>
+<td style="text-align: right;">0,0079 (n = 8)</td>
+<td style="text-align: right;">0,0025 (n = 1)</td>
+<td style="text-align: right;">3,2</td>
+<td style="text-align: left;">[28]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Бронхи</td>
+<td style="text-align: right;">0,0128 (n = 7)</td>
+<td style="text-align: right;">0,0099 (n = 4)</td>
+<td style="text-align: right;">1,3</td>
+<td style="text-align: left;">[28]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Лимфатические узлы лёгких</td>
+<td style="text-align: right;">0,107 (n = 7)</td>
+<td style="text-align: right;">0,038 (n = 4)</td>
+<td style="text-align: right;">2,8</td>
+<td style="text-align: left;">[28]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Печень</td>
+<td style="text-align: right;">0,0143 (n = 6)</td>
+<td style="text-align: right;">0,0060 (n = 3)</td>
+<td style="text-align: right;">2,4</td>
+<td style="text-align: left;">[28]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Почка</td>
+<td style="text-align: right;">0,0088 (n = 6)</td>
+<td style="text-align: right;">0,0057 (n = 3)</td>
+<td style="text-align: right;">1,5</td>
+<td style="text-align: left;">[28]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Паренхима лёгких</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">≈3</td>
+<td style="text-align: left;">[17]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ткани в среднем</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">&gt; 2</td>
+<td style="text-align: left;">[15], по Holtzman, Ilcewicz, 1966</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="dose" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Раздел 8</span> Доза облучения
+курильщика</h2>
+<p>Оценки дозы в литературе относятся к трём разным величинам: локальной
+тканевой дозе в местах осаждения, средней дозе на лёгкие и эффективной
+дозе. Они различаются на порядки, и сопоставлять их между собой без
+оговорки нельзя.</p>
+<section id="локальные-дозы-на-бронхиальный-эпителий" class="level3">
+<h3>Локальные дозы на бронхиальный эпителий</h3>
+<p>Первая оценка принадлежит Рэдфорду и Ханту: по аннотации работы, для
+курильщика двух пачек в сутки доза на бронхиальный эпителий «вероятно,
+по меньшей мере в семь раз» превышает дозу от фоновых источников, а в
+локальных участках может достигать 1000 бэр и более за 25 лет [1].
+Числового значения диффузной дозы в аннотации нет, и пересказы
+расходятся: Николова приводит порядка 36 бэр за 25 лет [14], Петушков и
+соавторы — 200 бэр за 25 лет [40]; последняя величина совпадает с
+оценкой Литтла и Рэдфорда (1967) для эпителия бифуркаций нижних долей —
+2 Зв за 25 лет курения, которую приводят Дзага и соавторы [8]. Другие
+оценки того же класса, собранные Николовой и Дзагой: 1 бэр за 25 лет по
+Раевскому и 1 бэр в год по Хиллу (1965) [14]; 80 мЗв/год на эпителий в
+области бифуркаций при полутора пачках в сутки по Уинтерсу и ДиФранце
+(1982) [11]; около 16 Зв (80 рад) накопленной альфа-дозы в бифуркациях у
+курильщиков, умерших от рака лёгких, по Мартеллу [8]. Дзага и соавторы
+(2011) приводят из работы Рэдфорда и Ханта только максимальную величину
+— до 0,4 Зв в год или 10 Зв за 25 лет — без указания на её локальный
+характер [8].</p>
+</section>
+<section id="средняя-доза-на-лёгкие" class="level3">
+<h3>Средняя доза на лёгкие</h3>
+<p>Ферри и Баратта рассчитали среднюю дозу на лёгкие в целом (масса 1200
+г, всё вдыхаемое задерживается, эффективный период полувыведения 18 сут)
+при курении двух пачек в сутки: 33–92 мбэр/год (0,33–0,92 мЗв/год) в
+зависимости от марки; для марки с трубочным табаком в таблице работы
+стоит 92, в тексте — 95 мбэр/год [28]. Авторы указывают, что с учётом
+доли аэрозоля, осаждающейся в лёгких и выводимой из них, значения могут
+быть завышены до восьми раз, и что неоднородное осаждение может давать
+локальные дозы, намного превышающие средние [28].</p>
+</section>
+<section id="эффективная-доза" class="level3">
+<h3>Эффективная доза</h3>
+<div class="tbl">
+<table style="width:100%;">
+<caption>Таблица 6 — Оценки годовой эффективной дозы для курильщика
+(нуклиды — от <sup>210</sup>Po и <sup>210</sup>Pb, если в строке не
+указано иное) с указанием расчётных допущений там, где они приведены в
+источнике. Прочерк — допущение в прочитанном тексте не
+приведено.</caption>
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Источник</th>
+<th style="text-align: right;">Сигарет в сутки</th>
+<th style="text-align: left;">Активность в расчёте</th>
+<th style="text-align: left;">Вдыхаемая доля</th>
+<th style="text-align: left;">Дозовый коэффициент, мкЗв/Бк</th>
+<th style="text-align: right;">Доза, мкЗв/год</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Khater, 2004 [7]</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">12,3 мБк <sup>210</sup>Po на сигарету в
+дыме (74,7 % от 16,6 мБк); <sup>210</sup>Pb принят равным</td>
+<td style="text-align: left;">50 % дыма вдыхается, то есть 0,37
+активности сигареты</td>
+<td style="text-align: left;">4,3 (Po); 5,6 (Pb)</td>
+<td style="text-align: right;">193 + 251 = 444</td>
+</tr>
+<tr>
+<td style="text-align: left;">Desorgher et al., 2023 [6]</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">вдыхается 1,95 мБк <sup>210</sup>Po и 1,05
+мБк <sup>210</sup>Pb на сигарету</td>
+<td style="text-align: left;">измерено: 13,6 % (Po), 7 % (Pb)</td>
+<td style="text-align: left;">6,5 (Po); 29,2 (Pb), собственная модель,
+медленное всасывание</td>
+<td style="text-align: right;">93 + 224 = 317</td>
+</tr>
+<tr>
+<td style="text-align: left;">Desorgher et al., 2023 [6]</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">то же</td>
+<td style="text-align: left;">то же</td>
+<td style="text-align: left;">умеренное всасывание</td>
+<td style="text-align: right;">72</td>
+</tr>
+<tr>
+<td style="text-align: left;">Desorgher et al., 2023 [6], нагреваемый
+табак</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">1,8 % (Po), 1,6 % (Pb)</td>
+<td style="text-align: left;">как выше</td>
+<td style="text-align: right;">30 (медленное), 5 (умеренное)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Papastefanou, 2009 [11]</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: left;">лист: 14,1 Бк/кг <sup>210</sup>Pb; 3,4
+<sup>226</sup>Ra; 3,8 <sup>228</sup>Ra</td>
+<td style="text-align: left;">0,75</td>
+<td style="text-align: left;">1,1 (Pb); 3,5 (<sup>226</sup>Ra); 2,6
+(<sup>228</sup>Ra)</td>
+<td style="text-align: right;">105 (<sup>210</sup>Pb) + 80
+(<sup>226</sup>Ra) + 67 (<sup>228</sup>Ra) = 252; <sup>210</sup>Po не
+входит</td>
+</tr>
+<tr>
+<td style="text-align: left;">Kubalek et al., 2016 [16]</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: left;">измерено в сигаретах</td>
+<td style="text-align: left;">измерено у добровольцев: задерживается 22
+% <sup>210</sup>Po</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">61 + 9 (Po + Pb); 90 (изотопы Th)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Horváth et al., 2017 [3]</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">Иран, 17 марок</td>
+<td style="text-align: left;">измерено: 15 ± 10 %</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">≈59</td>
+</tr>
+<tr>
+<td style="text-align: left;">Skwarzec et al., 2001 [35]</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">Польша, 14 марок; вдыхается 20–215 мБк/сут
+каждого нуклида</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">35 + 70 = 105; до 471 при 40
+сиг./сут</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cankurt, Görgün, 2020 [31]</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: left;">Турция</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">188,5 ± 12,4 (Po)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Felix, Ntarisa, 2024 [30]</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">среднее по 40 работам</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">295 + 74,1; <sup>232</sup>Th 889,7</td>
+</tr>
+<tr>
+<td style="text-align: left;">Сводка Desorgher et al. [6]: Tiwari 2016;
+Iwaoka, Yonehara 2012; Christobher 2020; Mandic 2016</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">300; 270; 150; 770</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ferri, Baratta, 1966 [28]</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: left;">средняя доза на лёгкие, не
+эффективная</td>
+<td style="text-align: left;">11–31 % измерено</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">330–920 (лёгкие)</td>
+</tr>
+<tr>
+<td style="text-align: left;">UNSCEAR, 2000 [17]</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: left;">население в целом, ряды U и Th в
+тканях</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">120</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Данные таблицы 6 показывают, что разброс эффективных доз более чем в
+десять раз (0,06–0,8 мЗв/год) порождён главным образом не активностью
+табака, которая у большинства авторов одного порядка (10–38 мБк на
+сигарету), а тремя допущениями. Первое — вдыхаемая доля: Хатер принял
+74,7 % в дыме и 50 % вдыхания, то есть 0,37 активности сигареты;
+Папастефану — 0,75; Десоржер и соавторы — измеренные 0,136 для полония и
+0,07 для свинца. Десоржер и соавторы прямо отмечают, что часть авторов
+использует коэффициент перехода 0,7–1,0, тогда как измерения дают менее
+0,15, и что в литературе встречаются оценки от 30 мкЗв до десятков мЗв в
+год [6]; верхняя часть этого диапазона выходит за пределы таблицы 6.
+Второе — дозовый коэффициент: для <sup>210</sup>Pb он различается
+примерно в 27 раз (1,1 мкЗв/Бк у Папастефану против 29,2 у Десоржера), в
+зависимости от принятого класса всасывания и от того, учитывается ли
+повышенное отложение в бронхиальной области. Третье — режим всасывания:
+при переходе от медленного к умеренному одна и та же модель даёт 0,317 и
+0,072 мЗв/год [6]. Систематический обзор Лейкинга (2019) формулирует то
+же: оценки чувствительны к фармакологическим допущениям о всасывании и
+перераспределении вдыхаемых радионуклидов и к радиобиологическим
+допущениям, а часть современных авторов приводит индивидуальные риски
+примерно в 1000 раз выше, чем допускают международно принятые модели
+[29].</p>
+<p>Доклад НКДАР ООН 2000 года оценивает годовую эффективную дозу от
+радионуклидов рядов урана и тория в тканях тела в 120 мкЗв, основной
+вклад в которую вносит <sup>210</sup>Po; величина относится к населению
+в целом, оценки дозы, специфичной для курильщиков, в томе I доклада не
+приводится, но отмечается, что табак «значительно увеличивает»
+поступление <sup>210</sup>Pb и <sup>210</sup>Po у курящих [17]. Там же
+указано, что совместное действие курения и радона на риск рака лёгких —
+единственный случай, для которого эпидемиологические данные явно требуют
+учёта более чем аддитивного эффекта [17].</p>
+<p>Локальная доза 10 Зв за 25 лет (400 мЗв/год) превышает эффективные
+дозы таблицы 6 для обычных сигарет в 500–6800 раз; это сравнение
+разнородных величин — тканевой дозы в точке осаждения и дозы,
+усреднённой по органам с весовыми коэффициентами. Ферри и Баратта в 1966
+году оговорили это различие прямо: их расчёт относится «к средней дозе
+по всей ткани лёгких», тогда как неоднородное осаждение даёт локальные
+дозы «много больше» [28].</p>
+</section>
+<section id="риск-и-доля-случаев" class="level3">
+<h3>Риск и доля случаев</h3>
+</section>
+<section id="атрибуция-12-случаев-рака-лёгких" class="level3 warn">
+<h3>Атрибуция «1–2 % случаев рака лёгких»</h3>
+<p>Утверждение, что <sup>210</sup>Po ответственен за 2 % вызванных
+курением случаев рака лёгких, встречается в научно-популярных изложениях
+без ссылки на конкретную работу. Ближайшая опубликованная оценка такого
+рода — письмо Рэдфорда в редакцию New England Journal of Medicine
+(1982), по которому <sup>210</sup>Po ответствен примерно за 1 % случаев
+рака лёгких в США; Маггли и соавторы, приводя эту оценку, пересчитывают
+её в более чем 1600 смертей в год в США и 11 700 в мире [15].
+Рецензируемой работы, обосновывающей цифру 2 % расчётом, в ходе
+подготовки обзора не найдено. Дзага и соавторы оценивают риск иначе —
+4·10<sup>−4</sup> случая в год на курильщика, то есть 4 случая на 10 000
+курящих в год, оговаривая, что оценка не учитывает ко-канцерогенного
+действия [8]. Сравнение «300 рентгенограмм грудной клетки в год» при
+полутора пачках в сутки, восходящее к Уинтерсу и ДиФранце (1982) [15],
+зависит от принятой дозы одного снимка (у Дзаги и соавторов 0,034 мЗв
+[8]) и без указания этого базиса воспроизводиться не должно.</p>
+</section>
+</section>
+<section id="industry" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Раздел 9</span> Позиция табачной
+индустрии</h2>
+<p>Критика первоначальных оценок Рэдфорда и Ханта в рецензируемой
+литературе представлена преимущественно методическими работами о
+переходе изотопа в дым (раздел 6) и о допущениях дозиметрии (раздел 8),
+а не опровержением гипотезы о его вкладе в облучение. Маггли и соавторы
+(2008) по примерно 1500 внутренним документам отрасли показали, что
+производители узнали о присутствии полония в табаке более чем за 40 лет
+до публикации, подтвердили опубликованные уровни собственными
+измерениями, пытались удалить его — отмывкой листа (10–40 %), отбором
+сырья, фильтрами, генной инженерией растения — и не преуспели;
+лаборатория Philip Morris по контролю <sup>210</sup>Po, работавшая с
+1981–1982 годов, была закрыта около 1986 года из-за риска получить
+«свидетельства, которые могли бы скомпрометировать компанию в суде»
+[15]. Заголовок статьи — «Waking a Sleeping Giant» — воспроизводит
+формулировку из служебной записки 1978 года о нежелательности публикации
+собственных результатов «из опасения разбудить спящего великана» [8],
+[15]. Авторы предлагают предупреждение о радиационном воздействии на
+пачке сигарет [15].</p>
+</section>
+<section id="limits" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Раздел 10</span> Ограничения
+обзора</h2>
+<p>Работы Рэдфорда и Ханта [1], Тсо и соавторов [9], Бергера и соавторов
+[10], Келли [34], Мартелла [13], Рэдфорда и Мартелла [32] и Лейкинга
+[29] приводятся по их аннотациям; работа Литтла и соавторов [33] — по
+изложению [6], [15]; работа Хорвата и соавторов [3] — по аннотации и
+опубликованным издателем основным результатам (highlights); работы
+Перссона и Хольма [5], Кубалека и соавторов [16], Скварца и соавторов
+[35], Феликса и Нтарисы [30], Джанкурта и Гёргюна [31], Ганбар-Могаддама
+и Фативанда [36] — по аннотациям. Внутренние документы отрасли, оценка
+Рэдфорда 1982 года, работы Уинтерса и ДиФранцы, Спенсера, Литтла и
+Рэдфорда (1967), Хольцмана и Ильцевича, Парфёнова, Раевского и
+Штальхофена, Хилла приводятся по изложению [7], [8], [11], [14],
+[15].</p>
+<p>Данные по травянистой растительности (раздел 5) для работ [18] и [19]
+приводятся по таблицам сводки [24], для работ [20]–[23] — по аннотациям;
+обзорная статья [26] и учебник [27] — по их тексту без проверки их
+первоисточников. Базис массы табачного наполнителя и высушенной
+фитомассы не тождествен; сопоставление в разделе 5 корректно по порядку
+величины, но не на уровне отдельных процентов. В таблице 6 допущения
+приведены только там, где они видны в прочитанном тексте; для работ,
+прочитанных по аннотациям, столбцы допущений пусты.</p>
+</section>
+<section id="conclusion" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Раздел 11</span> Заключение</h2>
+<p>Присутствие <sup>210</sup>Po и <sup>210</sup>Pb в табаке и переход
+части их активности в дым подтверждены независимыми измерениями на
+протяжении шестидесяти лет в разных странах. Средние значения удельной
+активности <sup>210</sup>Po в сигаретном табаке, полученные в 1960-х
+годах (12–20 Бк/кг) и в 2000–2020-х (13–25 Бк/кг), лежат в одном
+интервале; более высокие значения, до 40–60 Бк/кг, относятся к
+необработанному сырью и отдельным рынкам, а устойчивой многолетней
+тенденции по совокупности работ не установлено. Этот интервал находится
+в пределах диапазона, измеренного для травянистой фитомассы; отношение
+<sup>210</sup>Pb/<sup>226</sup>Ra в табаке, как правило 2–4, совпадает
+по знаку и порядку с фуражом и показывает, что свинец поступает в лист
+независимо от радия почвы; отношение <sup>210</sup>Po/<sup>210</sup>Pb,
+близкое к единице в сигаретах и меньшее единицы в трубочном табаке,
+согласуется с врастанием полония за время выдержки сырья. Наряду с
+полонием в табаке присутствуют <sup>228</sup>Th, <sup>226</sup>Ra и
+<sup>228</sup>Ra с активностями того же порядка, вклад которых в дозу
+учитывается редко.</p>
+<p>Путь поступления изотопов в лист остаётся предметом расхождения
+источников: единственный контролируемый опыт на табаке (1966) указал на
+корни, тогда как измерения на табаке и на травянистой растительности,
+где атмосферное поступление <sup>210</sup>Pb преобладает даже на
+субстрате с высоким содержанием радия, поддерживают версию осаждения
+продуктов распада радона на трихомы. В основной поток дыма переходит
+3–36 % активности <sup>210</sup>Po в зависимости от марки и режима
+курения; значения около 50 % относятся к сумме основного и побочного
+потоков, до 75 % — ко всему, что не осталось в золе и фильтре. Полоний
+летучее свинца, поэтому в дыме изотопы не равновесны, а в бронхах
+полоний врастает заново из нерастворимых частиц, обогащённых
+<sup>210</sup>Pb.</p>
+<p>Эффективные дозы от <sup>210</sup>Po и <sup>210</sup>Pb для
+курильщика пачки в сутки, рассчитанные с явными допущениями, 0,06–0,8
+мЗв/год, различаются главным образом принятой вдыхаемой долей (от
+измеренных 0,07–0,14 до принятых 0,75, у части авторов до 1,0) и
+дозовыми коэффициентами, а не активностью табака; локальная доза в
+эпителии бронхиальных бифуркаций — величина иного рода, и их
+сопоставление без оговорки вводит в заблуждение. Цифра «2 % случаев рака
+лёгких» проверенной привязки к рецензируемому расчёту не имеет;
+ближайшая опубликованная оценка — около 1 % по письму Рэдфорда 1982
+года.</p>
+</section>
+<section id="ai" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Раздел 12</span> Заявление об
+использовании искусственного интеллекта</h2>
+<p>Обзор подготовлен агентной сессией на базе языковой модели Claude
+(Anthropic) под управлением оператора. Роль модели: разбиение вопроса на
+независимые направления поиска; сбор источников фоновыми агентами с
+раздельными предметными областями; в редакции 3 — повторное чтение всех
+источников четырьмя независимыми агентами по полным текстам (где
+доступны) с построчными выписками чисел и цитат; сведение находок;
+вёрстка. Перед публикацией текст прошёл самоаудит: независимые проходы
+проверяющих агентов с разными границами (библиография и соответствие
+ссылок; содержание чисел по первоисточникам) и независимый пересчёт
+единиц, отношений и доз; найденные расхождения устранены. Роль
+оператора: постановка задачи, требование приоритета высокоцитируемых
+источников, решение о структуре обзора, указание сопоставить табак с
+данными по травянистой растительности, предоставление полных текстов
+работ [4], [7], [28], [37]–[40] и авторской рукописи работы [11] (в
+тексте использованы числа опубликованной статьи; рукопись отличается от
+неё максимумом <sup>228</sup>Ra — 6,62 против 6,52 Бк/кг — и отсутствием
+данных по <sup>40</sup>K), указание на связанные публикации в PubMed,
+указание перечитать все источники заново, решение о публикации. Числа
+цитирований ключевых работ получены из базы Crossref 25 сентября 2026
+года.</p>
+</section>
+<section id="refs" class="level2 sec">
+<h2 class="sec"><span class="num-tag">Раздел 13</span> Литература</h2>
+<div class="refs">
+<ol type="1">
+<li>Radford E. P., Hunt V. R. Polonium-210: A Volatile Radioelement in
+Cigarettes // Science. 1964. Vol. 143, № 3603. P. 247–249. <a
+href="https://doi.org/10.1126/science.143.3603.247">doi.org/10.1126/science.143.3603.247</a>
+<span class="lvl">149 цит., Crossref</span></li>
+<li>Berthet A. et al. <sup>210</sup>Po and <sup>210</sup>Pb content in
+the smoke of Heated Tobacco Products versus Conventional Cigarette
+smoking // Scientific Reports. 2022. Vol. 12. Art. 10314. <a
+href="https://doi.org/10.1038/s41598-022-14200-2">doi.org/10.1038/s41598-022-14200-2</a></li>
+<li>Horváth M., Shahrokhi A., Bátor P., Tóth-Bodrogi E., Kovács T.
+Determination of <sup>210</sup>Po content in cigarette smoke using a
+smoking machine: A case study of Iranian cigarettes // Journal of
+Environmental Radioactivity. 2017. Vol. 174. P. 66–70. <a
+href="https://doi.org/10.1016/j.jenvrad.2017.01.023">doi.org/10.1016/j.jenvrad.2017.01.023</a></li>
+<li>Ермолаева-Маковская А. П., Перцов Л. А., Попов Д. К. К вопросу о
+содержании полония-210 в табаке // Гигиена и санитария. 1965. Т. 30, №
+12. С. 40–43. PMID 5874395. <a
+href="https://cyberleninka.ru/article/n/k-voprosu-o-soderzhanii-poloniya-210-v-tabake">cyberleninka.ru</a></li>
+<li>Persson B. R. R., Holm E. Polonium-210 and lead-210 in the
+terrestrial environment: a historical review // Journal of Environmental
+Radioactivity. 2011. Vol. 102, № 5. P. 420–429. <a
+href="https://doi.org/10.1016/j.jenvrad.2011.01.005">doi.org/10.1016/j.jenvrad.2011.01.005</a>
+<span class="lvl">235 цит., Crossref</span></li>
+<li>Desorgher L., Berthet A., Rossier J., Bochud F., Froidevaux P.
+Dosimetry in the lungs of alpha-particles (<sup>210</sup>Po) and
+beta-particles (<sup>210</sup>Pb) present in the tobacco smoke of
+conventional cigarettes and heated tobacco products // Journal of
+Environmental Radioactivity. 2023. Vol. 263. Art. 107178. <a
+href="https://doi.org/10.1016/j.jenvrad.2023.107178">doi.org/10.1016/j.jenvrad.2023.107178</a></li>
+<li>Khater A. E. M. Polonium-210 budget in cigarettes // Journal of
+Environmental Radioactivity. 2004. Vol. 71, № 1. P. 33–41. <a
+href="https://doi.org/10.1016/S0265-931X(03)00118-8">doi.org/10.1016/S0265-931X(03)00118-8</a>
+<span class="lvl">88 цит., Crossref</span></li>
+<li>Zagà V., Lygidakis C., Chaouachi K., Gattavecchia E. Polonium and
+Lung Cancer // Journal of Oncology. 2011. Art. 860103. <a
+href="https://doi.org/10.1155/2011/860103">doi.org/10.1155/2011/860103</a></li>
+<li>Tso T. C., Harley N., Alexander L. T. Source of Lead-210 and
+Polonium-210 in Tobacco // Science. 1966. Vol. 153, № 3738. P. 880–882.
+<a
+href="https://doi.org/10.1126/science.153.3738.880">doi.org/10.1126/science.153.3738.880</a>
+<span class="lvl">59 цит., Crossref</span></li>
+<li>Berger K. C., Erhardt W. H., Francis C. W. Polonium-210 analyses of
+vegetables, cured and uncured tobacco, and associated soils // Science.
+1965. Vol. 150, № 3704. P. 1738–1739. <a
+href="https://doi.org/10.1126/science.150.3704.1738">doi.org/10.1126/science.150.3704.1738</a></li>
+<li>Papastefanou C. Radioactivity of tobacco leaves and radiation dose
+induced from smoking // International Journal of Environmental Research
+and Public Health. 2009. Vol. 6, № 2. P. 558–567. <a
+href="https://doi.org/10.3390/ijerph6020558">doi.org/10.3390/ijerph6020558</a></li>
+<li>U.S. Environmental Protection Agency. TENORM: Fertilizer and
+Fertilizer Production Wastes (обновлено 29.12.2025). <a
+href="https://www.epa.gov/radiation/tenorm-fertilizer-and-fertilizer-production-wastes">epa.gov</a></li>
+<li>Martell E. A. Radioactivity of tobacco trichomes and insoluble
+cigarette smoke particles // Nature. 1974. Vol. 249, № 5454. P. 215–217.
+<a
+href="https://doi.org/10.1038/249215a0">doi.org/10.1038/249215a0</a></li>
+<li>Николова М. Е. Радиоактивный фактор табачного дыма // Гигиена и
+санитария. 1970. Т. 35, № 8. С. 89–93. PMID 5502723. <a
+href="https://cyberleninka.ru/article/n/radioaktivnyy-faktor-tabachnogo-dyma">cyberleninka.ru</a></li>
+<li>Muggli M. E., Ebbert J. O., Robertson C., Hurt R. D. Waking a
+Sleeping Giant: The Tobacco Industry’s Response to the Polonium-210
+Issue // American Journal of Public Health. 2008. Vol. 98, № 9. P.
+1643–1650. <a
+href="https://doi.org/10.2105/AJPH.2007.130963">doi.org/10.2105/AJPH.2007.130963</a>
+<span class="lvl">38 цит., Crossref</span></li>
+<li>Kubalek D., Serša G., Štrok M., Benedik L., Jeran Z. Radioactivity
+of cigarettes and the importance of <sup>210</sup>Po and thorium
+isotopes for radiation dose assessment due to smoking // Journal of
+Environmental Radioactivity. 2016. Vol. 155–156. P. 97–104. <a
+href="https://doi.org/10.1016/j.jenvrad.2016.02.015">doi.org/10.1016/j.jenvrad.2016.02.015</a></li>
+<li>UNSCEAR. Sources and Effects of Ionizing Radiation. UNSCEAR 2000
+Report to the General Assembly. Vol. I. Annex A, paras. 70–71; Annex B,
+paras. 85–86, 140, 143. New York: United Nations, 2000. <a
+href="https://www.unscear.org/unscear/uploads/documents/unscear-reports/UNSCEAR_2000_Report_Vol.I.pdf">unscear.org</a></li>
+<li>Amaral E. C. S., Carvalho Z. L., Godoy J. M. Transfer of
+<sup>226</sup>Ra and <sup>210</sup>Pb to Forage and Milk in a Brazilian
+High Natural Radioactivity Region // Radiation Protection Dosimetry.
+1988. Vol. 24, № 1–4. P. 119–121. <a
+href="https://doi.org/10.1093/oxfordjournals.rpd.a080254">doi.org/10.1093/oxfordjournals.rpd.a080254</a></li>
+<li>Štrok M., Smodiš B. Transfer of natural radionuclides from hay and
+silage to cow’s milk in the vicinity of a former uranium mine // Journal
+of Environmental Radioactivity. 2012. Vol. 110. P. 64–68. <a
+href="https://doi.org/10.1016/j.jenvrad.2012.02.009">doi.org/10.1016/j.jenvrad.2012.02.009</a></li>
+<li>Moniakowska A., Konieczyński P., Block K. et al. The presence of
+radiotoxic <sup>210</sup>Po and <sup>210</sup>Pb in Ukrainian wild
+medicinal plants and the assessment of related dose and cancer risk //
+Journal of Environmental Quality. 2024. Vol. 53, № 3. P. 378–389. <a
+href="https://doi.org/10.1002/jeq2.20555">doi.org/10.1002/jeq2.20555</a></li>
+<li>Chandrashekara K., Somashekarappa H. M. <sup>210</sup>Po and
+<sup>210</sup>Pb in medicinal plants in the region of Karnataka,
+Southern India // Journal of Environmental Radioactivity. 2016. Vol.
+160. P. 87–92. <a
+href="https://doi.org/10.1016/j.jenvrad.2016.04.036">doi.org/10.1016/j.jenvrad.2016.04.036</a></li>
+<li>Jovanovič P. Transfer of natural radionuclides from soil to the
+grass around uranium mine area Žirovski vrh, Slovenia //
+Radioprotection. 2011. Vol. 46, № 6. P. S295–S299. <a
+href="https://doi.org/10.1051/radiopro/20116754s">doi.org/10.1051/radiopro/20116754s</a></li>
+<li>Pietrzak-Fliś Z., Skowrońska-Smolak M. Transfer of <sup>210</sup>Pb
+and <sup>210</sup>Po to plants via root system and above-ground
+interception // Science of the Total Environment. 1995. Vol. 162, № 2–3.
+P. 139–147. <a
+href="https://doi.org/10.1016/0048-9697(95)04445-7">doi.org/10.1016/0048-9697(95)04445-7</a></li>
+<li>Persson B. R. R. Transfer analysis of <sup>210</sup>Po and
+<sup>210</sup>Pb in the terrestrial environment // Acta Scientiarum
+Lundensia. 2013. V2013-002. P. 1–42. <a
+href="https://lup.lub.lu.se/search/files/3451310/8232914.pdf">lup.lub.lu.se</a></li>
+<li>Handbook of Parameter Values for the Prediction of Radionuclide
+Transfer in Terrestrial and Freshwater Environments. IAEA Technical
+Reports Series No. 472. Vienna: IAEA, 2010. Табл. 17. <a
+href="https://www-pub.iaea.org/MTCD/Publications/PDF/trs472_web.pdf">iaea.org</a></li>
+<li>Бахур А. Е., Мануилова Л. И., Овсянникова Т. М. Po-210 и Pb-210 в
+объектах окружающей среды. Методы определения // АНРИ. 2009. № 1. С.
+29–40.</li>
+<li>Бекман И. Н. Экологическая радиохимия и радиоэкология. 2015.</li>
+<li>Ferri E. S., Baratta E. J. Polonium 210 in tobacco, cigarette smoke,
+and selected human organs // Public Health Reports. 1966. Vol. 81, № 2.
+P. 121–127. PMID 4954992. <a
+href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1919781/">pmc.ncbi.nlm.nih.gov/articles/PMC1919781</a></li>
+<li>Laking G. R. Human Exposure to Radioactivity From Tobacco Smoke:
+Systematic Review // Nicotine &amp; Tobacco Research. 2019. Vol. 21, №
+9. P. 1172–1180. <a
+href="https://doi.org/10.1093/ntr/nty111">doi.org/10.1093/ntr/nty111</a></li>
+<li>Felix A. T., Ntarisa A. V. Review of natural radioactivity in
+tobacco cigarette brands // Journal of Environmental Radioactivity.
+2024. Vol. 272. Art. 107348. <a
+href="https://doi.org/10.1016/j.jenvrad.2023.107348">doi.org/10.1016/j.jenvrad.2023.107348</a></li>
+<li>Cankurt S., Görgün A. U. Determination and distribution of
+<sup>210</sup>Po in different morphological parts of tobacco plants and
+radiation dose assessment from cigarettes in Turkey // Ecotoxicology and
+Environmental Safety. 2020. Vol. 197. Art. 110603. <a
+href="https://doi.org/10.1016/j.ecoenv.2020.110603">doi.org/10.1016/j.ecoenv.2020.110603</a></li>
+<li>Radford E. P., Martell E. A. Polonium-210: lead-210 ratios as an
+index of residence times of insoluble particles from cigarette smoke in
+bronchial epithelium // Inhaled Particles. 1975. Vol. 4, Pt 2. P.
+567–581. PMID 1236240.</li>
+<li>Little J. B., Radford E. P., McCombs H. L., Hunt V. R. Distribution
+of polonium-210 in pulmonary tissues of cigarette smokers // New England
+Journal of Medicine. 1965. Vol. 273, № 25. P. 1343–1351. <a
+href="https://doi.org/10.1056/NEJM196512162732501">doi.org/10.1056/NEJM196512162732501</a></li>
+<li>Kelley T. F. Polonium-210 content of mainstream cigarette smoke //
+Science. 1965. Vol. 149, № 3683. P. 537–538. <a
+href="https://doi.org/10.1126/science.149.3683.537">doi.org/10.1126/science.149.3683.537</a></li>
+<li>Skwarzec B., Ulatowski J., Strumińska D. I., Boryło A. Inhalation of
+<sup>210</sup>Po and <sup>210</sup>Pb from cigarette smoking in Poland
+// Journal of Environmental Radioactivity. 2001. Vol. 57, № 3. P.
+221–230. <a
+href="https://doi.org/10.1016/s0265-931x(01)00018-2">doi.org/10.1016/s0265-931x(01)00018-2</a></li>
+<li>Ghanbar-Moghaddam B., Fathivand A. Study of polonium-210 in Persian
+cigarette and tobacco crops // Radiation Protection Dosimetry. 2020.
+Vol. 191, № 3. P. 335–340. <a
+href="https://doi.org/10.1093/rpd/ncaa130">doi.org/10.1093/rpd/ncaa130</a></li>
+<li>Wakerlin G. E. Cigarette Smoking and the Role of the Physician //
+Circulation. 1964. Vol. 29, May. P. 651–656.</li>
+<li>Zagà V., Cattaruzza M. S., Gallus S. Polonium-210 and lead-210 in
+heated tobacco smoke // Tabaccologia. 2024. Vol. 22, № 3. P. 32–36. <a
+href="https://doi.org/10.53127/tblg-2024-A016">doi.org/10.53127/tblg-2024-A016</a></li>
+<li>Антонова В. А. Po<sup>210</sup> в волосах, костной ткани и печени
+человека // Гигиена и санитария. 1971. Т. 36, № 10. С. 52–55. PMID
+5148707.</li>
+<li>Петушков А. А., Зельцер М. Р., Медведовский А. П. О содержании
+Th<sup>228</sup> в табаке и организме человека // Гигиена и санитария.
+1972. Т. 37, № 4. С. 113–114. PMID 5052176.</li>
 </ol>
-</div><div data-lang-block="en">
-<h2><span class="num">1</span>Introduction</h2>
-<p>The presence of natural radionuclides from the uranium and thorium decay series in tobacco was established experimentally more than sixty years ago: in 1964 Radford and Hunt first demonstrated that polonium-210 transfers from tobacco into cigarette smoke and preferentially deposits on the smoker bronchial epithelium [1]. Dozens of studies measuring <sup>210</sup>Po and its parent isotope <sup>210</sup>Pb activity in raw tobacco, ash, filter and smoke have since been published, yet no single consistent picture of the quantitative contribution of these isotopes to smokers lung cancer risk has emerged. This review consolidates published measurements, examines the mechanism of isotope uptake by the plant, and traces the history of dose estimation from the original 1964 work to the dosimetry of modern heated tobacco products.</p>
-<p>A characteristic feature of the topic is systematic divergence in measurement methodology between laboratories and decades, which requires explicit method attribution whenever numbers from different sources are compared. This review follows the principle that discrepant sources are not averaged or resolved by choosing a convenient number - both values are given with their methodology.</p>
-<h2><span class="num">2</span><sup>210</sup>Po and <sup>210</sup>Pb activity in tobacco: direct measurements</h2>
-<p>The most methodologically thorough modern study is the measurement by Berthet et al. (2022, Lausanne University Hospital, Switzerland) on 15 conventional cigarette samples: the average <sup>210</sup>Po activity in the tobacco filler was 15.0 plus-minus 2.3 mBq per cigarette, or 25.2 plus-minus 2.6 mBq per gram of tobacco; the <sup>210</sup>Po/<sup>210</sup>Pb activity ratio was close to secular equilibrium (1.06 plus-minus 0.05) [2]. By comparison, a measurement of seventeen brands of Iranian cigarettes gave a wider range - from 9.7 plus-minus 1.2 to 26.5 plus-minus 4.6 mBq per cigarette [3], indicating a dependence of isotope content on tobacco variety and, likely, growing conditions (Section 4).</p>
-<p>Soviet measurements from 1965 on domestic cigarettes gave an average concentration of (4.3 plus-minus 1.0)times10<sup>-13</sup> Ci/g, corresponding to 0.43 pCi/g, or approximately 16 mBq/g of tobacco [4] - a value of the same order of magnitude as the modern Swiss and Iranian data, despite half a century separating the measurements and a change in tobacco variety composition. The range across individual raw tobacco varieties in the same work was 2.8 to 17.4times10<sup>-13</sup> Ci/g for domestic varieties and 2.3 to 9.2times10<sup>-13</sup> Ci/g for foreign ones [4].</p>
-<table>
-<caption>Table 1 - <sup>210</sup>Po activity in cigarette tobacco filler, direct measurements</caption>
-<tr><th>Source</th><th>Region / brand</th><th class="num">Activity</th><th>Method</th></tr>
-<tr><td>Berthet et al., 2022 [2]</td><td>Switzerland, conventional cigarettes (n=15)</td><td class="num">15.0 ± 2.3 mBq/cig.</td><td>Alpha spectrometry after chemical separation</td></tr>
-<tr><td>Horvath et al., 2017 [3]</td><td>Iran, 17 brands</td><td class="num">9.7-26.5 mBq/cig.</td><td>Smoking machine, ISO-3308/3402/4387</td></tr>
-<tr><td>Ermolaeva-Makovskaya et al., 1965 [4]</td><td>USSR, finished cigarettes</td><td class="num">≈16 mBq/g tobacco</td><td>Radiochemical separation, alpha counting</td></tr>
-<tr><td>Persson &amp; Holm, 2011 (review) [5]</td><td>Global summary estimate</td><td class="num">13 ± 2 Bq/kg (≈13 mBq/g)</td><td>Meta-analysis of published measurements</td></tr>
-</table>
-<h2><span class="num">3</span>Transfer to cigarette smoke during smoking</h2>
-<p>The fraction of <sup>210</sup>Po activity transferred from the tobacco filler to the mainstream smoke during smoking is the most widely divergent value among the data reviewed. The Swiss study using a certified smoking machine gives 13.6 plus-minus 4.2 % for conventional cigarettes (7.0 % for <sup>210</sup>Pb) versus 1.8 plus-minus 0.3 % for a heated tobacco product of the same brand - that is, the transfer to smoke when tobacco is heated without combustion drops roughly sevenfold [2][6]. An Egyptian measurement from the same year gives a fundamentally different picture: 74.7 % of activity transfers to smoke, 20.7 % remains in the ash, and only 4.6 % is retained by the post-smoking filter [7]. The Iranian study gives an intermediate value of 15 plus-minus 10 %, with a brand-to-brand range of 3-36 % [3].</p>
-<p>The authors of the Iranian study explicitly identify the cause of this discrepancy: commercially available smoking machines are not physically suited to quantitatively collecting <sup>210</sup>Po, so different laboratories obtain incomparable numbers depending on trap design and absorbing solution [3]. This methodological remark is essential for interpreting the entire body of measurements in this section: no single corrected estimate of the transfer fraction has emerged in the literature, and the interval 6.5-22 % sometimes quoted from the original 1964 work [1] should not be taken as the current consensus - later measurements span from 3.7 to 74.7 % [3][7][8].</p>
-<div class="note"><p><b>Conventional filters are largely ineffective.</b> A standard cellulose acetate filter reduces <sup>210</sup>Po activity in smoke by only 4.6 % on average [8] - a problem already raised in 1964 that modern filtered cigarette design has essentially not solved.</p></div>
-<h2><span class="num">4</span>Accumulation mechanism in the plant: root or atmosphere</h2>
-<p>The pathway by which <sup>210</sup>Po and <sup>210</sup>Pb enter the tobacco leaf remains disputed between two classic mid-1960s studies published in the same journal. Tso, Harley and Alexander (1966), in a controlled experiment using a chamber containing radon-222 and fields with various phosphate fertilisers, concluded that the major portion of <sup>210</sup>Pb is absorbed by the plant through the root system, with airborne radon and its daughters contributing substantially less - for both lead-210 and polonium-210 [9]. A year earlier, Berger, Erhardt and Francis (1965), based on chemical analysis of soils and plant extracts, instead rejected direct root uptake of <sup>210</sup>Po and proposed a mechanism of isotope sorption onto dead, moist plant material at the atmosphere-plant interface [10]. This review does not resolve the contradiction - both sources are methodologically independent, a numerical comparison of their findings is not available in the open portions of the text, and the discrepancy is presented as is, without selecting a preferred version.</p>
-<p>The review by Persson and Holm (2011) - the most cited source among those reviewed here (235 citations per Crossref data at the time of access) - synthesises both mechanisms: the plant accumulates the isotope both by uptake from soil (supported Po) and by direct deposition of radioactive fallout onto the surface (unsupported Po), with the contribution of direct deposition being particularly large for fresh, leafy plants [5]. This is consistent with a later account of the role of trichomes - hairy glandular outgrowths of the tobacco leaf: their sticky exudate physically traps small atmospheric particles, including radon decay products [11].</p>
-<p>A separate, undisputed fact among the sources found is the link between leaf <sup>210</sup>Po content and the type of phosphate fertiliser applied. Apatite and phosphorite rock, from which superphosphate fertilisers are manufactured, contains radium-226 as part of the uranium-radium series; during ore processing, most of the radium-226 carries over into the finished product, and from there into the soil and plant via the decay chain leading to <sup>210</sup>Pb and <sup>210</sup>Po. The range of radium-226 content in phosphate fertilisers, according to the US Environmental Protection Agency, is approximately 0.185-1.11 Bq/g, depending on the fertiliser type and the origin of the phosphate rock [12]. The hypothesis of a complete chain - fertiliser to radon-222 emanation from soil to deposition on tobacco trichomes - was formulated by Martell (1974) [13]; the content of this short Nature communication could not be read directly owing to paywall access, so its mechanism is presented here as a hypothesis, not a verified fact.</p>
-<h2><span class="num">5</span>Smoker radiation dose</h2>
-<p>The first quantitative dose estimate belongs to the original Radford and Hunt (1964) work itself. Independent verification carried out for this review established that the original work in fact contains two distinct values, which subsequent reviews frequently conflate: the diffuse (averaged over the entire bronchial epithelium) dose for a person smoking two packs of cigarettes a day was estimated at 36 rem (0.36 Sv) over 25 years - roughly seven times the dose from natural background over the same period; the localised dose in hot spots - actual sites of smoke deposition at bronchial bifurcations, where activity is concentrated rather than diffuse - could reach 1000 rem (10 Sv) over 25 years [1][14]. The widely cited subsequent review by Zaga et al. (2011) quotes only the second, maximum figure without the in localised areas qualifier, which on an inattentive reading creates the impression that 10 Sv is the smoker average dose rather than a peak value at discrete points in the lung [15].</p>
-<p>Modern dosimetry gives substantially lower estimates of the effective (as opposed to localised) annual dose: a calculation for alpha and beta radiation from <sup>210</sup>Po and <sup>210</sup>Pb in the lungs of a pack-a-day smoker gives 0.317 mSv/year under a conservative (slow) blood-absorption scenario and 0.072 mSv/year under a moderate scenario; for a heated tobacco product of the same brand, the estimate is roughly tenfold lower, at 0.030 mSv/year [6]. A literature summary in the same work gives an effective-dose range from different authors of 0.1-0.8 mSv/year [6][7][16] - three orders of magnitude below the Radford and Hunt localised estimate, the difference being explained by the fact that fundamentally different quantities are being compared (localised tissue dose at a specific point versus effective dose, averaged and organ-weighted across the whole body according to current ICRP methodology).</p>
-<p>The UNSCEAR 2000 report states, qualitatively, that the measured <sup>210</sup>Po concentration in the lung parenchyma of smokers is approximately three times that of non-smokers, and identifies <sup>210</sup>Po as the main contributor to the dose from natural sources for the population as a whole (about 120 uSv/year for an average member of the public, irrespective of smoking status) - the report does not provide a quantitative annual dose estimate specific to smokers [17].</p>
-<table>
-<caption>Table 2 - Radiation dose estimates from <sup>210</sup>Po/<sup>210</sup>Pb in tobacco smoke</caption>
-<tr><th>Source</th><th>Quantity</th><th class="num">Estimate</th></tr>
-<tr><td>Radford &amp; Hunt, 1964 [1][14]</td><td>Diffuse dose to bronchial epithelium, 2 packs/day</td><td class="num">36 rem / 25 y</td></tr>
-<tr><td>Radford &amp; Hunt, 1964 [1][14]</td><td>Localised dose in hot spots</td><td class="num">up to 1000 rem / 25 y</td></tr>
-<tr><td>Desorgher et al., 2023 [6]</td><td>Effective dose, conventional cigarettes, pack/day</td><td class="num">0.072-0.317 mSv/year</td></tr>
-<tr><td>Desorgher et al., 2023 [6]</td><td>Effective dose, heated tobacco product</td><td class="num">0.005-0.030 mSv/year</td></tr>
-<tr><td>Kubalek et al., 2016 [16]</td><td>Effective dose, real smokers</td><td class="num">61 uSv/year (<sup>210</sup>Po) + 9 uSv/year (<sup>210</sup>Pb)</td></tr>
-</table>
-<div class="note"><p><b>The 2% of lung cancers attribution is unconfirmed.</b> The claim that polonium-210 is responsible for 2 % of smoking-induced lung cancer cases appears in popular-science accounts without reference to a specific work; independent verification by two branches of this review found no peer-reviewed source attributing this figure to Radford and Hunt or substantiating it by calculation. The only quantitative risk estimate found in a peer-reviewed source is expressed in different units - 4times10<sup>-4</sup> cases per year per smoker (4 cases per 10,000 smokers per year) [15] - which does not reduce directly to a share of all cases without additional epidemiological data not covered by the sources reviewed.</p></div>
-<h2><span class="num">6</span>Controversy and the tobacco industry position</h2>
-<p>Systematic criticism of Radford and Hunt original estimates in the peer-reviewed literature is represented by methodological work demonstrating a wide spread in the smoke-transfer fraction (Section 3), rather than by a direct refutation of the original carcinogenicity hypothesis. A separate line of publications, reflected in a historical review of the topic, shows that tobacco manufacturers were aware of alpha activity in smoke as early as the 1960s and did not disclose this information publicly; an internal industry document was symbolically titled Waking a Sleeping Giant [18]. The full text of this work is behind the journal website technical access barrier and was not read directly during preparation of this review; its content is presented via a verbatim quotation from an independent peer-reviewed review citing it [15].</p>
-<p>A separate caveat concerns the background contribution of <sup>210</sup>Po unrelated to smoking: according to figures given in the review literature, about 77 % of a person daily intake of the isotope comes from food, and only about 17 % from cigarette smoking [15]. The isotope is detectable in measurable amounts even in people who have never smoked, which complicates unambiguous attribution of observed body <sup>210</sup>Po levels to smoking alone and was not independently re-verified at the primary-source level for this review [19].</p>
-<h2><span class="num">7</span>Limitations of this review</h2>
-<p>The original Radford and Hunt (1964) work was not read directly: the publisher website (Science, AAAS) presented a persistent automated-access barrier throughout the preparation of this review, not overcome by any of three independent attempts. Numerical data from this work were reconstructed from three independent, mutually consistent citing sources (Section 5) - the level of verification for them corresponds to a bibliographically confirmed paraphrase, not direct reading.</p>
-<p>Several quantitative statements about radium-226 content in apatite rock and phosphate fertilisers were obtained via a secondary search-engine paraphrase rather than direct reading of the primary source, and are flagged as less reliable in the text. Martell hypothesis of the complete fertiliser to radon to trichomes transfer mechanism could not be verified by content - only by the fact of the publication existence. Some Soviet and Russian measurement sources mutually cite one another with discrepancies in unit conversion (Section 2) - where possible, the value from the primary table, rather than a subsequent paraphrase, was used.</p>
-<h2><span class="num">8</span>Conclusion</h2>
-<p>The presence of <sup>210</sup>Po and <sup>210</sup>Pb in tobacco, and the transfer of part of their activity into cigarette smoke during smoking, is an experimentally established fact, confirmed by independent measurements over more than sixty years and across different countries. Quantitative estimates, however, diverge substantially at every step of the chain: activity in the filler - within one order of magnitude between laboratories; the transfer fraction to smoke during smoking - by more than an order of magnitude, owing to the absence of a unified sampling methodology; the isotope accumulation mechanism in the plant remains an unresolved contradiction between two classic studies; and the estimated contribution to lung cancer risk depends on which dose (localised tissue dose or whole-body effective dose) is being compared. The figure of 2% of lung cancer cases, widespread in popular sources, has no verified attribution to the original 1964 work and requires further verification against a primary source, if one exists at all.</p>
-<h2><span class="num">9</span>AI use statement</h2>
-<p>This review was prepared by an agentic session based on the Claude language model (Anthropic), under operator supervision. Role of the model: decomposition of the question into independent search directions, parallel collection of sources by five background agents (Sonnet model) with separate domain modules (scientific articles, regulatory reports, accumulation mechanism, Russian-language sources, disputed and refuted claims), adversarial verification of one critical numerical discrepancy by a separate agent, consolidation of findings into a single text, and page layout. Role of the operator: task setting, the requirement to prioritise highly cited sources, the decision to structure the material as a review of primary sources (not a popular-science account), and the decision to publish. Every numerical claim in the text is accompanied by a source reference; discrepancies between sources are presented as is, without averaging. The citation index of key sources was checked against the Crossref database at the time of access (25 September 2026) and is given in the reference list where methodologically relevant.</p>
-<h2><span class="num">10</span>References</h2>
-<ol class="refs">
-<li>Radford E.P., Hunt V.R. Polonium-210: A Volatile Radioelement in Cigarettes // Science. 1964. Vol. 143, No. 3603. P. 247-249. <a href="https://doi.org/10.1126/science.143.3603.247" target="_blank" rel="noopener">doi.org/10.1126/science.143.3603.247</a> <span class="lvl lvl-a">149 citations, Crossref</span></li>
-<li>Berthet A. et al. <sup>210</sup>Po and <sup>210</sup>Pb content in the smoke of Heated Tobacco Products versus Conventional Cigarette smoking // Scientific Reports. 2022. Vol. 12. Art. 10314. <a href="https://doi.org/10.1038/s41598-022-14200-2" target="_blank" rel="noopener">doi.org/10.1038/s41598-022-14200-2</a> · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9207432/" target="_blank" rel="noopener">PMC9207432</a></li>
-<li>Horvath M., Shahrokhi A., Bator P., Toth-Bodrogi E., Kovacs T. Determination of <sup>210</sup>Po content in cigarette smoke using a smoking machine: A case study of Iranian cigarettes // Journal of Environmental Radioactivity. 2017. Vol. 174. P. 66-70. <a href="https://doi.org/10.1016/j.jenvrad.2017.01.023" target="_blank" rel="noopener">doi.org/10.1016/j.jenvrad.2017.01.023</a></li>
-<li>Ermolaeva-Makovskaya A.P., Pertsov L.A., Popov D.K. On the content of polonium-210 in tobacco [in Russian] // Gigiena i Sanitariya. 1965. No. 12. P. 40. <a href="https://cyberleninka.ru/article/n/k-voprosu-o-soderzhanii-poloniya-210-v-tabake" target="_blank" rel="noopener">cyberleninka.ru</a></li>
-<li>Persson B.R.R., Holm E. Polonium-210 and lead-210 in the terrestrial environment: a historical review // Journal of Environmental Radioactivity. 2011. Vol. 102, No. 5. P. 420-429. <a href="https://doi.org/10.1016/j.jenvrad.2011.01.005" target="_blank" rel="noopener">doi.org/10.1016/j.jenvrad.2011.01.005</a> <span class="lvl lvl-a">235 citations, Crossref</span></li>
-<li>Desorgher L., Berthet A., Rossier J., Bochud F., Froidevaux P. Dosimetry in the lungs of alpha-particles (<sup>210</sup>Po) and beta-particles (<sup>210</sup>Pb) present in the tobacco smoke of conventional cigarettes and heated tobacco products // Journal of Environmental Radioactivity. 2023. Art. 107178. <a href="https://doi.org/10.1016/j.jenvrad.2023.107178" target="_blank" rel="noopener">doi.org/10.1016/j.jenvrad.2023.107178</a> (open access)</li>
-<li>Khater A.E.M. Polonium-210 budget in cigarettes // Journal of Environmental Radioactivity. 2004. Vol. 71, No. 1. P. 33-41. <a href="https://doi.org/10.1016/S0265-931X(03)00118-8" target="_blank" rel="noopener">doi.org/10.1016/S0265-931X(03)00118-8</a> <span class="lvl lvl-a">88 citations, Crossref</span></li>
-<li>Zaga V., Lygidakis C., Chaouachi K., Gattavecchia E. Polonium and Lung Cancer // Journal of Oncology. 2011. Art. 860103. <a href="https://doi.org/10.1155/2011/860103" target="_blank" rel="noopener">doi.org/10.1155/2011/860103</a> · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3136189/" target="_blank" rel="noopener">PMC3136189</a></li>
-<li>Tso T.C., Harley N., Alexander L.T. Source of Lead-210 and Polonium-210 in Tobacco // Science. 1966. Vol. 153, No. 3738. P. 880-882. <a href="https://doi.org/10.1126/science.153.3738.880" target="_blank" rel="noopener">doi.org/10.1126/science.153.3738.880</a> <span class="lvl lvl-a">59 citations, Crossref</span></li>
-<li>Berger K.C., Erhardt W.H., Francis C.W. Polonium-210 analyses of vegetables, cured and uncured tobacco, and associated soils // Science. 1965. Vol. 150, No. 3704. P. 1738-1739. <a href="https://doi.org/10.1126/science.150.3704.1738" target="_blank" rel="noopener">doi.org/10.1126/science.150.3704.1738</a></li>
-<li>Papastefanou C. Radioactivity of tobacco leaves and radiation dose induced from smoking // International Journal of Environmental Research and Public Health. 2009. Vol. 6, No. 2. P. 558-567. <a href="https://doi.org/10.3390/ijerph6020558" target="_blank" rel="noopener">doi.org/10.3390/ijerph6020558</a> (open access)</li>
-<li>U.S. Environmental Protection Agency. TENORM: Fertilizer and Fertilizer Production Wastes. <a href="https://www.epa.gov/radiation/tenorm-fertilizer-and-fertilizer-production-wastes" target="_blank" rel="noopener">epa.gov</a> (archived page, official source)</li>
-<li>Martell E.A. Radioactivity of tobacco trichomes and insoluble cigarette smoke particles // Nature. 1974. Vol. 249, No. 454. P. 215-217. <a href="https://doi.org/10.1038/249215a0" target="_blank" rel="noopener">doi.org/10.1038/249215a0</a> (content not read - paywalled)</li>
-<li>Nikolova M.E. The radioactive factor of tobacco smoke [in Russian] // Gigiena i Sanitariya. 1970. <a href="https://cyberleninka.ru/article/n/radioaktivnyy-faktor-tabachnogo-dyma" target="_blank" rel="noopener">cyberleninka.ru</a></li>
-<li>Muggli M.E., Ebbert J.O., Robertson C., Hurt R.D. Waking a Sleeping Giant: The Tobacco Industry Response to the Polonium-210 Issue // American Journal of Public Health. 2008. Vol. 98, No. 9. P. 1643-1650. <a href="https://doi.org/10.2105/AJPH.2007.130963" target="_blank" rel="noopener">doi.org/10.2105/AJPH.2007.130963</a> <span class="lvl lvl-a">38 citations, Crossref</span> (content verified via quotations in source [8]; direct access to the original blocked by the journal website technical protection)</li>
-<li>Kubalek D. et al. Radioactivity of conventional cigarettes and heated tobacco // Journal of Environmental Radioactivity. 2016. Vol. 155. P. 97-104. <a href="https://doi.org/10.1016/j.jenvrad.2016.02.015" target="_blank" rel="noopener">doi.org/10.1016/j.jenvrad.2016.02.015</a></li>
-<li>UNSCEAR. Sources and Effects of Ionizing Radiation: UNSCEAR 2000 Report to the General Assembly, Vol. I, Annex B. New York: United Nations, 2000. Para. 85-86. <a href="https://www.unscear.org/unscear/uploads/documents/unscear-reports/UNSCEAR_2000_Report_Vol.I.pdf" target="_blank" rel="noopener">unscear.org</a></li>
-<li>Muggli M.E. et al., 2008 - see reference [15].</li>
-<li>Kilthau G.F. et al. Polonium-210 in vivo study (referenced via secondary search results, PMC7822435; content not independently verified by this review - flagged with limited-verification caveat, Section 7).</li>
-</ol>
-</div><footer class="bottom"><p data-lang-block="ru" style="display:block">Подготовлено агентной сессией на базе Claude (Anthropic) под управлением оператора. Дата сборки источников: 25 сентября 2026 года. Обзор не является медицинской рекомендацией.</p><p data-lang-block="en">Prepared by an agentic session based on Claude (Anthropic) under operator supervision. Sources compiled: 25 September 2026. This review is not medical advice.</p></footer>
 </div>
-<script>
-function setLang(lang){
-  document.documentElement.setAttribute('data-lang', lang);
-  try{localStorage.setItem('po210site_lang', lang);}catch(e){}
-  document.getElementById('btn-ru').classList.toggle('active', lang==='ru');
-  document.getElementById('btn-en').classList.toggle('active', lang==='en');
-}
-(function(){
-  var saved = 'ru';
-  try{saved = localStorage.getItem('po210site_lang') || 'ru';}catch(e){}
-  setLang(saved);
-})();
-</script>
+<div class="foot">
+<p>Подготовлено агентной сессией на базе Claude (Anthropic) под
+управлением оператора. Редакция 3 от 25 сентября 2026 года. Обзор не
+является медицинской рекомендацией.</p>
+</div>
+</section>
+</div>
 </body>
 </html>
