@@ -1,0 +1,1741 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>КЗМ лаборатория 19.10.2026 — 3D</title>
+
+
+
+<style>
+/* Layout: canvas left, instrument panel right; panel stacks below canvas on phones */
+[hidden] { display: none !important; }
+:root {
+  --bg: #eef1f3; --panel: #f8fafb; --fg: #17202a; --muted: #5b6875; --line: #d3dae0;
+  --accent: #d9731a; --accent-soft: #f6e3d1; --canvas: #e4e9ed; --edge: #2a3540;
+  --grid: #c5ced6; --grid-major: #9aa8b4;
+  --font-ui: "Golos Text", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12171c; --panel: #182027; --fg: #e3e9ee; --muted: #8d9aa6; --line: #2a343d;
+  --accent: #f08a2e; --accent-soft: #3a2a1c; --canvas: #1b232a; --edge: #0b0f13;
+  --grid: #2b363f; --grid-major: #3f4c57; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12171c; --panel: #182027; --fg: #e3e9ee; --muted: #8d9aa6; --line: #2a343d;
+  --accent: #f08a2e; --accent-soft: #3a2a1c; --canvas: #1b232a; --edge: #0b0f13;
+  --grid: #2b363f; --grid-major: #3f4c57; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); }
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; overflow: hidden; }
+
+.app {
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+}
+
+.viewport {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+.viewport canvas { display: block; width: 100%; height: 100%; }
+
+.viewbar {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  max-width: calc(100% - 24px);
+}
+.viewbar button {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--fg);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 5px 9px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.viewbar button:hover { background: var(--accent-soft); }
+.viewbar button:active { color: var(--accent); }
+.viewbar .sep { width: 1px; align-self: stretch; background: var(--line); margin: 2px 2px; }
+
+.hint {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--panel) 78%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 4px 8px;
+  pointer-events: none;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--canvas) 55%, transparent);
+  z-index: 5;
+}
+.overlay[hidden] { display: none; }
+.overlay .box {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--fg);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px 20px;
+  max-width: 80%;
+  text-align: center;
+}
+.overlay .box.err { color: var(--accent); }
+
+.panel {
+  min-height: 0;
+  overflow-y: auto;
+  background: var(--panel);
+  border-left: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+}
+.panel-inner { padding: 0 16px 20px; }
+
+.phead { padding: 16px 0 14px; border-bottom: 1px solid var(--line); }
+.phead h1 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+.phead .meta { margin-top: 6px; font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+
+.section { padding: 16px 0; border-bottom: 1px solid var(--line); }
+.section:last-child { border-bottom: none; }
+.slabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-weight: 600;
+  margin: 0 0 10px;
+}
+
+.total { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin: 0 0 10px; }
+
+.tree { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.row:hover { background: var(--accent-soft); }
+.row.selected { background: var(--accent-soft); border-color: var(--accent); }
+.row .name { flex: 1; min-width: 0; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row .badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 1px 7px;
+  white-space: nowrap;
+}
+.row .caret {
+  width: 16px; height: 16px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 10px; color: var(--muted);
+  transition: transform 0.15s ease;
+}
+.row.collapsed .caret { transform: rotate(-90deg); }
+.children { list-style: none; margin: 0; padding: 0 0 0 14px; display: flex; flex-direction: column; gap: 2px; }
+.row.collapsed + .children { display: none; }
+
+.eye {
+  flex: none;
+  width: 24px; height: 24px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--fg);
+}
+.eye:hover { background: var(--accent-soft); }
+.eye svg { width: 16px; height: 16px; }
+.eye.off { color: var(--muted); }
+.eye.off .eye-open { display: none; }
+.eye:not(.off) .eye-closed { display: none; }
+
+.btn {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--fg);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 7px 12px;
+  cursor: pointer;
+}
+.btn:hover { background: var(--accent-soft); }
+.btn:active { color: var(--accent); }
+.btn-row { display: flex; gap: 8px; margin-top: 12px; }
+.btn-row .btn { flex: 1; }
+
+.card { display: flex; flex-direction: column; gap: 10px; }
+.card .cname { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.card .cname .badge {
+  font-family: var(--font-mono); font-size: 11px; color: var(--muted);
+  background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 1px 7px;
+}
+.card .dim { font-family: var(--font-mono); font-size: 13px; color: var(--fg); }
+.card .dim .k { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 2px; }
+.card .hintline { font-size: 12px; color: var(--muted); }
+
+.control { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+.control label { font-size: 13px; }
+.control .val { font-family: var(--font-mono); font-size: 12px; color: var(--muted); min-width: 42px; text-align: right; }
+.control input[type="range"] { flex: 1; accent-color: var(--accent); }
+.control .grow { flex: 1; }
+
+.check { display: flex; align-items: center; gap: 8px; margin: 8px 0; font-size: 13px; cursor: pointer; }
+.check input { accent-color: var(--accent); width: 16px; height: 16px; }
+
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.seg button {
+  font-family: var(--font-mono); font-size: 12px;
+  color: var(--fg); background: transparent; border: none;
+  padding: 5px 12px; cursor: pointer;
+}
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button:hover { background: var(--accent-soft); }
+.seg button.active { color: var(--accent); background: var(--accent-soft); }
+
+.num { font-variant-numeric: tabular-nums; font-family: var(--font-mono); }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+@media (max-width: 760px) {
+  .app { grid-template-columns: 1fr; grid-template-rows: 58% minmax(0, 1fr); }
+  .panel { border-left: none; border-top: 1px solid var(--line); }
+  .viewbar { flex-wrap: wrap; }
+}
+#secBoxBlock .control{flex-wrap:wrap}#secBoxBlock .control input[type=range]{flex:1 1 40%;min-width:0;width:auto}#sectionPanel .control{flex-wrap:wrap;gap:6px}
+.sw{width:10px;height:10px;border-radius:3px;flex:none;border:1px solid rgba(0,0,0,.3)}
+</style>
+
+<div class="app">
+  <div class="viewport" id="viewport">
+    <div class="viewbar" id="viewbar" role="toolbar" aria-label="Виды">
+      <button data-view="iso">Изометрия</button>
+      <button data-view="front">Спереди</button>
+      <button data-view="back">Сзади</button>
+      <button data-view="left">Слева</button>
+      <button data-view="right">Справа</button>
+      <button data-view="top">Сверху</button>
+      <span class="sep" aria-hidden="true"></span>
+      <button data-view="fit">Вписать</button>
+    </div>
+    <div class="hint">ЛКМ — вращать · ПКМ — сдвиг · колесо — масштаб</div>
+    <div class="overlay" id="overlay"><div class="box" id="overlayBox">Загрузка модели… 0%</div></div>
+  </div>
+
+  <aside class="panel">
+    <div class="panel-inner">
+      <div class="phead">
+        <h1>KZM-19102026</h1>
+        <div class="meta">Просмотр модели</div>
+      </div>
+
+      <div class="section">
+        <div class="card" id="card">
+          <div class="cname" id="cardName">KZM-19102026</div>
+          <div class="dim"><span class="k">Габарит</span><span id="cardDim" class="num">—</span></div>
+          <div class="hintline" id="cardHint">Щёлкните деталь, чтобы выбрать</div>
+          <div class="btn-row" id="cardBtns" hidden>
+            <button class="btn" id="btnHideSel">Скрыть</button>
+            <button class="btn" id="btnOnlySel">Только это</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="slabel">Состав</div>
+        <div class="total" id="total">0 деталей</div>
+        <ul class="tree" id="tree"></ul>
+        <div class="btn-row">
+          <button class="btn" id="btnShowAll">Показать все</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="slabel">Инструменты</div>
+
+        <div class="control">
+          <label for="explode">Разнесение</label>
+          <input type="range" id="explode" min="0" max="100" step="1" value="0">
+          <span class="val num" id="explodeVal">0 %</span>
+        </div>
+
+        <div id="sectionPanel"></div>
+        <label class="check" for="xray"><input type="checkbox" id="xray"> Рентген</label>
+        <label class="check" for="grid"><input type="checkbox" id="grid"> Сетка</label>
+        <label class="check" for="edges"><input type="checkbox" id="edges" checked> Рёбра</label>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+
+const $ = (id) => document.getElementById(id);
+const viewport = $('viewport');
+const overlay = $('overlay');
+const overlayBox = $('overlayBox');
+
+const EYE_OPEN = '<svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_CLOSED = '<svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 10.6a3 3 0 0 0 4.2 4.2"/><path d="M9.9 5.2A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4"/><path d="M6.1 6.1A17 17 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 3.9-.8"/></svg>';
+
+function cssColor(name) {
+  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return new THREE.Color(v);
+}
+
+// ---- Renderer / scene / camera ----
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.localClippingEnabled = true;
+viewport.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = cssColor('--canvas');
+
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+pmrem.dispose();
+
+const dirLight = new THREE.DirectionalLight(0xffffff, 1.1);
+dirLight.position.set(4, 7, 5);
+scene.add(dirLight);
+
+const camera = new THREE.PerspectiveCamera(35, 1, 0.01, 5000);
+camera.position.set(3, 2.2, 3.4);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.target.set(0, 0.5, 0);
+
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ---- Grid ----
+let grid = null;
+function buildGrid(size) {
+  if (grid) { scene.remove(grid); grid.geometry.dispose(); grid.material.dispose(); grid = null; }
+  const divisions = Math.max(1, Math.round(size / 0.1));
+  grid = new THREE.GridHelper(size, divisions, cssColor('--grid-major'), cssColor('--grid'));
+  grid.material.transparent = true;
+  grid.material.opacity = 0.6;
+  grid.position.y = 0;
+  grid.visible = $('grid').checked;
+  scene.add(grid);
+}
+
+// ---- State ----
+let root = null;
+let parts = [];
+let meshes = [];
+let modelBox = new THREE.Box3();
+let modelCenter = new THREE.Vector3();
+let modelRadius = 1;
+let clipPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+let clipAxis = 'x';
+let clipPos = 0.5;
+let clipFlip = false;
+let selection = new Set();
+let camAnim = null;
+
+const VIEWS = {
+  iso: new THREE.Vector3(1, 0.8, 1).normalize(),
+  front: new THREE.Vector3(0, 0, 1),
+  back: new THREE.Vector3(0, 0, -1),
+  left: new THREE.Vector3(-1, 0, 0),
+  right: new THREE.Vector3(1, 0, 0),
+  top: new THREE.Vector3(0, 1, 0),
+};
+
+// ---- Helpers ----
+function displayName(raw) {
+  if (!raw) return 'Деталь';
+  let n = String(raw).replace(/_/g, ' ');
+  n = n.replace(/ \d\d$/, '');
+  if (!n || n.startsWith('=>')) return 'Деталь';
+  return n;
+}
+
+function hasMeshDescendant(o) {
+  if (o.isMesh) return true;
+  for (const c of o.children) if (hasMeshDescendant(c)) return true;
+  return false;
+}
+
+function isPart(o) {
+  if (!hasMeshDescendant(o)) return false;
+  for (const c of o.children) if (!c.isMesh && hasMeshDescendant(c)) return false;
+  return true;
+}
+
+function nearestName(o) {
+  let cur = o;
+  while (cur) {
+    if (cur.userData.cadName) return cur.userData.cadName;
+    if (cur.name && cur.name.length) return cur.name;
+    cur = cur.parent;
+  }
+  return '';
+}
+
+function collectParts(node, out) {
+  if (isPart(node)) {
+    out.push({
+      object: node,
+      name: displayName(nearestName(node)),
+      meshes: [],
+      originalPosition: node.position.clone(),
+      explodeDir: new THREE.Vector3(),
+    });
+    return;
+  }
+  for (const c of node.children) collectParts(c, out);
+}
+
+function findAssembly(node) {
+  let cur = node;
+  while (cur) {
+    const meshed = cur.children.filter((c) => hasMeshDescendant(c));
+    if (meshed.length > 1) return cur;
+    if (meshed.length === 1) cur = meshed[0];
+    else break;
+  }
+  return node;
+}
+
+function buildGroups(assembly) {
+  const groups = [];
+  for (const child of assembly.children) {
+    if (!hasMeshDescendant(child)) continue;
+    const parts = [];
+    collectParts(child, parts);
+    if (parts.length) groups.push({ name: displayName(nearestName(child)), parts });
+  }
+  return groups;
+}
+
+function mergeByName(parts) {
+  const map = new Map();
+  for (const p of parts) {
+    if (!map.has(p.name)) map.set(p.name, []);
+    map.get(p.name).push(p);
+  }
+  return [...map.entries()].map(([name, list]) => ({ name, parts: list }));
+}
+
+function fmtDim(box) {
+  const s = box.getSize(new THREE.Vector3());
+  const mm = (v) => Math.round(v * 1000).toLocaleString('ru-RU');
+  return `${mm(s.x)} × ${mm(s.y)} × ${mm(s.z)} мм`;
+}
+
+function boxOfParts(list) {
+  const box = new THREE.Box3();
+  for (const p of list) box.expandByObject(p.object);
+  return box;
+}
+
+// ---- Material / edge / clip / xray ----
+function applyEdges() {
+  const on = $('edges').checked;
+  const color = cssColor('--edge');
+  for (const m of meshes) {
+    if (on) {
+      if (!m.userData.edge) {
+        const eg = new THREE.EdgesGeometry(m.geometry, 30);
+        const em = new THREE.LineBasicMaterial({ color: color.clone() });
+        const line = new THREE.LineSegments(eg, em);
+        line.name = '__edge';
+        if (m.isInstancedMesh) {
+          // рёбра повторяющейся детали рисуются теми же матрицами экземпляров (инстансинг шейдера three.js)
+          line.isInstancedMesh = true; line.instanceMatrix = m.instanceMatrix; line.count = m.count; line.instanceColor = null;
+          line.frustumCulled = false; line.boundingBox = null;
+          line.computeBoundingBox = () => { m.computeBoundingBox(); line.boundingBox = m.boundingBox; };
+        }
+        m.add(line);
+        m.userData.edge = line;
+      } else {
+        m.userData.edge.material.color.copy(color);
+      }
+    } else if (m.userData.edge) {
+      m.remove(m.userData.edge);
+      m.userData.edge.geometry.dispose();
+      m.userData.edge.material.dispose();
+      m.userData.edge = null;
+    }
+  }
+}
+
+// original and highlighted material per mesh (WeakMap: a self-reference in userData breaks material.clone())
+const ORIG = new WeakMap(), SEL = new WeakMap();
+function allMats(m) {
+  if (!ORIG.has(m)) ORIG.set(m, m.material);
+  return SEL.has(m) ? [ORIG.get(m), SEL.get(m)] : [ORIG.get(m)];
+}
+
+function applyClip() { SECTION.apply(); }
+
+function applyXray() {
+  const on = $('xray').checked;
+  const selMeshes = new Set([...selection].flatMap((p) => p.meshes));
+  for (const m of meshes) {
+    for (const mat of allMats(m)) {
+      if (mat.userData.baseOpacity === undefined) mat.userData.baseOpacity = mat.opacity;
+      if (mat.userData.baseTransparent === undefined) mat.userData.baseTransparent = mat.transparent;
+      if (on && !selMeshes.has(m)) {
+        mat.transparent = true;
+        mat.opacity = 0.18;
+        mat.depthWrite = false;
+      } else {
+        mat.transparent = mat.userData.baseTransparent;
+        mat.opacity = mat.userData.baseOpacity;
+        mat.depthWrite = true;
+      }
+      mat.needsUpdate = true;
+    }
+  }
+}
+
+function applyExplode() {
+  const v = parseInt($('explode').value, 10) / 100;
+  for (const p of parts) {
+    const parent = p.object.parent;
+    if (!parent) continue;
+    // world target = original world position + dir × v × 1.2, then back to parent space (keeps the length of dir)
+    const target = p.originalWorld.clone().addScaledVector(p.explodeDir, v * 1.2);
+    p.object.position.copy(parent.worldToLocal(target));
+  }
+}
+
+function updateClipPlane() {
+  const axis = clipAxis;
+  const min = modelBox.min[axis];
+  const max = modelBox.max[axis];
+  const n = new THREE.Vector3();
+  n[axis] = clipFlip ? -1 : 1;
+  const pos = min + (max - min) * clipPos;
+  clipPlane.normal.copy(n);
+  clipPlane.constant = -n[axis] * pos; // plane n·p + c = 0 passes through p[axis] = pos
+  applyClip();
+}
+
+// ---- Selection ----
+function setSelection(list) {
+  const accent = cssColor('--accent');
+  for (const p of parts) {
+    const sel = list.includes(p);
+    for (const m of p.meshes) {
+      allMats(m);
+      if (sel) {
+        if (!SEL.has(m)) {
+          const c = ORIG.get(m).clone();
+          c.emissiveIntensity = 0.35;
+          SEL.set(m, c);
+        }
+        SEL.get(m).emissive.set(accent.getHex());
+        m.material = SEL.get(m);
+      } else {
+        m.material = ORIG.get(m);
+      }
+    }
+  }
+  selection = new Set(list);
+  applyXray();
+  SECTION.apply();
+  updateCard();
+  updateTreeSelection();
+}
+
+function updateCard() {
+  const nameEl = $('cardName');
+  const dimEl = $('cardDim');
+  const hintEl = $('cardHint');
+  const btns = $('cardBtns');
+  if (selection.size) {
+    const list = [...selection];
+    const names = new Set(list.map((p) => p.name));
+    const label = names.size === 1 ? [...names][0] : 'Выбрано';
+    nameEl.innerHTML = '';
+    nameEl.textContent = label;
+    if (list.length > 1) {
+      const b = document.createElement('span');
+      b.className = 'badge num';
+      b.textContent = '×' + list.length;
+      nameEl.appendChild(b);
+    }
+    dimEl.textContent = fmtDim(boxOfParts(list));
+    hintEl.style.display = 'none';
+    btns.hidden = false;
+  } else {
+    nameEl.textContent = 'KZM-19102026';
+    dimEl.textContent = fmtDim(modelBox);
+    hintEl.style.display = '';
+    hintEl.textContent = 'Щёлкните деталь, чтобы выбрать';
+    btns.hidden = true;
+  }
+}
+
+// ---- Tree ----
+function makeRow(name, parts, opts) {
+  const li = document.createElement('li');
+  const row = document.createElement('div');
+  row.className = 'row';
+  row.dataset.parts = parts.map((p) => p.object.uuid).join(',');
+
+  const eye = document.createElement('button');
+  eye.className = 'eye';
+  eye.type = 'button';
+  eye.innerHTML = EYE_OPEN + EYE_CLOSED;
+  eye.setAttribute('aria-label', 'Скрыть');
+  eye.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const anyVisible = parts.some((p) => p.object.visible);
+    parts.forEach((p) => (p.object.visible = !anyVisible));
+    eye.classList.toggle('off', !parts.some((p) => p.object.visible));
+    eye.setAttribute('aria-label', parts.some((p) => p.object.visible) ? 'Скрыть' : 'Показать');
+  });
+
+  const nameEl = document.createElement('span');
+  nameEl.className = 'name';
+  nameEl.textContent = name;
+
+  row.appendChild(eye);
+  let m0 = null; if (parts[0]) parts[0].object.traverse((o) => { if (!m0 && o.isMesh) m0 = o; });
+  if (m0 && m0.material && m0.material.color && !(opts && opts.children)) { const sw = document.createElement('span'); sw.className = 'sw'; sw.style.background = '#' + m0.material.color.getHexString(); row.appendChild(sw); }
+  row.appendChild(nameEl);
+
+  if (parts.length > 1) {
+    const badge = document.createElement('span');
+    badge.className = 'badge num';
+    badge.textContent = '×' + parts.length;
+    row.appendChild(badge);
+  }
+
+  row.addEventListener('click', (e) => { if (e.target.classList && e.target.classList.contains('caret')) return; setSelection(parts); });
+
+  li.appendChild(row);
+  if (opts && opts.children) {
+    const ul = document.createElement('ul');
+    ul.className = 'children';
+    for (const child of opts.children) ul.appendChild(child);
+    li.appendChild(ul);
+    const caret = document.createElement('span');
+    caret.className = 'caret';
+    caret.textContent = '▾';
+    row.insertBefore(caret, eye);
+    row.classList.add('header', 'collapsed');
+    row.addEventListener('click', (e) => {
+      if (e.target === caret) {
+        row.classList.toggle('collapsed');
+        e.stopPropagation();
+      }
+    });
+  }
+  return li;
+}
+
+function buildTree(groups) {
+  const tree = $('tree');
+  tree.innerHTML = '';
+  const singles = new Map(); // same-name single-part groups merge into one row (e.g. Ручка ×6)
+  for (const g of groups) if (g.parts.length === 1) {
+    const n = g.parts[0].name;
+    if (!singles.has(n)) singles.set(n, []);
+    singles.get(n).push(g.parts[0]);
+  }
+  for (const g of groups) {
+    if (g.parts.length === 1) {
+      const list = singles.get(g.parts[0].name);
+      if (list[0] === g.parts[0]) tree.appendChild(makeRow(g.parts[0].name, list));
+    } else {
+      const children = mergeByName(g.parts).map((m) => makeRow(m.name, m.parts));
+      tree.appendChild(makeRow(g.name, g.parts, { children }));
+    }
+  }
+  const n = parts.length, n10 = n % 10, n100 = n % 100;
+  const word = n10 === 1 && n100 !== 11 ? 'деталь' : n10 >= 2 && n10 <= 4 && (n100 < 12 || n100 > 14) ? 'детали' : 'деталей';
+  $('total').textContent = n + ' ' + word;
+}
+
+function updateTreeSelection() {
+  const sel = new Set([...selection].map((p) => p.object.uuid));
+  for (const row of $('tree').querySelectorAll('.row')) {
+    const ids = row.dataset.parts.split(',');
+    const hit = ids.some((id) => sel.has(id));
+    row.classList.toggle('selected', hit);
+  }
+}
+
+// ---- Camera animation ----
+function fitDistance(radius) {
+  const fov = THREE.MathUtils.degToRad(camera.fov);
+  return (radius / Math.sin(fov / 2)) * 0.8;
+}
+
+function visibleBox() {
+  const box = new THREE.Box3();
+  let any = false;
+  for (const p of parts) {
+    if (p.object.visible) { box.expandByObject(p.object); any = true; }
+  }
+  if (!any) return modelBox;
+  return box;
+}
+
+function animateCamera(dir, target) {
+  const dist = fitDistance(modelRadius);
+  const fromPos = camera.position.clone();
+  const fromTarget = controls.target.clone();
+  const toPos = target.clone().add(dir.clone().multiplyScalar(dist));
+  const toTarget = target.clone();
+  if (reduceMotion) {
+    camera.position.copy(toPos);
+    controls.target.copy(toTarget);
+    controls.update();
+    return;
+  }
+  const start = performance.now();
+  const dur = 450;
+  const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+  camAnim = (now) => {
+    const t = Math.min(1, (now - start) / dur);
+    const e = ease(t);
+    camera.position.lerpVectors(fromPos, toPos, e);
+    controls.target.lerpVectors(fromTarget, toTarget, e);
+    controls.update();
+    if (t >= 1) camAnim = null;
+  };
+}
+
+function goView(name) {
+  const dir = VIEWS[name] || camera.position.clone().sub(controls.target).normalize();
+  const box = visibleBox();
+  const target = box.getCenter(new THREE.Vector3());
+  animateCamera(dir, target);
+}
+
+// ---- Theme / background ----
+function refreshTheme() {
+  scene.background = cssColor('--canvas');
+  if (grid) {
+    grid.material.color.copy(cssColor('--grid'));
+    grid.material.opacity = 0.6;
+  }
+  if (meshes.length) applyEdges();
+}
+const mq = window.matchMedia('(prefers-color-scheme: dark)');
+mq.addEventListener('change', refreshTheme);
+new MutationObserver(refreshTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+// ---- Resize ----
+function resize() {
+  const w = viewport.clientWidth;
+  const h = viewport.clientHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(viewport);
+resize();
+
+// Ближняя/дальняя плоскости по расстоянию до модели: при фиксированных 0.01…5000 буфер глубины (24 бита)
+// не различает поверхности ближе ~1 см на удалении 40 м (штриховка, мерцание). Сжатие диапазона возвращает точность.
+function fitDepthRange() {
+  if (!modelCenter) return;
+  const d = camera.position.distanceTo(modelCenter), r = modelRadius * 1.5;
+  const near = Math.max(0.05, (d - r) * 0.5), far = Math.max(d + r, near * 10);
+  if (Math.abs(near - camera.near) > 1e-6 || Math.abs(far - camera.far) > 1e-3) {
+    camera.near = near; camera.far = far; camera.updateProjectionMatrix();
+  }
+}
+
+// ---- Render loop ----
+renderer.setAnimationLoop((now) => {
+  if (camAnim) camAnim(now);
+  controls.update();
+  fitDepthRange();
+  renderer.render(scene, camera);
+});
+
+// ---- Picking ----
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+let downX = 0, downY = 0, downT = 0;
+
+renderer.domElement.addEventListener('pointerdown', (e) => {
+  if (e.button !== 0) return;
+  downX = e.clientX; downY = e.clientY; downT = performance.now();
+});
+renderer.domElement.addEventListener('pointerup', (e) => {
+  if (e.button !== 0) return;
+  const dx = e.clientX - downX, dy = e.clientY - downY;
+  if (Math.hypot(dx, dy) > 5) return;
+  const rect = renderer.domElement.getBoundingClientRect();
+  pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(pointer, camera);
+  const targets = meshes.filter((m) => m.visible && m.parent && m.parent.visible);
+  const hits = raycaster.intersectObjects(targets, false);
+  if (hits.length) {
+    const mesh = hits[0].object;
+    const part = parts.find((p) => p.meshes.includes(mesh));
+    if (part) { setSelection([part]); return; }
+  }
+  setSelection([]);
+});
+
+// ---- UI wiring ----
+$('viewbar').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-view]');
+  if (b) goView(b.dataset.view);
+});
+
+$('btnShowAll').addEventListener('click', () => {
+  parts.forEach((p) => (p.object.visible = true));
+  for (const eye of $('tree').querySelectorAll('.eye')) {
+    eye.classList.remove('off');
+    eye.setAttribute('aria-label', 'Скрыть');
+  }
+});
+
+$('btnHideSel').addEventListener('click', () => {
+  [...selection].forEach((p) => (p.object.visible = false));
+  setSelection([]);
+});
+
+$('btnOnlySel').addEventListener('click', () => {
+  const sel = new Set([...selection].map((p) => p.object.uuid));
+  parts.forEach((p) => (p.object.visible = sel.has(p.object.uuid)));
+  for (const eye of $('tree').querySelectorAll('.eye')) {
+    const ids = eye.closest('.row').dataset.parts.split(',');
+    const vis = ids.some((id) => sel.has(id));
+    eye.classList.toggle('off', !vis);
+    eye.setAttribute('aria-label', vis ? 'Скрыть' : 'Показать');
+  }
+});
+
+$('explode').addEventListener('input', () => {
+  $('explodeVal').textContent = $('explode').value + ' %';
+  applyExplode();
+});
+
+$('xray').addEventListener('change', applyXray);
+$('grid').addEventListener('change', () => { if (grid) grid.visible = $('grid').checked; });
+$('edges').addEventListener('change', applyEdges);
+
+window.addEventListener('keydown', (e) => {
+  const t = e.target;
+  if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+  const k = e.key.toLowerCase();
+  if (k === 'f') goView('fit');
+  else if (k === '1') goView('iso');
+  else if (k === '2') goView('front');
+  else if (k === '3') goView('back');
+  else if (k === '4') goView('left');
+  else if (k === '5') goView('right');
+  else if (k === '6') goView('top');
+  else if (k === 'escape') setSelection([]);
+  else if (k === 'h') {
+    if (selection.size) {
+      [...selection].forEach((p) => (p.object.visible = false));
+      setSelection([]);
+    }
+  }
+});
+
+// ---- Share (вид в адресе) ----
+const SHARE = (() => {
+  const CB = ['xray', 'grid', 'edges', 'clipOn', 'clipFlip', 'secFlip', 'secFill', 'secBounds'];
+  const RG = ['explode', 'clipPos', 'secPos', 'secBoxxMin', 'secBoxxMax', 'secBoxyMin', 'secBoxyMax', 'secBoxzMin', 'secBoxzMax'];
+  const SG = [['secMode', 'mode'], ['secAxis', 'axis'], ['clipAxis', 'axis']];
+  const BOX = ['secBoxxMin', 'secBoxxMax', 'secBoxyMin', 'secBoxyMax', 'secBoxzMin', 'secBoxzMax'];
+  const DEF = {};
+  let inited = false;
+  let timer = 0;
+
+  function packIdx(arr) {
+    const a = [...arr].sort((x, y) => x - y);
+    const out = [];
+    let i = 0;
+    while (i < a.length) {
+      let j = i;
+      while (j + 1 < a.length && a[j + 1] === a[j] + 1) j++;
+      if (j - i + 1 >= 3) out.push(a[i] + '-' + a[j]);
+      else for (let k = i; k <= j; k++) out.push(String(a[k]));
+      i = j + 1;
+    }
+    return out.join('.');
+  }
+
+  function unpackIdx(str) {
+    const out = [];
+    if (!str) return out;
+    for (const t of String(str).split('.')) {
+      if (!t) continue;
+      const m = t.match(/^(\d+)-(\d+)$/);
+      if (m) {
+        const a = +m[1], b = +m[2];
+        for (let k = a; k <= b; k++) out.push(k);
+      } else if (/^\d+$/.test(t)) out.push(+t);
+    }
+    return out;
+  }
+
+  function sgActive(id, attr) {
+    const el = $(id);
+    if (!el) return null;
+    const b = el.querySelector('button[data-' + attr + '].active');
+    return b ? b.getAttribute('data-' + attr) : null;
+  }
+
+  function encode() {
+    const q = [];
+    const cam = [
+      camera.position.x, camera.position.y, camera.position.z,
+      controls.target.x, controls.target.y, controls.target.z
+    ].map(n => (Math.round(n * 1000) / 1000).toString()).join(',');
+    q.push('c=' + cam);
+    const hid = [];
+    for (let i = 0; i < parts.length; i++) if (!parts[i].object.visible) hid.push(i);
+    if (hid.length) q.push('h=' + packIdx(hid));
+    const sel = [];
+    for (let i = 0; i < parts.length; i++) if (selection.has(parts[i])) sel.push(i);
+    if (sel.length) q.push('s=' + packIdx(sel));
+    for (const id of CB) {
+      const el = $(id);
+      if (!el) continue;
+      const v = el.checked ? '1' : '0';
+      if (v !== DEF[id]) q.push(id + '=' + v);
+    }
+    for (const id of RG) {
+      const el = $(id);
+      if (!el) continue;
+      if (el.value !== DEF[id]) q.push(id + '=' + el.value);
+    }
+    for (const [id, attr] of SG) {
+      const v = sgActive(id, attr);
+      if (v !== null && v !== DEF[id]) q.push(id + '=' + v);
+    }
+    return q.join('&');
+  }
+
+  function save() {
+    try {
+      const s = encode();
+      history.replaceState(null, '', s ? '#' + s : location.pathname + location.search);
+    } catch (e) { /* ignore */ }
+  }
+
+  function restore() {
+    const raw = location.hash.replace(/^#/, '');
+    if (!raw) return false;
+    const map = {};
+    for (const pair of raw.split('&')) {
+      if (!pair) continue;
+      const eq = pair.indexOf('=');
+      if (eq < 0) continue;
+      try {
+        map[decodeURIComponent(pair.slice(0, eq))] = decodeURIComponent(pair.slice(eq + 1));
+      } catch (e) { /* ignore */ }
+    }
+    let camOk = false;
+    try {
+      for (const [id, attr] of SG) {
+        if (!(id in map)) continue;
+        const el = $(id);
+        if (!el) continue;
+        const b = el.querySelector('button[data-' + attr + '="' + map[id] + '"]');
+        if (b) b.click();
+      }
+    } catch (e) { /* ignore */ }
+    try {
+      for (const id of RG) {
+        if (!(id in map)) continue;
+        const el = $(id);
+        if (!el) continue;
+        el.value = map[id];
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+      for (const id of BOX) {
+        if (!(id in map)) continue;
+        const el = $(id);
+        if (!el) continue;
+        el.value = map[id];
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    } catch (e) { /* ignore */ }
+    try {
+      for (const id of CB) {
+        if (!(id in map)) continue;
+        const el = $(id);
+        if (!el) continue;
+        el.checked = map[id] === '1';
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    } catch (e) { /* ignore */ }
+    try {
+      for (let i = 0; i < parts.length; i++) parts[i].object.visible = true;
+      if ('h' in map) {
+        for (const i of unpackIdx(map.h)) {
+          if (i >= 0 && i < parts.length) parts[i].object.visible = false;
+        }
+      }
+      const byUuid = new Map();
+      for (const p of parts) byUuid.set(p.object.uuid, p);
+      for (const row of document.querySelectorAll('.row[data-parts]')) {
+        const eye = row.querySelector('.eye');
+        if (!eye) continue;
+        const ids = row.getAttribute('data-parts').split(',');
+        let any = false;
+        for (const u of ids) {
+          const p = byUuid.get(u);
+          if (p && p.object.visible) { any = true; break; }
+        }
+        eye.classList.toggle('off', !any);
+      }
+    } catch (e) { /* ignore */ }
+    try {
+      const list = [];
+      if ('s' in map) {
+        for (const i of unpackIdx(map.s)) {
+          if (i >= 0 && i < parts.length) list.push(parts[i]);
+        }
+      }
+      setSelection(list);
+      updateTreeSelection();
+    } catch (e) { /* ignore */ }
+    try {
+      if ('c' in map) {
+        const n = map.c.split(',').map(Number);
+        if (n.length === 6 && n.every(Number.isFinite)) {
+          camAnim = null;
+          camera.position.set(n[0], n[1], n[2]);
+          controls.target.set(n[3], n[4], n[5]);
+          controls.update();
+          camOk = true;
+        }
+      }
+    } catch (e) { /* ignore */ }
+    return camOk;
+  }
+
+  function init() {
+    if (inited) return;
+    inited = true;
+    for (const id of CB) {
+      const el = $(id);
+      if (el) DEF[id] = el.checked ? '1' : '0';
+    }
+    for (const id of RG) {
+      const el = $(id);
+      if (el) DEF[id] = el.value;
+    }
+    for (const [id, attr] of SG) {
+      const v = sgActive(id, attr);
+      if (v !== null) DEF[id] = v;
+    }
+    const vb = $('viewbar');
+    if (vb && !$('btnShare')) {
+      const sep = document.createElement('span');
+      sep.className = 'sep';
+      sep.setAttribute('aria-hidden', 'true');
+      const btn = document.createElement('button');
+      btn.id = 'btnShare';
+      btn.type = 'button';
+      btn.textContent = 'Ссылка';
+      btn.addEventListener('click', () => {
+        const s = encode();
+        const url = location.href.split('#')[0] + (s ? '#' + s : '');
+        const done = () => {
+          btn.textContent = 'Скопировано';
+          setTimeout(() => { btn.textContent = 'Ссылка'; }, 1500);
+        };
+        try {
+          navigator.clipboard.writeText(url).then(done, () => {
+            window.prompt('Скопируйте ссылку', url);
+            done();
+          });
+        } catch (e) {
+          window.prompt('Скопируйте ссылку', url);
+          done();
+        }
+      });
+      vb.appendChild(sep);
+      vb.appendChild(btn);
+    }
+    const deb = () => {
+      clearTimeout(timer);
+      timer = setTimeout(save, 700);
+    };
+    document.addEventListener('input', deb, true);
+    document.addEventListener('change', deb, true);
+    document.addEventListener('click', deb, true);
+    controls.addEventListener('end', deb);
+    window.addEventListener('hashchange', () => restore());
+  }
+
+  return { init, restore };
+})();
+
+const SECTION_CAP_UNIFORM = { value: new THREE.Color(0xd9534f) };
+const SECTION_CAPON_UNIFORM = { value: 0 };
+
+const SECTION = (() => {
+  const state = {
+    mode: 'none',
+    axis: 'y',
+    pos: 0,
+    flip: false,
+    box: { x: [0, 1], y: [0, 1], z: [0, 1] },
+    fill: false,
+    bounds: true
+  };
+
+  const planes = [
+    new THREE.Plane(new THREE.Vector3(1, 0, 0), 0),
+    new THREE.Plane(new THREE.Vector3(-1, 0, 0), 0),
+    new THREE.Plane(new THREE.Vector3(0, 1, 0), 0),
+    new THREE.Plane(new THREE.Vector3(0, -1, 0), 0),
+    new THREE.Plane(new THREE.Vector3(0, 0, 1), 0),
+    new THREE.Plane(new THREE.Vector3(0, 0, -1), 0)
+  ];
+
+  const PATCHED = new WeakSet();
+  let helperGroup = null;
+  let planeHelper = null;
+  let boxHelper = null;
+  let el = null;
+  let empty = false;
+
+  const fmt = (v) => Number(v).toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' м';
+  const axisVec = (a) => a === 'x' ? [1, 0, 0] : a === 'y' ? [0, 1, 0] : [0, 0, 1];
+  const axisSpan = (a) => {
+    const b = modelBox;
+    return Math.max(0.01, b.max[a] - b.min[a]);
+  };
+  const axisMid = (a) => (modelBox.min[a] + modelBox.max[a]) / 2;
+
+  function computePlanes() {
+    if (state.mode === 'none') return [];
+    if (state.mode === 'plane') {
+      const [nx, ny, nz] = axisVec(state.axis);
+      let n = [nx, ny, nz];
+      if (state.axis === 'y') {
+        n = state.flip ? [0, 1, 0] : [0, -1, 0];
+      } else {
+        n = state.flip ? [nx, ny, nz] : [-nx, -ny, -nz];
+      }
+      const c = -(n[0] * state.pos + n[1] * state.pos + n[2] * state.pos);
+      planes[0].normal.set(n[0], n[1], n[2]);
+      planes[0].constant = c;
+      return [planes[0]];
+    }
+    const b = state.box;
+    planes[0].normal.set(1, 0, 0); planes[0].constant = -b.x[0];
+    planes[1].normal.set(-1, 0, 0); planes[1].constant = b.x[1];
+    planes[2].normal.set(0, 1, 0); planes[2].constant = -b.y[0];
+    planes[3].normal.set(0, -1, 0); planes[3].constant = b.y[1];
+    planes[4].normal.set(0, 0, 1); planes[4].constant = -b.z[0];
+    planes[5].normal.set(0, 0, -1); planes[5].constant = b.z[1];
+    return planes;
+  }
+
+  function patchMaterial(mat) {
+    if (PATCHED.has(mat)) return;
+    PATCHED.add(mat);
+    mat.side = THREE.DoubleSide;
+    mat.onBeforeCompile = (shader) => {
+      shader.uniforms.secCapColor = SECTION_CAP_UNIFORM;
+      shader.uniforms.secCapOn = SECTION_CAPON_UNIFORM;
+      shader.fragmentShader = 'uniform vec3 secCapColor;\nuniform float secCapOn;\n' + shader.fragmentShader.replace('#include <dithering_fragment>', '#include <dithering_fragment>\n if (secCapOn > 0.5 && !gl_FrontFacing) gl_FragColor = vec4(secCapColor, 1.0);');
+    };
+    mat.customProgramCacheKey = () => 'seccap';
+  }
+
+  function apply() {
+    if (empty) return;
+    const list = computePlanes();
+    SECTION_CAPON_UNIFORM.value = state.fill && list.length > 0 ? 1 : 0;
+    for (const mesh of meshes) {
+      const mats = allMats(mesh);
+      for (const mat of mats) {
+        const prev = mat.userData.secCount || 0;
+        if (prev !== list.length || !PATCHED.has(mat)) {
+          mat.clippingPlanes = list;
+          mat.clipIntersection = false;
+          SECTION.onMaterial(mat);
+          mat.needsUpdate = true;
+          mat.userData.secCount = list.length;
+        } else {
+          mat.clippingPlanes = list;
+        }
+      }
+      if (mesh.userData.edge && mesh.userData.edge.material) {
+        const em = mesh.userData.edge.material;
+        const prev = em.userData.secCount || 0;
+        if (prev !== list.length) {
+          em.clippingPlanes = list;
+          em.clipIntersection = false;
+          em.needsUpdate = true;
+          em.userData.secCount = list.length;
+        } else {
+          em.clippingPlanes = list;
+        }
+      }
+    }
+    updateHelpers();
+  }
+
+  function onMaterial(mat) {
+    patchMaterial(mat);
+  }
+
+  function clearHelpers() {
+    if (helperGroup) {
+      scene.remove(helperGroup);
+      helperGroup.traverse((o) => {
+        if (o.geometry) o.geometry.dispose();
+        if (o.material) o.material.dispose();
+      });
+      helperGroup = null;
+    }
+    planeHelper = null;
+    boxHelper = null;
+  }
+
+  function updateHelpers() {
+    clearHelpers();
+    if (!state.bounds || state.mode === 'none') return;
+    helperGroup = new THREE.Group();
+    if (state.mode === 'plane') {
+      const b = modelBox;
+      const a = state.axis;
+      let w, h;
+      if (a === 'y') { w = b.max.x - b.min.x; h = b.max.z - b.min.z; }
+      else if (a === 'x') { w = b.max.z - b.min.z; h = b.max.y - b.min.y; }
+      else { w = b.max.x - b.min.x; h = b.max.y - b.min.y; }
+      const geo = new THREE.PlaneGeometry(w, h);
+      const mat = new THREE.MeshBasicMaterial({ color: cssColor('--accent'), opacity: 0.12, transparent: true, depthWrite: false, side: THREE.DoubleSide });
+      const m = new THREE.Mesh(geo, mat);
+      const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geo), new THREE.LineBasicMaterial({ color: cssColor('--accent') }));
+      m.add(edges);
+      if (a === 'y') {
+        m.rotation.x = -Math.PI / 2;
+        m.position.set((b.min.x + b.max.x) / 2, state.pos, (b.min.z + b.max.z) / 2);
+      } else if (a === 'x') {
+        m.rotation.y = Math.PI / 2;
+        m.position.set(state.pos, (b.min.y + b.max.y) / 2, (b.min.z + b.max.z) / 2);
+      } else {
+        m.position.set((b.min.x + b.max.x) / 2, (b.min.y + b.max.y) / 2, state.pos);
+      }
+      helperGroup.add(m);
+      planeHelper = m;
+    } else if (state.mode === 'box') {
+      const b = state.box;
+      const box = new THREE.Box3(
+        new THREE.Vector3(b.x[0], b.y[0], b.z[0]),
+        new THREE.Vector3(b.x[1], b.y[1], b.z[1])
+      );
+      boxHelper = new THREE.Box3Helper(box, cssColor('--accent'));
+      helperGroup.add(boxHelper);
+    }
+    scene.add(helperGroup);
+  }
+
+  function setMode(mode) {
+    state.mode = mode;
+    if (el) {
+      el.querySelectorAll('[data-mode]').forEach((btn) => btn.classList.toggle('active', btn.dataset.mode === mode));
+      const planeBlock = $('secPlaneBlock');
+      const boxBlock = $('secBoxBlock');
+      if (planeBlock) planeBlock.hidden = mode !== 'plane';
+      if (boxBlock) boxBlock.hidden = mode !== 'box';
+    }
+    apply();
+  }
+
+  function setAxis(axis) {
+    state.axis = axis;
+    if (el) {
+      el.querySelectorAll('[data-axis]').forEach((btn) => btn.classList.toggle('active', btn.dataset.axis === axis));
+      const slider = $('secPos');
+      if (slider) {
+        slider.min = modelBox.min[axis];
+        slider.max = modelBox.max[axis];
+        slider.step = 0.01;
+        state.pos = axisMid(axis);
+        slider.value = state.pos;
+        const val = $('secPosVal');
+        if (val) val.textContent = fmt(state.pos);
+      }
+    }
+    apply();
+  }
+
+  function setBoxRange(axis, lo, hi) {
+    state.box[axis] = [lo, hi];
+    if (el) {
+      const min = $('secBox' + axis + 'Min');
+      const max = $('secBox' + axis + 'Max');
+      const val = $('secBox' + axis + 'Val');
+      if (min) min.value = lo;
+      if (max) max.value = hi;
+      if (val) val.textContent = fmt(lo) + ' – ' + fmt(hi);
+    }
+    apply();
+  }
+
+  function init() {
+    el = $('sectionPanel');
+    if (!el) return;
+    el.innerHTML = '';
+    const cap = document.createElement('div');
+    cap.className = 'slabel';
+    cap.textContent = 'Сечения';
+    el.appendChild(cap);
+
+    if (modelBox.isEmpty()) {
+      empty = true;
+      return;
+    }
+    empty = false;
+    for (const a of ['x', 'y', 'z']) state.box[a] = [modelBox.min[a], modelBox.max[a]];
+    state.pos = axisMid(state.axis);
+
+    const modeRow = document.createElement('div');
+    modeRow.className = 'control';
+    const modeLabel = document.createElement('label');
+    modeLabel.textContent = 'Режим';
+    const modeSeg = document.createElement('div');
+    modeSeg.className = 'seg';
+    modeSeg.id = 'secMode';
+    const modes = [['none', 'Нет'], ['plane', 'Плоскость'], ['box', 'Коробка']];
+    for (const [m, t] of modes) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = t;
+      b.dataset.mode = m;
+      if (m === state.mode) b.classList.add('active');
+      b.addEventListener('click', () => setMode(m));
+      modeSeg.appendChild(b);
+    }
+    modeRow.appendChild(modeLabel);
+    modeRow.appendChild(modeSeg);
+    el.appendChild(modeRow);
+
+    const planeBlock = document.createElement('div');
+    planeBlock.id = 'secPlaneBlock';
+    planeBlock.hidden = state.mode !== 'plane';
+
+    const axisRow = document.createElement('div');
+    axisRow.className = 'control';
+    const axisLabel = document.createElement('label');
+    axisLabel.textContent = 'Ось';
+    const axisSeg = document.createElement('div');
+    axisSeg.className = 'seg';
+    axisSeg.id = 'secAxis';
+    const axes = [['x', 'X'], ['y', 'Высота'], ['z', 'Z']];
+    for (const [a, t] of axes) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = t;
+      b.dataset.axis = a;
+      if (a === state.axis) b.classList.add('active');
+      b.addEventListener('click', () => setAxis(a));
+      axisSeg.appendChild(b);
+    }
+    axisRow.appendChild(axisLabel);
+    axisRow.appendChild(axisSeg);
+    planeBlock.appendChild(axisRow);
+
+    const posRow = document.createElement('div');
+    posRow.className = 'control';
+    const posLabel = document.createElement('label');
+    posLabel.textContent = 'Положение';
+    const posSlider = document.createElement('input');
+    posSlider.type = 'range';
+    posSlider.id = 'secPos';
+    posSlider.min = modelBox.min[state.axis];
+    posSlider.max = modelBox.max[state.axis];
+    posSlider.step = 0.01;
+    posSlider.value = state.pos;
+    const posVal = document.createElement('span');
+    posVal.className = 'val num';
+    posVal.id = 'secPosVal';
+    posVal.textContent = fmt(state.pos);
+    posSlider.addEventListener('input', () => {
+      state.pos = parseFloat(posSlider.value);
+      posVal.textContent = fmt(state.pos);
+      apply();
+    });
+    posRow.appendChild(posLabel);
+    posRow.appendChild(posSlider);
+    posRow.appendChild(posVal);
+    planeBlock.appendChild(posRow);
+
+    const flipRow = document.createElement('div');
+    flipRow.className = 'control';
+    const flipCheck = document.createElement('label');
+    flipCheck.className = 'check';
+    const flipInput = document.createElement('input');
+    flipInput.type = 'checkbox';
+    flipInput.id = 'secFlip';
+    flipInput.checked = state.flip;
+    flipInput.addEventListener('change', () => {
+      state.flip = flipInput.checked;
+      apply();
+    });
+    flipCheck.appendChild(flipInput);
+    flipCheck.appendChild(document.createTextNode('Обратить'));
+    flipRow.appendChild(flipCheck);
+    planeBlock.appendChild(flipRow);
+    el.appendChild(planeBlock);
+
+    const boxBlock = document.createElement('div');
+    boxBlock.id = 'secBoxBlock';
+    boxBlock.hidden = state.mode !== 'box';
+    const boxAxes = [['x', 'X'], ['y', 'Высота'], ['z', 'Z']];
+    for (const [a, t] of boxAxes) {
+      const row = document.createElement('div');
+      row.className = 'control';
+      const label = document.createElement('label');
+      label.textContent = t;
+      const min = document.createElement('input');
+      min.type = 'range';
+      min.id = 'secBox' + a + 'Min';
+      min.min = modelBox.min[a];
+      min.max = modelBox.max[a];
+      min.step = 0.01;
+      min.value = state.box[a][0];
+      const max = document.createElement('input');
+      max.type = 'range';
+      max.id = 'secBox' + a + 'Max';
+      max.min = modelBox.min[a];
+      max.max = modelBox.max[a];
+      max.step = 0.01;
+      max.value = state.box[a][1];
+      const val = document.createElement('span');
+      val.className = 'val num';
+      val.id = 'secBox' + a + 'Val';
+      val.textContent = fmt(state.box[a][0]) + ' – ' + fmt(state.box[a][1]);
+      min.addEventListener('input', () => {
+        let lo = parseFloat(min.value);
+        let hi = parseFloat(max.value);
+        if (lo > hi - 0.01) lo = hi - 0.01;
+        min.value = lo;
+        setBoxRange(a, lo, hi);
+      });
+      max.addEventListener('input', () => {
+        let lo = parseFloat(min.value);
+        let hi = parseFloat(max.value);
+        if (hi < lo + 0.01) hi = lo + 0.01;
+        max.value = hi;
+        setBoxRange(a, lo, hi);
+      });
+      row.appendChild(label);
+      row.appendChild(min);
+      row.appendChild(max);
+      row.appendChild(val);
+      boxBlock.appendChild(row);
+    }
+    const btnRow = document.createElement('div');
+    btnRow.className = 'control';
+    const selBtn = document.createElement('button');
+    selBtn.type = 'button';
+    selBtn.className = 'btn';
+    selBtn.textContent = 'По выделенному';
+    selBtn.addEventListener('click', () => {
+      if (!selection || selection.size === 0) return;
+      const box = new THREE.Box3();
+      for (const part of selection) {
+        box.union(new THREE.Box3().setFromObject(part.object));
+      }
+      box.expandByScalar(0.3);
+      box.min.clamp(modelBox.min, modelBox.max);
+      box.max.clamp(modelBox.min, modelBox.max);
+      state.box.x = [box.min.x, box.max.x];
+      state.box.y = [box.min.y, box.max.y];
+      state.box.z = [box.min.z, box.max.z];
+      setMode('box');
+      for (const a of ['x', 'y', 'z']) {
+        const min = $('secBox' + a + 'Min');
+        const max = $('secBox' + a + 'Max');
+        const val = $('secBox' + a + 'Val');
+        if (min) min.value = state.box[a][0];
+        if (max) max.value = state.box[a][1];
+        if (val) val.textContent = fmt(state.box[a][0]) + ' – ' + fmt(state.box[a][1]);
+      }
+      apply();
+    });
+    const resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'btn';
+    resetBtn.textContent = 'Сбросить';
+    resetBtn.addEventListener('click', () => {
+      state.box.x = [modelBox.min.x, modelBox.max.x];
+      state.box.y = [modelBox.min.y, modelBox.max.y];
+      state.box.z = [modelBox.min.z, modelBox.max.z];
+      for (const a of ['x', 'y', 'z']) {
+        const min = $('secBox' + a + 'Min');
+        const max = $('secBox' + a + 'Max');
+        const val = $('secBox' + a + 'Val');
+        if (min) min.value = state.box[a][0];
+        if (max) max.value = state.box[a][1];
+        if (val) val.textContent = fmt(state.box[a][0]) + ' – ' + fmt(state.box[a][1]);
+      }
+      apply();
+    });
+    btnRow.appendChild(selBtn);
+    btnRow.appendChild(resetBtn);
+    boxBlock.appendChild(btnRow);
+    el.appendChild(boxBlock);
+
+    if (window.SECTION_PRESETS && Array.isArray(window.SECTION_PRESETS) && window.SECTION_PRESETS.length > 0) {
+      const presetCap = document.createElement('div');
+      presetCap.className = 'slabel';
+      presetCap.textContent = 'Планы этажей';
+      el.appendChild(presetCap);
+      const presetRow = document.createElement('div');
+      presetRow.className = 'control';
+      for (const p of window.SECTION_PRESETS) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'btn';
+        b.textContent = p.name;
+        b.addEventListener('click', () => {
+          state.axis = 'y';
+          state.pos = p.y;
+          state.flip = false;
+          setMode('plane');
+          setAxis('y');
+          state.pos = p.y;
+          const slider = $('secPos');
+          const val = $('secPosVal');
+          if (slider) slider.value = p.y;
+          if (val) val.textContent = fmt(p.y);
+          const flip = $('secFlip');
+          if (flip) flip.checked = false;
+          apply();
+        });
+        presetRow.appendChild(b);
+      }
+      el.appendChild(presetRow);
+    }
+
+    const fillRow = document.createElement('div');
+    fillRow.className = 'control';
+    const fillCheck = document.createElement('label');
+    fillCheck.className = 'check';
+    const fillInput = document.createElement('input');
+    fillInput.type = 'checkbox';
+    fillInput.id = 'secFill';
+    fillInput.checked = state.fill;
+    fillInput.addEventListener('change', () => {
+      state.fill = fillInput.checked;
+      apply();
+    });
+    fillCheck.appendChild(fillInput);
+    fillCheck.appendChild(document.createTextNode('Заливка разреза'));
+    fillRow.appendChild(fillCheck);
+    el.appendChild(fillRow);
+
+    const boundsRow = document.createElement('div');
+    boundsRow.className = 'control';
+    const boundsCheck = document.createElement('label');
+    boundsCheck.className = 'check';
+    const boundsInput = document.createElement('input');
+    boundsInput.type = 'checkbox';
+    boundsInput.id = 'secBounds';
+    boundsInput.checked = state.bounds;
+    boundsInput.addEventListener('change', () => {
+      state.bounds = boundsInput.checked;
+      updateHelpers();
+    });
+    boundsCheck.appendChild(boundsInput);
+    boundsCheck.appendChild(document.createTextNode('Показать границы'));
+    boundsRow.appendChild(boundsCheck);
+    el.appendChild(boundsRow);
+
+    apply();
+  }
+
+  return { init, apply, onMaterial };
+})();
+
+// ---- Load ----
+function showOverlay(text, err) {
+  overlayBox.textContent = text;
+  overlayBox.classList.toggle('err', !!err);
+  overlay.hidden = false;
+}
+function hideOverlay() { overlay.hidden = true; }
+
+async function loadBuffer() {
+  if (window.MODEL_B64) {
+    const b64 = window.MODEL_B64;
+    const bin = atob(b64);
+    const buf = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+    return buf.buffer;
+  }
+  const res = await fetch('model.glb');
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const total = parseInt(res.headers.get('Content-Length'), 10) || 0;
+  if (res.body && total) {
+    const reader = res.body.getReader();
+    const chunks = [];
+    let received = 0;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+      received += value.length;
+      showOverlay('Загрузка модели… ' + Math.min(100, Math.round((received / total) * 100)) + '%');
+    }
+    const out = new Uint8Array(received);
+    let off = 0;
+    for (const c of chunks) { out.set(c, off); off += c.length; }
+    return out.buffer;
+  }
+  return await res.arrayBuffer();
+}
+
+// STEP has no colors: tint by part type (sheet RAL 7035-like, frame graphite, handles black)
+// цвет по имени детали: [регулярка, цвет]; первое совпадение побеждает
+const TINTS = [[/.*/, 0xd7dbde]];
+function finalize(gltf) {
+  // GLTFLoader sanitizes and de-duplicates names (adds _1, _2); keep the original CAD node name
+  for (const [obj, a] of gltf.parser.associations) {
+    if (obj.isObject3D && a && a.nodes !== undefined) obj.userData.cadName = gltf.parser.json.nodes[a.nodes].name || '';
+  }
+  gltf.scene.traverse((o) => {
+    if (!o.isMesh) return;
+    // сетка из 3D-PDF (PRC): грани развёрнуты, без этого модель чёрная; включается window.FIX_PRC_MESH = true до скрипта
+    if (window.FIX_PRC_MESH && o.geometry.index) {
+      const A = o.geometry.index.array;
+      for (let i = 0; i < A.length; i += 3) { const t = A[i + 1]; A[i + 1] = A[i + 2]; A[i + 2] = t; }
+      o.geometry.index.needsUpdate = true;
+      o.geometry.deleteAttribute('normal');
+      o.geometry.computeVertexNormals();
+    }
+    const src = o.material; o.geometry.computeVertexNormals();
+    o.material = new THREE.MeshStandardMaterial({ color: src.color.clone().convertSRGBToLinear(), opacity: src.opacity, transparent: src.transparent, depthWrite: !src.transparent, metalness: 0.0, roughness: 0.9, envMapIntensity: 0.45, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: (src.userData.back ? 16 : 0) + ((window.__mseq = (window.__mseq || 0) + 1) % 16), side: THREE.DoubleSide });
+  });
+  root = new THREE.Group();
+  root.add(gltf.scene);
+  scene.add(root);
+
+  const box = new THREE.Box3().setFromObject(root);
+  const c = box.getCenter(new THREE.Vector3());
+  root.position.x -= c.x;
+  root.position.z -= c.z;
+  root.position.y -= box.min.y;
+  root.updateMatrixWorld(true);
+
+  modelBox = new THREE.Box3().setFromObject(root);
+  modelCenter = modelBox.getCenter(new THREE.Vector3());
+  modelRadius = modelBox.getBoundingSphere(new THREE.Sphere()).radius;
+
+  const assembly = findAssembly(root);
+  parts = [];
+  collectParts(assembly, parts);
+
+  const center = modelCenter;
+  for (const p of parts) {
+    p.meshes = [];
+    p.object.traverse((o) => { if (o.isMesh) p.meshes.push(o); });
+    const pb = new THREE.Box3().setFromObject(p.object);
+    const pc = pb.getCenter(new THREE.Vector3());
+    p.originalWorld = p.object.getWorldPosition(new THREE.Vector3());
+    p.explodeDir = pc.clone().sub(center);
+    if (p.explodeDir.lengthSq() < 1e-9) p.explodeDir.set(0, 1, 0);
+  }
+
+  meshes = [];
+  for (const p of parts) for (const m of p.meshes) if (!meshes.includes(m)) meshes.push(m);
+
+  buildGrid(Math.ceil(1.5 * Math.max(modelBox.max.x - modelBox.min.x, modelBox.max.z - modelBox.min.z)));
+  applyEdges();
+  SECTION.init();
+  applyClip();
+  applyXray();
+  applyExplode();
+
+  const groups = buildGroups(assembly);
+  buildTree(groups);
+  updateCard();
+
+  SHARE.init();
+  if (!SHARE.restore()) goView('iso');
+  hideOverlay();
+}
+
+function fail(err) {
+  const msg = (err && (err.message || err)) ? (err.message || String(err)) : 'неизвестная ошибка';
+  showOverlay('Не удалось загрузить модель: ' + msg, true);
+}
+
+(async () => {
+  showOverlay('Загрузка модели… 0%');
+  try {
+    const buffer = await loadBuffer();
+    new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).parse(buffer, '', (gltf) => {
+      try { finalize(gltf); } catch (e) { fail(e); }
+    }, (err) => fail(err));
+  } catch (e) {
+    fail(e);
+  }
+})();
+</script>
+
+<div id="shareFooter" style="position:fixed;left:8px;bottom:6px;font:11px/1.3 system-ui,sans-serif;opacity:.65;z-index:5;pointer-events:auto"><a href="https://github.com/VibeEngineering-LLC/step-nwd-web-viewer" rel="noopener noreferrer" target="_blank" style="color:inherit">исходный код</a></div>
+</body>
+</html>
