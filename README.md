@@ -12,6 +12,7 @@
 | [delegation-economics](delegation-economics/) | Замер экономии контекста frontier-модели при делегировании bulk-работы на локальную Qwen3-Coder 30B + модель падений (порог N_switch до solo) | https://vibeengineering-llc.github.io/demo-web-pages/delegation-economics/ |
 | [atomfast-retry-delay-sweep](atomfast-retry-delay-sweep/) | Sanity-прогон BLE `retry_delay` (1400–1800 мс, 4×30 с/точка) на дозиметре AtomFast | https://vibeengineering-llc.github.io/demo-web-pages/atomfast-retry-delay-sweep/ |
 | [atomfast-prod-sweep](atomfast-prod-sweep/) | Production-серия `retry_delay` 500–2500 мс × 10 итераций × 10–20 мин мониторинга (21/21 точка) | https://vibeengineering-llc.github.io/demo-web-pages/atomfast-prod-sweep/ |
+| [chemtrails-physics-check](chemtrails-physics-check/) | Физическая проверка гипотезы распыления для видимых следов за самолётами: условие образования (ERA5), оптика, масса вещества, перенос, оседание, приземный воздух (IMPROVE); расчёты пересчитываются по свёрнутым блокам | https://vibeengineering-llc.github.io/demo-web-pages/chemtrails-physics-check/ |
 
 ## Структура
 

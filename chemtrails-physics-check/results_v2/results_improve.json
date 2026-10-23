@@ -1,0 +1,194 @@
+{
+ "imp_oxide_factors": {
+  "Al": 1.8894262841894596,
+  "Si": 2.1392864772484512,
+  "Ti": 1.668498130235862
+ },
+ "imp_years": [
+  2000,
+  2023
+ ],
+ "imp_pred_N3060_fera": {
+  "thin_lo": 1.6264710725771043,
+  "thin_hi": 7.590198338693153,
+  "thick_lo": 6.505884290308417,
+  "thick_hi": 30.36079335477261
+ },
+ "imp_n_sites_range": [
+  64,
+  144
+ ],
+ "imp_ox_median_range": [
+  0.22323465077963753,
+  0.40293774460116605
+ ],
+ "imp_ox_p90_range": [
+  0.5678037828168243,
+  0.8914380523662715
+ ],
+ "imp_ox_max_allyears": 3.103720019612861,
+ "imp_pm_median_range": [
+  2.979772,
+  4.5985555
+ ],
+ "imp_ox_median_slope_per_yr": -0.0036327963310978048,
+ "imp_siteyears": 3180,
+ "imp_frac_siteyears_ox_below_thin_lo": 0.9877358490566037,
+ "imp_frac_siteyears_pm_below_thick_lo": 0.8062893081761007,
+ "imp_2019_n": 140,
+ "imp_2019_ox_median": 0.22323465077963753,
+ "imp_2019_frac_ox_below_thin_lo": 0.9928571428571429,
+ "imp_2019_ratio_thin_lo_over_ox_median": 7.285925670126583,
+ "imp_2019_frac_pm_below_thick_lo": 0.9571428571428572,
+ "imp_2019_top_sites": [
+  {
+   "name": "Sycamore Canyon",
+   "lat": 35.1639,
+   "oxides": 1.9559344669763097
+  },
+  {
+   "name": "Nogales",
+   "lat": 31.33745,
+   "oxides": 1.5341418095811246
+  },
+  {
+   "name": "Fresno - Garland",
+   "lat": 36.78538,
+   "oxides": 1.057280071050777
+  }
+ ],
+ "imp_pred_globe_fera_3d": {
+  "thin_lo": 0.29766486554187177,
+  "thick_lo": 1.190659462167487
+ },
+ "imp_mie_scale": 0.846226439021093,
+ "imp_pred_mie": {
+  "band_thin_lo": 1.3763628239177406,
+  "band_thick_lo": 5.505451295670962,
+  "globe_thin_lo": 0.2518918791891906,
+  "globe_thick_lo": 1.0075675167567624
+ },
+ "imp_ox_mean_range": [
+  0.29981119518068494,
+  0.4855436010100571
+ ],
+ "imp_ratio_band_thin_lo_over_median": [
+  4.036531931718162,
+  7.285925670126583
+ ],
+ "imp_n_sites_total": 213,
+ "imp_sites_median_above_band_thin": 5,
+ "imp_sites_ever_above_band_thin": 12,
+ "imp_frac_siteyears_below_band_thin": 0.9877358490566037,
+ "imp_sites_ever_above_band_thin_names": [
+  "JLG SUPERSITE",
+  "Saguaro NP",
+  "Saguaro West",
+  "DOUGLAS RED CROSS",
+  "Carlsbad Caverns",
+  "JLG SUPERSITE",
+  "Saguaro NP",
+  "Saguaro West",
+  "Nogales",
+  "DOUGLAS RED CROSS",
+  "Sycamore Canyon",
+  "Guadalupe Mountain NP"
+ ],
+ "imp_sites_median_above_globe_thick": 8,
+ "imp_sites_ever_above_globe_thick": 21,
+ "imp_frac_siteyears_below_globe_thick": 0.9694968553459119,
+ "imp_sites_ever_above_globe_thick_names": [
+  "JLG SUPERSITE",
+  "Saguaro NP",
+  "Saguaro West",
+  "QUEEN VALLEY",
+  "DOUGLAS RED CROSS",
+  "Death Valley NP - Park Village",
+  "Carlsbad Caverns",
+  "Salt Creek",
+  "JLG SUPERSITE",
+  "Saguaro NP",
+  "ORGAN PIPE NM",
+  "Saguaro West",
+  "QUEEN VALLEY",
+  "Nogales",
+  "DOUGLAS RED CROSS",
+  "Sycamore Canyon",
+  "Guadalupe Mountain NP",
+  "Fresno - Garland",
+  "WMRC/NCORE",
+  "Great Sand Dunes NP",
+  "Shamrock Mine"
+ ],
+ "imp_sites_median_above_band_thin_mie": 6,
+ "imp_sites_ever_above_band_thin_mie": 14,
+ "imp_frac_siteyears_below_band_thin_mie": 0.980503144654088,
+ "imp_sites_ever_above_band_thin_mie_names": [
+  "JLG SUPERSITE",
+  "Saguaro NP",
+  "Saguaro West",
+  "DOUGLAS RED CROSS",
+  "Carlsbad Caverns",
+  "JLG SUPERSITE",
+  "Saguaro NP",
+  "Saguaro West",
+  "Nogales",
+  "DOUGLAS RED CROSS",
+  "Sycamore Canyon",
+  "Guadalupe Mountain NP",
+  "Fresno - Garland",
+  "Shamrock Mine"
+ ],
+ "imp_sites_median_above_globe_thick_mie": 14,
+ "imp_sites_ever_above_globe_thick_mie": 33,
+ "imp_frac_siteyears_below_globe_thick_mie": 0.9540880503144654,
+ "imp_sites_ever_above_globe_thick_mie_names": [
+  "North Birmingham",
+  "JLG SUPERSITE",
+  "Saguaro NP",
+  "ORGAN PIPE NM",
+  "Saguaro West",
+  "QUEEN VALLEY",
+  "Ike's Backbone",
+  "DOUGLAS RED CROSS",
+  "Death Valley NP - Park Village",
+  "North Birmingham",
+  "Mingo",
+  "Jarbidge Wilderness",
+  "Carlsbad Caverns",
+  "Salt Creek",
+  "JLG SUPERSITE",
+  "Saguaro NP",
+  "ORGAN PIPE NM",
+  "Saguaro West",
+  "QUEEN VALLEY",
+  "Nogales",
+  "DOUGLAS RED CROSS",
+  "Sycamore Canyon",
+  "TONTO NM",
+  "NEWKIRK IMPROVE",
+  "Guadalupe Mountain NP",
+  "Columbia River Gorge",
+  "Fresno - Garland",
+  "3425 N FIRST ST, FRESNO",
+  "Death Valley NP - Park Village",
+  "WMRC/NCORE",
+  "Great Sand Dunes NP",
+  "Shamrock Mine",
+  "Mesa Verde NP"
+ ],
+ "imp_fmax_globe_thin_median_max": 0.5491020234386985,
+ "imp_fmax_band_thin_median_max": 0.10049264492400095,
+ "imp_fmax_globe_thick_median_max": 0.13727550585967463,
+ "imp_fmax_band_thick_median_max": 0.025123161231000238,
+ "imp_fmax_globe_thin_p90_max": 1.2148041350881071,
+ "imp_fmax_band_thin_p90_max": 0.22232458703231509,
+ "imp_fmax_globe_thick_p90_max": 0.3037010337720268,
+ "imp_fmax_band_thick_p90_max": 0.05558114675807877,
+ "imp_panel_n": 34,
+ "imp_panel_slope": -0.004214625315624563,
+ "imp_panel_slope_ci95": [
+  -0.007252293241445333,
+  -0.0011769573898037936
+ ]
+}
